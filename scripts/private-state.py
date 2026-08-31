@@ -11,7 +11,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 import shutil
 import subprocess
 import sys
@@ -54,8 +54,24 @@ def selected_items() -> list[Path]:
 
 
 def safe_member(name: str) -> bool:
-    p = Path(name)
-    return not p.is_absolute() and ".." not in p.parts
+    """Validate a tar member independently of the host OS path semantics.
+
+    Tar member names are POSIX-like, but an attacker may craft Windows drive/UNC or
+    backslash traversal names. Check both PurePosixPath and PureWindowsPath so a
+    backup created or restored on either OS cannot escape ROOT.
+    """
+    if not name or "\x00" in name:
+        return False
+    normalized = name.replace("\\", "/")
+    posix = PurePosixPath(normalized)
+    win = PureWindowsPath(name)
+    if posix.is_absolute() or win.is_absolute() or win.drive:
+        return False
+    if normalized.startswith("//"):
+        return False
+    if ".." in posix.parts or ".." in win.parts:
+        return False
+    return True
 
 
 def export_state(output: Path, recipient: str | None) -> None:
