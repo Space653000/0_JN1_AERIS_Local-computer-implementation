@@ -5,9 +5,10 @@ AERIS deployment is intentionally split into **software install**, **real-machin
 ## Start here
 
 1. [`../ONE_CLICK_INSTALL.md`](../ONE_CLICK_INSTALL.md) — Windows / Linux / Jetson installer.
-2. Run `scripts/local-acceptance.ps1` or `scripts/local-acceptance.sh` on the actual machine.
-3. [`../security/LOCAL_NETWORK_ENFORCEMENT.md`](../security/LOCAL_NETWORK_ENFORCEMENT.md) — privacy assurance levels / hard offline.
-4. [`STATE_BACKUP_RESTORE.md`](STATE_BACKUP_RESTORE.md) — encrypted Memory/Knowledge/Evidence/data relocation.
+2. [`MACHINE_PROFILES.md`](MACHINE_PROFILES.md) — 每種電腦可期待什麼、必須驗什麼。
+3. Run `scripts/local-acceptance.ps1` or `scripts/local-acceptance.sh` on the actual machine.
+4. [`../security/LOCAL_NETWORK_ENFORCEMENT.md`](../security/LOCAL_NETWORK_ENFORCEMENT.md) — privacy assurance levels / hard offline.
+5. [`STATE_BACKUP_RESTORE.md`](STATE_BACKUP_RESTORE.md) — encrypted Memory/Knowledge/Evidence/data relocation.
 
 ## Assets / models / tools
 
