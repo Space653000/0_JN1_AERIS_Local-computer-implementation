@@ -1,8 +1,10 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source_core_repo": "Space653000/0_JN1_AERIS",
   "source_policy": "read_only",
   "role_count": 100,
+  "maturity": "DEFINED_NOT_ALL_EXECUTABLE",
+  "truth_note": "A listed seat is a capability slot. It is not a verified engineer until role contract, skills, methods, tool permissions, evidence requirements, tests and acceptance rubrics pass.",
   "groups": {
     "Chief Council": ["Chief Acoustic Architect","Speaker Engineering Director","Microphone Engineering Director","Product Audio System Architect","DSP & Algorithm Director","Validation & Quality Director","NPI & Manufacturing Director","Research / Standards / Knowledge Director"],
     "Speaker CoE": ["Speaker Acoustic System Architect","Transducer / T-S / Nonlinear Specialist","Enclosure / Port / Waveguide Specialist","Audio Circuit Architect","Amp / Codec / Power Integrity Specialist","Embedded Audio Interface Specialist","Speaker Measurement Engineer","Nonlinear / Power / Reliability Validation Engineer","Directivity / Spatial Validation Engineer","Tonal Tuning Engineer","Dynamics / Bass / Protection Tuning Engineer","Psychoacoustic Speaker Tuning Engineer","Lumped / FEM Acoustic Simulation Engineer","BEM / Vibro-acoustic Simulation Engineer","Room / Ray / System Simulation Engineer","Speaker DSP Engineer","Smart-Amp / Protection Algorithm Engineer","Spatial / Room-Correction Algorithm Engineer"],
