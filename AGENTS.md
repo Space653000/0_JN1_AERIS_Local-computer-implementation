@@ -54,7 +54,7 @@ local provider remains selectable
 AERIS local runtime still starts, diagnoses and executes supported local workflows
 ```
 
-`offline` mode must never call non-loopback AI endpoints.
+`offline` mode must never call the configured cloud provider. The local provider may run on localhost or on a Human-approved trusted LAN node.
 
 ## 4. Model independence
 
