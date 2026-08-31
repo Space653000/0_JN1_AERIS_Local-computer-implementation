@@ -67,7 +67,7 @@ Windows:
 
 ```powershell
 .\scripts\run.ps1 doctor
-.\scripts\run.ps1 mode local
+.\scripts\run.ps1 mode set local
 .\scripts\run.ps1 chat "請說明目前 AERIS runtime 狀態"
 ```
 
@@ -75,7 +75,7 @@ Linux / macOS:
 
 ```bash
 ./scripts/run.sh doctor
-./scripts/run.sh mode local
+./scripts/run.sh mode set local
 ./scripts/run.sh chat "請說明目前 AERIS runtime 狀態"
 ```
 
