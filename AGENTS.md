@@ -1,134 +1,105 @@
-# AGENTS.md — AERIS Local Implementation Contract
+# AGENTS.md — AERIS Portable Company Image Contract
 
 Repository: `Space653000/0_JN1_AERIS_Local-computer-implementation`
 
-Canonical read-only target:
-`Space653000/0_JN1_AERIS@main`
+Canonical read-only target: `Space653000/0_JN1_AERIS@main`
 
-## 1. Authority boundary
+## 1. Repository identity
 
-Codex may modify files in this implementation repository or its local clone.
+本 repository 是 **AERIS Portable Company Image**，不是只有 runtime code。
 
-Codex MUST NOT modify the canonical core repository `Space653000/0_JN1_AERIS`.
+這裡應承載能讓 AERIS 搬到任意本機後重新運作的所有可版本化資產：
 
-Forbidden against the core repository:
+- company constitution / governance / organization;
+- 100-seat role contracts;
+- acoustic Skills / Methods / Standards / Workflows;
+- model routing / agent orchestration;
+- cloud/local/offline runtime;
+- UI / services / tool adapters / firmware integration contracts;
+- Evidence / Verification / Audit / Memory contracts;
+- deployment / migration / backup / packaging;
+- business operating model / service catalog / quality gates;
+- tests and reproducibility assets.
 
-- push / force-push;
-- create/update/delete branches or tags;
-- create/update/merge PRs;
-- repository contents writes;
-- issue mutations for implementation delivery;
-- update refs;
-- Pages/settings/ruleset/protection changes;
-- any GitHub write API.
+## 2. Hard authority boundary
 
-The core repository is a read-only target and may only be cloned, fetched, inspected and compared.
+Codex MUST NOT modify `Space653000/0_JN1_AERIS`.
 
-## 2. Implementation repository purpose
+Against the core repo, forbidden actions include push, branch/tag mutations, PR/merge, contents writes, issue mutations used for delivery, update-ref, Pages/settings/ruleset changes, or any GitHub write API.
 
-This repository contains only local-execution concerns:
+Core repo = read/fetch/inspect/compare only.
 
-- model/provider adapters;
-- cloud/local/offline routing;
-- local orchestration/runtime;
-- local deployment scripts;
-- local tests and diagnostics;
-- tool adapters and local services;
-- local evidence/state/cache conventions.
+This implementation repo MAY be modified when the Human asks ChatGPT/Codex to build AERIS here.
 
-Domain architecture, product scope and engineering North Star come from the core SSOT.
+## 3. Portable-company invariant
 
-## 3. Mandatory offline invariant
+A checkout/ZIP of this repo must contain every **redistributable software/configuration/governance asset** needed to reconstruct the same AERIS company on another machine.
 
-No AERIS feature may make cloud connectivity a mandatory prerequisite for basic operation.
+External/non-Git assets are allowed only when technically or legally unavoidable, e.g.:
 
-Required invariant:
-
-```text
-internet unavailable
-       ↓
-cloud provider unavailable
-       ↓
-local provider remains selectable
-       ↓
-AERIS local runtime still starts, diagnoses and executes supported local workflows
-```
-
-`offline` mode must never call the configured cloud provider. The local provider may run on localhost or on a Human-approved trusted LAN node.
-
-## 4. Model independence
-
-Do not bind AERIS identity, memory, Skills, workflows or engineering rules to a model brand.
-
-Provider adapters are replaceable runtime implementations.
-
-Current baseline adapters:
-
-- local: Ollama-compatible endpoint;
-- cloud: OpenAI-compatible endpoint.
-
-New providers must implement the same provider contract rather than introducing provider-specific behavior into domain logic.
-
-## 5. Start-of-task procedure
-
-Before substantive code changes, Codex must:
-
-1. confirm this is the implementation repo, not the core repo;
-2. read `README.md`, this file, `core.lock.json`, and `config/runtime.json`;
-3. if online, run `scripts/sync-core.*` and record the latest core SHA;
-4. if offline, use the last cached `.aeris/core-reference` and/or `core.lock.json`;
-5. run `python -m aeris_runtime doctor`;
-6. run unit tests;
-7. state which runtime mode is being targeted: offline/local/cloud/auto.
-
-## 6. Local data and secrets
-
-Never commit:
-
-- `.env`;
-- API keys/tokens;
 - model weights;
-- local engineering data;
-- customer data;
-- instrument credentials;
-- `.aeris/` runtime/cache state;
-- logs.
+- proprietary CAE / measurement software and licenses;
+- customer/private datasets;
+- hardware drivers that cannot be redistributed;
+- credentials.
 
-Use `.env.example` only as a variable template.
+Each such dependency must have a manifest entry, preflight check and documented installation path.
+
+## 4. Offline invariant
+
+No essential company-control function may require cloud connectivity.
+
+`offline` mode must never call the configured cloud provider. Local AI may be localhost or a Human-approved trusted LAN endpoint.
+
+The system must still support company status, configuration, role/skill lookup, local workflows, evidence handling and diagnostics without internet.
+
+## 5. Model independence
+
+Model = replaceable compute, not AERIS identity.
+
+Provider-specific code belongs only in adapters. Constitution, role contracts, Skills, Methods, Standards, Memory and Evidence must remain model-neutral.
+
+## 6. Start-of-task procedure
+
+Before substantive work:
+
+1. confirm this is `0_JN1_AERIS_Local-computer-implementation`;
+2. read `company/company.manifest.json`, `README.md`, `AGENTS.md`, `core.lock.json`, `config/runtime.json`;
+3. read the relevant upstream core files read-only;
+4. if online, refresh/read core target SHA without writing upstream;
+5. run `python -m aeris_runtime company status`;
+6. run `python -m aeris_runtime doctor`;
+7. run tests;
+8. state targeted runtime mode and affected company subsystem.
 
 ## 7. Completion evidence
 
-Every Codex delivery should report:
+Every delivery reports:
 
 ```text
-Core target repo: Space653000/0_JN1_AERIS
-Core target SHA: <sha or cached sha>
+Core target repo / SHA
 Core remote write performed: NO
-Implementation workspace: <path>
-Runtime mode tested: <offline/local/cloud/auto>
-Changed files: <list>
-Tests: <result>
-Doctor: <result>
-Offline behavior: <result>
-Cloud fallback behavior: <result if configured>
-Remaining risks/blockers: <summary>
+Portable-company repo / SHA
+Subsystem changed
+Runtime mode(s) tested
+Company manifest validation
+Tests / doctor
+Offline behavior
+Cloud/local routing behavior
+Packaging/relocation impact
+Remaining gaps
 ```
 
-## 8. Packaging Definition of Done
+## 8. Company-level Definition of Done
 
-A checkout/ZIP of this repository is deployment-ready when:
+Do not claim AERIS company is complete merely because code runs.
 
-- installer succeeds without mandatory internet access after prerequisites are pre-staged;
-- Python runtime has no mandatory third-party package dependencies;
-- local mode works with a reachable local model server;
-- offline mode blocks cloud calls;
-- cloud mode can fall back to local when enabled;
-- core reference can be refreshed read-only while online and reused while offline;
-- unit tests pass;
-- secrets and generated state remain outside Git.
+Company completion requires the machine-readable manifest and `docs/DEFINITION_OF_COMPANY_DONE.md` gates: organization, governance, runtime, Skills, standards, evidence, tools, UI, operations, packaging, relocation and offline validation.
 
-## 9. Human publication boundary
+## 9. Secrets and private assets
 
-Publishing implementation changes to this implementation GitHub repo is a separate Human-controlled action unless the Human explicitly asks Codex to publish here.
+Never commit `.env`, tokens, model weights, proprietary customer data, local measurement datasets, private logs, instrument credentials or proprietary license material.
 
-Even if publication is allowed here, the core `0_JN1_AERIS` repository remains read-only for Codex.
+## 10. Publication boundary
+
+This repo is explicitly the cloud construction site, so changes may be committed here when the Human requests construction. The upstream core repo remains read-only under all circumstances unless the Human separately changes that policy.

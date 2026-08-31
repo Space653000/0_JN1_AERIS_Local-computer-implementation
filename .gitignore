@@ -4,6 +4,8 @@
 .aeris/
 data/
 logs/
+dist/
+portable_assets/
 __pycache__/
 *.py[cod]
 .pytest_cache/

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "company_id": "AERIS",
+  "company_name": "Acoustic Engineering & Research Intelligence System",
+  "image_type": "portable_company_image",
+  "core_target": {
+    "repository": "Space653000/0_JN1_AERIS",
+    "branch": "main",
+    "authority": "read_only"
+  },
+  "organization": {
+    "human_authority": "Human Chief Engineer",
+    "virtual_role_count": 100,
+    "runtime_active_role_target": "5-15",
+    "groups": {
+      "Chief Council": 8,
+      "Speaker CoE": 18,
+      "Microphone CoE": 18,
+      "Product Chiefs": 24,
+      "Distinguished Experts": 20,
+      "Engineering Ops": 12
+    }
+  },
+  "runtime": {
+    "modes": ["offline", "local", "cloud", "auto"],
+    "offline_cloud_calls": "deny",
+    "default_strategy": "local_first",
+    "local_provider_baseline": "ollama_compatible",
+    "cloud_provider_baseline": "openai_compatible"
+  },
+  "permanent_assets": [
+    "constitution",
+    "role_contracts",
+    "skills",
+    "methods",
+    "standards_registry",
+    "workflows",
+    "memory_contract",
+    "evidence_contract",
+    "verification",
+    "tool_adapters",
+    "ui",
+    "deployment",
+    "audit",
+    "reproduction"
+  ],
+  "portable_external_assets": [
+    "local_model_weights",
+    "inference_server_installer",
+    "proprietary_tool_licenses",
+    "hardware_specific_drivers",
+    "private_engineering_data",
+    "credentials"
+  ],
+  "truth_rules": [
+    "memory_is_not_evidence",
+    "execution_is_not_completion",
+    "dashboard_is_not_truth",
+    "model_is_compute_not_identity"
+  ]
+}

@@ -1,54 +1,59 @@
-# AERIS Local Computer Implementation
+# AERIS Portable Company Image
 
-> **Executable local implementation repository for AERIS.**
+> **這個 repository 不是單純程式碼專案，而是 AERIS 的可搬遷公司映像。**
 >
-> Canonical target / read-only SSOT: `https://github.com/Space653000/0_JN1_AERIS/tree/main`
+> Canonical design target / read-only SSOT: `https://github.com/Space653000/0_JN1_AERIS/tree/main`
 
-## Repository contract
-
-The two repositories have different authority:
+## 兩個 GitHub 的權責
 
 ```text
-0_JN1_AERIS (main)
-  = READ-ONLY target / architecture / research / UI / governance SSOT
-                  │
-                  │ clone / fetch / inspect / compare ONLY
-                  ▼
+0_JN1_AERIS
+= READ-ONLY North Star / architecture / research / UI / governance SSOT
+             │
+             │ read / fetch / compare only
+             ▼
 0_JN1_AERIS_Local-computer-implementation
-  = executable local runtime / code / tests / deployment / model adapters
-                  │
-                  ▼
-Local computer
-  = actual execution state, data, models, logs and evidence
+= PORTABLE COMPANY IMAGE / 全製作總工地 / 可執行公司映像
+             │
+             │ clone / ZIP / relocate
+             ▼
+任意 Windows / Linux / Edge AI 電腦
+= 同一套 AERIS 公司在新地址重新啟動
 ```
 
-**Codex must never write to `Space653000/0_JN1_AERIS`.** All implementation work belongs here or in a local clone of this repository.
+**Codex 永遠不得修改 `Space653000/0_JN1_AERIS`。**
 
-## North-star runtime behavior
+本 repo 則是 ChatGPT / Codex / Human 可以實際建設的總工地：公司章程、100 席位組織、Skills、Methods、Standards、Workflows、AI model routing、Tool adapters、Evidence、Memory、UI、部署、測試、備份與搬遷都應在這裡形成可版本化資產。
 
-AERIS must remain usable when cloud AI or the internet is unavailable.
+## 公司映像核心原則
 
-Supported runtime modes:
+1. **Self-contained software image**：clone/ZIP 後不依賴雲端才能啟動基本公司骨架。
+2. **Local-first**：本地模型是永久最低可用能力；雲端模型是可插拔增強。
+3. **Offline-capable**：`offline` mode 絕不呼叫 configured cloud provider。
+4. **Model-neutral**：Claude、Codex、OpenAI-compatible cloud、Ollama/local model 都只是 replaceable runtime。
+5. **Machine-portable**：公司身份、制度、角色、Skills、Methods、Evidence contracts 不綁特定電腦。
+6. **Evidence-first**：Execution ≠ Completion；正式結果必須經 Evidence / Verification / Approval。
+7. **Relocatable**：新電腦具備 prerequisite 後，解壓/clone + installer 即可恢復公司軟體與制度。
 
-| Mode | Behavior |
+## Runtime modes
+
+| Mode | 行為 |
 |---|---|
-| `offline` | Hard local-only mode. No cloud provider may be called. |
-| `local` | Use local AI only. |
-| `cloud` | Prefer cloud AI; if cloud fails, automatically fall back to local AI unless strict fallback is disabled. |
-| `auto` | Prefer local AI; use configured cloud AI only when local is unavailable. |
+| `offline` | 僅本地 AI；禁止 configured cloud provider。 |
+| `local` | 固定本地 AI。 |
+| `cloud` | 優先雲端；依政策可 fallback local。 |
+| `auto` | local-first；本地不可用時才考慮雲端。 |
 
-Default local provider: **Ollama-compatible local HTTP API** on `127.0.0.1:11434`.
+目前基線：Local = Ollama-compatible；Cloud = OpenAI-compatible；預設 local model = `qwen2.5:3b`。
 
-Cloud provider: **OpenAI-compatible HTTPS API** selected entirely through environment variables. This permits provider switching without changing AERIS domain code.
-
-## One-click local deployment
+## 一鍵搬遷
 
 ### Windows
 
 ```powershell
 git clone https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation.git
 cd 0_JN1_AERIS_Local-computer-implementation
-powershell -ExecutionPolicy Bypass -File .\INSTALL_AERIS_LOCAL.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\relocate-company.ps1
 ```
 
 ### Linux / macOS
@@ -56,109 +61,58 @@ powershell -ExecutionPolicy Bypass -File .\INSTALL_AERIS_LOCAL.ps1
 ```bash
 git clone https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation.git
 cd 0_JN1_AERIS_Local-computer-implementation
-bash ./INSTALL_AERIS_LOCAL.sh
+bash ./scripts/relocate-company.sh
 ```
 
-The installer uses only Python standard-library runtime dependencies. It creates `.venv`, local state directories, `.env`, and — when network + Git are available — a **read-only cached clone** of the canonical core target.
-
-## Run
-
-Windows:
+## 打包整棟公司
 
 ```powershell
-.\scripts\run.ps1 doctor
-.\scripts\run.ps1 mode set local
-.\scripts\run.ps1 chat "請說明目前 AERIS runtime 狀態"
+powershell -ExecutionPolicy Bypass -File .\scripts\package-company.ps1
 ```
 
-Linux / macOS:
+或：
 
 ```bash
-./scripts/run.sh doctor
-./scripts/run.sh mode set local
-./scripts/run.sh chat "請說明目前 AERIS runtime 狀態"
+bash ./scripts/package-company.sh
 ```
 
-Direct Python interface:
+GitHub repo 本身不應承載數 GB 模型權重、credentials、customer data 或專有 CAE/量測軟體授權。若要製作真正 air-gapped bundle，可在打包前於本機建立 `portable_assets/`，放入授權允許攜帶的模型/installer/driver；打包腳本會把存在的資產一起封裝。
+
+## 啟動與檢查
 
 ```bash
+python -m aeris_runtime company status
 python -m aeris_runtime doctor
 python -m aeris_runtime mode show
 python -m aeris_runtime mode set offline
-python -m aeris_runtime chat "hello"
+python -m aeris_runtime chat "請回報 AERIS 狀態"
 ```
 
-## Local AI prerequisite
-
-AERIS does **not** bundle model weights into Git. Install or pre-stage a local inference server before disconnecting from the internet. The default configuration expects Ollama and a small local model:
+## 公司資產地圖
 
 ```text
-AERIS_LOCAL_BASE_URL=http://127.0.0.1:11434
-AERIS_LOCAL_MODEL=qwen2.5:3b
+company/             公司章程、組織、營運與商業模型
+skills/              可版本化聲學工程 Skills
+methods/             可驗證工程方法
+standards/           標準版本與映射
+workflows/           Requirement → Evidence → Verification 工作流
+adapters/            CAE / lab / OS / data / firmware adapter contract
+firmware/            韌體整合與版本邊界
+ui/                  Dashboard / Workspace / Services 可攜 UI
+memory/              可摘要、可演進的公司記憶
+evidence/            工程事實與 Evidence Bundle 契約
+portable/            公司映像與離線資產規格
+scripts/             安裝、啟動、同步、打包、搬遷
+aeris_runtime/       Local/cloud/offline AI runtime
+tests/               Offline-safe automated verification
 ```
 
-Change the model in `.env` without changing source code.
-
-## Cloud AI switching
-
-Copy `.env.example` to `.env` and set:
+## 真值分層
 
 ```text
-AERIS_CLOUD_BASE_URL=https://api.openai.com/v1
-AERIS_CLOUD_MODEL=<cloud-model-id>
-AERIS_CLOUD_API_KEY=<secret>
+Core GitHub = AERIS 應該成為什麼
+Portable Company GitHub = AERIS 公司如何完整存在並被搬遷
+Local runtime/evidence = 這台機器實際發生了什麼
 ```
 
-Secrets are local only and must never be committed.
-
-## Core target synchronization
-
-When online:
-
-```powershell
-.\scripts\sync-core.ps1
-```
-
-or:
-
-```bash
-./scripts/sync-core.sh
-```
-
-This creates/updates `.aeris/core-reference` from the canonical `0_JN1_AERIS/main`, records the SHA in `.aeris/state/core-target.json`, disables push on that cached clone, and installs a deny `pre-push` hook.
-
-When offline, AERIS continues using the last cached core target and the tracked `core.lock.json` baseline.
-
-## Codex packaging rule
-
-A ZIP or clone of **this repository** must contain everything Codex needs to bootstrap the local runtime except:
-
-- model weights;
-- cloud API credentials;
-- proprietary acoustic tools or licenses;
-- large engineering datasets.
-
-Codex should start by reading `AGENTS.md`, then run the installer, `doctor`, and tests before implementing new local capabilities.
-
-## Important directories
-
-```text
-aeris_runtime/      minimal model router + CLI runtime
-config/             provider/runtime configuration
-docs/               local architecture and deployment rules
-scripts/            bootstrap, run, sync and validation helpers
-tests/              offline-safe unit tests
-.aeris/             GENERATED local state/cache (gitignored)
-data/               GENERATED/private local engineering data (gitignored)
-logs/               GENERATED runtime logs (gitignored)
-```
-
-## Truth rule
-
-```text
-Core GitHub main = what AERIS should be.
-This implementation repo = how AERIS is implemented locally.
-Local state/evidence = what actually ran on this computer.
-```
-
-Never collapse these three layers into one.
+三層不可混為一談。

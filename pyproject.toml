@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aeris-local-runtime"
-version = "0.1.0"
-description = "Local-first, offline-capable AERIS runtime with cloud/local AI switching"
+name = "aeris-portable-company"
+version = "0.2.0"
+description = "Portable, local-first, offline-capable AERIS company image with cloud/local AI switching"
 requires-python = ">=3.10"
 dependencies = []
 

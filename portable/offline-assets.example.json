@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "required_for_airgap": [
+    {
+      "id": "local-inference-server",
+      "type": "installer_or_preinstalled_service",
+      "default": "Ollama-compatible",
+      "redistributable": "check_vendor_terms"
+    },
+    {
+      "id": "local-model",
+      "type": "model_weights",
+      "default_model": "qwen2.5:3b",
+      "redistributable": "check_model_license"
+    }
+  ],
+  "optional": [
+    "CAE installers/licenses",
+    "measurement tool installers/licenses",
+    "hardware drivers",
+    "golden engineering datasets"
+  ]
+}
