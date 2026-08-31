@@ -11,7 +11,7 @@
     "local_model_router": {"state": "TESTED", "note": "real local inference still requires machine acceptance"},
     "cloud_public_research_router": {"state": "TESTED", "note": "provider interoperability and DLP require live-provider/local validation"},
     "application_privacy_boundary": {"state": "TESTED"},
-    "os_network_egress_enforcement": {"state": "NOT_IMPLEMENTED", "required": "machine-specific firewall/DLP validation"},
+    "os_network_egress_enforcement": {"state": "NOT_IMPLEMENTED", "required": "machine-specific firewall/DLP/isolation validation"},
     "public_ingress_ssrf_guard": {"state": "TESTED"},
     "local_knowledge_sqlite": {"state": "TESTED", "note": "basic text index, not yet full acoustic knowledge system"},
     "professional_acoustic_corpus": {"state": "NOT_IMPLEMENTED"},
@@ -27,12 +27,13 @@
     "klippel_adapter": {"state": "BLOCKED_EXTERNAL", "required": "KLIPPEL software/hardware/license/calibration + adapter implementation"},
     "live_local_ui": {"state": "NOT_IMPLEMENTED"},
     "windows_linux_ci_kernel": {"state": "VERIFIED"},
+    "one_click_installer_smoke": {"state": "TESTED", "note": "CI smoke deliberately skips external local-AI installation"},
     "clean_windows_install": {"state": "IMPLEMENTED", "required": "fresh-machine E2E evidence before VERIFIED"},
     "clean_linux_install": {"state": "IMPLEMENTED", "required": "fresh-machine E2E evidence before VERIFIED"},
     "jetson_orin_install": {"state": "IMPLEMENTED", "required": "real Jetson E2E/thermal/reboot/offline evidence before VERIFIED"},
     "hard_offline_operation": {"state": "IMPLEMENTED", "required": "network-isolated real inference test before VERIFIED"},
-    "portable_software_image": {"state": "IMPLEMENTED"},
-    "encrypted_private_state_backup_restore": {"state": "NOT_IMPLEMENTED"},
-    "full_company_relocation": {"state": "NOT_IMPLEMENTED", "required": "software image + encrypted state + private asset pack + restore test"}
+    "portable_software_image": {"state": "TESTED", "evidence": "Windows/Linux CI package smoke"},
+    "encrypted_private_state_backup_restore": {"state": "IMPLEMENTED", "required": "real age export/import/restore acceptance before TESTED or VERIFIED"},
+    "full_company_relocation": {"state": "NOT_IMPLEMENTED", "required": "software image + encrypted state + private asset pack + restore/tool acceptance on second machine"}
   }
 }
