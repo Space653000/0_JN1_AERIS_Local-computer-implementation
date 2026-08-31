@@ -5,18 +5,22 @@
 ## Windows
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\one-click-install.ps1
+powershell -ExecutionPolicy Bypass -File .\INSTALL_AERIS_LOCAL.ps1
 ```
 
-安裝器會：偵測 Windows/CPU/RAM/GPU/architecture；建立 Python virtual environment；建立 `.env`、`.aeris/`、data、logs；Windows 有 winget 時自動補 Python/Ollama；有網路時嘗試取得 `qwen2.5:3b`；建立本機 SQLite Knowledge DB；驗證 100-role company manifest；執行 tests/doctor；產生 `.aeris/state/DEPLOYMENT_REPORT.json`。
+Installer 會偵測/補 Python 3.11；優先使用 `portable_assets/installers/OllamaSetup.exe`，否則有 winget 時安裝 Ollama；再取得 local model、建立 SQLite Knowledge DB、驗證 100 roles、跑 tests/doctor、產生 deployment report。
 
 ## Linux / Jetson
 
 ```bash
-bash ./scripts/one-click-install.sh
+bash ./INSTALL_AERIS_LOCAL.sh
 ```
 
-Linux 不會未經驗證地 `curl | sh` 執行遠端安裝器。若 Ollama 尚未存在，依 `LOCAL_AI_AND_MODELS.md` 或 `portable_assets/` 離線資產安裝。
+Installer 自動辨識 apt/dnf/yum/pacman/zypper，缺 Python/venv/curl 時自動安裝。Ollama 優先採 `portable_assets/installers/ollama-install.sh`；若沒有離線 installer 且可連網，下載 `https://ollama.com/install.sh` 到 `.aeris/installers/`、記錄 SHA-256 後才執行。
+
+## Air-gapped
+
+真正完全斷網的新電腦必須事先在 `portable_assets/` 帶入需要的 inference installer/model/driver；商用 license 與 private data 仍由 Human-controlled Private Asset Pack 管理。
 
 ## 使用者只要記住
 
