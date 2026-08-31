@@ -1,0 +1,57 @@
+name: AERIS Local Runtime CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.11']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout implementation repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Compile runtime
+        run: python -m compileall aeris_runtime tests
+
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Verify mode switching
+        shell: bash
+        run: |
+          python -m aeris_runtime mode set offline
+          test "$(python -m aeris_runtime mode show)" = "offline"
+          python -m aeris_runtime mode set local
+          test "$(python -m aeris_runtime mode show)" = "local"
+          python -m aeris_runtime mode set cloud
+          test "$(python -m aeris_runtime mode show)" = "cloud"
+          python -m aeris_runtime mode set auto
+          test "$(python -m aeris_runtime mode show)" = "auto"
+
+      - name: Doctor (expected to be limited without model server)
+        shell: bash
+        run: |
+          set +e
+          python -m aeris_runtime doctor
+          code=$?
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
+            exit "$code"
+          fi
+          exit 0
