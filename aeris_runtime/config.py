@@ -85,7 +85,7 @@ def load_config() -> RuntimeConfig:
     return RuntimeConfig(
         mode=mode,
         local_base_url=os.getenv("AERIS_LOCAL_BASE_URL", "http://127.0.0.1:11434").rstrip("/"),
-        local_model=os.getenv("AERIS_LOCAL_MODEL", "qwen2.5:3b"),
+        local_model=os.getenv("AERIS_LOCAL_MODEL", "qwen3:4b-instruct"),
         local_timeout_sec=_int("AERIS_LOCAL_TIMEOUT_SEC", 120),
         cloud_base_url=os.getenv("AERIS_CLOUD_BASE_URL", "https://api.openai.com/v1").rstrip("/"),
         cloud_model=os.getenv("AERIS_CLOUD_MODEL", ""),
@@ -94,7 +94,7 @@ def load_config() -> RuntimeConfig:
         cloud_fallback_to_local=_bool("AERIS_CLOUD_FALLBACK_TO_LOCAL", True),
         system_prompt=os.getenv(
             "AERIS_SYSTEM_PROMPT",
-            "You are AERIS, an evidence-first acoustic engineering runtime.",
+            "You are AERIS, an evidence-first acoustic engineering runtime. Treat inference as inference, not measured fact.",
         ),
     )
 
