@@ -38,7 +38,7 @@ $doctorCode = $LASTEXITCODE
 
 Write-Host ''
 Write-Host 'Bootstrap completed.' -ForegroundColor Green
-Write-Host 'Run: .\scripts\run.ps1 mode local'
+Write-Host 'Run: .\scripts\run.ps1 mode set local'
 Write-Host 'Run: .\scripts\run.ps1 chat "hello"'
 if ($testCode -ne 0) { exit $testCode }
 if ($doctorCode -ne 0) {
