@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "core_repository": "https://github.com/Space653000/0_JN1_AERIS.git",
+  "branch": "main",
+  "baseline_sha": "bde158944ac21f076f39894600e172136c3a8c5a",
+  "role": "read_only_target",
+  "note": "Online sync scripts refresh the cached local reference and record the actual fetched SHA under .aeris/state/core-target.json. This tracked lock is the bootstrap baseline, not a claim that the remote has not changed."
+}

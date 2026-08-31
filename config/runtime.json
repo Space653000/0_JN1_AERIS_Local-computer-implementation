@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "runtime": {
+    "default_mode": "auto",
+    "supported_modes": ["offline", "local", "cloud", "auto"],
+    "cloud_fallback_to_local": true,
+    "state_dir": ".aeris/state",
+    "core_cache_dir": ".aeris/core-reference"
+  },
+  "providers": {
+    "local": {
+      "type": "ollama",
+      "base_url_env": "AERIS_LOCAL_BASE_URL",
+      "model_env": "AERIS_LOCAL_MODEL",
+      "timeout_env": "AERIS_LOCAL_TIMEOUT_SEC"
+    },
+    "cloud": {
+      "type": "openai_compatible",
+      "base_url_env": "AERIS_CLOUD_BASE_URL",
+      "model_env": "AERIS_CLOUD_MODEL",
+      "api_key_env": "AERIS_CLOUD_API_KEY",
+      "timeout_env": "AERIS_CLOUD_TIMEOUT_SEC"
+    }
+  },
+  "safety": {
+    "offline_non_loopback_network": "deny",
+    "core_remote_write": "deny",
+    "secrets_in_git": "deny"
+  }
+}

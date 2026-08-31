@@ -1,0 +1,30 @@
+# Generated/local state
+.env
+.venv/
+.aeris/
+data/
+logs/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+coverage.xml
+htmlcov/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Model/data artifacts
+*.gguf
+*.onnx
+*.pt
+*.pth
+*.safetensors
+*.bin
+*.wav
+*.flac
+*.parquet
+*.h5
+*.hdf5

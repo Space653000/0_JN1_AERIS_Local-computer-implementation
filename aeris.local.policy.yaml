@@ -1,0 +1,49 @@
+schema_version: 1
+policy_id: AERIS-LOCAL-IMPLEMENTATION
+status: active
+
+core_target:
+  repository: Space653000/0_JN1_AERIS
+  branch: main
+  access_for_codex: read_only
+  allowed:
+    - clone
+    - fetch
+    - read
+    - inspect_history
+    - compare
+  forbidden:
+    - push
+    - pull_request_write
+    - repository_file_write
+    - update_ref
+    - issue_mutation
+    - settings_change
+
+implementation:
+  repository: Space653000/0_JN1_AERIS_Local-computer-implementation
+  purpose: local_executable_realization
+  local_file_changes: allowed
+  local_commits: allowed
+  github_publication: human_controlled_unless_explicitly_authorized
+
+runtime:
+  modes:
+    offline: local_only_no_cloud
+    local: local_only
+    cloud: cloud_preferred_local_fallback
+    auto: local_preferred_cloud_fallback
+  default: auto
+  offline_continuity_required: true
+  mandatory_cloud_dependency: forbidden
+
+security:
+  commit_secrets: forbidden
+  commit_model_weights: forbidden
+  commit_private_engineering_data: forbidden
+  core_cached_clone_push: denied
+
+truth:
+  core_main: target_specification
+  implementation_repo: executable_source
+  local_state_and_evidence: execution_truth
