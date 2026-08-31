@@ -12,7 +12,8 @@
       "type": "ollama",
       "base_url_env": "AERIS_LOCAL_BASE_URL",
       "model_env": "AERIS_LOCAL_MODEL",
-      "timeout_env": "AERIS_LOCAL_TIMEOUT_SEC"
+      "timeout_env": "AERIS_LOCAL_TIMEOUT_SEC",
+      "endpoint_scope": "localhost_or_trusted_lan"
     },
     "cloud": {
       "type": "openai_compatible",
@@ -23,7 +24,7 @@
     }
   },
   "safety": {
-    "offline_non_loopback_network": "deny",
+    "offline_cloud_provider": "deny",
     "core_remote_write": "deny",
     "secrets_in_git": "deny"
   }
