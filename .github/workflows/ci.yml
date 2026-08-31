@@ -26,11 +26,13 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: Compile runtime
-        run: python -m compileall aeris_runtime tests
-      - name: Unit tests including privacy boundary
+        run: python -m compileall aeris_runtime tests scripts/check-core-drift.py
+      - name: Unit tests including privacy and ingress security
         run: python -m unittest discover -s tests -v
-      - name: Validate 100-role company image
+      - name: Validate 100-role company image and maturity truth
         run: python -m aeris_runtime company status
+      - name: Verify canonical Core has not drifted
+        run: python scripts/check-core-drift.py
       - name: Build local-only knowledge database
         run: python -m aeris_runtime knowledge build
       - name: Detect CI machine profile
@@ -42,7 +44,7 @@ jobs:
             python -m aeris_runtime mode set "$mode"
             test "$(python -m aeris_runtime mode show)" = "$mode"
           done
-      - name: Doctor (limited without model server is allowed)
+      - name: Doctor (limited without model server is allowed in CI only)
         shell: bash
         run: |
           set +e
@@ -50,3 +52,27 @@ jobs:
           code=$?
           if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then exit "$code"; fi
           exit 0
+      - name: Linux one-click installer smoke without external runtime installation
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          AERIS_SKIP_CORE_SYNC=1 AERIS_SKIP_LOCAL_RUNTIME_INSTALL=1 bash ./INSTALL_AERIS_LOCAL.sh auto
+      - name: Windows one-click installer smoke without external runtime installation
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./INSTALL_AERIS_LOCAL.ps1 -Mode auto -SkipLocalModelInstall -SkipCoreSync
+      - name: Linux portable package smoke
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          rm -rf /tmp/aeris-dist
+          bash scripts/package-company.sh /tmp/aeris-dist
+          test -n "$(find /tmp/aeris-dist -maxdepth 1 -name 'AERIS-Portable-Company-*.tar.gz' -print -quit)"
+      - name: Windows portable package smoke
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./scripts/package-company.ps1 -OutputDir dist-ci
+          $pkg = Get-ChildItem dist-ci -Filter 'AERIS-Portable-Company-*.zip' | Select-Object -First 1
+          if (-not $pkg) { throw 'Portable ZIP was not created.' }
