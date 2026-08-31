@@ -1,11 +1,43 @@
 {
-  "schema_version": 1,
-  "policy_id": "AERIS-DATA-SOVEREIGNTY-v1",
+  "schema_version": 2,
+  "policy_id": "AERIS-DATA-SOVEREIGNTY-v2",
   "default_classification": "LOCAL_ONLY",
-  "local_data_egress": "DENY",
+  "application_local_data_egress": "DENY",
   "cloud_usage": "PUBLIC_RESEARCH_INGRESS_ONLY",
-  "cloud_request_may_attach": {"local_files": false, "memory": false, "evidence": false, "customer_data": false, "measurement_data": false, "private_prompts": false},
-  "cloud_ingress": {"public_query": true, "public_url_download": true, "save_response_locally": true, "save_manifest_and_hash": true},
-  "local_stores": [".aeris/knowledge", ".aeris/ingress", ".aeris/state", "data", "logs"],
-  "forbidden": ["automatic_upload_of_local_context", "automatic_cloud_embedding_of_local_corpus", "cloud_sync_of_memory_or_evidence", "telemetry_containing_private_payloads"]
+  "cloud_request_may_attach": {
+    "local_files": false,
+    "memory": false,
+    "evidence": false,
+    "customer_data": false,
+    "measurement_data": false,
+    "private_prompts": false
+  },
+  "public_query_controls": {
+    "dlp_heuristic_scan": true,
+    "bulk_query_limit_chars": 20000,
+    "human_public_classification_required": true,
+    "guaranteed_no_false_negatives": false
+  },
+  "cloud_ingress": {
+    "public_query": true,
+    "public_url_download": true,
+    "save_response_locally": true,
+    "save_manifest_and_hash": true,
+    "deny_non_public_ip_targets": true,
+    "revalidate_redirect_targets": true,
+    "offline_mode_external_ingress": false
+  },
+  "local_stores": [".aeris/knowledge", ".aeris/ingress", ".aeris/state", "data", "logs", "evidence", "memory"],
+  "forbidden": [
+    "automatic_upload_of_local_context",
+    "automatic_cloud_embedding_of_local_corpus",
+    "cloud_sync_of_memory_or_evidence",
+    "telemetry_containing_private_payloads",
+    "public_repository_commit_of_private_state_or_portable_assets"
+  ],
+  "assurance_boundary": {
+    "application_policy": "IMPLEMENTED_AND_TESTED",
+    "os_firewall_dlp_process_isolation": "LOCAL_DEPLOYMENT_REQUIRED_NOT_GLOBALLY_VERIFIED",
+    "strongest_recommended_pattern": "separate_networked_public_gateway_from_private_engineering_zone"
+  }
 }
