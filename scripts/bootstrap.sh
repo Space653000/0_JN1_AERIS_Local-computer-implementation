@@ -28,5 +28,5 @@ if ! "$PY" -m aeris_runtime doctor; then
 fi
 
 echo 'Bootstrap completed.'
-echo './scripts/run.sh mode local'
+echo './scripts/run.sh mode set local'
 echo './scripts/run.sh chat "hello"'
