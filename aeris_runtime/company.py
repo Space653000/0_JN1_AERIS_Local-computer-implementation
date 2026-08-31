@@ -19,18 +19,21 @@ def load_company_manifest(path: Path = MANIFEST) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 def validate_company_manifest(path: Path = MANIFEST) -> CompanyStatus:
-    errors: list[str] = []
+    errors=[]
+    try: data=load_company_manifest(path)
+    except Exception as exc: return CompanyStatus(False,"UNKNOWN",0,[],[f"manifest unreadable: {exc}"])
+    company_id=str(data.get("company_id",""))
+    if company_id!="AERIS": errors.append("company_id must be AERIS")
+    org=data.get("organization",{}); role_count=int(org.get("virtual_role_count",0) or 0)
+    if role_count!=100: errors.append("virtual_role_count must be 100")
+    role_path=ROOT/org.get("role_registry","company/organization/roles.v1.json")
     try:
-        data = load_company_manifest(path)
-    except Exception as exc:
-        return CompanyStatus(False, "UNKNOWN", 0, [], [f"manifest unreadable: {exc}"])
-    company_id = str(data.get("company_id", ""))
-    if company_id != "AERIS": errors.append("company_id must be AERIS")
-    role_count = int(data.get("organization", {}).get("virtual_role_count", 0) or 0)
-    if role_count != 100: errors.append("virtual_role_count must be 100")
-    modes = list(data.get("runtime", {}).get("modes", []))
-    required_modes = {"offline", "local", "cloud", "auto"}
-    if not required_modes.issubset(set(modes)): errors.append("runtime modes incomplete")
-    if data.get("core_target", {}).get("authority") != "read_only": errors.append("core target must be read_only")
-    if data.get("runtime", {}).get("offline_cloud_calls") != "deny": errors.append("offline cloud calls must be denied")
-    return CompanyStatus(not errors, company_id, role_count, modes, errors)
+        role_data=json.loads(role_path.read_text(encoding="utf-8")); groups=role_data.get("groups",{}); actual=sum(len(v) for v in groups.values())
+        if actual!=100: errors.append(f"role registry must contain 100 roles, found {actual}")
+    except Exception as exc: errors.append(f"role registry unreadable: {exc}")
+    modes=list(data.get("runtime",{}).get("modes",[]))
+    if not {"offline","local","cloud","auto"}.issubset(set(modes)): errors.append("runtime modes incomplete")
+    if not str(data.get("core_target",{}).get("authority","")).startswith("read_only"): errors.append("core target must be read_only")
+    privacy=data.get("privacy",{})
+    if privacy.get("local_data_cloud_egress")!="DENY": errors.append("local data cloud egress must be DENY")
+    return CompanyStatus(not errors,company_id,role_count,modes,errors)

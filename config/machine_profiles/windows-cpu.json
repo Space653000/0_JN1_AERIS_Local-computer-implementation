@@ -1,0 +1,1 @@
+{"schema_version":1,"profile":"windows-cpu","os":"windows","architecture":["amd64","x86_64"],"local_ai":{"required":true,"provider":"ollama","recommended_model":"qwen2.5:3b","acceleration":"cpu"},"cloud_optional":true,"offline_supported":true,"heavy_cae":"optional_if_installed","notes":"Baseline profile for ordinary Windows PCs without NVIDIA GPU."}

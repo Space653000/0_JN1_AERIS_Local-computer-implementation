@@ -1,0 +1,1 @@
+{"schema_version":1,"profile":"linux-x86-nvidia","os":"linux","architecture":["amd64","x86_64"],"local_ai":{"required":true,"provider":"ollama","acceleration":"nvidia"},"cloud_optional":true,"offline_supported":true,"notes":"Suitable for local AI server, batch analysis and automation. Proprietary tool support depends on vendor Linux availability."}

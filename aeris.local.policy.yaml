@@ -1,41 +1,47 @@
-schema_version: 1
-policy_id: AERIS-LOCAL-IMPLEMENTATION
+schema_version: 2
+policy_id: AERIS-PORTABLE-COMPANY
 status: active
 
 core_target:
   repository: Space653000/0_JN1_AERIS
   branch: main
+  authority: highest_read_only_design_target
   access_for_codex: read_only
-  allowed:
-    - clone
-    - fetch
-    - read
-    - inspect_history
-    - compare
-  forbidden:
-    - push
-    - pull_request_write
-    - repository_file_write
-    - update_ref
-    - issue_mutation
-    - settings_change
+  allowed: [clone, fetch, read, inspect_history, compare]
+  forbidden: [push, pull_request_write, repository_file_write, update_ref, issue_mutation, settings_change]
 
 implementation:
   repository: Space653000/0_JN1_AERIS_Local-computer-implementation
-  purpose: local_executable_realization
-  local_file_changes: allowed
-  local_commits: allowed
-  github_publication: human_controlled_unless_explicitly_authorized
+  purpose: portable_company_image_and_executable_realization
+  may_extend_only_for: [deployment, runtime, machine_adaptation, packaging, tests, local_data_services, provider_adapters]
+  must_not_override_core_product_direction: true
 
 runtime:
   modes:
-    offline: local_only_no_cloud
-    local: local_only
-    cloud: cloud_preferred_local_fallback
-    auto: local_preferred_cloud_fallback
+    offline: all_ai_local_cloud_disabled
+    local: all_ai_local
+    cloud: private_engineering_local_public_research_cloud
+    auto: private_engineering_local_public_research_local_first_cloud_when_needed
   default: auto
   offline_continuity_required: true
-  mandatory_cloud_dependency: forbidden
+
+privacy:
+  default_data_classification: LOCAL_ONLY
+  local_data_egress_to_cloud: forbidden
+  local_memory_to_cloud: forbidden
+  local_evidence_to_cloud: forbidden
+  local_files_to_cloud: forbidden
+  customer_data_to_cloud: forbidden
+  measurement_data_to_cloud: forbidden
+  cloud_public_information_ingress: allowed
+  cloud_response_storage: local_only
+  public_url_download_to_local: allowed
+
+knowledge:
+  local_database_required: true
+  engine_baseline: sqlite
+  core_cache_indexing: allowed_read_only
+  cloud_sync: forbidden
 
 security:
   commit_secrets: forbidden
@@ -45,5 +51,5 @@ security:
 
 truth:
   core_main: target_specification
-  implementation_repo: executable_source
+  implementation_repo: portable_company_source
   local_state_and_evidence: execution_truth

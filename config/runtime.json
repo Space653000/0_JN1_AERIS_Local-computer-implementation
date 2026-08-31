@@ -1,31 +1,10 @@
 {
-  "schema_version": 1,
-  "runtime": {
-    "default_mode": "auto",
-    "supported_modes": ["offline", "local", "cloud", "auto"],
-    "cloud_fallback_to_local": true,
-    "state_dir": ".aeris/state",
-    "core_cache_dir": ".aeris/core-reference"
-  },
+  "schema_version": 2,
+  "runtime": {"default_mode": "auto", "supported_modes": ["offline", "local", "cloud", "auto"], "state_dir": ".aeris/state", "core_cache_dir": ".aeris/core-reference", "private_engineering_route": "local_only", "public_research_route": "mode_dependent"},
   "providers": {
-    "local": {
-      "type": "ollama",
-      "base_url_env": "AERIS_LOCAL_BASE_URL",
-      "model_env": "AERIS_LOCAL_MODEL",
-      "timeout_env": "AERIS_LOCAL_TIMEOUT_SEC",
-      "endpoint_scope": "localhost_or_trusted_lan"
-    },
-    "cloud": {
-      "type": "openai_compatible",
-      "base_url_env": "AERIS_CLOUD_BASE_URL",
-      "model_env": "AERIS_CLOUD_MODEL",
-      "api_key_env": "AERIS_CLOUD_API_KEY",
-      "timeout_env": "AERIS_CLOUD_TIMEOUT_SEC"
-    }
+    "local": {"type": "ollama", "base_url_env": "AERIS_LOCAL_BASE_URL", "model_env": "AERIS_LOCAL_MODEL", "timeout_env": "AERIS_LOCAL_TIMEOUT_SEC", "endpoint_scope": "localhost_or_human_approved_trusted_lan"},
+    "cloud": {"type": "openai_compatible", "base_url_env": "AERIS_CLOUD_BASE_URL", "model_env": "AERIS_CLOUD_MODEL", "api_key_env": "AERIS_CLOUD_API_KEY", "timeout_env": "AERIS_CLOUD_TIMEOUT_SEC", "scope": "public_research_only_no_local_context"}
   },
-  "safety": {
-    "offline_cloud_provider": "deny",
-    "core_remote_write": "deny",
-    "secrets_in_git": "deny"
-  }
+  "knowledge": {"engine": "sqlite_standard_library", "database": ".aeris/knowledge/aeris.sqlite3", "source_roots": ["company", "docs", "skills", "methods", "standards", "workflows", "memory", ".aeris/core-reference"], "cloud_sync": false},
+  "safety": {"offline_cloud_provider": "deny", "local_data_cloud_egress": "deny", "cloud_public_ingress": "allow", "core_remote_write": "deny", "secrets_in_git": "deny"}
 }

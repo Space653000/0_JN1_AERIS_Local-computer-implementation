@@ -1,0 +1,1 @@
+{"schema_version":1,"profile":"trusted-lan-ai-server","network_scope":"human_approved_trusted_lan","local_ai":{"required":true,"provider":"ollama_or_compatible","shared_service":true},"public_cloud":false,"offline_supported":true,"privacy":"treated_as_local_private_boundary","notes":"Multiple AERIS clients may use a private LAN inference node without public-cloud egress."}

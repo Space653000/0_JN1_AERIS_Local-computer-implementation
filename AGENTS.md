@@ -1,105 +1,68 @@
 # AGENTS.md — AERIS Portable Company Image Contract
 
 Repository: `Space653000/0_JN1_AERIS_Local-computer-implementation`
-
 Canonical read-only target: `Space653000/0_JN1_AERIS@main`
 
-## 1. Repository identity
+## 1. Authority
 
-本 repository 是 **AERIS Portable Company Image**，不是只有 runtime code。
+`0_JN1_AERIS` = highest-priority design target. Codex may read/fetch/compare it but MUST NOT perform any GitHub write against it.
 
-這裡應承載能讓 AERIS 搬到任意本機後重新運作的所有可版本化資產：
+This repository is the executable Portable Company Image and may be changed when the Human requests implementation work. It may add deployment/runtime/machine adaptation, but MUST NOT override Core product/engineering direction.
 
-- company constitution / governance / organization;
-- 100-seat role contracts;
-- acoustic Skills / Methods / Standards / Workflows;
-- model routing / agent orchestration;
-- cloud/local/offline runtime;
-- UI / services / tool adapters / firmware integration contracts;
-- Evidence / Verification / Audit / Memory contracts;
-- deployment / migration / backup / packaging;
-- business operating model / service catalog / quality gates;
-- tests and reproducibility assets.
+## 2. Portable-company invariant
 
-## 2. Hard authority boundary
+A checkout/ZIP must carry every redistributable asset required to reconstruct the same AERIS company identity, governance, roles, Skills/Methods, workflows, runtime, UI and verification system on another supported machine.
 
-Codex MUST NOT modify `Space653000/0_JN1_AERIS`.
+External assets are allowed only where legally/technically required: model weights, proprietary installers/licenses, customer data, drivers and credentials. Every external dependency needs a manifest/preflight/deployment guide.
 
-Against the core repo, forbidden actions include push, branch/tag mutations, PR/merge, contents writes, issue mutations used for delivery, update-ref, Pages/settings/ruleset changes, or any GitHub write API.
+## 3. Zero-experience installation target
 
-Core repo = read/fetch/inspect/compare only.
+Every change must preserve the one-click path:
 
-This implementation repo MAY be modified when the Human asks ChatGPT/Codex to build AERIS here.
+- Windows: `INSTALL_AERIS_LOCAL.ps1` → `scripts/one-click-install.ps1`
+- Linux/Jetson: `INSTALL_AERIS_LOCAL.sh` → `scripts/one-click-install.sh`
 
-## 3. Portable-company invariant
+Installers must fail clearly, never silently claim success, and produce a deployment report.
 
-A checkout/ZIP of this repo must contain every **redistributable software/configuration/governance asset** needed to reconstruct the same AERIS company on another machine.
+## 4. 100-role company
 
-External/non-Git assets are allowed only when technically or legally unavoidable, e.g.:
+`company/organization/roles.v1.json` is the executable role registry. It mirrors the Core role architecture and must remain traceable to the read-only Core. Runtime should dynamically assemble only relevant specialists, not start 100 persistent LLM processes.
 
-- model weights;
-- proprietary CAE / measurement software and licenses;
-- customer/private datasets;
-- hardware drivers that cannot be redistributed;
-- credentials.
+## 5. Hard privacy / one-way cloud boundary
 
-Each such dependency must have a manifest entry, preflight check and documented installation path.
+Default classification of local content = `LOCAL_ONLY`.
 
-## 4. Offline invariant
+Forbidden to public cloud automatically or implicitly: local files; Knowledge DB/Memory; Evidence bundles; customer/project data; measurement/CAE/factory data; private history; instrument credentials; private telemetry payloads.
 
-No essential company-control function may require cloud connectivity.
+Private engineering `chat` is local-only regardless of selected mode.
 
-`offline` mode must never call the configured cloud provider. Local AI may be localhost or a Human-approved trusted LAN endpoint.
+Cloud is allowed only through `public_research` / ingress with **no local context attached**. Cloud/public information may be downloaded and persisted locally.
 
-The system must still support company status, configuration, role/skill lookup, local workflows, evidence handling and diagnostics without internet.
+If a cloud task requires local private context, do not weaken privacy: use Local AI or report the limitation.
 
-## 5. Model independence
+## 6. Offline invariant
 
-Model = replaceable compute, not AERIS identity.
+When internet/cloud is unavailable, company control, role/knowledge lookup, local workflows, evidence handling, diagnostics and supported AI workflows must remain usable with local assets.
 
-Provider-specific code belongs only in adapters. Constitution, role contracts, Skills, Methods, Standards, Memory and Evidence must remain model-neutral.
+## 7. Model neutrality
 
-## 6. Start-of-task procedure
+Models are replaceable compute. Provider-specific behavior stays inside adapters. AERIS identity, role contracts, rules, Skills, Memory and Evidence must not depend on a model brand.
 
-Before substantive work:
+## 8. Start-of-task procedure
 
-1. confirm this is `0_JN1_AERIS_Local-computer-implementation`;
-2. read `company/company.manifest.json`, `README.md`, `AGENTS.md`, `core.lock.json`, `config/runtime.json`;
-3. read the relevant upstream core files read-only;
-4. if online, refresh/read core target SHA without writing upstream;
-5. run `python -m aeris_runtime company status`;
-6. run `python -m aeris_runtime doctor`;
-7. run tests;
-8. state targeted runtime mode and affected company subsystem.
+1. Confirm this is the implementation repo.
+2. Read `company/company.manifest.json`, `aeris.local.policy.yaml`, `config/data_governance.json`, `README.md`.
+3. Read applicable Core files read-only and record Core SHA.
+4. Run `python -m aeris_runtime company status`.
+5. Run `python -m aeris_runtime machine detect`.
+6. Run `python -m aeris_runtime knowledge stats`.
+7. Run tests and doctor.
+8. State runtime mode, privacy impact and affected subsystem.
 
-## 7. Completion evidence
+## 9. Completion evidence
 
-Every delivery reports:
+Every delivery reports: Core SHA; Core write performed=NO; implementation SHA; changed subsystem; tests; doctor; privacy/egress result; offline result; knowledge DB impact; machine/deployment impact; remaining gaps.
 
-```text
-Core target repo / SHA
-Core remote write performed: NO
-Portable-company repo / SHA
-Subsystem changed
-Runtime mode(s) tested
-Company manifest validation
-Tests / doctor
-Offline behavior
-Cloud/local routing behavior
-Packaging/relocation impact
-Remaining gaps
-```
+## 10. No false-done
 
-## 8. Company-level Definition of Done
-
-Do not claim AERIS company is complete merely because code runs.
-
-Company completion requires the machine-readable manifest and `docs/DEFINITION_OF_COMPANY_DONE.md` gates: organization, governance, runtime, Skills, standards, evidence, tools, UI, operations, packaging, relocation and offline validation.
-
-## 9. Secrets and private assets
-
-Never commit `.env`, tokens, model weights, proprietary customer data, local measurement datasets, private logs, instrument credentials or proprietary license material.
-
-## 10. Publication boundary
-
-This repo is explicitly the cloud construction site, so changes may be committed here when the Human requests construction. The upstream core repo remains read-only under all circumstances unless the Human separately changes that policy.
+Working code is not equal to company completion. `docs/DEFINITION_OF_COMPANY_DONE.md` gates remain authoritative for implementation completion.
