@@ -47,34 +47,34 @@ if [ "${AERIS_SKIP_CORE_SYNC:-0}" != "1" ]; then
   fi
 fi
 
-if ! command -v ollama >/dev/null 2>&1; then
-  STAGED="$ROOT/portable_assets/installers/ollama-install.sh"
-  INSTALLER="$ROOT/.aeris/installers/ollama-install.sh"
-  if [ -f "$STAGED" ]; then
-    command -v sha256sum >/dev/null 2>&1 || { echo 'sha256sum is required for staged installer verification.' >&2; exit 3; }
-    verify_staged_hash "$STAGED"
-    cp "$STAGED" "$INSTALLER"
-    echo 'Using checksum-verified staged Ollama installer.'
-  else
-    echo 'Ollama not found; downloading exact official HTTPS installer URL...'
-    if command -v curl >/dev/null 2>&1; then curl -fsSL https://ollama.com/install.sh -o "$INSTALLER";
-    elif command -v wget >/dev/null 2>&1; then wget -q https://ollama.com/install.sh -O "$INSTALLER";
-    else install_python; curl -fsSL https://ollama.com/install.sh -o "$INSTALLER"; fi
-    if command -v sha256sum >/dev/null 2>&1; then
-      sha256sum "$INSTALLER" | tee "$INSTALLER.sha256"
+if [ "${AERIS_SKIP_LOCAL_RUNTIME_INSTALL:-0}" != "1" ]; then
+  if ! command -v ollama >/dev/null 2>&1; then
+    STAGED="$ROOT/portable_assets/installers/ollama-install.sh"
+    INSTALLER="$ROOT/.aeris/installers/ollama-install.sh"
+    if [ -f "$STAGED" ]; then
+      command -v sha256sum >/dev/null 2>&1 || { echo 'sha256sum is required for staged installer verification.' >&2; exit 3; }
+      verify_staged_hash "$STAGED"
+      cp "$STAGED" "$INSTALLER"
+      echo 'Using checksum-verified staged Ollama installer.'
+    else
+      echo 'Ollama not found; downloading exact official HTTPS installer URL...'
+      if command -v curl >/dev/null 2>&1; then curl -fsSL https://ollama.com/install.sh -o "$INSTALLER";
+      elif command -v wget >/dev/null 2>&1; then wget -q https://ollama.com/install.sh -O "$INSTALLER";
+      else install_python; curl -fsSL https://ollama.com/install.sh -o "$INSTALLER"; fi
+      if command -v sha256sum >/dev/null 2>&1; then sha256sum "$INSTALLER" | tee "$INSTALLER.sha256"; fi
+      printf '{"source":"https://ollama.com/install.sh","integrity":"TLS transport + recorded SHA-256; not a pinned upstream signature","downloaded_at":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$INSTALLER.provenance.json"
     fi
-    printf '{"source":"https://ollama.com/install.sh","integrity":"TLS transport + recorded SHA-256; not a pinned upstream signature","downloaded_at":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$INSTALLER.provenance.json"
+    chmod +x "$INSTALLER"
+    bash "$INSTALLER"
   fi
-  chmod +x "$INSTALLER"
-  bash "$INSTALLER"
-fi
 
-if command -v ollama >/dev/null 2>&1 && [ "${AERIS_SKIP_MODEL_PULL:-0}" != "1" ]; then
-  if ! ollama list >/dev/null 2>&1; then
-    if command -v systemctl >/dev/null 2>&1; then run_root systemctl start ollama 2>/dev/null || true; fi
-    if ! ollama list >/dev/null 2>&1; then nohup ollama serve > .aeris/state/ollama.log 2>&1 & sleep 4; fi
+  if command -v ollama >/dev/null 2>&1 && [ "${AERIS_SKIP_MODEL_PULL:-0}" != "1" ]; then
+    if ! ollama list >/dev/null 2>&1; then
+      if command -v systemctl >/dev/null 2>&1; then run_root systemctl start ollama 2>/dev/null || true; fi
+      if ! ollama list >/dev/null 2>&1; then nohup ollama serve > .aeris/state/ollama.log 2>&1 & sleep 4; fi
+    fi
+    ollama pull "$MODEL"
   fi
-  ollama pull "$MODEL"
 fi
 
 "$PY" -m aeris_runtime mode set "$MODE"
@@ -86,10 +86,10 @@ set +e
 "$PY" -m aeris_runtime doctor
 doctor=$?
 set -e
-if [ "${AERIS_SKIP_MODEL_PULL:-0}" != "1" ] && [ "$doctor" -ne 0 ]; then
+if [ "${AERIS_SKIP_LOCAL_RUNTIME_INSTALL:-0}" != "1" ] && [ "${AERIS_SKIP_MODEL_PULL:-0}" != "1" ] && [ "$doctor" -ne 0 ]; then
   echo "AERIS local continuity verification failed (doctor exit $doctor)." >&2
   exit "$doctor"
 fi
-[ "$doctor" -eq 0 ] || echo "WARNING: installed with limits because model installation was explicitly skipped (doctor exit $doctor)." >&2
+[ "$doctor" -eq 0 ] || echo "WARNING: installed with limits because local runtime/model verification was explicitly skipped (doctor exit $doctor)." >&2
 echo 'AERIS bootstrap finished.'
 echo 'Next: run scripts/local-acceptance.sh before declaring this machine VERIFIED.'
