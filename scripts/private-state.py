@@ -11,7 +11,6 @@ import argparse
 import datetime as dt
 import hashlib
 import json
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -125,7 +124,10 @@ def import_state(source: Path, identity: str | None) -> None:
             bad = [m.name for m in tf.getmembers() if not safe_member(m.name)]
             if bad:
                 raise RuntimeError(f"Unsafe archive members refused: {bad[:5]}")
-            tf.extractall(ROOT, filter="data" if sys.version_info >= (3, 12) else None)
+            if sys.version_info >= (3, 12):
+                tf.extractall(ROOT, filter="data")
+            else:
+                tf.extractall(ROOT)
     print("AERIS encrypted private state restored. Run company status, tests, doctor and local acceptance before use.")
 
 
