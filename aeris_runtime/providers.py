@@ -51,12 +51,13 @@ class OllamaProvider:
         self.timeout = timeout
 
     def health(self) -> tuple[bool, str]:
+        """Return READY only when both Ollama and the configured model are available."""
         try:
             data = _request_json(f"{self.base_url}/api/tags", timeout=min(self.timeout, 5))
             models = [m.get("name", "") for m in data.get("models", [])]
             if self.model in models or any(m.startswith(self.model + ":") for m in models):
                 return True, f"reachable; model {self.model} available"
-            return True, f"reachable; configured model {self.model} not found"
+            return False, f"reachable, but configured model {self.model} is not installed"
         except ProviderError as exc:
             return False, str(exc)
 
