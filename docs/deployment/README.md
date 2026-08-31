@@ -1,15 +1,42 @@
-# Machine Deployment Profiles
+# AERIS Deployment Guides
 
-AERIS Company Image 相同；每台電腦只改 Machine Profile 與 Private Asset Pack。
+AERIS deployment is intentionally split into **software install**, **real-machine acceptance**, **private-state relocation**, and **external professional-tool enablement**. No single step may pretend to prove the others.
 
-| Profile | Local AI | 典型用途 | 專業工具 |
-|---|---|---|---|
-| Windows CPU | small model / CPU | 文件、知識、輕量工作 | 依安裝狀態 |
-| Windows NVIDIA | Ollama + GPU model | 主力聲學工作站 | MATLAB/COMSOL/APx/KLIPPEL 可本機 |
-| Linux x86 NVIDIA | Ollama + GPU | Server / batch / automation | 多數透過 adapter |
-| Jetson Orin / J4012 | ARM64 local model | Edge/robot/always-on | 重型 CAE 多採遠端工具節點 |
-| Trusted LAN AI Server | local AI service | 多台 AERIS 共用本地大腦 | Human-approved LAN only |
+## Start here
 
-部署固定流程：detect → profile → prerequisites → local model → knowledge build → adapters → tests → deployment report。
+1. [`../ONE_CLICK_INSTALL.md`](../ONE_CLICK_INSTALL.md) — Windows / Linux / Jetson installer.
+2. Run `scripts/local-acceptance.ps1` or `scripts/local-acceptance.sh` on the actual machine.
+3. [`../security/LOCAL_NETWORK_ENFORCEMENT.md`](../security/LOCAL_NETWORK_ENFORCEMENT.md) — privacy assurance levels / hard offline.
+4. [`STATE_BACKUP_RESTORE.md`](STATE_BACKUP_RESTORE.md) — encrypted Memory/Knowledge/Evidence/data relocation.
 
-另見 `PROFESSIONAL_TOOLS.md`、`LOCAL_AI_AND_MODELS.md`、`PRIVATE_ASSETS.md`。
+## Assets / models / tools
+
+- [`LOCAL_AI_AND_MODELS.md`](LOCAL_AI_AND_MODELS.md) — local inference baseline, sizing and acceptance.
+- [`PRIVATE_ASSETS.md`](PRIVATE_ASSETS.md) — model/installers/licenses/drivers/private data boundary.
+- [`PROFESSIONAL_TOOLS.md`](PROFESSIONAL_TOOLS.md) — MATLAB / COMSOL / APx / KLIPPEL / SoundCheck / ACQUA / Ansys / Simcenter preflight rules.
+
+## Truth rule
+
+A guide means "how to deploy/verify"; it does **not** mean the corresponding product capability is already verified.
+
+Current status is controlled by:
+
+- `config/maturity.json`
+- `docs/AUDIT_REALITY_CHECK.md`
+- `docs/DEFINITION_OF_COMPANY_DONE.md`
+
+## Portable relocation model
+
+```text
+Software Company Image
+        +
+Encrypted Private State
+        +
+Human-controlled Private Asset Pack
+        +
+Machine/tool-specific acceptance
+        =
+Actual verified AERIS instance
+```
+
+A software ZIP/tarball alone is not a full company relocation.
