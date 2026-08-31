@@ -5,10 +5,29 @@ STAMP="$(date +%Y%m%d-%H%M%S)"
 OUT="${1:-$ROOT/dist}"
 STAGE="$ROOT/.aeris/package-$STAMP"
 mkdir -p "$OUT" "$STAGE"
-tar --exclude=.git --exclude=.venv --exclude=.aeris --exclude=data --exclude=logs --exclude=dist --exclude=.env --exclude='__pycache__' -cf - -C "$ROOT" . | tar -xf - -C "$STAGE"
+tar \
+  --exclude=.git --exclude=.venv --exclude=.aeris --exclude=data --exclude=logs \
+  --exclude=dist --exclude=dist-ci --exclude=.env --exclude=portable_assets \
+  --exclude=private-backups --exclude='__pycache__' --exclude=.pytest_cache \
+  -cf - -C "$ROOT" . | tar -xf - -C "$STAGE"
 SHA="UNKNOWN"; command -v git >/dev/null 2>&1 && SHA="$(git -C "$ROOT" rev-parse HEAD 2>/dev/null || echo UNKNOWN)"
-printf '{"company":"AERIS","image_type":"portable_company_image","created_at":"%s","source_commit":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SHA" > "$STAGE/RELOCATION_MANIFEST.json"
-tar -czf "$OUT/AERIS-Portable-Company-$STAMP.tar.gz" -C "$STAGE" .
+python3 - "$STAGE/RELOCATION_MANIFEST.json" "$SHA" <<'PY'
+import datetime,json,sys
+path,sha=sys.argv[1:]
+payload={
+  'company':'AERIS',
+  'image_type':'portable_company_image',
+  'image_scope':'SOFTWARE_ONLY_NO_PRIVATE_STATE_NO_PRIVATE_ASSETS',
+  'created_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+  'source_commit':sha,
+  'private_state_included':False,
+  'portable_assets_included':False,
+  'restore_requirement':'For full relocation, separately supply encrypted private state and Human-controlled Private Asset Pack, then run local acceptance.'
+}
+open(path,'w',encoding='utf-8').write(json.dumps(payload,indent=2)+'\n')
+PY
+PKG="$OUT/AERIS-Portable-Company-Software-$STAMP.tar.gz"
+tar -czf "$PKG" -C "$STAGE" .
 rm -rf "$STAGE"
-echo "Created: $OUT/AERIS-Portable-Company-$STAMP.tar.gz"
-echo "Run company status + doctor after relocation."
+echo "Created software-only package: $PKG"
+echo 'Private state and portable_assets were deliberately excluded. See docs/deployment/STATE_BACKUP_RESTORE.md.'
