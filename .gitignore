@@ -5,12 +5,19 @@
 data/
 logs/
 dist/
+dist-ci/
 portable_assets/
+private-backups/
 __pycache__/
 *.py[cod]
 .pytest_cache/
 coverage.xml
 htmlcov/
+
+# Encrypted/local relocation artifacts
+*.age
+*.age.manifest.json
+*.private-state.tar
 
 # IDE / OS
 .vscode/
