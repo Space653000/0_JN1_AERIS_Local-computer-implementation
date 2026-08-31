@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 
 from .config import RuntimeConfig
-from .privacy import CloudRequestPolicy, assert_cloud_safe
+from .privacy import CloudRequestPolicy, assert_cloud_safe, assert_public_query_content_safe
 from .providers import OllamaProvider, OpenAICompatibleProvider, ProviderError, ProviderResult
 
 
@@ -51,6 +51,7 @@ class ModelRouter:
     def public_research(self, query: str) -> ProviderResult:
         """Public-context-only channel. Never attaches local files/memory/evidence."""
         assert_cloud_safe(CloudRequestPolicy(workload="public_research"))
+        assert_public_query_content_safe(query)
         decision = self.decision("public_research")
         messages = self._messages(
             query,
