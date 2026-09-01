@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "canonical_core": {
+    "repository": "Space653000/0_JN1_AERIS",
+    "branch": "main",
+    "reviewed_sha": "bde158944ac21f076f39894600e172136c3a8c5a"
+  },
+  "non_negotiable_invariants": {
+    "human_authority": "Human Chief Engineer",
+    "virtual_seats": 100,
+    "seat_semantics": "capabilities_not_100_persistent_agents",
+    "pod_targets": {
+      "ordinary_task": [2, 8],
+      "complex_task": [5, 15]
+    },
+    "mic_algorithm_validation_axes": ["noise", "distance", "azimuth", "speaker", "language"],
+    "model_is_identity": false,
+    "memory_is_evidence": false,
+    "execution_is_completion": false,
+    "agent_consensus_establishes_engineering_truth": false,
+    "independent_verification_required_for_formal_completion": true,
+    "core_is_writable_by_codex_or_implementation": false
+  },
+  "change_policy": "If canonical Core SHA changes, remote drift gate must fail. Human reviews semantic changes before deliberately updating this alignment contract; never auto-accept Core drift."
+}
