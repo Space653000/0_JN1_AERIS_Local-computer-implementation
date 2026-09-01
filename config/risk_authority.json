@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "policy_id": "AERIS-RISK-AUTHORITY-V1",
+  "levels": {
+    "R0": {
+      "name": "read_only_low_risk",
+      "automatic_execution_allowed": true,
+      "reversible_required": true,
+      "independent_review_required": false,
+      "human_approval_required": false,
+      "examples": ["read", "search", "analyze", "compare", "report"]
+    },
+    "R1": {
+      "name": "reversible_local_change",
+      "automatic_execution_allowed": true,
+      "reversible_required": true,
+      "automated_tests_required": true,
+      "independent_review_required": false,
+      "human_approval_required": false,
+      "examples": ["local_generated_state", "isolated_config", "rebuild_index", "local_branch_change"]
+    },
+    "R2": {
+      "name": "controlled_execution_or_hardware_interaction",
+      "automatic_execution_allowed": true,
+      "reversible_required": true,
+      "preconditions_required": true,
+      "independent_review_required": true,
+      "human_approval_required": false,
+      "human_confirmation_if_physical_or_hardware_risk": true,
+      "examples": ["measurement_run", "controlled_tool_execution", "bounded_local_service_change"]
+    },
+    "R3": {
+      "name": "high_impact_or_destructive",
+      "automatic_execution_allowed": false,
+      "independent_review_required": true,
+      "human_approval_required": true,
+      "human_authority": "Human Chief Engineer",
+      "examples": ["destructive_data_change", "broad_firewall_change", "hardware_risk", "irreversible_local_change"]
+    },
+    "R4": {
+      "name": "external_formal_customer_or_production_release",
+      "automatic_execution_allowed": false,
+      "independent_review_required": true,
+      "human_approval_required": true,
+      "human_authority": "Human Chief Engineer",
+      "formal_release_evidence_required": true,
+      "examples": ["customer_release", "formal_report_release", "production_publication", "canonical_core_publication"]
+    }
+  },
+  "invariants": {
+    "ai_may_self_approve_r3_or_r4": false,
+    "agent_consensus_counts_as_human_approval": false,
+    "failed_gate_can_be_bypassed_for_convenience": false,
+    "approval_requires_evidence_reference": true
+  }
+}
