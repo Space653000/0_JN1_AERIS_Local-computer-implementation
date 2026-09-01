@@ -1,23 +1,15 @@
-# AGENTS.md — AERIS Local Company Autopilot Contract
+# AGENTS.md — AERIS Local Autopilot Contract
 
-Repository: `Space653000/0_JN1_AERIS_Local-computer-implementation`  
-Canonical read-only target: `Space653000/0_JN1_AERIS@main`
+Canonical Core: `Space653000/0_JN1_AERIS@main` — READ ONLY.  
+Implementation: `Space653000/0_JN1_AERIS_Local-computer-implementation`.
 
-## 0. Human + AI operating model
+## Human + AI authority
 
-```text
-Human Chief Engineer = final authority
-Canonical Core       = read-only design authority
-Codex                = primary local executor / installer / implementer
-Claude Code          = independent reviewer / acceptance auditor
-Evidence             = decision basis
-```
+Human Chief Engineer = final authority. Core = design authority. Codex = local deployer/operator. Evidence = truth. Claude Code is OPTIONAL and must never be launched unless the Human explicitly asks.
 
-Model/agent agreement is not engineering evidence.
+## Automatic trigger
 
-## 1. Automatic deployment trigger
-
-If the Human supplies:
+When the Human supplies:
 
 ```text
 https://github.com/Space653000/0_JN1_AERIS
@@ -25,143 +17,70 @@ https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation
 <LOCAL_TARGET_PATH>
 ```
 
-Codex must interpret it as an `AERIS_AUTOPILOT_REQUEST` and continue automatically without asking routine setup questions.
-
-### Required sequence
-
-1. read Core canonical read-order/SOP and verify Core is read-only;
-2. acquire/update this Implementation at `<LOCAL_TARGET_PATH>` without overwriting unrelated/private data;
-3. read this repository in the exact order below;
-4. run the platform `AERIS_AUTOPILOT` entrypoint;
-5. let Autopilot detect/inventory/install/configure/test/accept/open the company control plane;
-6. register unattended user-session persistence/watchdog when allowed by OS policy;
-7. inspect generated Evidence instead of trusting command prose;
-8. stop only at a genuine Human gate;
-9. after the single required real-machine persistence/reboot cycle, run the Claude independent acceptance path when Claude Code is available/authorized.
-
-Codex must not make the Human choose Python paths, virtualenv commands, package order, local ports, log locations or routine tests.
-
-### No local-token-waste rule
-
-Before using local Codex for exploratory repair, first verify the local checkout is synchronized to the latest GitHub `main` whose Windows + Ubuntu CI passed. Do not repeatedly rediscover GitHub-detectable software defects on the Human's machine.
-
-The normal local strategy is **one real-machine acceptance cycle** defined in `docs/LOCAL_FINAL_ACCEPTANCE_ONCE.md`. Repeat local cycles only when the previous real-machine Evidence identifies a defect that cannot be reproduced/fixed in GitHub CI.
-
-## 2. Core authority boundary
-
-`Space653000/0_JN1_AERIS@main` is highest design authority.
-
-Normal Codex deployment may read/clone/fetch/compare Core but MUST NOT push, PR, merge, update files/refs/settings/Rulesets or auto-accept Core drift.
-
-If Core main moves beyond `core.lock.json`, fail closed. The new Core semantics must be deliberately reviewed before lock/alignment is updated.
-
-## 3. Implementation remote boundary
-
-For normal local deployment, GitHub Implementation is a source image, not a place to mutate merely because installation needs adaptation. Machine-specific state belongs under `.aeris/`, `data/`, `logs/`, `.env` or other documented generated/private locations.
-
-If the Human explicitly requests implementation development, use branch → tests → PR → protected `main`. Do not mix development publication with a deployment run.
-
-## 4. Exact implementation read order
-
-1. `AGENTS.md`
-2. `CLAUDE.md`
-3. `aeris.local.policy.yaml`
-4. `config/autopilot.json`
-5. `config/maturity.json`
-6. `config/core_alignment.json`
-7. `core.lock.json`
-8. `docs/AUTOPILOT_ZERO_TOUCH_SOP.md`
-9. `docs/LOCAL_FINAL_ACCEPTANCE_ONCE.md`
-10. `docs/LOCAL_VERIFICATION_SOP.md`
-11. `docs/UNATTENDED_LOCAL_OPERATIONS.md`
-12. `docs/AUDIT_REALITY_CHECK.md`
-13. `docs/DEFINITION_OF_COMPANY_DONE.md`
-14. task-specific code/tests/Skills/Methods/Standards/adapters.
-
-Earlier authority wins over later convenience documentation.
-
-## 5. Autopilot truth boundary
-
-Autopilot may truthfully produce:
+and asks for `AERIS_AUTOPILOT`, Codex MUST continue automatically:
 
 ```text
-BLOCKED
-OPEN_WITH_LIMITS
-OPEN_VERIFIED_SCOPE
+sync latest CI-passed Implementation main
+→ read Core authority/policy without writing Core
+→ machine inventory
+→ install/configure supported redistributable prerequisites
+→ local model + local Knowledge
+→ deterministic/security tests
+→ real Local + Offline inference acceptance
+→ Company Opening
+→ Dashboard/API on 127.0.0.1:8765
+→ OS-native unattended persistence
+→ watchdog/self-recovery
+→ Evidence/Audit handoff
 ```
 
-`OPEN_VERIFIED_SCOPE` means only the exact named local scope that passed real-machine acceptance. It never means all 100 seats are domain-verified experts, all Skills/Methods/Standards exist, all proprietary tools are integrated, Hard Offline was proven when untested, production release is approved, or Company Complete.
+Do NOT use Codex Tasks/scheduled automations for company continuity. Persistence is the local OS mechanism implemented by AERIS (Windows Scheduled Task/Startup fallback; Linux systemd-user/cron fallback).
 
-CI uses explicit smoke paths. `CI_SMOKE_PASS_NOT_REAL_OPENING` must never become real-machine evidence.
+Do NOT launch Claude Code, a second model reviewer, or other token-consuming reviewer by default. Independent review utilities remain optional tools only.
 
-## 6. Human gates — ask only when genuinely blocked
+## No local-token-waste rule
 
-Codex continues automatically until one of these occurs:
+Before local execution, use the latest GitHub `main` whose Windows + Ubuntu CI passed. Do not spend local Codex Token rediscovering cloud-reproducible software defects. Normal deployment gets one real-machine acceptance cycle; repeat only for a defect that genuinely requires that machine.
 
-- OS elevation/admin or required persistence registration is denied;
-- headless/pre-login service is required but user-session persistence is insufficient;
-- proprietary license/EULA requires Human acceptance;
-- secret/customer credential/hardware token is required;
-- physical cable/fixture/chamber/instrument/calibration action is required;
-- destructive disk/network/firewall action could affect unrelated systems;
-- Core policy itself needs changing;
-- system reboot/logoff needed for the one-time persistence acceptance;
-- production/customer/formal/external release approval is required.
+## Human Gates only
 
-When blocked, preserve all completed Evidence and request the minimum exact Human action needed to resume.
+Do not ask routine setup questions. Stop only when blocked by one of:
 
-## 7. No destructive convenience
+- denied admin/OS policy or required persistence privilege;
+- License/EULA;
+- secret/customer credential/hardware token;
+- physical cable/fixture/chamber/instrument/calibration;
+- destructive unrelated disk/network/firewall action;
+- canonical Core policy change;
+- one-time reboot/logoff required to prove persistence;
+- R3/R4 production/customer/formal release.
 
-Autopilot/deployment must be idempotent and conservative: never wipe unrelated data, delete private data to repair, commit secrets, weaken privacy/Core/verification gates, auto-accept proprietary terms, invent credentials, or silently overwrite a dirty tracked worktree.
+Preserve Evidence and ask for the minimum exact Human action.
 
-## 8. Privacy
+## Safety / truth
 
-Default local content = `LOCAL_ONLY`.
+- Never push/write canonical Core during deployment.
+- Never wipe unrelated/private data, invent credentials, auto-accept licenses, weaken privacy/evidence gates, or overwrite a dirty tracked worktree.
+- Default private engineering data = `LOCAL_ONLY`.
+- `OPEN_VERIFIED_SCOPE` means only the exact scope proven on that machine; it does not mean every acoustic capability/tool/license is complete.
+- CI PASS is not real-machine evidence.
+- Dashboard alive is not whole-company health.
+- Proprietary tools without real license/hardware/calibration evidence remain `BLOCKED_EXTERNAL`.
 
-Private engineering is restricted to endpoint-policy-compliant loopback or explicit trusted-LAN private literal IP. Public/global endpoints cannot be mislabeled Local.
+## Minimal read order
 
-Cloud is an explicit public-research ingress channel. Local files, Memory, Evidence, customer/project data, measurement/CAE/factory data and private history must not be attached automatically.
+1. Core `AGENTS.md` + Core autopilot/policy referenced there.
+2. This `AGENTS.md`.
+3. `config/autopilot.json`, `config/maturity.json`, `core.lock.json`.
+4. `docs/AUTOPILOT_ZERO_TOUCH_SOP.md`.
+5. `docs/LOCAL_FINAL_ACCEPTANCE_ONCE.md`.
+6. Task-specific files only when needed.
 
-Application privacy is not an OS-wide mathematical zero-egress proof.
+Do not read optional reviewer documents during normal deployment unless a failure requires them.
 
-## 9. Offline continuity
+## Entrypoints
 
-Offline company operation requires necessary local runtime/model/data/Skills/tools already present. Software `mode=offline` is not itself an air gap.
+Windows: `./AERIS_AUTOPILOT.ps1`  
+Linux/Jetson: `bash ./AERIS_AUTOPILOT.sh`
 
-Linux/Jetson `ollama-install.sh` bootstrap is not a self-contained air-gap runtime package. Missing genuine offline prerequisites must BLOCK rather than silently use network.
-
-## 10. P0 trust primitives
-
-Protect before cosmetic automation:
-
-- task identity + guarded state machine;
-- Evidence Bundle hashes/provenance;
-- G0–G5 gates;
-- independent review;
-- R0–R4 authority/Human approval;
-- audit ledger;
-- expected-run health;
-- reproduction;
-- company opening/heartbeat/watchdog truth;
-- Golden acoustic cases and mature Skills/Methods/Standards/tool adapters.
-
-Application hash chains/manifests are integrity baselines, not WORM storage or external attestation.
-
-## 11. Completion evidence
-
-Every Autopilot completion reports exact Core/Implementation SHA, target path, Machine Profile, runtime/private endpoint, tests, Core integrity, local/offline inference, Hard Offline result or NOT_TESTED, opening state, persistence/watchdog, Supervisor/heartbeat, Audit/Evidence paths, unverified capabilities, external blockers and minimal Human action.
-
-## 12. Independent Claude handoff
-
-Codex does not self-certify its own deployment. After the real Autopilot/persistence cycle, Claude Code runs:
-
-```text
-Windows: ./CLAUDE_VERIFY_AERIS.ps1
-Linux/Jetson: bash ./CLAUDE_VERIFY_AERIS.sh
-```
-
-Claude's pass is review-only: it must not silently repair and approve in the same context. If Claude CLI/account authorization is unavailable, record that independent model review is not run rather than inventing a PASS; deterministic repository review evidence may still exist separately.
-
-## 13. No false done
-
-`docs/DEFINITION_OF_COMPANY_DONE.md` remains the completion gate. AERIS's purpose is a trustworthy Acoustic Engineering Organization OS, not a green installer demo.
+Completion is determined from `.aeris/state/*`, Audit/Evidence and actual service reachability—not from AI prose.
