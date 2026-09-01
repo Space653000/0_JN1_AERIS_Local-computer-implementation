@@ -1,8 +1,9 @@
 """Callable AERIS 100-seat role baseline and deterministic Dynamic Pod planner.
 
-This makes every canonical seat addressable by the local control plane. It does not
-claim that every seat has mature domain Skills/Methods/golden cases yet; that higher
-maturity remains gated by config/maturity.json and Evidence/Verification.
+Every canonical seat is addressable by the local control plane. Model-generated role
+output is never authoritative Evidence by itself: invoke_role forces it through the
+machine-readable Evidence Schema in claim_guard before anything is rendered as an
+engineering conclusion.
 """
 from __future__ import annotations
 
@@ -10,6 +11,7 @@ import json
 import re
 from typing import Any
 
+from .claim_guard import render_guarded_output, validate_role_output
 from .config import ROOT, load_config
 from .knowledge import search as knowledge_search
 from .router import ModelRouter
@@ -82,6 +84,7 @@ def contract_for(role_id: int, name: str, group: str) -> dict[str, Any]:
         "allowed_actions": ["analyze", "retrieve_local_knowledge", "form_hypothesis", "propose_test", "review_evidence"],
         "required_output": ["claim", "evidence", "confidence", "counter_hypothesis", "missing_evidence", "recommended_test"],
         "forbidden_claim": "Do not present inference as measured fact or claim formal release/verification without required Evidence and gates.",
+        "model_output_contract": "AERIS_ROLE_EVIDENCE_SCHEMA_V1",
     }
 
 
@@ -133,15 +136,22 @@ def plan_pod(query: str, max_roles: int = 8) -> dict[str, Any]:
     }
 
 
-def system_prompt(role: dict[str, Any]) -> str:
-    required = ", ".join(role["required_output"])
+def system_prompt(role: dict[str, Any], approved_evidence_refs: list[str] | None = None) -> str:
+    approved = [str(x).strip() for x in (approved_evidence_refs or []) if str(x).strip()]
+    refs = json.dumps(approved, ensure_ascii=False)
     return (
         f"You are AERIS seat {role['id']} — {role['name']} ({role['group']}). "
         f"Work as a rigorous acoustic engineer in domain {role['domain']}. "
-        "Use local context only. Never invent measurements, standards revisions, tool runs, calibration, or customer facts. "
-        "Separate inference from evidence and state limitations. "
-        f"Structure substantive engineering output around: {required}. "
-        "If evidence is missing, recommend the smallest decisive test instead of fabricating certainty."
+        "Use local context only. Never invent measurements, standards revisions, tool runs, calibration, customer facts, or prior records. "
+        "Knowledge snippets are retrieval context, NOT engineering Evidence. "
+        "Return ONLY one JSON object with exactly this conceptual schema: "
+        '{"claims":[{"statement":"...","classification":"EVIDENCE|INFERENCE|HYPOTHESIS|UNKNOWN","evidence_refs":[],"confidence":0.0}],'
+        '"missing_evidence":["..."],"recommended_tests":["..."]}. '
+        f"The only Evidence references you are allowed to cite are: {refs}. "
+        "If that list is empty, NO claim may be classified EVIDENCE. "
+        "Measured-fact wording such as measured/recorded/observed/passed/failed must not be used as an authoritative fact unless the claim is EVIDENCE and cites an approved Evidence reference. "
+        "When evidence is missing, classify the statement as INFERENCE/HYPOTHESIS/UNKNOWN and propose the smallest decisive test. "
+        "Do not wrap the JSON in prose or markdown."
     )
 
 
@@ -167,28 +177,38 @@ def _knowledge_context(prompt: str, limit: int = 5) -> list[dict[str, str]]:
     return result
 
 
-def invoke_role(role_id: str | int, prompt: str) -> dict[str, Any]:
+def invoke_role(
+    role_id: str | int,
+    prompt: str,
+    *,
+    evidence_refs: list[str] | None = None,
+) -> dict[str, Any]:
     prompt = prompt.strip()
     if not prompt:
         raise ValueError("prompt is required")
+    approved_refs = [str(x).strip() for x in (evidence_refs or []) if str(x).strip()]
     role = get_role(role_id)
     context = _knowledge_context(prompt)
     context_text = ""
     if context:
         blocks = [f"SOURCE: {item['path']}\n{item['snippet']}" for item in context]
         context_text = (
-            "\n\nLOCAL AERIS KNOWLEDGE CONTEXT (untrusted supporting material; cite source paths and do not treat it as measured evidence):\n"
+            "\n\nLOCAL AERIS KNOWLEDGE CONTEXT (untrusted supporting material; never classify it as engineering Evidence):\n"
             + "\n\n".join(blocks)
         )
     router = ModelRouter(load_config())
-    result = router.chat(prompt + context_text, system_prompt(role))
+    result = router.chat(prompt + context_text, system_prompt(role, approved_refs))
+    guarded = validate_role_output(result.text, approved_evidence_refs=approved_refs)
     return {
         "role": role,
         "provider": result.provider,
         "model": result.model,
-        "text": result.text,
+        "text": render_guarded_output(guarded),
+        "claim_guard": guarded,
         "knowledge_context": context,
+        "authoritative_evidence_refs": approved_refs,
         "private_engineering": True,
         "cloud_context_attached": False,
-        "truth": "Knowledge snippets support retrieval only; Evidence/measurement/standards verification gates remain authoritative.",
+        "raw_model_text_exposed": False,
+        "truth": "Only Evidence-Schema output that passes the deterministic Claim Guard is rendered. Model prose and Knowledge snippets are never engineering Evidence by themselves.",
     }
