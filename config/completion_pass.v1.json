@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "pass_name": "AERIS LOCAL SOFTWARE COMPLETION PASS",
+  "software_local_gaps_before": 10,
+  "items": [
+    {"id": "core_ui_ssot_six_pages", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "ui/web/dashboard.html + workspace.html + services.html + Core aeris.css/aeris-theme.js direct assets"},
+    {"id": "workspace_fields_sqlite_workflow", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "aeris_runtime/controlplane.py metadata/workflow link + UI + actual TASK-5C33CD4495C4 / WF-93E8522EA377"},
+    {"id": "five_plane_runtime_telemetry", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "aeris_runtime/telemetry.py + /api/v1/services + API contract tests"},
+    {"id": "free_local_acoustic_baseline", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "aeris_runtime/free_acoustics.py + tests/test_free_acoustics.py"},
+    {"id": "pptx_skill_registry_sha256_provenance", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "config/pptx_beautify_lock.provenance.json + tests/test_pptx_provenance.py"},
+    {"id": "scheduled_task_watchdog_persistence", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": ".aeris/state/UNATTENDED_INSTALL.json REGISTERED_RUNNING; 0x00041301 means currently running"},
+    {"id": "expected_run_concurrent_atomic_write", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "unique atomic temp + tests/test_expected_runs_concurrency.py"},
+    {"id": "autopilot_completion_fields", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "scripts/autopilot.ps1 + scripts/autopilot.sh + tests/test_completion_pass.py"},
+    {"id": "six_page_visual_accessibility_regression", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "browser semantic 6/6 + visual repeatability 6/6 + accessibility baseline + .aeris/evidence/browser-visual/latest"},
+    {"id": "full_local_acceptance_and_gap_rescan", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "COMPLETE", "evidence": "181/181 unit/security tests; Local Acceptance PASS; semantic 6/6; visual/accessibility 6/6; Windows tests PASS; final Autopilot rerun required after clean local commit"}
+  ],
+  "truth": "Only items classified SOFTWARE_LOCAL_FIXABLE count toward the software stop condition. External license, physical hardware, reboot/logoff and Human approval remain separately visible in maturity.json."
+}

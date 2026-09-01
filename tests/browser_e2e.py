@@ -1,7 +1,7 @@
-"""Real-browser semantic E2E for the dependency-free AERIS local UI.
+"""Real-browser semantic E2E for the Core-SSOT AERIS local UI.
 
-This test deliberately verifies rendered browser behavior and SPA route activation.
-It is not pixel-level visual regression and must never be reported as such.
+Scope boundary: real headless browser SPA route/render semantic E2E; NOT pixel visual regression.
+The separate visual baseline provides fixed-environment screenshot repeatability only.
 """
 from __future__ import annotations
 
@@ -155,12 +155,12 @@ def run() -> int:
         try:
             browser = find_browser()
             routes = {
-                "/?theme=dark": ('id="dashboard" class="view active-view"', 'data-theme="dark"', "本機聲學工程公司"),
-                "/workspace?theme=dark": ('id="workspace" class="view active-view"', 'data-theme="dark"', "Dynamic Pod"),
-                "/services?theme=dark": ('id="services" class="view active-view"', 'data-theme="dark"', "Engineering Workflows"),
-                "/?theme=light": ('id="dashboard" class="view active-view"', 'data-theme="light"', "本機聲學工程公司"),
-                "/workspace?theme=light": ('id="workspace" class="view active-view"', 'data-theme="light"', "Dynamic Pod"),
-                "/services?theme=light": ('id="services" class="view active-view"', 'data-theme="light"', "Engineering Workflows"),
+                "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "Dashboard is a projection, not truth."),
+                "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "Suggested Temporary Engineering Pod"),
+                "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "Five-Plane Architecture"),
+                "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', "Dashboard is a projection, not truth."),
+                "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "Suggested Temporary Engineering Pod"),
+                "/services?theme=light": ('data-page="services"', 'data-theme="light"', "Five-Plane Architecture"),
             }
             results = []
             for route, required in routes.items():
@@ -169,7 +169,7 @@ def run() -> int:
                 missing = [marker for marker in required if marker not in dom]
                 if missing:
                     raise AssertionError(f"browser route {route} missing rendered markers: {missing}")
-                if "/assets/app.js" not in dom:
+                if "/assets/aeris-live.js" not in dom:
                     raise AssertionError(f"browser route {route} did not render the AERIS application shell")
                 results.append({"route": route, "http_render": "PASS", "active_view": required[0]})
             print(json.dumps({
@@ -177,7 +177,7 @@ def run() -> int:
                 "browser": browser,
                 "routes": results,
                 "timeout_recovery": f"bounded {BROWSER_TIMEOUT_ATTEMPTS}-attempt isolated-profile retry; repeated timeout fails closed",
-                "scope": "real headless browser SPA route/render semantic E2E; NOT pixel visual regression",
+                "scope": "real headless browser Core-SSOT route/render/live-API semantic E2E",
             }, ensure_ascii=False, indent=2))
             return 0
         finally:

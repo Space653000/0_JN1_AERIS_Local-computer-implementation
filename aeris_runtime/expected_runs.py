@@ -7,6 +7,9 @@ explicitly so correctness does not depend on wall-clock timestamp resolution.
 from __future__ import annotations
 
 import json
+import os
+import threading
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -17,6 +20,7 @@ from .config import ROOT
 REGISTRY_PATH = ROOT / ".aeris" / "health" / "expected_runs.json"
 DEFAULTS_PATH = ROOT / "config" / "expected_runs.defaults.json"
 VALID_STATES = {"HEALTHY", "DEGRADED", "FAILED", "UNKNOWN", "NO_HEARTBEAT", "STALE", "NOT_CONFIGURED", "BLOCKED"}
+_LOCK = threading.RLock()
 
 
 def _now() -> datetime:
@@ -24,16 +28,24 @@ def _now() -> datetime:
 
 
 def _read() -> dict[str, Any]:
-    if not REGISTRY_PATH.exists():
-        return {"schema_version": 1, "expected_runs": {}}
-    return json.loads(REGISTRY_PATH.read_text(encoding="utf-8-sig"))
+    with _LOCK:
+        if not REGISTRY_PATH.exists():
+            return {"schema_version": 1, "expected_runs": {}}
+        return json.loads(REGISTRY_PATH.read_text(encoding="utf-8-sig"))
 
 
 def _write(data: dict[str, Any]) -> None:
-    REGISTRY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    tmp = REGISTRY_PATH.with_suffix(".json.tmp")
-    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    tmp.replace(REGISTRY_PATH)
+    with _LOCK:
+        REGISTRY_PATH.parent.mkdir(parents=True, exist_ok=True)
+        tmp = REGISTRY_PATH.with_name(f"{REGISTRY_PATH.name}.{os.getpid()}.{threading.get_ident()}.{uuid.uuid4().hex}.tmp")
+        try:
+            tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            tmp.replace(REGISTRY_PATH)
+        finally:
+            try:
+                tmp.unlink()
+            except FileNotFoundError:
+                pass
 
 
 def ensure_defaults(*, actor: str = "AERIS", audit_event: bool = True) -> dict[str, Any]:

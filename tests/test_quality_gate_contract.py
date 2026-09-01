@@ -80,8 +80,8 @@ class QualityGateContractTests(unittest.TestCase):
         visual = (ROOT / "tests/browser_visual_accessibility.py").read_text(encoding="utf-8")
         docs = (ROOT / "docs/BROWSER_VISUAL_ACCESSIBILITY_BASELINE.md").read_text(encoding="utf-8")
         self.assertIn("real headless browser SPA route/render semantic E2E; NOT pixel visual regression", text)
-        self.assertIn('id=\"workspace\" class=\"view active-view\"', text)
-        self.assertIn('id=\"services\" class=\"view active-view\"', text)
+        self.assertIn('data-page=\"workspace\"', text)
+        self.assertIn('data-page=\"services\"', text)
         self.assertIn("NOT cross-version pixel-golden regression", visual)
         self.assertIn("**not** a cross-version pixel-golden visual regression suite", docs.lower())
 

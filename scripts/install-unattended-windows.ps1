@@ -48,28 +48,23 @@ try {
   $Settings=New-ScheduledTaskSettingsSet -StartWhenAvailable -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1) -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew
   $Principal=New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive -RunLevel Limited
   Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Settings -Principal $Principal -Description 'AERIS local-company watchdog; loopback service continuity only.' -Force | Out-Null
-  Start-ScheduledTask -TaskName $TaskName
+  $Before=Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
+  $StartDisposition='START_REQUESTED'
+  if($Before.State -eq 'Running'){
+    $StartDisposition='ALREADY_RUNNING_NO_DUPLICATE_START'
+  } else {
+    Start-ScheduledTask -TaskName $TaskName
+  }
   Start-Sleep -Seconds 2
   $Task=Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
   $Info=Get-ScheduledTaskInfo -TaskName $TaskName -ErrorAction Stop
-  Write-Report 'REGISTERED' 'WINDOWS_SCHEDULED_TASK' "State=$($Task.State); LastTaskResult=$($Info.LastTaskResult)" $true
+  $ResultHex=('0x{0:X8}' -f ([uint32]$Info.LastTaskResult))
+  $HealthyState=($Task.State -eq 'Running')
+  $Status=$(if($HealthyState){'REGISTERED_RUNNING'}else{'REGISTERED_NOT_RUNNING'})
+  Write-Report $Status 'WINDOWS_SCHEDULED_TASK' "State=$($Task.State); LastTaskResult=$ResultHex; StartDisposition=$StartDisposition. LastTaskResult is historical exit evidence and is not normalized to success while the watchdog is not Running." $HealthyState
   exit 0
 }
 catch {
-  try {
-    $Startup=[Environment]::GetFolderPath('Startup')
-    if(-not $Startup){throw 'Startup folder unavailable'}
-    $CmdFile=Join-Path $Startup 'AERIS-Local-Company-Watchdog.cmd'
-    $PyW=Join-Path (Split-Path $Py -Parent) 'pythonw.exe'
-    $Runner=$(if(Test-Path $PyW){$PyW}else{$Py})
-    $CmdBody="@echo off`r`ncd /d `"$Root`"`r`nstart `"`" /min `"$Runner`" -m aeris_runtime.watchdog --port $Port --interval $IntervalSec`r`n"
-    Set-Content -Path $CmdFile -Value $CmdBody -Encoding ASCII
-    Start-Process -FilePath $Runner -ArgumentList @('-m','aeris_runtime.watchdog','--port',"$Port",'--interval',"$IntervalSec") -WorkingDirectory $Root -WindowStyle Hidden
-    Write-Report 'REGISTERED_WITH_LIMITS' 'STARTUP_FOLDER_FALLBACK' "ScheduledTasks failed: $($_.Exception.Message). Current-user Startup fallback registered; OS-level restart of the watchdog itself is not guaranteed until next logon." $false
-    exit 0
-  }
-  catch {
-    Write-Report 'BLOCKED' 'NONE' $_.Exception.Message $false
-    exit 20
-  }
+  Write-Report 'BLOCKED' 'NONE' "ScheduledTasks failed: $($_.Exception.Message). No Startup-folder fallback was written because AERIS local-only scope forbids files outside the installation root." $false
+  exit 20
 }

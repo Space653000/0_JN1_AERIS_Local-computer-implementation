@@ -175,6 +175,12 @@ def requirement_verification(input_path: str, requirement: dict[str, Any]) -> di
 
 
 def run_skill(skill_id: str, params: dict[str, Any]) -> dict[str, Any]:
+    if skill_id == "free-local-acoustic-baseline":
+        from .free_acoustics import analyze
+        return analyze(params)
+    if skill_id == "pptx-beautify-lock-local":
+        from .pptx_provenance import verify
+        return verify(params)
     if skill_id == "measurement-import-validation":
         return measurement_import_validation(str(params.get("input_path", "")))
     if skill_id == "frequency-response-analysis":

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "skill_id": "free-local-acoustic-baseline",
+  "name": "Free Local Acoustic Analysis Baseline",
+  "domain": ["speaker", "microphone", "fft", "fr", "thd", "snr", "spl", "impulse-response", "octave", "filtering", "transfer-function", "stft", "coherence", "reporting"],
+  "executor": "aeris_runtime.free_acoustics:analyze",
+  "inputs": {"samples": "8..8192 numeric samples", "sample_rate_hz": "positive", "reference_samples": "optional matching reference", "calibration_pa_per_unit": "optional linear calibration"},
+  "outputs": ["fft", "frequency_response", "thd_percent", "snr_db", "spl_db_re_20upa", "impulse_response", "octave_bands", "filtered_samples", "transfer_function", "stft", "coherence", "deterministic_plot_svg", "report"],
+  "evidence_class": "DETERMINISTIC_FREE_LOCAL_BASELINE",
+  "maturity": "FREE_BASELINE_NOT_LICENSED_PROFESSIONAL_VERIFIED",
+  "cloud_allowed": false
+}

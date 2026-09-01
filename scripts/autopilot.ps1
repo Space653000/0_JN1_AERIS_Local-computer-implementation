@@ -37,6 +37,8 @@ function Write-FinalResult($Status,$Opening,$Failure){
   if($Py){ try { $Machine=((& $Py -m aeris_runtime machine detect) -join "`n") | ConvertFrom-Json } catch {} }
   $Unattended=$null
   try { $Unattended=Get-Content (Join-Path $State 'UNATTENDED_INSTALL.json') -Raw | ConvertFrom-Json } catch {}
+  $Completion=$null
+  if($Py){ try { $Completion=((& $Py -m aeris_runtime.completion --write) -join "`n") | ConvertFrom-Json } catch {} }
   $Payload=[ordered]@{
     schema_version=2
     run_kind=($(if($CISmoke){'CI_SMOKE'}else{'REAL_AUTOPILOT'}))
@@ -54,6 +56,10 @@ function Write-FinalResult($Status,$Opening,$Failure){
     company_complete=$false
     supervisor=$(if($Opening -and $Opening.PSObject.Properties.Name -contains 'supervisor'){$Opening.supervisor}else{$null})
     unattended_operations=$Unattended
+    unresolved_software_gaps=$(if($Completion){$Completion.unresolved_software_gaps}else{@([ordered]@{id='COMPLETION_ASSESSMENT_UNAVAILABLE';status='UNKNOWN'})})
+    remaining_external_blockers=$(if($Completion){$Completion.remaining_external_blockers}else{@()})
+    remote_write_performed=$false
+    local_only_scope=$true
     failure=$Failure
     evidence_paths=[ordered]@{
       preflight=$Preflight
@@ -63,6 +69,7 @@ function Write-FinalResult($Status,$Opening,$Failure){
       heartbeat=(Join-Path $State 'HEARTBEAT.json')
       unattended_install=(Join-Path $State 'UNATTENDED_INSTALL.json')
       unattended_runtime=(Join-Path $State 'UNATTENDED_OPERATIONS.json')
+      software_completion=(Join-Path $State 'SOFTWARE_COMPLETION.json')
       audit=(Join-Path $Root '.aeris\audit\audit.jsonl')
     }
     truth='Autopilot completion means the supported local control plane was deployed/opened for its verified scope. It never means every acoustic capability, proprietary tool or release gate is complete.'

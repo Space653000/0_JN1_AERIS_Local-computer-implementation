@@ -51,7 +51,7 @@ def _unverified_capabilities() -> list[dict[str, str]]:
     result: list[dict[str, str]] = []
     for name, info in maturity.get("capabilities", {}).items():
         state = str(info.get("state", "UNKNOWN"))
-        if state in {"NOT_IMPLEMENTED", "IMPLEMENTED", "BLOCKED_EXTERNAL"}:
+        if state in {"NOT_IMPLEMENTED", "IMPLEMENTED", "BLOCKED_EXTERNAL", "HUMAN_GATE", "EXTERNAL_LICENSE", "PHYSICAL_HARDWARE", "REBOOT_LOGOFF_REQUIRED"}:
             result.append({"capability": name, "state": state})
     return result
 
