@@ -38,6 +38,15 @@ def _json_file(path: Path) -> dict[str, Any]:
         return {}
 
 
+class _ClosingConnection(sqlite3.Connection):
+    """sqlite3 context manager that actually closes the OS handle on exit."""
+    def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> bool:
+        try:
+            return bool(super().__exit__(exc_type, exc, tb))
+        finally:
+            self.close()
+
+
 class ControlStore:
     def __init__(self, db_path: Path | None = None) -> None:
         self.db_path = db_path or DB_PATH
@@ -45,7 +54,7 @@ class ControlStore:
         self._ensure()
 
     def _connect(self) -> sqlite3.Connection:
-        db = sqlite3.connect(self.db_path)
+        db = sqlite3.connect(self.db_path, factory=_ClosingConnection)
         db.row_factory = sqlite3.Row
         db.execute("PRAGMA journal_mode=WAL")
         db.execute("PRAGMA foreign_keys=ON")
