@@ -20,6 +20,14 @@ class MaturityTruthTests(unittest.TestCase):
             if item["state"] in {"NOT_IMPLEMENTED", "BLOCKED_EXTERNAL"}:
                 self.assertNotEqual(item["state"], "VERIFIED", name)
 
+    def test_reviewer_allocator_truth_matches_tested_implementation(self):
+        maturity = load_json("config/maturity.json")
+        reviewer = maturity["capabilities"]["independent_reviewer_allocation_engine"]
+        self.assertEqual(reviewer["state"], "TESTED")
+        evidence = str(reviewer.get("evidence", "")).lower()
+        self.assertIn("reviewer", evidence)
+        self.assertIn("test", evidence)
+
     def test_product_stage_matches_company_manifest(self):
         maturity = load_json("config/maturity.json")
         company = load_json("company/company.manifest.json")
