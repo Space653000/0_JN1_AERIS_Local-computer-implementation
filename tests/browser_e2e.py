@@ -155,9 +155,12 @@ def run() -> int:
         try:
             browser = find_browser()
             routes = {
-                "/": ('id="dashboard" class="view active-view"', "本機聲學工程公司"),
-                "/workspace": ('id="workspace" class="view active-view"', "Dynamic Pod"),
-                "/services": ('id="services" class="view active-view"', "Engineering Workflows"),
+                "/?theme=dark": ('id="dashboard" class="view active-view"', 'data-theme="dark"', "本機聲學工程公司"),
+                "/workspace?theme=dark": ('id="workspace" class="view active-view"', 'data-theme="dark"', "Dynamic Pod"),
+                "/services?theme=dark": ('id="services" class="view active-view"', 'data-theme="dark"', "Engineering Workflows"),
+                "/?theme=light": ('id="dashboard" class="view active-view"', 'data-theme="light"', "本機聲學工程公司"),
+                "/workspace?theme=light": ('id="workspace" class="view active-view"', 'data-theme="light"', "Dynamic Pod"),
+                "/services?theme=light": ('id="services" class="view active-view"', 'data-theme="light"', "Engineering Workflows"),
             }
             results = []
             for route, required in routes.items():

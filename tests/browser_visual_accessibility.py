@@ -27,7 +27,14 @@ import aeris_runtime.operations as operations
 from browser_e2e import find_browser
 
 VIEWPORT = (1440, 1000)
-ROUTES = ("/", "/workspace", "/services")
+ROUTES = (
+    "/?theme=dark&visual_baseline=1",
+    "/workspace?theme=dark&visual_baseline=1",
+    "/services?theme=dark&visual_baseline=1",
+    "/?theme=light&visual_baseline=1",
+    "/workspace?theme=light&visual_baseline=1",
+    "/services?theme=light&visual_baseline=1",
+)
 
 
 def _png_size(path: Path) -> tuple[int, int]:
@@ -128,7 +135,7 @@ def run() -> int:
                     route_hashes.add(str(first["sha256"]))
                     route_results.append({"route": route, "repeatable_sha256": first["sha256"], "bytes": first["bytes"]})
             if len(route_hashes) != len(ROUTES):
-                raise AssertionError("dashboard/workspace/services screenshots are not visually distinct")
+                raise AssertionError("dark/light dashboard/workspace/services screenshots are not visually distinct")
             print(json.dumps({
                 "AERIS_BROWSER_VISUAL_ACCESSIBILITY_BASELINE": "PASS",
                 "browser": browser,
