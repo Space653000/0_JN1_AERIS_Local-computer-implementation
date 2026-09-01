@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "profile_id": "AERIS-ZERO-COST-NO-CLAUDE-V1",
+  "mandatory_for_default_autopilot": true,
+  "monetary_policy": {
+    "paid_software_required": false,
+    "paid_cloud_api_required": false,
+    "subscription_required_by_aeris_runtime": false,
+    "automatic_purchase_allowed": false,
+    "auto_accept_license_or_eula": false,
+    "default_company_opening_may_depend_on_paid_professional_tools": false
+  },
+  "ai_policy": {
+    "primary_executor": "codex",
+    "claude_code_required": false,
+    "claude_token_required": false,
+    "launch_claude_code": false,
+    "launch_second_model_reviewer": false,
+    "default_local_provider": "ollama_or_compatible",
+    "default_local_model": "qwen3:4b-instruct",
+    "local_model_monetary_class": "NO_PAID_LICENSE_REQUIRED_BY_AERIS_DEFAULT_PROFILE",
+    "local_model_upstream_license_metadata": "Apache-2.0",
+    "external_model_or_api_credentials_required_for_default_opening": false
+  },
+  "bootstrap_components": [
+    {
+      "id": "python",
+      "required": true,
+      "minimum_version": "3.10",
+      "monetary_class": "NO_PAID_LICENSE_REQUIRED_BY_AERIS_DEFAULT_PROFILE"
+    },
+    {
+      "id": "git",
+      "required_for_online_core_sync": true,
+      "monetary_class": "NO_PAID_LICENSE_REQUIRED_BY_AERIS_DEFAULT_PROFILE"
+    },
+    {
+      "id": "ollama_or_compatible",
+      "required_for_default_local_ai": true,
+      "monetary_class": "NO_PAID_LICENSE_REQUIRED_BY_AERIS_DEFAULT_PROFILE",
+      "note": "AERIS must not auto-accept any installer/package EULA; if upstream presents one, that becomes a Human Gate."
+    },
+    {
+      "id": "qwen3:4b-instruct",
+      "required_for_default_local_ai": true,
+      "monetary_class": "NO_PAID_LICENSE_REQUIRED_BY_AERIS_DEFAULT_PROFILE",
+      "upstream_license_metadata": "Apache-2.0"
+    }
+  ],
+  "paid_or_external_professional_capabilities": [
+    "comsol_adapter",
+    "matlab_adapter",
+    "apx_adapter",
+    "klippel_adapter",
+    "soundcheck_adapter",
+    "acqua_adapter"
+  ],
+  "required_state_for_paid_or_external_professional_capabilities": "BLOCKED_EXTERNAL",
+  "default_installer_forbidden_tokens": [
+    "--accept-package-agreements",
+    "--accept-source-agreements",
+    "CLAUDE_VERIFY_AERIS",
+    "claude verify",
+    "comsol",
+    "matlab",
+    "klippel",
+    "soundcheck",
+    "acqua"
+  ],
+  "human_gate_when": [
+    "UPSTREAM_LICENSE_OR_EULA_REQUIRES_ACCEPTANCE",
+    "PACKAGE_SOURCE_TERMS_REQUIRE_ACCEPTANCE",
+    "PAID_PROFESSIONAL_TOOL_REQUIRED_FOR_REQUESTED_SCOPE",
+    "SECRET_OR_PAID_API_CREDENTIAL_REQUIRED_FOR_OPTIONAL_SCOPE"
+  ],
+  "truth": "This profile guarantees only that AERIS default bootstrap/opening is designed not to require paid professional software, paid cloud API credentials, Claude Code or a Claude token. It does not waive third-party licenses, guarantee every upstream package remains free forever, or make optional licensed professional adapters available."
+}
