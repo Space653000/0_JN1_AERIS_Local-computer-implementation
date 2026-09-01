@@ -58,6 +58,14 @@ class ControlPlaneTests(unittest.TestCase):
         self.assertEqual(data["count"], 100)
         self.assertEqual(data["roles"][0]["id"], "R001")
 
+    def test_workflow_template_api_is_versioned_and_not_fake_run_count(self):
+        server = self._server()
+        data = self._get_json(server, "/api/v1/workflow-templates")
+        self.assertEqual(data["count"], 3)
+        self.assertTrue(all(x["execution_state"] == "EXECUTABLE_TEMPLATE_NOT_RUN" for x in data["templates"]))
+        runs = self._get_json(server, "/api/v1/workflows")
+        self.assertEqual(runs["workflows"], [])
+
     def test_skills_standards_and_expected_run_apis_are_real(self):
         server = self._server()
         skills = self._get_json(server, "/api/v1/skills")
