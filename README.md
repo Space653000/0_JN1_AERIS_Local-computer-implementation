@@ -1,7 +1,7 @@
 # AERIS Portable Company Kernel — PRE-ALPHA
 
 > **AERIS — Acoustic Engineering & Research Intelligence System**  
-> 把同一套 AERIS 公司軟體、制度與可攜式執行核心部署到不同本機；不把「有架構」誤寫成「100 位成熟工程師已完成」。
+> 把同一套 AERIS 公司軟體、制度與可攜式執行核心部署到明確支援的本機；不把「有架構」誤寫成「100 位成熟工程師已完成」。
 
 Canonical design target / read-only SSOT:  
 `https://github.com/Space653000/0_JN1_AERIS/tree/main`
@@ -19,68 +19,71 @@ Canonical design target / read-only SSOT:
 = HOW AERIS IS IMPLEMENTED AND DEPLOYED
 = Portable Company Kernel / cloud construction site
                │
-               │ install / test / relocate
+               │ branch → test → PR → main
                ▼
-Windows / Linux / Jetson / trusted-LAN local instance
+Supported local machine
+               │
+               │ real-machine acceptance
+               ▼
+VERIFIED AERIS instance for a specified scope
 ```
 
-Codex 永遠不得修改 `Space653000/0_JN1_AERIS`。若 implementation 與 Core 衝突，Core 勝出。
+Codex/implementation 永遠不得修改 canonical Core。若 implementation 與 Core 衝突，Core 勝出。
 
-`core.lock.json` 鎖定已審查的 Core SHA；CI 執行 read-only Core drift gate。Core 若被 Human 更新，implementation CI 應先 FAIL，直到重新審查、實作並刻意更新 lock。
+`core.lock.json` 鎖定已審查 Core SHA；CI 執行 read-only drift gate。Core 若由 Human 更新，implementation 應先 FAIL，直到新 Core 被重新審查、實作並刻意更新 lock。
 
-## 2. 現在真正成熟到哪裡？
+GitHub `main` 不是一般 AI 施工區；正常施工使用 feature/repair branch + CI + Pull Request。
+
+## 2. Anti-fantasy truth
 
 目前產品階段：**PRE_ALPHA**。
 
 Machine-readable truth：[`config/maturity.json`](config/maturity.json)  
-完整反幻想審計：[`docs/AUDIT_REALITY_CHECK.md`](docs/AUDIT_REALITY_CHECK.md)
+Reality check：[`docs/AUDIT_REALITY_CHECK.md`](docs/AUDIT_REALITY_CHECK.md)  
+Human–AI cooperation：[`docs/AI_HUMAN_RELIABILITY_CONTRACT.md`](docs/AI_HUMAN_RELIABILITY_CONTRACT.md)  
+本機驗收：[`docs/LOCAL_VERIFICATION_SOP.md`](docs/LOCAL_VERIFICATION_SOP.md)
 
-重要原則：
+唯一成熟度路徑：
 
 ```text
-NOT_IMPLEMENTED → IMPLEMENTED → TESTED → VERIFIED
+NOT_IMPLEMENTED
+→ IMPLEMENTED
+→ TESTED
+→ VERIFIED
 ```
 
-- 100 seats 已有完整 registry 與 count test，但目前仍是 capability slots，不等於 100 位成熟工程師。
-- Skills / Methods / Standards Registry / Dynamic Pod / Evidence Engine / G0–G5 / 專業工具 adapters / live local UI 仍需逐項完成。
-- GitHub Actions 綠燈只代表 CI 實際執行的 kernel gates PASS，不代表整間公司 COMPLETE。
+- 100 seats 有 versioned registry/count test，但仍是 capability slots，不等於 100 位成熟工程師。
+- Skills / Methods / live Standards Registry / Dynamic Pod / Workflow Engine / Evidence Engine / G0–G5 / Golden acoustic datasets / professional tool adapters / live local UI 仍需逐項實作驗收。
+- CI green 只代表 CI 真正執行的 kernel scope PASS；不代表公司完成。
+- Supported Machine Profile 只代表有明確部署 baseline；不代表該台真機 VERIFIED。
 
 ## 3. 零經驗安裝入口
 
-### Windows
+Windows：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\INSTALL_AERIS_LOCAL.ps1
 ```
 
-### Linux / Jetson
+Linux / Jetson：
 
 ```bash
 bash ./INSTALL_AERIS_LOCAL.sh
 ```
 
-Installer 會處理/檢查：
+安裝器採 fail-closed：
 
-```text
-Python >= 3.10
-→ read-only Core sync / staged Core restore
-→ local runtime prerequisite
-→ local model
-→ mode
-→ machine detection
-→ local Knowledge DB
-→ unit/security tests
-→ 100-role manifest
-→ doctor
-```
-
-預設 local continuity model：`qwen3:4b-instruct`，透過 Ollama-compatible API。模型只是可替換算力，不代表 100 席專業能力；商用 release 前仍必須重新確認實際使用模型/tag/license。
+- Python 必須 >= 3.10；
+- offline 缺必要 staged prerequisite 時 BLOCK，不偷偷上網；
+- requested LocalModel 與 runtime 設定必須一致；
+- staged Python/Ollama/model 需要 checksum/manifest；
+- canonical Core 必須能同步或由可驗證 snapshot 提供；
+- unit/security tests / Company Manifest / doctor 都會執行；
+- installer 結束仍只叫 `INSTALLED`，下一步一定是 real-machine acceptance。
 
 詳細：[`docs/ONE_CLICK_INSTALL.md`](docs/ONE_CLICK_INSTALL.md)
 
-## 4. 安裝完成 ≠ 本機已驗證
-
-安裝後必跑 real-machine acceptance。
+## 4. 安裝完成 ≠ 本機 VERIFIED
 
 Windows：
 
@@ -94,38 +97,45 @@ Linux / Jetson：
 bash scripts/local-acceptance.sh
 ```
 
-它會實際驗：
+Acceptance 驗：
 
-- company manifest / 100-role registry；
-- unit/security tests；
-- local Knowledge build；
-- Core cached clone push URL disabled + deny pre-push hook；
-- local doctor；
-- **真實 local inference**；
-- offline mode doctor；
-- **真實 offline-mode inference**。
+```text
+Company Manifest
++ repository tests
++ self-cleaning Knowledge build
++ Supported Machine Profile
++ canonical Core integrity
++ local doctor
++ real local inference
++ offline doctor
++ real offline-mode inference
+```
 
-若要宣稱 HARD OFFLINE，還要切斷/阻擋 external network 再跑：
+證據：
+
+```text
+.aeris/state/LOCAL_ACCEPTANCE.json
+```
+
+Hard offline 額外：
 
 ```powershell
 .\scripts\local-acceptance.ps1 -HardOffline
 ```
 
-或：
-
 ```bash
 AERIS_HARD_OFFLINE=1 bash scripts/local-acceptance.sh
 ```
 
-詳見 [`docs/security/LOCAL_NETWORK_ENFORCEMENT.md`](docs/security/LOCAL_NETWORK_ENFORCEMENT.md)。
+多路 outbound probe 任何成功都 FAIL；全部 blocked 也只記 `OUTBOUND_PROBES_BLOCKED_NOT_GLOBAL_PROOF`，不假裝有限測試是宇宙級零外流證明。
 
 ## 5. 100-seat organization
 
-AERIS 保留 100 個版本化 capability seats，依任務最終目標動態組成約 5–15 人 Temporary Pod，而不是啟動 100 個常駐 LLM process。
+AERIS 保留 100 個版本化 capability seats，最終依任務動態組成約 5–15 人 Temporary Pod，而不是啟動 100 個常駐 LLM process。
 
 Registry：[`company/organization/roles.v1.json`](company/organization/roles.v1.json)
 
-角色只有在具備並通過以下條件後，才可從「defined seat」升級成 verified capability：
+每席只有具備以下證據後才可升級成 verified capability：
 
 ```text
 Role Contract
@@ -140,7 +150,7 @@ Role Contract
 
 ## 6. Local Knowledge / Memory
 
-目前是 **basic local SQLite text index**，不是完整世界級聲學 Knowledge System。
+現在是 **basic local SQLite text index**，不是完整世界級聲學 Knowledge System。
 
 ```bash
 python -m aeris_runtime knowledge build
@@ -148,35 +158,68 @@ python -m aeris_runtime knowledge stats
 python -m aeris_runtime knowledge search "beamforming"
 ```
 
-DB：`.aeris/knowledge/aeris.sqlite3`。不做 cloud sync。
+目前 hardening baseline：
 
-## 7. Privacy — Cloud 只允許公開研究入口
+- local only；
+- Core cache + versioned implementation docs/text；
+- rebuild 會移除被刪除/改名的 stale source；
+- SQLite FTS5 可用時使用 FTS5，否則 LIKE fallback；
+- public ingress 不自動進 Knowledge。
+
+真正專業 acoustic corpus / semantic retrieval / provenance graph / WAV-HDF5-CAE knowledge 仍未完成。
+
+## 7. Privacy — Private local, Public explicit
 
 ```text
-PUBLIC INTERNET / CLOUD
-        │ public query / public URL
-        ▼
-AERIS PUBLIC INGRESS
-        │
-        ▼
-LOCAL STORAGE
+PRIVATE ENGINEERING
+local files / Memory / Evidence / customer data
+        ↓
+LOCAL AI / LOCAL TOOLS ONLY
 
-LOCAL PRIVATE DATA ───X───► automatic cloud attachment
+PUBLIC RESEARCH
+explicit public query
+        ↓
+best-effort DLP
+        ↓
+configured Cloud optional
+        ↓
+response saved locally
 ```
 
-現在已實作的 application-level boundary：
+Public URL：
 
-- `aeris chat`：private engineering → **local AI only**；
-- `aeris research`：public research only；不自動附加 local files / Memory / Evidence / customer data；
-- public query 有 best-effort DLP screening；
-- `aeris ingress URL`：阻擋 loopback/private/link-local SSRF 與 unsafe redirect；
-- `offline`：禁止 AERIS cloud model routing 與 public URL ingress。
+```text
+DNS public-only check
+→ validated IP-pinned TCP/TLS
+→ redirect revalidation
+→ QUARANTINE
+→ SHA-256
+→ malware scan if available
+→ prompt-injection/content-risk markers
+→ Human promotion
+```
 
-這不等於「整台 OS 所有 process 永遠不可能外流」。高機密部署必須再加 OS/firewall/process isolation。詳見 [`docs/security/LOCAL_NETWORK_ENFORCEMENT.md`](docs/security/LOCAL_NETWORK_ENFORCEMENT.md)。
+下載內容不會自動被 Knowledge 信任。
 
-## 8. Portable software ≠ private company state
+這是 AERIS application boundary，不等於「整台 OS 所有 process 永遠不可能外流」。高機密部署必須使用 [`docs/security/LOCAL_NETWORK_ENFORCEMENT.md`](docs/security/LOCAL_NETWORK_ENFORCEMENT.md) 的 P2/P3/P4 架構。
 
-`package-company.*` 現在故意只建立 **software-only package**，並排除：
+## 8. Air-gap Core / models
+
+Core cache 可是：
+
+1. guarded Git cache：push URL disabled + deny pre-push；或
+2. checksum-manifested snapshot：沒有 `.git`、每個檔案 SHA-256 + canonical Core SHA。
+
+```bash
+python -m aeris_runtime core snapshot --output portable_assets/core-reference
+python -m aeris_runtime core verify
+```
+
+Staged GGUF model 使用 `portable_assets/models/model.manifest.json` + file SHA-256；offline 缺合法/可用 model 時直接 BLOCK。
+
+## 9. Portable software ≠ private company state
+
+Software Image 故意排除：
 
 - `.env`
 - `.aeris/`
@@ -185,44 +228,64 @@ LOCAL PRIVATE DATA ───X───► automatic cloud attachment
 - `portable_assets/`
 - private backups
 
-因此不會再把普通 ZIP 說成完整公司搬家。
+每個 Software Image 包含：
 
-私有狀態必須另外用現代加密：
+```text
+release-metadata/
+├─ SBOM.spdx.json
+├─ PROVENANCE.json
+└─ SHA256SUMS
+```
+
+這是 inventory/integrity/provenance，不等於 signed release/attestation。
+
+私有狀態另用 `age`：
 
 ```bash
 python scripts/private-state.py export private-backups/AERIS-private-state.age
+python scripts/private-state.py import private-backups/AERIS-private-state.age
 ```
 
-AERIS 使用外部 `age` CLI；如果 `age` 不存在就拒絕假裝做安全加密。Restore/relocation SOP：[`docs/deployment/STATE_BACKUP_RESTORE.md`](docs/deployment/STATE_BACKUP_RESTORE.md)。
+Archive restore 拒絕 traversal、symlink、hardlink、device、FIFO 等危險 member。
 
 完整搬家 =
 
 ```text
 Software Company Image
 + Encrypted Private State
-+ Human-controlled Private Asset Pack
-+ Restore / Tool / Local Acceptance
++ Human-controlled Legal Private Asset Pack
++ Destination Restore
++ Core / Tool / Calibration / Local Acceptance
 ```
 
-## 9. Professional tools
+## 10. Professional tools
 
-COMSOL、MATLAB、APx、KLIPPEL、SoundCheck、ACQUA、Ansys、Simcenter、專用 driver/license/hardware 不直接存入 public Git。文件存在不等於 adapter 已完成。
+COMSOL、MATLAB、APx、KLIPPEL、SoundCheck、ACQUA、Ansys、Simcenter 與專用 driver/license/hardware 不直接存 public Git。
 
-只有在合法安裝 + version capture + adapter + E2E + calibration/evidence（適用時）通過後才能標 `VERIFIED`。
+只有：
 
-詳見 [`docs/deployment/PROFESSIONAL_TOOLS.md`](docs/deployment/PROFESSIONAL_TOOLS.md)。
+```text
+legal install
++ exact version capture
++ implemented adapter
++ E2E
++ calibration/evidence where applicable
++ acceptance
+```
 
-## 10. 核心真值
+才能標 `VERIFIED`。
+
+## 11. 核心真值
 
 ```text
 Core GitHub
 = AERIS 應該成為什麼
 
-Portable implementation GitHub
-= AERIS 目前實際做到了什麼、如何部署
+Implementation GitHub
+= AERIS 目前真正做到了什麼、如何部署
 
 Local runtime/evidence
 = 這台機器實際發生了什麼
 ```
 
-**Implemented is not Verified. CI green is not Company Complete. Dashboard is not Truth. Memory is not Evidence. Execution is not Completion.**
+**Unknown > invented. Blocked > unsafe. Implemented is not Tested. Tested is not Verified. CI green is not Company Complete. Dashboard is not Truth. Memory is not Evidence. Execution is not Completion.**
