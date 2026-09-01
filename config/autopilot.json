@@ -2,6 +2,7 @@
   "schema_version": 5,
   "contract_id": "AERIS-LOCAL-FULL-BUILD-AUTOPILOT-V5",
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "deployment_profile": "AERIS-ZERO-COST-NO-CLAUDE-V1",
   "trigger": {
     "required_urls": [
       "https://github.com/Space653000/0_JN1_AERIS",
@@ -31,6 +32,10 @@
     "use_codex_tasks_or_scheduler": false,
     "launch_claude_code": false,
     "launch_second_model_reviewer": false,
+    "require_claude_token": false,
+    "install_paid_software": false,
+    "require_paid_cloud_api": false,
+    "auto_accept_license_or_eula": false,
     "ask_human_only_at_human_gate": true,
     "stop_for_plan_confirmation": false,
     "close_software_only_gaps_before_final_opening": true,
@@ -95,6 +100,7 @@
     "inventory_and_close_safe_software_gaps": true,
     "create_isolated_state": true,
     "install_supported_redistributable_dependencies": true,
+    "install_paid_or_license_gated_professional_software": false,
     "sync_and_verify_read_only_core": true,
     "configure_local_model": true,
     "build_local_knowledge": true,
@@ -117,6 +123,8 @@
     "delete_private_data_to_repair": false,
     "auto_accept_core_drift": false,
     "auto_accept_license_or_eula": false,
+    "auto_purchase_or_activate_paid_software": false,
+    "auto_require_claude_or_claude_token": false,
     "auto_invent_credentials": false,
     "auto_weaken_privacy": false,
     "auto_ignore_failed_test": false,
@@ -129,6 +137,8 @@
     "ADMIN_OR_OS_POLICY_DENIES_REQUIRED_PERSISTENCE",
     "HEADLESS_PRELOGIN_SERVICE_REQUIRED_BUT_USER_SERVICE_IS_INSUFFICIENT",
     "LICENSE_OR_EULA_REQUIRED",
+    "PACKAGE_OR_SOURCE_AGREEMENT_REQUIRED",
+    "PAID_PROFESSIONAL_TOOL_REQUIRED_FOR_REQUESTED_SCOPE",
     "SECRET_OR_HARDWARE_TOKEN_REQUIRED",
     "PHYSICAL_FIXTURE_OR_CALIBRATION_REQUIRED",
     "UNRELATED_DESTRUCTIVE_NETWORK_OR_STORAGE_CHANGE_REQUIRED",
@@ -137,5 +147,5 @@
     "PRODUCTION_CUSTOMER_FORMAL_RELEASE"
   ],
   "opening_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
-  "truth_rule": "Two canonical URLs plus a safe selected workspace are the full command. Codex must close every safely implementable software-only gap before final opening, while external licensed/hardware/calibration/secret/Human-authority blockers remain explicit and never fabricated."
+  "truth_rule": "Two canonical URLs plus a safe selected workspace are the full command. Codex must close every safely implementable zero-cost software-only gap before final opening. Paid/licensed professional tools, external credentials, hardware/calibration and Human-authority blockers remain explicit and never fabricated; Claude is optional and never required by the default path."
 }
