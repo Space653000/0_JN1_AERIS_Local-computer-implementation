@@ -20,19 +20,24 @@ class RouteDecision:
 class ModelRouter:
     def __init__(self, config: RuntimeConfig) -> None:
         self.config = config
-        self.local = OllamaProvider(config.local_base_url, config.local_model, config.local_timeout_sec)
+        self.local = OllamaProvider(
+            config.local_base_url,
+            config.local_model,
+            config.local_timeout_sec,
+            network_scope=config.local_network_scope,
+        )
         self.cloud = OpenAICompatibleProvider(config.cloud_base_url, config.cloud_model, config.cloud_api_key, config.cloud_timeout_sec)
 
     def decision(self, workload: str = "private_engineering") -> RouteDecision:
         mode = self.config.mode
         if workload != "public_research":
-            return RouteDecision(mode, "local", "private/local company context is hard-routed to local AI; cloud egress denied", workload)
+            return RouteDecision(mode, "local", "private/local company context is hard-routed to an endpoint that must pass local/trusted-LAN policy", workload)
         if mode in {"offline", "local"}:
             return RouteDecision(mode, "local", f"{mode} mode keeps public research local", workload)
         if mode == "cloud":
             if self.cloud.configured:
                 return RouteDecision(mode, "cloud", "cloud mode selected for public research only", workload)
-            return RouteDecision(mode, "local", "cloud unavailable; public research falls back to local", workload)
+            return RouteDecision(mode, "local", "cloud unavailable; public research uses local provider", workload)
         healthy, detail = self.local.health()
         if healthy:
             return RouteDecision("auto", "local", f"local-first public research: {detail}", workload)
@@ -45,7 +50,7 @@ class ModelRouter:
         return [{"role": "system", "content": system}, {"role": "user", "content": user_text}]
 
     def chat(self, user_text: str, system_prompt: str | None = None) -> ProviderResult:
-        """Private engineering channel. Never sends content to cloud."""
+        """Private engineering channel. Provider endpoint policy is enforced before network I/O."""
         return self.local.chat(self._messages(user_text, system_prompt))
 
     def public_research(self, query: str) -> ProviderResult:
@@ -61,6 +66,8 @@ class ModelRouter:
             try:
                 return self.cloud.chat(messages)
             except ProviderError:
+                if not self.config.cloud_fallback_to_local:
+                    raise
                 healthy, _ = self.local.health()
                 if healthy:
                     return self.local.chat(messages)
