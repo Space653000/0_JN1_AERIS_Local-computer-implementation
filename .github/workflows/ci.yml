@@ -33,7 +33,7 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: bash -n INSTALL_AERIS_LOCAL.sh scripts/*.sh
-      - name: Unit tests including privacy ingress archive and Core snapshot security
+      - name: Unit tests including Core alignment, private endpoint, ingress and archive security
         run: python -m unittest discover -s tests -v
       - name: Validate 100-role company image and maturity truth
         run: python -m aeris_runtime company status
@@ -75,7 +75,7 @@ jobs:
         shell: pwsh
         run: |
           ./INSTALL_AERIS_LOCAL.ps1 -Mode auto -SkipLocalModelInstall -SkipCoreSync
-      - name: Linux portable package smoke with SBOM/provenance
+      - name: Linux portable package smoke with SBOM/provenance and external digest
         if: runner.os == 'Linux'
         shell: bash
         run: |
@@ -83,18 +83,25 @@ jobs:
           bash scripts/package-company.sh /tmp/aeris-dist
           pkg="$(find /tmp/aeris-dist -maxdepth 1 -name 'AERIS-Portable-Company-*.tar.gz' -print -quit)"
           test -n "$pkg"
+          test -s "$pkg.sha256"
+          (cd "$(dirname "$pkg")" && sha256sum -c "$(basename "$pkg").sha256")
           mkdir -p /tmp/aeris-check
           tar -xzf "$pkg" -C /tmp/aeris-check
           test -s /tmp/aeris-check/release-metadata/SBOM.spdx.json
           test -s /tmp/aeris-check/release-metadata/PROVENANCE.json
           test -s /tmp/aeris-check/release-metadata/SHA256SUMS
-      - name: Windows portable package smoke with SBOM/provenance
+      - name: Windows portable package smoke with SBOM/provenance and external digest
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           ./scripts/package-company.ps1 -OutputDir dist-ci
           $pkg = Get-ChildItem dist-ci -Filter 'AERIS-Portable-Company-*.zip' | Select-Object -First 1
           if (-not $pkg) { throw 'Portable ZIP was not created.' }
+          $sidecar = "$($pkg.FullName).sha256"
+          if (-not (Test-Path $sidecar)) { throw 'Portable ZIP external SHA-256 sidecar was not created.' }
+          $expected = ((Get-Content $sidecar -Raw).Trim().Split()[0]).ToLowerInvariant()
+          $actual = (Get-FileHash -Algorithm SHA256 $pkg.FullName).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw 'Portable ZIP SHA-256 sidecar does not match package.' }
           $check = Join-Path $env:RUNNER_TEMP 'aeris-package-check'
           if (Test-Path $check) { Remove-Item $check -Recurse -Force }
           Expand-Archive $pkg.FullName -DestinationPath $check
