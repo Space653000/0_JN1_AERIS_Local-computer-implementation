@@ -47,6 +47,33 @@ class MaturityTruthTests(unittest.TestCase):
         for source, sha in observed.items():
             self.assertEqual(sha, expected, f"Core truth drift at {source}: {sha} != {expected}")
 
+    def test_reviewer_allocator_maturity_matches_tested_baseline(self):
+        maturity = load_json("config/maturity.json")
+        baselines = load_json("config/baseline_capabilities.v1.json")
+        mature = maturity["capabilities"]["independent_reviewer_allocation_engine"]
+        baseline = baselines["capabilities"]["task_aware_independent_reviewer_allocation_baseline"]
+        self.assertEqual(baseline["state"], "TESTED")
+        self.assertEqual(mature["state"], "TESTED")
+        self.assertIn("reviewer_allocation.py", mature["evidence"])
+        self.assertIn("does not require Claude", mature["note"])
+
+    def test_full_domain_and_physical_scopes_remain_truthfully_incomplete(self):
+        maturity = load_json("config/maturity.json")
+        capabilities = maturity["capabilities"]
+        for name in (
+            "100_role_executable_domain_contracts",
+            "golden_acoustic_dataset_suite",
+            "full_skills_library",
+            "full_methods_library",
+            "browser_e2e_visual_regression",
+            "machine_resource_qualification",
+            "release_signing_and_attestation",
+            "commercial_release_readiness",
+        ):
+            self.assertEqual(capabilities[name]["state"], "NOT_IMPLEMENTED", name)
+        for name in ("comsol_adapter", "matlab_adapter", "apx_adapter", "klippel_adapter", "soundcheck_adapter", "acqua_adapter"):
+            self.assertEqual(capabilities[name]["state"], "BLOCKED_EXTERNAL", name)
+
 
 if __name__ == "__main__":
     unittest.main()
