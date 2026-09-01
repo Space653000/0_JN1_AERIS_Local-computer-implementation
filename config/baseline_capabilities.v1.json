@@ -20,6 +20,38 @@
         "GitHub Actions PR #19 run #164 Windows 2025 + Ubuntu 24.04"
       ],
       "truth": "TESTED only for the small deterministic FR regression baseline; full production Speaker/Microphone Golden Dataset remains incomplete."
+    },
+    "role_contract_framework_baseline": {
+      "state": "TESTED",
+      "evidence": [
+        "config/role_contracts.v1.json",
+        "aeris_runtime/role_contracts.py",
+        "tests/test_role_contracts.py",
+        "GitHub Actions PR #20 run #168 Windows 2025 + Ubuntu 24.04"
+      ],
+      "truth": "TESTED for 100 machine-readable baseline contracts with checked current asset references; all 100 intentionally remain NOT_DOMAIN_VERIFIED until specialty assets and acceptance evidence exist."
+    },
+    "task_aware_independent_reviewer_allocation_baseline": {
+      "state": "TESTED",
+      "evidence": [
+        "aeris_runtime/reviewer_allocation.py",
+        "tests/test_reviewer_allocation.py",
+        "GitHub Actions PR #20 run #168 Windows 2025 + Ubuntu 24.04"
+      ],
+      "truth": "TESTED for deterministic task/domain-hint reviewer-seat allocation with identity/context/permission separation. Allocation is not proof that a review occurred and does not require Claude."
+    },
+    "zero_cost_no_claude_default_deployment_policy": {
+      "state": "TESTED",
+      "evidence": [
+        "config/zero_cost_no_claude.v1.json",
+        "aeris_runtime/deployment_policy.py",
+        "tests/test_zero_cost_deployment.py",
+        "scripts/windows-zero-cost-bootstrap.ps1",
+        "tests/windows/test-zero-cost-bootstrap.ps1",
+        "scripts/one-click-install.ps1",
+        "GitHub Actions PR #20 run #168 Windows 2025 + Ubuntu 24.04"
+      ],
+      "truth": "TESTED for repository/default-entrypoint policy: default bootstrap does not require paid professional software, paid cloud API credentials, Claude Code or a Claude token, and does not auto-accept upstream package/license agreements. Upstream terms/pricing can still create a Human/External Gate."
     }
   }
 }

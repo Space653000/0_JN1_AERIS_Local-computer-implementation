@@ -57,10 +57,18 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./tests/windows/test-python-resolution.ps1
+      - name: Windows zero-cost winget fail-closed regression
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tests/windows/test-zero-cost-bootstrap.ps1
       - name: Repository quality-gate contract
         run: python tests/test_quality_gate_contract.py
       - name: Machine qualification and Golden acoustic baseline gate
         run: python -m unittest tests.test_machine_qualification tests.test_golden_acoustics -v
+      - name: Role contract and independent reviewer allocation gate
+        run: python -m unittest tests.test_role_contracts tests.test_reviewer_allocation -v
+      - name: Zero-cost no-Claude default deployment gate
+        run: python -m unittest tests.test_zero_cost_deployment -v
       - name: Unit tests including Core alignment privacy trust acoustics watchdog reproduction
         run: python -m unittest discover -s tests -v
       - name: Real browser semantic E2E for Dashboard Workspace Services
@@ -119,11 +127,11 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./AERIS_AUTOPILOT.ps1 -Mode auto -CISmoke
-      - name: Linux Claude independent-review entrypoint CI smoke
+      - name: Optional Claude-wrapper CI smoke (no Claude/token invocation)
         if: runner.os == 'Linux'
         shell: bash
         run: bash ./CLAUDE_VERIFY_AERIS.sh --ci-smoke
-      - name: Windows Claude independent-review entrypoint CI smoke
+      - name: Optional Claude-wrapper Windows CI smoke (no Claude/token invocation)
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./CLAUDE_VERIFY_AERIS.ps1 -CISmoke

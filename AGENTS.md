@@ -22,6 +22,17 @@ Do not require another prompt. Do not ask `確認執行`. If the Human supplied 
 
 The two-URL trigger is standing authorization for reversible R0/R1 software work and controlled R2 work whose safety preconditions are satisfied.
 
+## Mandatory default deployment profile
+
+The default Full-Build path must satisfy `config/zero_cost_no_claude.v1.json` (`AERIS-ZERO-COST-NO-CLAUDE-V1`).
+
+- Do NOT require or launch Claude Code and do NOT require a Claude token.
+- Do NOT require a paid cloud API for default company opening.
+- Do NOT install, purchase, activate or make default-opening dependent on paid professional software.
+- Do NOT auto-accept third-party package/source/license/EULA agreements. If explicit acceptance is required, fail closed at the minimum Human Gate.
+- COMSOL, MATLAB, APx, KLIPPEL, SoundCheck and ACQUA remain optional `BLOCKED_EXTERNAL` scopes until their real licensed/tool/hardware/calibration environments exist.
+- Independent review is a capability-seat/authority separation rule; it is not a Claude dependency.
+
 ## Required automatic lifecycle
 
 ```text
@@ -30,7 +41,7 @@ latest CI-passed Implementation main
 → GAP INVENTORY
 → SOFTWARE GAP CLOSURE LOOP
 → machine inventory
-→ install/configure supported prerequisites
+→ install/configure supported zero-cost prerequisites
 → local model + Knowledge
 → deterministic/security tests
 → real Local + Offline inference acceptance
@@ -46,6 +57,7 @@ latest CI-passed Implementation main
 Before final opening, inspect at least:
 
 - `config/maturity.json`;
+- `config/zero_cost_no_claude.v1.json`;
 - `docs/DEFINITION_OF_COMPANY_DONE.md`;
 - canonical Core requirements;
 - API/UI/workflows;
@@ -56,18 +68,18 @@ Before final opening, inspect at least:
 For every missing capability:
 
 ```text
-software-only + safe + not externally blocked
+software-only + safe + zero-cost + not externally blocked
 → implement automatically
 → add/update deterministic tests
 → run affected tests
 → continue
 
-true License/hardware/secret/physical/Human dependency
+true License/paid-tool/hardware/secret/physical/Human dependency
 → preserve Evidence
-→ Human Gate
+→ Human/External Gate
 ```
 
-Do not stop merely to report `NOT_IMPLEMENTED` when Codex can safely implement the missing software. Continue until no safe software-only gap remains or the next gap is a genuine Human/external gate.
+Do not stop merely to report `NOT_IMPLEMENTED` when Codex can safely implement the missing software. Continue until no safe zero-cost software-only gap remains or the next gap is a genuine Human/external gate.
 
 ## AI change acceptance / regression closure
 
@@ -110,7 +122,8 @@ Stop only for the minimum exact action when blocked by:
 
 - no safe/unambiguous local target;
 - denied admin/OS/persistence policy;
-- License/EULA;
+- License/EULA/package-source agreement;
+- paid professional tool required for an explicitly requested optional scope;
 - secret/customer credential/hardware token;
 - physical cable/fixture/chamber/instrument/calibration;
 - destructive unrelated disk/network/firewall impact;
@@ -123,7 +136,7 @@ Preserve Evidence and resume automatically afterward.
 ## Safety / truth
 
 - Never push/write canonical Core during deployment/full-build.
-- Never wipe unrelated/private data, invent credentials, auto-accept licenses, weaken privacy/evidence gates, or silently overwrite a dirty tracked worktree.
+- Never wipe unrelated/private data, invent credentials, auto-accept licenses/agreements, weaken privacy/evidence gates, or silently overwrite a dirty tracked worktree.
 - Default private engineering data = `LOCAL_ONLY`.
 - `OPEN_VERIFIED_SCOPE` is exact-scope evidence, not permission to fake unavailable licensed/hardware/calibration capability.
 - CI PASS is not real-machine evidence; Dashboard alive is not whole-company health.
@@ -133,7 +146,7 @@ Preserve Evidence and resume automatically afterward.
 1. Core `AGENTS.md`, Core `aeris.autopilot.json`, Core Full-Build SOP.
 2. This `AGENTS.md`.
 3. `docs/AI_CHANGE_ACCEPTANCE_PROTOCOL.md`.
-4. `config/autopilot.json`, `config/maturity.json`, `config/core_alignment.json`, `core.lock.json`.
+4. `config/autopilot.json`, `config/zero_cost_no_claude.v1.json`, `config/maturity.json`, `config/core_alignment.json`, `core.lock.json`.
 5. `docs/AUTOPILOT_ZERO_TOUCH_SOP.md`.
 6. `docs/DEFINITION_OF_COMPANY_DONE.md`.
 7. Task-specific files only as needed.

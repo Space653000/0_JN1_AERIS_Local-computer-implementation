@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "contract_id": "AERIS-ROLE-CONTRACT-FRAMEWORK-V1",
+  "execution_state": "CONTRACTED_BASELINE_NOT_DOMAIN_VERIFIED",
+  "common": {
+    "allowed_actions": ["analyze", "retrieve_local_knowledge", "form_hypothesis", "propose_test", "review_evidence"],
+    "forbidden_actions": ["invent_measurement", "invent_standard_revision", "invent_tool_run", "self_approve_r3_r4", "treat_model_consensus_as_evidence"],
+    "required_output_fields": ["claim", "evidence", "confidence", "counter_hypothesis", "missing_evidence", "recommended_test"],
+    "required_evidence_classes": ["measurement_or_dataset", "method_version", "provenance", "verification_gate"],
+    "verification_requirements": ["deterministic_tests", "negative_or_regression_case", "evidence_refs", "independent_review_when_risk_policy_requires"]
+  },
+  "available_asset_baseline": {
+    "skills": ["measurement-import-validation", "frequency-response-analysis", "requirement-verification"],
+    "methods": ["measurement-validation.v1.json", "fr-analysis.v1.json", "requirement-verification.v1.json"]
+  },
+  "groups": {
+    "Chief Council": {
+      "domain": "architecture_governance",
+      "baseline_skills": ["requirement-verification"],
+      "baseline_methods": ["requirement-verification.v1.json"],
+      "standards": [],
+      "review_tags": ["architecture", "requirements", "governance"]
+    },
+    "Speaker CoE": {
+      "domain": "speaker",
+      "baseline_skills": ["measurement-import-validation", "frequency-response-analysis", "requirement-verification"],
+      "baseline_methods": ["measurement-validation.v1.json", "fr-analysis.v1.json", "requirement-verification.v1.json"],
+      "standards": ["IEC 60268-5", "CTA-2034", "AES75"],
+      "review_tags": ["speaker", "measurement", "validation"]
+    },
+    "Microphone CoE": {
+      "domain": "microphone",
+      "baseline_skills": ["measurement-import-validation", "frequency-response-analysis", "requirement-verification"],
+      "baseline_methods": ["measurement-validation.v1.json", "fr-analysis.v1.json", "requirement-verification.v1.json"],
+      "standards": ["IEC 60268-4"],
+      "review_tags": ["microphone", "measurement", "validation"]
+    },
+    "Product Chiefs": {
+      "domain": "product_system",
+      "baseline_skills": ["requirement-verification"],
+      "baseline_methods": ["requirement-verification.v1.json"],
+      "standards": [],
+      "review_tags": ["product", "requirements", "system"]
+    },
+    "Distinguished Experts": {
+      "domain": "cross_domain_expert",
+      "baseline_skills": ["measurement-import-validation", "frequency-response-analysis", "requirement-verification"],
+      "baseline_methods": ["measurement-validation.v1.json", "fr-analysis.v1.json", "requirement-verification.v1.json"],
+      "standards": [],
+      "review_tags": ["expert", "analysis", "uncertainty"]
+    },
+    "Engineering Ops": {
+      "domain": "engineering_operations",
+      "baseline_skills": ["measurement-import-validation", "requirement-verification"],
+      "baseline_methods": ["measurement-validation.v1.json", "requirement-verification.v1.json"],
+      "standards": [],
+      "review_tags": ["quality", "evidence", "operations"]
+    }
+  },
+  "reviewer_roles": {
+    "quality": "R006",
+    "standards": "R089",
+    "test_automation": "R091",
+    "reliability": "R096",
+    "requirements": "R097",
+    "red_team": "R098",
+    "evidence": "R099"
+  },
+  "truth": "A materialized contract proves that a seat has a machine-readable responsibility/permission/evidence envelope and checked references to current baseline assets. It does not prove the seat has complete specialty Skills, Methods, Standards, tools, golden cases or domain competence."
+}

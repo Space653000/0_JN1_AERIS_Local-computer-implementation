@@ -7,7 +7,9 @@ param(
 $ErrorActionPreference='Stop'
 $Root=Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'windows-python-resolution.ps1')
+. (Join-Path $PSScriptRoot 'windows-zero-cost-bootstrap.ps1')
 Write-Host '=== AERIS One-Click Company Installer ==='
+Write-Host 'Default profile: zero paid professional software; no Claude/Claude token required.'
 Write-Host 'Privacy: AERIS private engineering is application-routed to local AI; OS/network isolation still requires local verification.'
 
 function Have($cmd){ return [bool](Get-Command $cmd -ErrorAction SilentlyContinue) }
@@ -70,12 +72,10 @@ if (-not $PythonExe) {
     $PythonExe=Resolve-AerisPython
   } elseif($Mode -eq 'offline') {
     throw 'Offline clean-machine install requires portable_assets/installers/python-3.11-amd64.exe plus .sha256, or preinstalled Python 3.10+.'
-  } elseif (Have 'winget') {
-    Write-Host 'Installing Python 3.11 via winget...'
-    winget install --id Python.Python.3.11 -e --accept-package-agreements --accept-source-agreements
+  } elseif (Install-WingetPackageNoAgreement 'Python.Python.3.11' 'Python 3.11') {
     $PythonExe=Resolve-AerisPython
   }
-  if (-not $PythonExe) { throw 'Python 3.10+ could not be installed automatically. See docs/ONE_CLICK_INSTALL.md.' }
+  if (-not $PythonExe) { throw 'Python 3.10+ could not be installed automatically without bypassing AERIS license/agreement policy. See docs/ONE_CLICK_INSTALL.md.' }
 }
 $PythonExe=Assert-AerisPythonVersion -Executable $PythonExe
 Write-Host "Python interpreter: $PythonExe"
@@ -89,6 +89,15 @@ try {
   if (-not (Test-Path '.env') -and (Test-Path '.env.example')) { Copy-Item '.env.example' '.env' }
   Set-DotEnvValue '.env' 'AERIS_LOCAL_MODEL' $LocalModel
   New-Item -ItemType Directory -Force -Path '.aeris\state','.aeris\knowledge','.aeris\ingress','.aeris\installers','data','logs' | Out-Null
+
+  if (-not $SkipCoreSync -and -not (Have 'git') -and $Mode -ne 'offline') {
+    if(Install-WingetPackageNoAgreement 'Git.Git' 'Git'){
+      Refresh-AerisKnownToolPaths
+    }
+    if(-not (Have 'git')){
+      throw 'Git is required for clean online canonical Core synchronization and could not be installed under the zero-cost/no-auto-agreement policy.'
+    }
+  }
 
   if (-not $SkipCoreSync) {
     $StagedCore=Join-Path $Root 'portable_assets\core-reference'
@@ -112,11 +121,10 @@ try {
       Start-Process -FilePath $Staged -ArgumentList '/S' -Wait
     } elseif ($Mode -eq 'offline') {
       throw 'Offline install requires a checksum-verified portable_assets/installers/OllamaSetup.exe or preinstalled Ollama.'
-    } elseif (Have 'winget') {
-      Write-Host 'Installing Ollama via winget...'
-      winget install --id Ollama.Ollama -e --accept-package-agreements --accept-source-agreements
-    } else { throw 'Ollama could not be installed automatically. Stage a verified installer or install it before rerunning.' }
-    $env:PATH += ';' + "$env:LOCALAPPDATA\Programs\Ollama"
+    } elseif (Install-WingetPackageNoAgreement 'Ollama.Ollama' 'Ollama') {
+      Refresh-AerisKnownToolPaths
+    } else { throw 'Ollama could not be installed automatically under the zero-cost/no-auto-agreement policy. Stage a verified installer or install it before rerunning.' }
+    Refresh-AerisKnownToolPaths
   }
 
   if (-not $SkipLocalModelInstall -and (Have 'ollama')) {
@@ -136,6 +144,8 @@ try {
     }
   }
 
+  & $Py -c "from aeris_runtime.deployment_policy import validate_default_deployment; r=validate_default_deployment(); print('ZERO_COST_NO_CLAUDE_POLICY=' + ('PASS' if r['valid'] else 'FAIL')); raise SystemExit(0 if r['valid'] else 19)"
+  if($LASTEXITCODE -ne 0){ throw 'AERIS zero-cost/no-Claude deployment policy validation failed.' }
   & $Py -m aeris_runtime mode set $Mode
   & $Py -m aeris_runtime machine detect --write
   & $Py -m aeris_runtime knowledge build
