@@ -75,6 +75,7 @@ class RuntimeConfig:
     cloud_timeout_sec: int
     cloud_fallback_to_local: bool
     system_prompt: str
+    local_network_scope: str = "loopback"
 
     @property
     def cloud_configured(self) -> bool:
@@ -103,6 +104,9 @@ def load_config() -> RuntimeConfig:
     mode = persisted or os.getenv("AERIS_AI_MODE", "auto").lower().strip()
     if mode not in {"offline", "local", "cloud", "auto"}:
         mode = "auto"
+    network_scope = os.getenv("AERIS_LOCAL_NETWORK_SCOPE", "loopback").lower().strip()
+    if network_scope not in {"loopback", "trusted_lan"}:
+        network_scope = "invalid"
     return RuntimeConfig(
         mode=mode,
         local_base_url=os.getenv("AERIS_LOCAL_BASE_URL", "http://127.0.0.1:11434").rstrip("/"),
@@ -117,6 +121,7 @@ def load_config() -> RuntimeConfig:
             "AERIS_SYSTEM_PROMPT",
             "You are AERIS, an evidence-first acoustic engineering runtime. Treat inference as inference, not measured fact.",
         ),
+        local_network_scope=network_scope,
     )
 
 
