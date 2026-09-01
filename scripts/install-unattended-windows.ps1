@@ -35,9 +35,9 @@ if(-not (Test-Path $Py)){
 }
 
 if($CISmoke){
-  # Validate the intended command without mutating the hosted runner Task Scheduler.
-  & $Py -m aeris_runtime.watchdog --once --port $Port *> $null
-  Write-Report 'CI_SMOKE_PASS_NOT_REGISTERED' 'CI_SMOKE' 'Watchdog module executed; OS persistence intentionally not changed in CI.' $false
+  & $Py -m aeris_runtime.watchdog --help *> $null
+  if($LASTEXITCODE -ne 0){ throw 'Watchdog module entrypoint failed.' }
+  Write-Report 'CI_SMOKE_PASS_NOT_REGISTERED' 'CI_SMOKE' 'Watchdog entrypoint and PowerShell syntax validated; OS persistence intentionally not changed in CI.' $false
   exit 0
 }
 
@@ -56,20 +56,16 @@ try {
   exit 0
 }
 catch {
-  # Non-admin fallback: Startup folder launches the persistent watchdog at user logon.
   try {
     $Startup=[Environment]::GetFolderPath('Startup')
     if(-not $Startup){throw 'Startup folder unavailable'}
-    $Vbs=Join-Path $Startup 'AERIS-Local-Company-Watchdog.vbs'
-    $Cmd='"' + $Py.Replace('"','""') + '" -m aeris_runtime.watchdog --port ' + $Port + ' --interval ' + $IntervalSec
-    $VbsBody=@"
-Set shell = CreateObject("WScript.Shell")
-shell.CurrentDirectory = "$($Root.Replace('"','""'))"
-shell.Run "$($Cmd.Replace('"','""'))", 0, False
-"@
-    Set-Content -Path $Vbs -Value $VbsBody -Encoding ASCII
-    Start-Process -FilePath $Py -ArgumentList @('-m','aeris_runtime.watchdog','--port',"$Port",'--interval',"$IntervalSec") -WorkingDirectory $Root -WindowStyle Hidden
-    Write-Report 'REGISTERED_WITH_LIMITS' 'STARTUP_VBS_FALLBACK' "ScheduledTasks failed: $($_.Exception.Message). Startup fallback registered; OS-level restart of the watchdog itself is not guaranteed until next logon." $false
+    $CmdFile=Join-Path $Startup 'AERIS-Local-Company-Watchdog.cmd'
+    $PyW=Join-Path (Split-Path $Py -Parent) 'pythonw.exe'
+    $Runner=$(if(Test-Path $PyW){$PyW}else{$Py})
+    $CmdBody="@echo off`r`ncd /d `"$Root`"`r`nstart `"`" /min `"$Runner`" -m aeris_runtime.watchdog --port $Port --interval $IntervalSec`r`n"
+    Set-Content -Path $CmdFile -Value $CmdBody -Encoding ASCII
+    Start-Process -FilePath $Runner -ArgumentList @('-m','aeris_runtime.watchdog','--port',"$Port",'--interval',"$IntervalSec") -WorkingDirectory $Root -WindowStyle Hidden
+    Write-Report 'REGISTERED_WITH_LIMITS' 'STARTUP_FOLDER_FALLBACK' "ScheduledTasks failed: $($_.Exception.Message). Current-user Startup fallback registered; OS-level restart of the watchdog itself is not guaranteed until next logon." $false
     exit 0
   }
   catch {
