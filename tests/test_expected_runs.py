@@ -21,6 +21,21 @@ class ExpectedRunTests(unittest.TestCase):
     def test_unconfigured_is_not_healthy(self):
         self.assertEqual(er.assess_all()["overall"], "NOT_CONFIGURED")
 
+    def test_default_operational_contracts_are_initialized_without_fake_success(self):
+        data = er.ensure_defaults(audit_event=False)
+        runs = data["expected_runs"]
+        self.assertEqual(set(runs), {"company-opening-assessment", "supervisor-heartbeat"})
+        self.assertTrue(all(item["last_result"] is None for item in runs.values()))
+        self.assertEqual(er.assess_all()["overall"], "DEGRADED")
+
+    def test_ensure_defaults_preserves_existing_history(self):
+        er.ensure_defaults(audit_event=False)
+        er.mark("supervisor-heartbeat", True, audit_event=False)
+        before = er._read()["expected_runs"]["supervisor-heartbeat"]["last_success_at_utc"]
+        er.ensure_defaults(audit_event=False)
+        after = er._read()["expected_runs"]["supervisor-heartbeat"]["last_success_at_utc"]
+        self.assertEqual(before, after)
+
     def test_success_is_healthy_then_stale(self):
         er.register("nightly-index", max_age_sec=60)
         self.assertEqual(er.mark("nightly-index", True)["state"], "HEALTHY")

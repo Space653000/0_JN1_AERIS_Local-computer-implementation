@@ -20,6 +20,7 @@ from .company import validate_company_manifest
 from .config import ROOT, load_config
 from .controlplane import handle_get as controlplane_get, handle_post as controlplane_post
 from .corecache import verify_core_cache
+from .expected_runs import ensure_defaults as ensure_expected_runs, mark as mark_expected_run
 from .machine import detect as machine_detect
 from .router import ModelRouter
 
@@ -137,6 +138,13 @@ def open_company(actor: str = "Codex Autopilot") -> dict[str, Any]:
     payload = assess_opening()
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     OPENING_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    ensure_expected_runs(actor=actor)
+    mark_expected_run(
+        "company-opening-assessment",
+        payload["operational_state"] != "BLOCKED",
+        error=", ".join(payload["blockers"]),
+        actor=actor,
+    )
     append_event("COMPANY_OPENING_ASSESSED", actor, {"operational_state": payload["operational_state"], "blockers": payload["blockers"], "limits": payload["limits"]})
     return payload
 
@@ -158,6 +166,11 @@ def _heartbeat_payload(port: int, opening: dict[str, Any]) -> dict[str, Any]:
 def _write_heartbeat(port: int, opening: dict[str, Any]) -> None:
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     HEARTBEAT_FILE.write_text(json.dumps(_heartbeat_payload(port, opening), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    try:
+        mark_expected_run("supervisor-heartbeat", True, actor="AERIS Supervisor", audit_event=False)
+    except KeyError:
+        ensure_expected_runs(actor="AERIS Supervisor", audit_event=False)
+        mark_expected_run("supervisor-heartbeat", True, actor="AERIS Supervisor", audit_event=False)
 
 
 class _Handler(BaseHTTPRequestHandler):

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "expected_runs": [
+    {
+      "name": "company-opening-assessment",
+      "max_age_sec": 86400,
+      "artifact_path": ".aeris/state/COMPANY_OPENING.json",
+      "scope": "Company opening assessment freshness; not proof of company completeness."
+    },
+    {
+      "name": "supervisor-heartbeat",
+      "max_age_sec": 90,
+      "artifact_path": ".aeris/state/HEARTBEAT.json",
+      "scope": "Loopback supervisor heartbeat freshness; not whole-company engineering correctness."
+    }
+  ]
+}

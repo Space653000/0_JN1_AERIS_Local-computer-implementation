@@ -1,7 +1,9 @@
 """AERIS engineering workflow baseline.
 
 Connects task identity, Dynamic Pod planning, deterministic Skills, Evidence Bundle,
-and G0/G1 verification without bypassing domain/independent/Human gates.
+and G0/G1 verification without bypassing domain/independent/Human gates. Versioned
+workflow templates provide repeatable starting contracts; template existence never
+counts as an executed or verified workflow run.
 """
 from __future__ import annotations
 
@@ -15,11 +17,12 @@ from .audit import append_event
 from .config import ROOT
 from .evidence import bundle_dir, create_bundle, seal_bundle, validate_bundle
 from .roles import plan_pod
-from .skills_runtime import run_skill
+from .skills_runtime import list_skills, run_skill
 from .taskstate import create_task, load_task, transition_task
 from .verification import gate_summary, record_gate
 
 WORKFLOW_ROOT = ROOT / ".aeris" / "workflows"
+TEMPLATES_PATH = ROOT / "workflows" / "templates.v1.json"
 
 
 def _now() -> str:
@@ -47,6 +50,48 @@ def _write(payload: dict[str, Any]) -> dict[str, Any]:
     return payload
 
 
+def _template_document() -> dict[str, Any]:
+    if not TEMPLATES_PATH.exists():
+        return {"schema_version": 1, "templates": []}
+    data = json.loads(TEMPLATES_PATH.read_text(encoding="utf-8-sig"))
+    if data.get("schema_version") != 1 or not isinstance(data.get("templates"), list):
+        raise ValueError("unsupported workflow template registry")
+    return data
+
+
+def list_workflow_templates() -> list[dict[str, Any]]:
+    templates = _template_document().get("templates", [])
+    known_skills = {str(item.get("skill_id")) for item in list_skills()}
+    result: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for raw in templates:
+        if not isinstance(raw, dict):
+            raise ValueError("workflow template must be an object")
+        item = dict(raw)
+        template_id = _safe_id(str(item.get("template_id", "")))
+        if template_id in seen:
+            raise ValueError(f"duplicate workflow template_id: {template_id}")
+        seen.add(template_id)
+        skill_id = str(item.get("skill_id", "")).strip()
+        if skill_id not in known_skills:
+            raise ValueError(f"workflow template {template_id} references unknown skill: {skill_id}")
+        required = item.get("required_inputs", [])
+        if not isinstance(required, list) or any(not isinstance(x, str) or not x.strip() for x in required):
+            raise ValueError(f"workflow template {template_id} required_inputs invalid")
+        item["template_id"] = template_id
+        item["execution_state"] = "EXECUTABLE_TEMPLATE_NOT_RUN"
+        result.append(item)
+    return result
+
+
+def get_workflow_template(template_id: str) -> dict[str, Any]:
+    normalized = _safe_id(template_id)
+    for item in list_workflow_templates():
+        if item["template_id"] == normalized:
+            return item
+    raise KeyError(template_id)
+
+
 def load_workflow(workflow_id: str) -> dict[str, Any]:
     return json.loads(workflow_path(workflow_id).read_text(encoding="utf-8-sig"))
 
@@ -72,17 +117,19 @@ def create_engineering_workflow(
     skill_id: str | None = None,
     skill_params: dict[str, Any] | None = None,
     max_roles: int = 8,
+    template_id: str | None = None,
 ) -> dict[str, Any]:
     summary = summary.strip()
     if not summary:
         raise ValueError("summary is required")
     query = (description or summary).strip()
     pod = plan_pod(query, max_roles=max_roles)
-    task = create_task(summary, actor, risk=risk, metadata={"description": description, "pod": pod})
+    task = create_task(summary, actor, risk=risk, metadata={"description": description, "pod": pod, "workflow_template_id": template_id})
     wid = _safe_id("WF-" + uuid.uuid4().hex[:12].upper())
     payload = {
         "schema_version": 1,
         "workflow_id": wid,
+        "workflow_template_id": template_id,
         "task_id": task["task_id"],
         "summary": summary,
         "description": description,
@@ -102,8 +149,39 @@ def create_engineering_workflow(
         "truth": "Workflow automation may complete deterministic execution/evidence/G0-G1 only. G2 domain, G3 regression, G4 independent review and G5 Human approval remain explicit gates.",
     }
     _write(payload)
-    append_event("WORKFLOW_CREATED", actor, {"workflow_id": wid, "task_id": task["task_id"], "skill_id": skill_id, "pod_size": pod["pod_size"]})
+    append_event("WORKFLOW_CREATED", actor, {"workflow_id": wid, "template_id": template_id, "task_id": task["task_id"], "skill_id": skill_id, "pod_size": pod["pod_size"]})
     return payload
+
+
+def create_workflow_from_template(
+    template_id: str,
+    actor: str,
+    *,
+    summary: str = "",
+    description: str = "",
+    skill_params: dict[str, Any] | None = None,
+    max_roles: int = 8,
+) -> dict[str, Any]:
+    template = get_workflow_template(template_id)
+    params = dict(skill_params or {})
+    missing = [
+        name
+        for name in template.get("required_inputs", [])
+        if name not in params or params[name] is None or params[name] == ""
+    ]
+    if missing:
+        raise ValueError(f"workflow template missing required inputs: {', '.join(missing)}")
+    effective_summary = summary.strip() or str(template.get("name", template_id))
+    return create_engineering_workflow(
+        effective_summary,
+        actor,
+        description=description,
+        risk=str(template.get("default_risk", "R0")),
+        skill_id=str(template["skill_id"]),
+        skill_params=params,
+        max_roles=max_roles,
+        template_id=str(template["template_id"]),
+    )
 
 
 def execute_workflow(workflow_id: str, actor: str) -> dict[str, Any]:

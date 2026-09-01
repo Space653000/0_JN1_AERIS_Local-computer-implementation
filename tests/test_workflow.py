@@ -32,7 +32,6 @@ class WorkflowTests(unittest.TestCase):
         ]
         for p in self.patches:
             p.start()
-        # Functions imported append_event symbols at import time; neutralize audit side effect here.
         self.event_patches = [
             patch.object(taskstate, "append_event", return_value={}),
             patch.object(evidence, "append_event", return_value={}),
@@ -48,6 +47,39 @@ class WorkflowTests(unittest.TestCase):
         for p in reversed(self.patches):
             p.stop()
         self.tmp.cleanup()
+
+    def test_versioned_templates_reference_real_skills_and_are_not_fake_runs(self):
+        templates = workflow.list_workflow_templates()
+        self.assertEqual(len(templates), 3)
+        self.assertEqual(len(workflow.list_workflows()), 0)
+        self.assertTrue(all(t["execution_state"] == "EXECUTABLE_TEMPLATE_NOT_RUN" for t in templates))
+        self.assertEqual(
+            {t["skill_id"] for t in templates},
+            {"measurement-import-validation", "frequency-response-analysis", "requirement-verification"},
+        )
+
+    def test_requirement_template_accepts_structured_requirement_input(self):
+        wf = workflow.create_workflow_from_template(
+            "WF-TPL-REQUIREMENT-VERIFICATION",
+            "Codex",
+            summary="Verify FR flatness from template",
+            description="speaker frequency response requirement",
+            skill_params={
+                "input_path": str(self.csv),
+                "requirement": {"band_hz": [100, 2000], "max_peak_to_peak_db": 4.0},
+            },
+        )
+        self.assertEqual(wf["workflow_template_id"], "WF-TPL-REQUIREMENT-VERIFICATION")
+        self.assertEqual(wf["execution"]["skill_id"], "requirement-verification")
+        self.assertEqual(wf["risk"], "R1")
+
+    def test_template_refuses_missing_required_input(self):
+        with self.assertRaisesRegex(ValueError, "missing required inputs"):
+            workflow.create_workflow_from_template(
+                "WF-TPL-REQUIREMENT-VERIFICATION",
+                "Codex",
+                skill_params={"input_path": str(self.csv)},
+            )
 
     def test_deterministic_skill_reaches_evidenced_not_verified(self):
         wf = workflow.create_engineering_workflow(

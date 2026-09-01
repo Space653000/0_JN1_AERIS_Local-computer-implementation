@@ -11,6 +11,8 @@ class QualityGateContractTests(unittest.TestCase):
             "scripts/windows-python-resolution.ps1",
             "tests/windows/test-python-resolution.ps1",
             "tests/test_maturity_truth.py",
+            "aeris_runtime/claim_guard.py",
+            "tests/test_claim_guard.py",
             "INSTALL_AERIS_LOCAL.ps1",
             "AERIS_AUTOPILOT.ps1",
             ".github/workflows/ci.yml",
@@ -41,6 +43,15 @@ class QualityGateContractTests(unittest.TestCase):
         self.assertIn("Generic `python` is deliberately late", resolver)
         self.assertIn("windows-python-resolution.ps1", installer)
         self.assertIn("Resolve-AerisPython", installer)
+
+    def test_model_measurement_hallucination_guard_cannot_silently_disappear(self):
+        guard = (ROOT / "aeris_runtime/claim_guard.py").read_text(encoding="utf-8")
+        roles = (ROOT / "aeris_runtime/roles.py").read_text(encoding="utf-8")
+        regression = (ROOT / "tests/test_claim_guard.py").read_text(encoding="utf-8")
+        self.assertIn("REJECTED_UNSUPPORTED_OR_INVALID_CLAIM", guard)
+        self.assertIn("uses measured/verified-fact wording without EVIDENCE classification", guard)
+        self.assertIn("AERIS_ROLE_EVIDENCE_SCHEMA_V1", roles)
+        self.assertIn("已有量測記錄證明此單體通過測試", regression)
 
     def test_ai_protocol_requires_post_merge_main_ci(self):
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")

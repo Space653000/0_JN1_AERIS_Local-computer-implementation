@@ -21,7 +21,14 @@ from .roles import get_role, invoke_role, list_roles, plan_pod
 from .router import ModelRouter
 from .skills_runtime import list_skills, run_skill
 from .standards_registry import search_standards
-from .workflow import create_engineering_workflow, execute_workflow, list_workflows, load_workflow
+from .workflow import (
+    create_engineering_workflow,
+    create_workflow_from_template,
+    execute_workflow,
+    list_workflow_templates,
+    list_workflows,
+    load_workflow,
+)
 
 UI_ROOT = ROOT / "ui" / "web"
 DB_PATH = ROOT / ".aeris" / "control" / "control.sqlite3"
@@ -241,6 +248,8 @@ def _status(opening: dict[str, Any]) -> dict[str, Any]:
     store, config = ControlStore(), load_config()
     router, maturity = ModelRouter(config), _json_file(MATURITY_PATH)
     local_ok, local_detail = router.local.health()
+    templates = list_workflow_templates()
+    workflows = list_workflows()
     maturity_counts: dict[str, int] = {}
     for item in maturity.get("capabilities", {}).values():
         state = str(item.get("state", "UNKNOWN"))
@@ -255,12 +264,14 @@ def _status(opening: dict[str, Any]) -> dict[str, Any]:
         "local_provider_detail": local_detail,
         "role_count": len(list_roles()),
         "skill_count": len(list_skills()),
-        "workflow_count": len(list_workflows()),
+        "workflow_template_count": len(templates),
+        "workflow_run_count": len(workflows),
+        "workflow_count": len(workflows),
         "control": store.summary(),
         "knowledge": knowledge_stats(),
         "expected_runs": expected_run_health(),
         "maturity": {"product_stage": maturity.get("product_stage", "UNKNOWN"), "counts": maturity_counts},
-        "truth": "Live local control plane; service health/opening never implies every acoustic capability is domain-verified.",
+        "truth": "Workflow templates are executable definitions; workflow_run_count is real instantiated runs. Neither service health nor templates imply domain verification.",
     }
 
 
@@ -309,6 +320,8 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
             _write_json(handler, 200, {"tasks": ControlStore().list_tasks((qs.get("project_id") or [None])[0])})
         elif path == "/api/v1/skills":
             _write_json(handler, 200, {"skills": list_skills()})
+        elif path == "/api/v1/workflow-templates":
+            templates = list_workflow_templates(); _write_json(handler, 200, {"count": len(templates), "templates": templates})
         elif path == "/api/v1/workflows":
             _write_json(handler, 200, {"workflows": list_workflows()})
         elif path.startswith("/api/v1/workflows/"):
@@ -350,7 +363,10 @@ def handle_post(handler: Any) -> bool:
         elif path == "/api/v1/pods/plan":
             _write_json(handler, 200, plan_pod(str(payload.get("query", "")), int(payload.get("max_roles", 8))))
         elif path.startswith("/api/v1/roles/") and path.endswith("/invoke"):
-            _write_json(handler, 200, invoke_role(path.split("/")[-2], str(payload.get("prompt", ""))))
+            refs = payload.get("evidence_refs", [])
+            if not isinstance(refs, list) or any(not isinstance(x, str) for x in refs):
+                raise ValueError("evidence_refs must be a list of strings")
+            _write_json(handler, 200, invoke_role(path.split("/")[-2], str(payload.get("prompt", "")), evidence_refs=refs))
         elif path == "/api/v1/imports":
             _write_json(handler, 201, _save_import(payload))
         elif path == "/api/v1/skills/run":
@@ -358,6 +374,18 @@ def handle_post(handler: Any) -> bool:
             if not isinstance(params, dict):
                 raise ValueError("params must be an object")
             _write_json(handler, 200, run_skill(skill_id, params))
+        elif path == "/api/v1/workflows/from-template":
+            params = payload.get("skill_params")
+            if not isinstance(params, dict):
+                raise ValueError("skill_params must be an object")
+            _write_json(handler, 201, create_workflow_from_template(
+                str(payload.get("template_id", "")),
+                str(payload.get("actor", "Local UI")),
+                summary=str(payload.get("summary", "")),
+                description=str(payload.get("description", "")),
+                skill_params=params,
+                max_roles=int(payload.get("max_roles", 8)),
+            ))
         elif path == "/api/v1/workflows":
             params = payload.get("skill_params")
             if params is not None and not isinstance(params, dict):
