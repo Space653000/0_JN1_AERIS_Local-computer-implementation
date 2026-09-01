@@ -14,6 +14,12 @@ class QualityGateContractTests(unittest.TestCase):
             "aeris_runtime/claim_guard.py",
             "tests/test_claim_guard.py",
             "tests/browser_e2e.py",
+            "config/machine_qualification.v1.json",
+            "aeris_runtime/machine_qualification.py",
+            "tests/test_machine_qualification.py",
+            "golden/acoustics/v1/manifest.json",
+            "aeris_runtime/golden_acoustics.py",
+            "tests/test_golden_acoustics.py",
             "INSTALL_AERIS_LOCAL.ps1",
             "AERIS_AUTOPILOT.ps1",
             ".github/workflows/ci.yml",
@@ -42,6 +48,12 @@ class QualityGateContractTests(unittest.TestCase):
         self.assertIn("real headless browser SPA route/render semantic E2E; NOT pixel visual regression", text)
         self.assertIn('id=\"workspace\" class=\"view active-view\"', text)
         self.assertIn('id=\"services\" class=\"view active-view\"', text)
+
+    def test_machine_and_golden_baselines_cannot_be_upgraded_to_fake_verification(self):
+        machine = (ROOT / "aeris_runtime/machine_qualification.py").read_text(encoding="utf-8")
+        golden = (ROOT / "golden/acoustics/v1/manifest.json").read_text(encoding="utf-8")
+        self.assertIn("not real-machine VERIFIED", machine)
+        self.assertIn("not a production-complete speaker/microphone Golden Dataset", golden)
 
     def test_windows_resolver_contract_is_not_reverted(self):
         resolver = (ROOT / "scripts/windows-python-resolution.ps1").read_text(encoding="utf-8")
