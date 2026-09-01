@@ -61,6 +61,8 @@ jobs:
         run: python tests/test_quality_gate_contract.py
       - name: Unit tests including Core alignment privacy trust acoustics watchdog reproduction
         run: python -m unittest discover -s tests -v
+      - name: Real browser semantic E2E for Dashboard Workspace Services
+        run: python tests/browser_e2e.py
       - name: Validate 100-role company image and maturity truth
         run: python -m aeris_runtime company status
       - name: Verify canonical Core has not drifted
