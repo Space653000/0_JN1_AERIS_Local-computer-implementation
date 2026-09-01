@@ -8,4 +8,8 @@ param(
 $ErrorActionPreference='Stop'
 $Root=Split-Path -Parent $MyInvocation.MyCommand.Path
 & (Join-Path $Root 'scripts\autopilot.ps1') -Mode $Mode -LocalModel $LocalModel -HardOffline:$HardOffline -CISmoke:$CISmoke -NoSupervisor:$NoSupervisor
-exit $LASTEXITCODE
+$Code=$LASTEXITCODE
+if($Code -eq 0 -and -not $CISmoke -and -not $NoSupervisor){
+  try { Start-Process 'http://127.0.0.1:8765/' } catch {}
+}
+exit $Code

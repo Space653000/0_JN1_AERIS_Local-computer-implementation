@@ -20,6 +20,7 @@ from .config import ROOT
 
 AUDIT_DIR = ROOT / ".aeris" / "audit"
 AUDIT_FILE = AUDIT_DIR / "audit.jsonl"
+LEDGER_PATH = AUDIT_FILE
 LOCK_FILE = AUDIT_DIR / ".audit.lock"
 
 
