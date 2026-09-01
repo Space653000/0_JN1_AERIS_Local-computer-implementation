@@ -1,13 +1,10 @@
-"""Local AERIS control plane: same-origin web UI + SQLite project/task APIs.
-
-Dependency-free on purpose so a supported local machine can serve the company control
-surface immediately after the portable runtime is installed. All endpoints bind through
-the loopback-only supervisor in operations.py.
-"""
+"""Local AERIS control plane: same-origin web UI + SQLite project/task APIs."""
 from __future__ import annotations
 
+import base64
 import json
 import mimetypes
+import re
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -17,14 +14,20 @@ from urllib.parse import parse_qs, urlsplit
 
 from .audit import LEDGER_PATH
 from .config import ROOT, load_config
+from .expected_runs import assess_all as expected_run_health
 from .knowledge import search as knowledge_search, stats as knowledge_stats
+from .reproduction import reproduce_run
 from .roles import get_role, invoke_role, list_roles, plan_pod
 from .router import ModelRouter
+from .skills_runtime import list_skills, run_skill
+from .standards_registry import search_standards
+from .workflow import create_engineering_workflow, execute_workflow, list_workflows, load_workflow
 
 UI_ROOT = ROOT / "ui" / "web"
 DB_PATH = ROOT / ".aeris" / "control" / "control.sqlite3"
 MATURITY_PATH = ROOT / "config" / "maturity.json"
-MAX_BODY = 1_000_000
+IMPORT_ROOT = ROOT / ".aeris" / "imports" / "uploads"
+MAX_BODY = 8_000_000
 
 
 def _now() -> str:
@@ -39,7 +42,6 @@ def _json_file(path: Path) -> dict[str, Any]:
 
 
 class _ClosingConnection(sqlite3.Connection):
-    """sqlite3 context manager that actually closes the OS handle on exit."""
     def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> bool:
         try:
             return bool(super().__exit__(exc_type, exc, tb))
@@ -88,8 +90,7 @@ class ControlStore:
                 CREATE INDEX IF NOT EXISTS idx_tasks_state ON tasks(state);
                 """
             )
-            row = db.execute("SELECT id FROM projects LIMIT 1").fetchone()
-            if row is None:
+            if db.execute("SELECT id FROM projects LIMIT 1").fetchone() is None:
                 now = _now()
                 db.execute(
                     "INSERT INTO projects(id,name,status,created_at,updated_at) VALUES(?,?,?,?,?)",
@@ -99,8 +100,7 @@ class ControlStore:
     def list_projects(self) -> list[dict[str, Any]]:
         with self._connect() as db:
             rows = db.execute(
-                "SELECT p.*, (SELECT COUNT(*) FROM tasks t WHERE t.project_id=p.id) task_count "
-                "FROM projects p ORDER BY updated_at DESC"
+                "SELECT p.*, (SELECT COUNT(*) FROM tasks t WHERE t.project_id=p.id) task_count FROM projects p ORDER BY updated_at DESC"
             ).fetchall()
         return [dict(r) for r in rows]
 
@@ -111,18 +111,13 @@ class ControlStore:
         now = _now()
         pid = "PRJ-" + uuid.uuid4().hex[:10].upper()
         with self._connect() as db:
-            db.execute(
-                "INSERT INTO projects(id,name,status,created_at,updated_at) VALUES(?,?,?,?,?)",
-                (pid, name[:160], "ACTIVE", now, now),
-            )
+            db.execute("INSERT INTO projects(id,name,status,created_at,updated_at) VALUES(?,?,?,?,?)", (pid, name[:160], "ACTIVE", now, now))
         return {"id": pid, "name": name[:160], "status": "ACTIVE", "created_at": now, "updated_at": now, "task_count": 0}
 
     def list_tasks(self, project_id: str | None = None) -> list[dict[str, Any]]:
-        sql = "SELECT * FROM tasks"
-        args: tuple[Any, ...] = ()
+        sql, args = "SELECT * FROM tasks", ()
         if project_id:
-            sql += " WHERE project_id=?"
-            args = (project_id,)
+            sql, args = sql + " WHERE project_id=?", (project_id,)
         sql += " ORDER BY updated_at DESC LIMIT 200"
         with self._connect() as db:
             rows = db.execute(sql, args).fetchall()
@@ -134,20 +129,17 @@ class ControlStore:
         return result
 
     def create_task(self, *, project_id: str | None, title: str, description: str, risk_level: str = "R0", pod: dict[str, Any] | None = None) -> dict[str, Any]:
-        title = title.strip()
-        description = description.strip()
+        title, description = title.strip(), description.strip()
         if not title:
             raise ValueError("task title is required")
         if risk_level not in {"R0", "R1", "R2", "R3", "R4"}:
             raise ValueError("risk_level must be R0-R4")
-        now = _now()
-        tid = "TASK-" + uuid.uuid4().hex[:12].upper()
+        now, tid = _now(), "TASK-" + uuid.uuid4().hex[:12].upper()
         with self._connect() as db:
             if project_id and db.execute("SELECT 1 FROM projects WHERE id=?", (project_id,)).fetchone() is None:
                 raise ValueError("unknown project_id")
             db.execute(
-                "INSERT INTO tasks(id,project_id,title,description,state,risk_level,pod_json,evidence_ref,created_at,updated_at) "
-                "VALUES(?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO tasks(id,project_id,title,description,state,risk_level,pod_json,evidence_ref,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?)",
                 (tid, project_id, title[:200], description[:20000], "DRAFT", risk_level, json.dumps(pod, ensure_ascii=False) if pod else None, None, now, now),
             )
         return self.get_task(tid)
@@ -246,15 +238,11 @@ def _audit_recent(limit: int = 50) -> list[dict[str, Any]]:
 
 
 def _status(opening: dict[str, Any]) -> dict[str, Any]:
-    store = ControlStore()
-    kstats = knowledge_stats()
-    config = load_config()
-    router = ModelRouter(config)
+    store, config = ControlStore(), load_config()
+    router, maturity = ModelRouter(config), _json_file(MATURITY_PATH)
     local_ok, local_detail = router.local.health()
-    maturity = _json_file(MATURITY_PATH)
-    caps = maturity.get("capabilities", {})
     maturity_counts: dict[str, int] = {}
-    for item in caps.values():
+    for item in maturity.get("capabilities", {}).values():
         state = str(item.get("state", "UNKNOWN"))
         maturity_counts[state] = maturity_counts.get(state, 0) + 1
     return {
@@ -266,16 +254,43 @@ def _status(opening: dict[str, Any]) -> dict[str, Any]:
         "local_provider_ready": local_ok,
         "local_provider_detail": local_detail,
         "role_count": len(list_roles()),
+        "skill_count": len(list_skills()),
+        "workflow_count": len(list_workflows()),
         "control": store.summary(),
-        "knowledge": kstats,
+        "knowledge": knowledge_stats(),
+        "expected_runs": expected_run_health(),
         "maturity": {"product_stage": maturity.get("product_stage", "UNKNOWN"), "counts": maturity_counts},
-        "truth": "This is the live local control plane. OPEN/serving does not imply every acoustic capability is domain-verified.",
+        "truth": "Live local control plane; service health/opening never implies every acoustic capability is domain-verified.",
     }
 
 
+def _safe_filename(name: str) -> str:
+    base = Path(name).name
+    safe = re.sub(r"[^A-Za-z0-9._-]", "-", base)[:120]
+    if not safe or safe in {".", ".."}:
+        raise ValueError("invalid upload filename")
+    return safe
+
+
+def _save_import(payload: dict[str, Any]) -> dict[str, Any]:
+    name = _safe_filename(str(payload.get("filename", "")))
+    encoded = str(payload.get("base64", ""))
+    if not encoded:
+        raise ValueError("base64 payload required")
+    try:
+        data = base64.b64decode(encoded, validate=True)
+    except Exception as exc:
+        raise ValueError("invalid base64 payload") from exc
+    if not data or len(data) > 5_000_000:
+        raise ValueError("uploaded file must be 1..5000000 bytes")
+    IMPORT_ROOT.mkdir(parents=True, exist_ok=True)
+    target = IMPORT_ROOT / (uuid.uuid4().hex[:10] + "-" + name)
+    target.write_bytes(data)
+    return {"path": str(target), "filename": name, "bytes": len(data), "local_only": True}
+
+
 def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
-    parsed = urlsplit(handler.path)
-    path = parsed.path
+    parsed, path = urlsplit(handler.path), urlsplit(handler.path).path
     if _serve_ui(handler, path):
         return True
     if not path.startswith("/api/v1/"):
@@ -285,73 +300,79 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
         if path == "/api/v1/status":
             _write_json(handler, 200, _status(opening))
         elif path == "/api/v1/roles":
-            roles = list_roles()
-            _write_json(handler, 200, {"count": len(roles), "roles": roles})
+            roles = list_roles(); _write_json(handler, 200, {"count": len(roles), "roles": roles})
         elif path.startswith("/api/v1/roles/"):
             _write_json(handler, 200, get_role(path.rsplit("/", 1)[-1]))
         elif path == "/api/v1/projects":
             _write_json(handler, 200, {"projects": ControlStore().list_projects()})
         elif path == "/api/v1/tasks":
-            project_id = (qs.get("project_id") or [None])[0]
-            _write_json(handler, 200, {"tasks": ControlStore().list_tasks(project_id)})
+            _write_json(handler, 200, {"tasks": ControlStore().list_tasks((qs.get("project_id") or [None])[0])})
+        elif path == "/api/v1/skills":
+            _write_json(handler, 200, {"skills": list_skills()})
+        elif path == "/api/v1/workflows":
+            _write_json(handler, 200, {"workflows": list_workflows()})
+        elif path.startswith("/api/v1/workflows/"):
+            _write_json(handler, 200, load_workflow(path.rsplit("/", 1)[-1]))
+        elif path == "/api/v1/standards":
+            _write_json(handler, 200, {"query": (qs.get("q") or [""])[0], "standards": search_standards((qs.get("q") or [""])[0])})
+        elif path == "/api/v1/expected-runs":
+            _write_json(handler, 200, expected_run_health())
         elif path == "/api/v1/knowledge/search":
-            query = (qs.get("q") or [""])[0]
-            limit = int((qs.get("limit") or ["10"])[0])
+            query = (qs.get("q") or [""])[0]; limit = int((qs.get("limit") or ["10"])[0])
             _write_json(handler, 200, {"query": query, "results": knowledge_search(query, limit)})
         elif path == "/api/v1/maturity":
             _write_json(handler, 200, _json_file(MATURITY_PATH))
         elif path == "/api/v1/audit":
-            limit = int((qs.get("limit") or ["50"])[0])
-            _write_json(handler, 200, {"records": _audit_recent(limit)})
+            _write_json(handler, 200, {"records": _audit_recent(int((qs.get("limit") or ["50"])[0]))})
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True
     except KeyError as exc:
-        _write_json(handler, 404, {"error": "not_found", "detail": str(exc)})
-        return True
+        _write_json(handler, 404, {"error": "not_found", "detail": str(exc)}); return True
     except (ValueError, TypeError) as exc:
-        _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)})
-        return True
+        _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)}); return True
     except Exception as exc:
-        _write_json(handler, 500, {"error": "internal_error", "detail": type(exc).__name__})
-        return True
+        _write_json(handler, 500, {"error": "internal_error", "detail": type(exc).__name__}); return True
 
 
 def handle_post(handler: Any) -> bool:
-    parsed = urlsplit(handler.path)
-    path = parsed.path
+    path = urlsplit(handler.path).path
     if not path.startswith("/api/v1/"):
         return False
     try:
         payload = _body(handler)
         if path == "/api/v1/projects":
-            item = ControlStore().create_project(str(payload.get("name", "")))
-            _write_json(handler, 201, item)
+            _write_json(handler, 201, ControlStore().create_project(str(payload.get("name", ""))))
         elif path == "/api/v1/tasks":
             query = str(payload.get("description") or payload.get("title") or "")
             pod = plan_pod(query, int(payload.get("max_roles", 8))) if payload.get("auto_pod", True) else None
-            item = ControlStore().create_task(
-                project_id=payload.get("project_id"),
-                title=str(payload.get("title", "")),
-                description=str(payload.get("description", "")),
-                risk_level=str(payload.get("risk_level", "R0")),
-                pod=pod,
-            )
-            _write_json(handler, 201, item)
+            _write_json(handler, 201, ControlStore().create_task(project_id=payload.get("project_id"), title=str(payload.get("title", "")), description=str(payload.get("description", "")), risk_level=str(payload.get("risk_level", "R0")), pod=pod))
         elif path == "/api/v1/pods/plan":
             _write_json(handler, 200, plan_pod(str(payload.get("query", "")), int(payload.get("max_roles", 8))))
         elif path.startswith("/api/v1/roles/") and path.endswith("/invoke"):
-            role_id = path.split("/")[-2]
-            _write_json(handler, 200, invoke_role(role_id, str(payload.get("prompt", ""))))
+            _write_json(handler, 200, invoke_role(path.split("/")[-2], str(payload.get("prompt", ""))))
+        elif path == "/api/v1/imports":
+            _write_json(handler, 201, _save_import(payload))
+        elif path == "/api/v1/skills/run":
+            skill_id = str(payload.get("skill_id", "")); params = payload.get("params")
+            if not isinstance(params, dict):
+                raise ValueError("params must be an object")
+            _write_json(handler, 200, run_skill(skill_id, params))
+        elif path == "/api/v1/workflows":
+            params = payload.get("skill_params")
+            if params is not None and not isinstance(params, dict):
+                raise ValueError("skill_params must be an object")
+            _write_json(handler, 201, create_engineering_workflow(str(payload.get("summary", "")), str(payload.get("actor", "Local UI")), description=str(payload.get("description", "")), risk=str(payload.get("risk", "R0")), skill_id=payload.get("skill_id"), skill_params=params or {}, max_roles=int(payload.get("max_roles", 8))))
+        elif path.startswith("/api/v1/workflows/") and path.endswith("/execute"):
+            _write_json(handler, 200, execute_workflow(path.split("/")[-2], str(payload.get("actor", "Local UI"))))
+        elif path.startswith("/api/v1/reproduction/"):
+            _write_json(handler, 200, reproduce_run(path.rsplit("/", 1)[-1]))
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True
     except KeyError as exc:
-        _write_json(handler, 404, {"error": "not_found", "detail": str(exc)})
-        return True
+        _write_json(handler, 404, {"error": "not_found", "detail": str(exc)}); return True
     except (ValueError, TypeError) as exc:
-        _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)})
-        return True
+        _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)}); return True
     except Exception as exc:
-        _write_json(handler, 500, {"error": "internal_error", "detail": type(exc).__name__})
-        return True
+        _write_json(handler, 500, {"error": "internal_error", "detail": type(exc).__name__}); return True
