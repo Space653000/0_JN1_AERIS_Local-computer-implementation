@@ -1,20 +1,22 @@
 {
-  "schema_version": 4,
-  "contract_id": "AERIS-LOCAL-AUTOPILOT-V4",
-  "canonical_core_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
+  "schema_version": 5,
+  "contract_id": "AERIS-LOCAL-FULL-BUILD-AUTOPILOT-V5",
+  "canonical_core_sha": "7c528d44a3a497e99eaa6abbb26d5abac5170d6b",
   "trigger": {
     "required_urls": [
       "https://github.com/Space653000/0_JN1_AERIS",
       "https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation"
     ],
+    "interpretation": "AERIS_FULL_BUILD_AUTOPILOT_REQUEST",
     "two_urls_are_sufficient_when_target_path_is_unambiguous_in_codex": true,
     "target_path_resolution_order": [
       "human_selected_or_opened_codex_path",
       "single_unambiguous_active_writable_workspace_root",
       "explicit_local_target_path_if_supplied"
     ],
-    "ask_for_target_path_only_if_unresolved_or_ambiguous": true,
-    "embedded_instruction": "Run AERIS_AUTOPILOT automatically using latest CI-passed main; detect/inventory/install/configure/test/accept/open Dashboard/frontend/backend; register OS-native persistence and watchdog; preserve Evidence/Audit; do not use Codex scheduler or launch Claude by default; ask Human only at genuine Human Gates; never fake blocked/unimplemented capabilities."
+    "requires_additional_prompt": false,
+    "requires_plan_confirmation": false,
+    "ask_for_target_path_only_if_unresolved_or_ambiguous": true
   },
   "default_mode": "auto",
   "default_local_model": "qwen3:4b-instruct",
@@ -25,16 +27,23 @@
     "optional_reviewer_linux_jetson": "CLAUDE_VERIFY_AERIS.sh"
   },
   "default_execution_policy": {
+    "primary_executor": "codex",
     "use_codex_tasks_or_scheduler": false,
     "launch_claude_code": false,
     "launch_second_model_reviewer": false,
-    "local_acceptance_cycles": 1,
-    "ask_human_only_at_human_gate": true
+    "ask_human_only_at_human_gate": true,
+    "stop_for_plan_confirmation": false,
+    "close_software_only_gaps_before_final_opening": true,
+    "continue_until_no_safe_software_gap_remains": true,
+    "prefer_github_ci_before_local_debugging": true,
+    "local_acceptance_cycles": 1
   },
   "phases": [
     "SAFE_PREFLIGHT",
-    "MACHINE_INVENTORY",
     "CORE_ALIGNMENT",
+    "GAP_INVENTORY",
+    "SOFTWARE_GAP_CLOSURE_LOOP",
+    "MACHINE_INVENTORY",
     "INSTALL_CONFIGURE",
     "DETERMINISTIC_TESTS",
     "REAL_MACHINE_ACCEPTANCE",
@@ -43,6 +52,24 @@
     "UNATTENDED_OPERATIONS",
     "EVIDENCE_HANDOFF"
   ],
+  "software_gap_closure": {
+    "inventory_sources": [
+      "config/maturity.json",
+      "docs/DEFINITION_OF_COMPANY_DONE.md",
+      "canonical Core requirements",
+      "API/UI/workflows",
+      "Skills/Methods/Standards",
+      "task/evidence/verification/reproduction/health",
+      "tests"
+    ],
+    "auto_implement_when": "software_only_and_safe_and_not_human_or_external_blocked",
+    "must_add_or_update_tests": true,
+    "not_implemented_is_not_a_stop_reason_when_software_only": true,
+    "stop_conditions": [
+      "no_safe_software_only_gap_remains",
+      "genuine_human_or_external_gate"
+    ]
+  },
   "reports": {
     "preflight": ".aeris/state/AUTOPILOT_PREFLIGHT.json",
     "bootstrap": ".aeris/state/AUTOPILOT_RESULT.json",
@@ -65,6 +92,7 @@
   },
   "automatic_actions": {
     "inventory": true,
+    "inventory_and_close_safe_software_gaps": true,
     "create_isolated_state": true,
     "install_supported_redistributable_dependencies": true,
     "sync_and_verify_read_only_core": true,
@@ -109,5 +137,5 @@
     "PRODUCTION_CUSTOMER_FORMAL_RELEASE"
   ],
   "opening_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
-  "truth_rule": "Autopilot completion means the supported local control plane was deployed, accepted, opened and persistence was registered for its verified scope; it never means all AERIS acoustic capabilities, proprietary tools or formal release gates are complete."
+  "truth_rule": "Two canonical URLs plus a safe selected workspace are the full command. Codex must close every safely implementable software-only gap before final opening, while external licensed/hardware/calibration/secret/Human-authority blockers remain explicit and never fabricated."
 }
