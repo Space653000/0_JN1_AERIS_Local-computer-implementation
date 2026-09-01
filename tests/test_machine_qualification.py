@@ -51,6 +51,12 @@ class MachineQualificationTests(unittest.TestCase):
         self.assertEqual(result["overall_state"], "QUALIFIED_BASELINE")
         self.assertEqual(result["workloads"]["nvidia_accelerated_local_ai"]["state"], "NOT_QUALIFIED")
 
+    def test_vram_parser_ignores_npu_not_available_row(self):
+        self.assertEqual(machine._parse_vram_gb(["24512", "[N/A]"]), 23.94)
+
+    def test_vram_parser_returns_unknown_without_numeric_gpu_row(self):
+        self.assertIsNone(machine._parse_vram_gb(["[N/A]", ""]))
+
     def test_unsupported_profile_never_qualifies_overall(self):
         facts = self.base_facts()
         facts["profile"] = "unsupported-unprofiled"

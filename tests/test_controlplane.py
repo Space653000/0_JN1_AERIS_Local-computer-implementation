@@ -9,16 +9,23 @@ from unittest.mock import patch
 
 import aeris_runtime.controlplane as controlplane
 import aeris_runtime.operations as operations
+import aeris_runtime.workflow as workflow
 
 
 class ControlPlaneTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.db_patch = patch.object(controlplane, "DB_PATH", Path(self.tmp.name) / "control.sqlite3")
-        self.db_patch.start()
+        root = Path(self.tmp.name)
+        self.patches = [
+            patch.object(controlplane, "DB_PATH", root / "control.sqlite3"),
+            patch.object(workflow, "WORKFLOW_ROOT", root / "workflows"),
+        ]
+        for item in self.patches:
+            item.start()
 
     def tearDown(self):
-        self.db_patch.stop()
+        for item in reversed(self.patches):
+            item.stop()
         self.tmp.cleanup()
 
     def _server(self):

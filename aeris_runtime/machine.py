@@ -45,6 +45,20 @@ def _gpu() -> str:
     return "not_detected"
 
 
+def _parse_vram_gb(lines: list[str]) -> float | None:
+    """Return the largest numeric NVIDIA memory row, ignoring NPU/N/A rows."""
+    values: list[float] = []
+    for item in lines:
+        value = item.strip()
+        if not value:
+            continue
+        try:
+            values.append(float(value) / 1024)
+        except ValueError:
+            continue
+    return round(max(values), 2) if values else None
+
+
 def _vram_gb() -> float | None:
     if not shutil.which("nvidia-smi"):
         return None
@@ -54,8 +68,7 @@ def _vram_gb() -> float | None:
             text=True,
             timeout=5,
         ).strip().splitlines()
-        values = [float(item.strip()) / 1024 for item in out if item.strip()]
-        return round(max(values), 2) if values else None
+        return _parse_vram_gb(out)
     except Exception:
         return None
 
