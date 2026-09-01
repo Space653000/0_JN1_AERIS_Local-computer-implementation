@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "capabilities": {
+    "machine_resource_qualification_engine_baseline": {
+      "state": "IMPLEMENTED_PENDING_CI",
+      "evidence": [
+        "config/machine_qualification.v1.json",
+        "aeris_runtime/machine_qualification.py",
+        "tests/test_machine_qualification.py"
+      ],
+      "truth": "Deterministic inventory qualification only; sustained-load, latency, thermal, reboot, hard-offline and proprietary-tool qualification remain outside this baseline."
+    },
+    "golden_acoustic_regression_baseline": {
+      "state": "IMPLEMENTED_PENDING_CI",
+      "evidence": [
+        "golden/acoustics/v1/manifest.json",
+        "aeris_runtime/golden_acoustics.py",
+        "tests/test_golden_acoustics.py"
+      ],
+      "truth": "Small deterministic FR regression baseline only; full production Speaker/Microphone Golden Dataset remains incomplete."
+    }
+  }
+}
