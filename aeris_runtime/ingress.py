@@ -85,7 +85,6 @@ def _assert_public_url(url: str) -> urllib.parse.ParseResult:
     if parsed.username or parsed.password:
         raise ValueError("Credentials embedded in ingress URLs are forbidden")
     if parsed.fragment:
-        # Fragments are client-side only; strip them from fetch semantics to keep provenance deterministic.
         parsed = parsed._replace(fragment="")
     host = parsed.hostname
     if not host:
@@ -108,7 +107,10 @@ def _host_header(parsed: urllib.parse.ParseResult) -> str:
     assert parsed.hostname
     default = 443 if parsed.scheme == "https" else 80
     port = parsed.port or default
-    return parsed.hostname if port == default else f"{parsed.hostname}:{port}"
+    host = parsed.hostname
+    if ":" in host and not host.startswith("["):
+        host = f"[{host}]"
+    return host if port == default else f"{host}:{port}"
 
 
 def _open_pinned(parsed: urllib.parse.ParseResult, ip: str, timeout: int):
@@ -186,6 +188,13 @@ def _content_risk_reasons(data: bytes, content_type: str) -> list[str]:
             "read local file": "instruction requests local-file access",
             "upload local": "instruction requests local upload",
             "exfiltrate": "possible exfiltration instruction",
+            "忽略之前": "possible Chinese prompt-injection phrase",
+            "系統提示": "possible Chinese system-prompt phrase",
+            "讀取本地": "instruction requests local-file access",
+            "上传本地": "instruction requests local upload",
+            "上傳本地": "instruction requests local upload",
+            "外傳": "possible exfiltration instruction",
+            "外传": "possible exfiltration instruction",
         }
         for needle, label in markers.items():
             if needle in text:
@@ -196,8 +205,11 @@ def _content_risk_reasons(data: bytes, content_type: str) -> list[str]:
 def _local_malware_scan(path: Path) -> dict:
     clamscan = shutil.which("clamscan")
     if clamscan:
-        proc = subprocess.run([clamscan, "--no-summary", str(path)], capture_output=True, text=True, timeout=180)
-        return {"scanner": "clamscan", "status": "CLEAN" if proc.returncode == 0 else "THREAT_OR_ERROR", "exit_code": proc.returncode}
+        try:
+            proc = subprocess.run([clamscan, "--no-summary", str(path)], capture_output=True, text=True, timeout=180)
+            return {"scanner": "clamscan", "status": "CLEAN" if proc.returncode == 0 else "THREAT_OR_ERROR", "exit_code": proc.returncode}
+        except Exception as exc:
+            return {"scanner": "clamscan", "status": "ERROR", "detail": str(exc)}
 
     if os.name == "nt":
         candidates: list[Path] = []
@@ -211,13 +223,16 @@ def _local_malware_scan(path: Path) -> dict:
             candidates.append(Path(program_files) / "Windows Defender" / "MpCmdRun.exe")
         for scanner in candidates:
             if scanner.exists():
-                proc = subprocess.run(
-                    [str(scanner), "-Scan", "-ScanType", "3", "-File", str(path), "-DisableRemediation"],
-                    capture_output=True,
-                    text=True,
-                    timeout=300,
-                )
-                return {"scanner": "Microsoft Defender", "status": "CLEAN" if proc.returncode == 0 else "THREAT_OR_ERROR", "exit_code": proc.returncode}
+                try:
+                    proc = subprocess.run(
+                        [str(scanner), "-Scan", "-ScanType", "3", "-File", str(path), "-DisableRemediation"],
+                        capture_output=True,
+                        text=True,
+                        timeout=300,
+                    )
+                    return {"scanner": "Microsoft Defender", "status": "CLEAN" if proc.returncode == 0 else "THREAT_OR_ERROR", "exit_code": proc.returncode}
+                except Exception as exc:
+                    return {"scanner": "Microsoft Defender", "status": "ERROR", "detail": str(exc)}
     return {"scanner": None, "status": "NOT_AVAILABLE"}
 
 
@@ -283,16 +298,21 @@ def download_public_url(url: str, max_bytes: int = 50_000_000) -> dict:
 def approve_quarantined_ingress(path: str, *, allow_unscanned: bool = False, acknowledge_content_risk: bool = False) -> dict:
     source = Path(path).expanduser().resolve()
     manifest_path = source if source.name == "manifest.json" else source / "manifest.json"
+    quarantine_root = (INGRESS_ROOT / "quarantine").resolve()
+    if quarantine_root not in manifest_path.parents:
+        raise ValueError("Ingress approval only accepts artifacts under the AERIS quarantine root")
     if not manifest_path.exists():
         raise ValueError("Ingress approval requires a quarantine manifest.json")
     meta = json.loads(manifest_path.read_text(encoding="utf-8"))
     if meta.get("classification") != "PUBLIC_INGRESS_QUARANTINED":
         raise ValueError("Only PUBLIC_INGRESS_QUARANTINED artifacts can be approved")
     payload = Path(str(meta.get("saved_to", ""))).resolve()
+    if payload.parent != manifest_path.parent:
+        raise ValueError("Quarantine payload must reside beside its manifest")
     if not payload.exists() or hashlib.sha256(payload.read_bytes()).hexdigest() != meta.get("sha256"):
         raise ValueError("Quarantine payload is missing or checksum verification failed")
     scan = meta.get("malware_scan", {})
-    if scan.get("status") == "THREAT_OR_ERROR":
+    if scan.get("status") in {"THREAT_OR_ERROR", "ERROR"}:
         raise ValueError("Ingress approval refused because malware scan did not pass")
     if scan.get("status") != "CLEAN" and not allow_unscanned:
         raise ValueError("No clean malware scan exists; explicitly use --allow-unscanned only after Human review")
