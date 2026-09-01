@@ -1,4 +1,5 @@
 import unittest
+import ctypes
 from unittest.mock import patch
 
 import aeris_runtime.machine as machine
@@ -6,6 +7,19 @@ from aeris_runtime.machine_qualification import qualify_facts
 
 
 class MachineQualificationTests(unittest.TestCase):
+    def test_windows_ram_uses_native_memory_api_without_powershell(self):
+        class Kernel32:
+            @staticmethod
+            def GlobalMemoryStatusEx(pointer):
+                pointer._obj.ullTotalPhys = 32 * 1024**3
+                return 1
+
+        with patch.object(machine.os, "name", "nt"), \
+             patch.object(machine.ctypes, "windll", type("Windll", (), {"kernel32": Kernel32()})(), create=True), \
+             patch.object(machine.subprocess, "check_output") as child_process:
+            self.assertEqual(machine._ram_gb(), 32.0)
+            child_process.assert_not_called()
+
     def base_facts(self):
         return {
             "profile": "windows-cpu",

@@ -53,9 +53,26 @@ try {
   if($Before.State -eq 'Running'){
     $StartDisposition='ALREADY_RUNNING_NO_DUPLICATE_START'
   } else {
-    Start-ScheduledTask -TaskName $TaskName
+    $StartErrors=@()
+    for($Attempt=1;$Attempt -le 3;$Attempt++){
+      try {
+        Start-ScheduledTask -TaskName $TaskName
+      } catch {
+        $StartErrors += "attempt $Attempt`: $($_.Exception.Message)"
+      }
+      Start-Sleep -Seconds 2
+      $Observed=Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
+      if($Observed.State -eq 'Running'){
+        $StartDisposition="STARTED_ATTEMPT_$Attempt"
+        break
+      }
+      if($Attempt -lt 3){ Start-Sleep -Seconds 2 }
+    }
+    if((Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop).State -ne 'Running'){
+      $StartDisposition="START_FAILED_AFTER_RETRIES:$($StartErrors -join ' | ')"
+    }
   }
-  Start-Sleep -Seconds 2
+  Start-Sleep -Seconds 1
   $Task=Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
   $Info=Get-ScheduledTaskInfo -TaskName $TaskName -ErrorAction Stop
   $ResultHex=('0x{0:X8}' -f ([uint32]$Info.LastTaskResult))
