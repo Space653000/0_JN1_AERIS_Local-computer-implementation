@@ -69,6 +69,29 @@ true License/hardware/secret/physical/Human dependency
 
 Do not stop merely to report `NOT_IMPLEMENTED` when Codex can safely implement the missing software. Continue until no safe software-only gap remains or the next gap is a genuine Human/external gate.
 
+## AI change acceptance / regression closure
+
+`docs/AI_CHANGE_ACCEPTANCE_PROTOCOL.md` is mandatory for every GitHub repair or implementation change.
+
+A software defect is not closed by editing code. The required chain is:
+
+```text
+read current remote main
+→ reproduce exact failure
+→ add deterministic regression test/gate
+→ implement fix
+→ Windows + Ubuntu PR CI
+→ merge only if all required jobs pass
+→ verify merged main Windows + Ubuntu CI
+→ only then one necessary real-machine acceptance cycle
+```
+
+If a local machine discovers a cloud-reproducible defect, convert it into a permanent GitHub regression gate before asking the Human to rerun locally. Do not silently remove or weaken a regression gate; replacement coverage and rationale must be explicit in the same PR.
+
+Cross-file truth updates are atomic. When Core SHA changes, `core.lock.json`, `config/core_alignment.json`, `config/autopilot.json`, `company/company.manifest.json` and `config/maturity.json` must all reference the same deliberately reviewed Core SHA or CI/company validation must fail.
+
+PR CI success is not enough to tell the Human a GitHub repair is complete. The merged `main` commit must pass its own required CI first.
+
 ## Token-efficiency rule
 
 Use the latest GitHub `main` whose Windows + Ubuntu CI passed. Do not spend local Codex Token rediscovering cloud-reproducible defects. Prefer GitHub/CI validation before local debugging. Normal real-machine acceptance is one cycle; repeat only for genuinely machine-specific evidence/failure.
@@ -109,10 +132,11 @@ Preserve Evidence and resume automatically afterward.
 
 1. Core `AGENTS.md`, Core `aeris.autopilot.json`, Core Full-Build SOP.
 2. This `AGENTS.md`.
-3. `config/autopilot.json`, `config/maturity.json`, `config/core_alignment.json`, `core.lock.json`.
-4. `docs/AUTOPILOT_ZERO_TOUCH_SOP.md`.
-5. `docs/DEFINITION_OF_COMPANY_DONE.md`.
-6. Task-specific files only as needed.
+3. `docs/AI_CHANGE_ACCEPTANCE_PROTOCOL.md`.
+4. `config/autopilot.json`, `config/maturity.json`, `config/core_alignment.json`, `core.lock.json`.
+5. `docs/AUTOPILOT_ZERO_TOUCH_SOP.md`.
+6. `docs/DEFINITION_OF_COMPANY_DONE.md`.
+7. Task-specific files only as needed.
 
 Optional reviewer documents are not part of the default path.
 
@@ -121,4 +145,4 @@ Optional reviewer documents are not part of the default path.
 Windows: `./AERIS_AUTOPILOT.ps1`  
 Linux/Jetson: `bash ./AERIS_AUTOPILOT.sh`
 
-Completion is determined from real capability gaps + tests + `.aeris/state/*` + Audit/Evidence + actual service reachability — never from AI prose.
+Completion is determined from real capability gaps + regression gates + PR CI + post-merge main CI + `.aeris/state/*` + Audit/Evidence + actual service reachability — never from AI prose.
