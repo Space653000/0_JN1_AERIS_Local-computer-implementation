@@ -2,9 +2,9 @@
   "schema_version": 2,
   "core_repository": "https://github.com/Space653000/0_JN1_AERIS.git",
   "branch": "main",
-  "baseline_sha": "7c528d44a3a497e99eaa6abbb26d5abac5170d6b",
+  "baseline_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "role": "read_only_target",
-  "reviewed_change": "Human-authorized Core PR #2 makes the two canonical GitHub URLs the complete AERIS FULL BUILD trigger when a safe target workspace is selected; removes default Claude/second-model review and Codex scheduling; forbids redundant plan confirmation; requires automatic software-gap closure before final opening.",
-  "implementation_obligation": "Implementation must mirror the two-URL Full-Build trigger, close every safely implementable software-only gap before final opening, keep Core read-only, use OS-native unattended continuity, avoid default Claude/Codex scheduling, and stop only at genuine Human/external gates.",
-  "note": "Tracked Core lock changes only after deliberate semantic review. This update is the explicit Human-authorized semantic review of Core PR #2; future Core drift remains fail-closed."
+  "reviewed_change": "Human-authorized Core PR #3 removes the remaining aeris.policy.yaml v1 trigger conflict and adds governance CI checks that fail on stale Full-Build authority text. The two canonical URLs plus one safe selected workspace remain the complete Full-Build command; Claude and Codex scheduling remain off by default; software-gap closure remains mandatory.",
+  "implementation_obligation": "Implementation must target Core 82f4554623b2d87185dac39a3b93194af7dd5275, preserve the two-URL Full-Build trigger, close safely implementable software-only gaps, keep Core read-only, avoid default Claude/Codex scheduling, and keep all tracked truth snapshots aligned to this reviewed SHA.",
+  "note": "This lock update is the deliberate semantic review of Human-authorized Core PR #3. Future Core drift remains fail-closed."
 }
