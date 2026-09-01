@@ -57,6 +57,10 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./tests/windows/test-python-resolution.ps1
+      - name: Windows zero-cost winget fail-closed regression
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tests/windows/test-zero-cost-bootstrap.ps1
       - name: Repository quality-gate contract
         run: python tests/test_quality_gate_contract.py
       - name: Machine qualification and Golden acoustic baseline gate
