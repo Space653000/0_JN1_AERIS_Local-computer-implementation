@@ -59,9 +59,12 @@
   },
   "reviewer_roles": {
     "quality": "R006",
+    "standards": "R089",
+    "test_automation": "R091",
+    "reliability": "R096",
+    "requirements": "R097",
     "red_team": "R098",
-    "evidence": "R099",
-    "requirements": "R097"
+    "evidence": "R099"
   },
   "truth": "A materialized contract proves that a seat has a machine-readable responsibility/permission/evidence envelope and checked references to current baseline assets. It does not prove the seat has complete specialty Skills, Methods, Standards, tools, golden cases or domain competence."
 }
