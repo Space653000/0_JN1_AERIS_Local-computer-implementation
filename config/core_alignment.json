@@ -1,9 +1,9 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "canonical_core": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912"
+    "reviewed_sha": "7c528d44a3a497e99eaa6abbb26d5abac5170d6b"
   },
   "non_negotiable_invariants": {
     "human_authority": "Human Chief Engineer",
@@ -23,10 +23,15 @@
     "independent_verification_required_for_formal_completion": true,
     "core_is_writable_by_codex_or_implementation": false,
     "codex_role": "primary_local_executor_installer_implementer",
-    "claude_role": "independent_reviewer_acceptance_auditor",
+    "claude_role": "optional_independent_reviewer_only_when_human_explicitly_requests",
+    "claude_default_launch": false,
+    "codex_scheduler_for_continuity": false,
     "reviewer_same_context_self_repair_and_approval_allowed": false,
-    "autopilot_trigger": "two_repositories_plus_local_target_path",
-    "autopilot_asks_optional_questions_before_preflight": false,
+    "autopilot_trigger": "two_canonical_urls_plus_selected_or_explicit_safe_target_path",
+    "autopilot_requires_additional_prompt": false,
+    "autopilot_requires_plan_confirmation": false,
+    "software_gap_closure_before_final_opening": true,
+    "do_not_stop_on_safe_software_not_implemented": true,
     "installation_equals_company_opening": false,
     "opening_requires_evidence_supported_scope": true
   },

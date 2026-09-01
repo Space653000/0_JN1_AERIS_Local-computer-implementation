@@ -81,8 +81,10 @@ def validate_company_manifest(path: Path = MANIFEST) -> CompanyStatus:
         errors.append("Human Chief Engineer final authority missing")
     if operating.get("codex") != "primary_local_executor_installer_implementer":
         errors.append("Codex executor role drifted")
-    if operating.get("claude_code") != "independent_reviewer_acceptance_auditor":
-        errors.append("Claude reviewer role drifted")
+    if operating.get("claude_code") != "optional_independent_reviewer_only_when_human_explicitly_requests":
+        errors.append("Claude optional-reviewer role drifted")
+    if operating.get("claude_default_launch") is not False:
+        errors.append("Claude must not launch by default")
     if operating.get("same_context_repair_and_independent_approval_allowed") is not False:
         errors.append("same-context repair and independent approval must be false")
 
@@ -96,6 +98,14 @@ def validate_company_manifest(path: Path = MANIFEST) -> CompanyStatus:
             errors.append(f"Autopilot/reviewer entrypoint missing: {entry}")
     if auto.get("installation_equals_opening") is not False or auto.get("ci_smoke_equals_real_acceptance") is not False:
         errors.append("Autopilot truth boundary weakened")
+    if auto.get("interpretation") != "AERIS_FULL_BUILD_AUTOPILOT_REQUEST":
+        errors.append("company manifest must expose Full-Build Autopilot trigger")
+    if auto.get("requires_additional_prompt") is not False or auto.get("requires_plan_confirmation") is not False:
+        errors.append("Full-Build Autopilot must not require second prompt or plan confirmation")
+    if auto.get("software_gap_closure_before_final_opening") is not True or auto.get("stop_on_safe_software_not_implemented") is not False:
+        errors.append("Full-Build software-gap closure policy weakened")
+    if auto.get("use_codex_scheduler") is not False or auto.get("launch_claude_by_default") is not False:
+        errors.append("default execution must use neither Codex scheduler nor Claude")
 
     operations = data.get("operations", {})
     if operations.get("public_supervisor_bind") is not False:
@@ -125,6 +135,12 @@ def validate_company_manifest(path: Path = MANIFEST) -> CompanyStatus:
             errors.append("virtual seat count drifted from Core alignment contract")
         if inv.get("codex_role") != operating.get("codex") or inv.get("claude_role") != operating.get("claude_code"):
             errors.append("Human/AI role contract drifted from Core alignment")
+        if inv.get("claude_default_launch") is not False or inv.get("codex_scheduler_for_continuity") is not False:
+            errors.append("Core alignment default executor policy drifted")
+        if inv.get("autopilot_requires_additional_prompt") is not False or inv.get("autopilot_requires_plan_confirmation") is not False:
+            errors.append("Core alignment zero-prompt trigger drifted")
+        if inv.get("software_gap_closure_before_final_opening") is not True or inv.get("do_not_stop_on_safe_software_not_implemented") is not True:
+            errors.append("Core alignment Full-Build gap-closure invariant drifted")
         if inv.get("installation_equals_company_opening") is not False:
             errors.append("Core alignment must preserve installation != company opening")
     except Exception as exc:
@@ -137,6 +153,11 @@ def validate_company_manifest(path: Path = MANIFEST) -> CompanyStatus:
             errors.append("config/autopilot.json canonical Core SHA mismatch")
         if auto_cfg.get("supervisor", {}).get("bind_host") != "127.0.0.1" or auto_cfg.get("supervisor", {}).get("public_bind_forbidden") is not True:
             errors.append("Autopilot supervisor must be loopback-only")
+        policy = auto_cfg.get("default_execution_policy", {})
+        if policy.get("launch_claude_code") is not False or policy.get("use_codex_tasks_or_scheduler") is not False:
+            errors.append("Autopilot default executor policy drifted")
+        if policy.get("close_software_only_gaps_before_final_opening") is not True or policy.get("continue_until_no_safe_software_gap_remains") is not True:
+            errors.append("Autopilot Full-Build gap closure not enforced")
     except Exception as exc:
         errors.append(f"Autopilot contract unreadable: {exc}")
 

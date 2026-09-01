@@ -2,9 +2,9 @@
   "schema_version": 2,
   "core_repository": "https://github.com/Space653000/0_JN1_AERIS.git",
   "branch": "main",
-  "baseline_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
+  "baseline_sha": "7c528d44a3a497e99eaa6abbb26d5abac5170d6b",
   "role": "read_only_target",
-  "reviewed_change": "Human-commissioned Core PR #1 adds canonical AERIS Autopilot, Codex executor/Claude independent reviewer separation, exact AI read order, governance CI and direct-screenshot UI v0.5 correction.",
-  "implementation_obligation": "Implementation must provide executable Autopilot/Claude verification entrypoints and preserve Core no-write, evidence-before-opening and Human-gate semantics.",
-  "note": "Online sync scripts refresh the cached local reference and record the actual fetched SHA under .aeris/state/core-target.json. This tracked lock changes only after deliberate semantic review; never auto-accept Core drift."
+  "reviewed_change": "Human-authorized Core PR #2 makes the two canonical GitHub URLs the complete AERIS FULL BUILD trigger when a safe target workspace is selected; removes default Claude/second-model review and Codex scheduling; forbids redundant plan confirmation; requires automatic software-gap closure before final opening.",
+  "implementation_obligation": "Implementation must mirror the two-URL Full-Build trigger, close every safely implementable software-only gap before final opening, keep Core read-only, use OS-native unattended continuity, avoid default Claude/Codex scheduling, and stop only at genuine Human/external gates.",
+  "note": "Tracked Core lock changes only after deliberate semantic review. This update is the explicit Human-authorized semantic review of Core PR #2; future Core drift remains fail-closed."
 }
