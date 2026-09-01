@@ -50,8 +50,11 @@ def validate_default_deployment() -> dict[str, Any]:
     monetary = policy.get("monetary_policy", {})
     ai = policy.get("ai_policy", {})
     defaults = autopilot.get("default_execution_policy", {})
+    actions = autopilot.get("automatic_actions", {})
+    safety = autopilot.get("safety", {})
 
     invariants = {
+        "deployment_profile_bound": autopilot.get("deployment_profile") == policy.get("profile_id"),
         "paid_software_not_required": monetary.get("paid_software_required") is False,
         "paid_cloud_api_not_required": monetary.get("paid_cloud_api_required") is False,
         "automatic_purchase_forbidden": monetary.get("automatic_purchase_allowed") is False,
@@ -59,6 +62,13 @@ def validate_default_deployment() -> dict[str, Any]:
         "claude_not_required": ai.get("claude_code_required") is False and ai.get("claude_token_required") is False,
         "autopilot_does_not_launch_claude": defaults.get("launch_claude_code") is False,
         "autopilot_does_not_launch_second_model": defaults.get("launch_second_model_reviewer") is False,
+        "autopilot_does_not_require_claude_token": defaults.get("require_claude_token") is False,
+        "autopilot_does_not_install_paid_software": defaults.get("install_paid_software") is False,
+        "autopilot_does_not_require_paid_cloud_api": defaults.get("require_paid_cloud_api") is False,
+        "autopilot_does_not_auto_accept_license": defaults.get("auto_accept_license_or_eula") is False,
+        "paid_professional_auto_install_action_forbidden": actions.get("install_paid_or_license_gated_professional_software") is False,
+        "safety_forbids_paid_purchase": safety.get("auto_purchase_or_activate_paid_software") is False,
+        "safety_forbids_claude_requirement": safety.get("auto_require_claude_or_claude_token") is False,
         "codex_is_primary_executor": defaults.get("primary_executor") == "codex",
         "default_model_matches": autopilot.get("default_local_model") == ai.get("default_local_model"),
     }
