@@ -22,6 +22,15 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def _canonical_result(value: Any) -> Any:
+    """Remove transport-only input paths while preserving engineering result values."""
+    if isinstance(value, dict):
+        return {key: ("<INPUT>" if key in {"input", "input_path", "path"} else _canonical_result(item)) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_canonical_result(item) for item in value]
+    return value
+
+
 def reproduce_run(run_id: str) -> dict[str, Any]:
     integrity = validate_bundle(run_id)
     if not integrity.get("valid"):
@@ -59,16 +68,21 @@ def reproduce_run(run_id: str) -> dict[str, Any]:
     finally:
         skills_runtime._ALLOWED_INPUT_ROOTS = original
 
-    matches = actual == expected
+    expected_canonical = _canonical_result(expected)
+    actual_canonical = _canonical_result(actual)
+    matches = actual_canonical == expected_canonical
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
         "run_id": run_id,
         "result": "PASS" if matches else "FAIL",
         "skill_id": skill_id,
         "expected": expected,
         "actual": actual,
-        "exact_result_match": matches,
-        "scope": "deterministic Skill replay only; external tools/hardware/environment reproduction requires their own adapters and locks",
+        "canonical_expected": expected_canonical,
+        "canonical_actual": actual_canonical,
+        "deterministic_result_match": matches,
+        "path_fields_normalized": ["input", "input_path", "path"],
+        "scope": "deterministic Skill replay; transport-only file paths are normalized. External tools/hardware/environment reproduction require their own adapters and locks.",
     }
     (target_dir / "REPRODUCTION_REPORT.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return report
