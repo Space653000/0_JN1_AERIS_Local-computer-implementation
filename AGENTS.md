@@ -9,15 +9,24 @@ Human Chief Engineer = final authority. Core = design authority. Codex = local d
 
 ## Automatic trigger
 
-When the Human supplies:
+The following two URLs are themselves the AERIS Autopilot trigger:
 
 ```text
 https://github.com/Space653000/0_JN1_AERIS
 https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation
-<LOCAL_TARGET_PATH>
 ```
 
-and asks for `AERIS_AUTOPILOT`, Codex MUST continue automatically:
+Codex MUST NOT require the Human to paste a second long prompt.
+
+Resolve the local target automatically in this order:
+
+1. the path explicitly selected/opened by the Human in Codex;
+2. the single unambiguous writable workspace root already active in Codex;
+3. an explicitly supplied `<LOCAL_TARGET_PATH>` if present.
+
+If exactly one safe target is resolved, that path + the two URLs constitute a complete `AERIS_AUTOPILOT_REQUEST`. Ask for a path only when no safe target can be resolved or multiple conflicting targets exist. Never guess across unrelated non-empty directories.
+
+Then continue automatically:
 
 ```text
 sync latest CI-passed Implementation main
@@ -46,6 +55,7 @@ Before local execution, use the latest GitHub `main` whose Windows + Ubuntu CI p
 
 Do not ask routine setup questions. Stop only when blocked by one of:
 
+- no safe/unambiguous writable local target can be resolved;
 - denied admin/OS policy or required persistence privilege;
 - License/EULA;
 - secret/customer credential/hardware token;
