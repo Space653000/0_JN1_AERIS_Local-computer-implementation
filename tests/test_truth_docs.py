@@ -50,6 +50,23 @@ class TruthDocumentationTests(unittest.TestCase):
         self.assertEqual(caps["browser_e2e_visual_regression"]["state"], "NOT_IMPLEMENTED")
         self.assertEqual(caps["machine_resource_qualification"]["state"], "NOT_IMPLEMENTED")
 
+    def test_company_and_baseline_snapshots_do_not_reintroduce_stale_closed_truth(self):
+        company = load_json("company/company.manifest.json")
+        trust = company["trust_baseline"]
+        self.assertIn("TASK_AWARE_REVIEWER_ALLOCATION_TESTED_BASELINE", trust["independent_review"])
+        self.assertIn("CLAUDE_OPTIONAL_NOT_DEFAULT", trust["independent_review"])
+        self.assertIn("TESTED_REGRESSION_BASELINE_NOT_PRODUCTION_GOLDEN_DATASET", trust["golden_acoustic_cases"])
+        self.assertNotIn("NOT_REVIEWER_ALLOCATION_ENGINE", trust["independent_review"])
+        self.assertNotEqual(trust["golden_acoustic_cases"], "NOT_IMPLEMENTED")
+
+        baselines = load_json("config/baseline_capabilities.v1.json")["capabilities"]
+        browser = baselines["browser_visual_accessibility_baseline"]
+        self.assertEqual(browser["state"], "TESTED")
+        evidence_text = " ".join(browser["evidence"])
+        self.assertNotIn("PR #24", evidence_text)
+        self.assertNotIn("required before merge", browser["truth"].lower())
+        self.assertIn("not cross-version pixel-golden regression", browser["truth"].lower())
+
     def test_reality_audit_preserves_external_and_real_machine_boundaries(self):
         audit = read("docs/AUDIT_REALITY_CHECK.md")
         for phrase in (
