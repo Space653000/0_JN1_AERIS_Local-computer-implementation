@@ -75,8 +75,9 @@
       "note": "structured gates/authority are tested; complete acoustic-domain G2/G3/golden logic is not."
     },
     "independent_reviewer_allocation_engine": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "task-aware independent reviewer assignment with identity/context/permission separation; Claude is one reviewer path, not the general allocator"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/reviewer_allocation.py + tests/test_reviewer_allocation.py + PR #20 dual-platform CI + post-merge main CI run 170",
+      "note": "Deterministic task-aware reviewer-seat allocation separates primary execution from review identity/context/permissions and does not launch Claude or any external model by default; allocation is not proof that an independent review occurred."
     },
     "append_only_audit_ledger": {
       "state": "TESTED",
