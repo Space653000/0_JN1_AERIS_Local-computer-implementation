@@ -57,6 +57,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./tests/windows/test-python-resolution.ps1
+      - name: Repository quality-gate contract
+        run: python tests/test_quality_gate_contract.py
       - name: Unit tests including Core alignment privacy trust acoustics watchdog reproduction
         run: python -m unittest discover -s tests -v
       - name: Validate 100-role company image and maturity truth
