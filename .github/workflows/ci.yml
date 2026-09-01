@@ -61,6 +61,8 @@ jobs:
         run: python tests/test_quality_gate_contract.py
       - name: Machine qualification and Golden acoustic baseline gate
         run: python -m unittest tests.test_machine_qualification tests.test_golden_acoustics -v
+      - name: Role contract and independent reviewer allocation gate
+        run: python -m unittest tests.test_role_contracts tests.test_reviewer_allocation -v
       - name: Unit tests including Core alignment privacy trust acoustics watchdog reproduction
         run: python -m unittest discover -s tests -v
       - name: Real browser semantic E2E for Dashboard Workspace Services
