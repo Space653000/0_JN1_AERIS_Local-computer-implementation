@@ -1,5 +1,5 @@
 {
-  "schema_version": 8,
+  "schema_version": 9,
   "product_stage": "PRE_ALPHA",
   "truth_rule": "Nothing is COMPLETE merely because code exists or CI is green. TESTED means the stated automated scope passed; VERIFIED additionally requires the specified real-machine, real-tool, physical, license, calibration or release evidence where applicable.",
   "evidence_snapshot": {
@@ -12,96 +12,102 @@
     "full_entrypoint_ci_main_commit": "1b31c59e914bcd9898ae0188a5c7592d75ea6fd2",
     "full_entrypoint_pr": 9,
     "full_entrypoint_pr_ci_run": 121,
-    "full_entrypoint_pr_ci_scope": "Ubuntu 24.04 + Windows 2025; syntax, unit/security/acoustic/reproduction, Core drift, installer, unattended smoke, full Autopilot CI smoke, full Claude CI smoke, packaging/SBOM",
+    "full_entrypoint_pr_ci_scope": "Ubuntu 24.04 + Windows 2025; syntax, unit/security/acoustic/reproduction, Core drift, installer, unattended smoke, full Autopilot CI smoke, optional Claude-wrapper CI smoke without Claude/token invocation, packaging/SBOM",
     "truth": "No GitHub CI run substitutes for the final local-machine reboot/inference/persistence/license/hardware evidence cycle."
   },
   "states": ["NOT_IMPLEMENTED", "IMPLEMENTED", "TESTED", "VERIFIED", "BLOCKED_EXTERNAL"],
   "capabilities": {
     "architecture_and_governance_baseline": {
       "state": "TESTED",
-      "evidence": "Core governance contract + tests/test_core_alignment.py + PR #9 CI run 121",
+      "evidence": "Core governance contract + tests/test_core_alignment.py + dual-platform CI",
       "note": "Canonical Core remains the read-only WHAT authority; implementation remains HOW."
     },
     "core_semantic_alignment_contract": {
       "state": "TESTED",
-      "evidence": "config/core_alignment.json + tests/test_core_alignment.py + remote Core drift gate + PR #9 CI run 121"
+      "evidence": "config/core_alignment.json + tests/test_core_alignment.py + remote Core drift gate + dual-platform CI"
     },
     "autopilot_zero_experience_orchestrator": {
       "state": "TESTED",
-      "evidence": "AERIS_AUTOPILOT.ps1/.sh + scripts/autopilot.* + full Autopilot entrypoint CI-smoke on Ubuntu 24.04 and Windows 2025 in PR #9 run 121",
+      "evidence": "AERIS_AUTOPILOT.ps1/.sh + scripts/autopilot.* + full Autopilot entrypoint CI-smoke on Ubuntu 24.04 and Windows 2025",
       "required": "fresh supported-machine real install + local inference + offline inference + opening + persistence evidence before VERIFIED"
     },
     "claude_independent_acceptance_harness": {
       "state": "TESTED",
-      "evidence": "CLAUDE_VERIFY_AERIS.ps1/.sh + scripts/claude-verify.* + full Claude entrypoint CI-smoke on both OSes in PR #9 run 121",
-      "required": "real post-Autopilot review evidence before real-machine VERIFIED claim"
+      "evidence": "CLAUDE_VERIFY_AERIS.ps1/.sh + scripts/claude-verify.* + optional wrapper CI-smoke on both OSes without Claude/token invocation",
+      "required": "real explicitly requested post-Autopilot review evidence before any real-review VERIFIED claim",
+      "note": "Optional reviewer path only; default deployment does not require or launch Claude Code and requires no Claude token."
     },
     "100_role_registry": {
       "state": "TESTED",
-      "evidence": "company/organization/roles.v1.json + tests/test_company_image.py + tests/test_roles.py + PR #9 CI run 121",
+      "evidence": "company/organization/roles.v1.json + tests/test_company_image.py + tests/test_roles.py + dual-platform CI",
       "note": "100 capability seats are not 100 domain-verified human-equivalent engineers."
     },
     "100_role_callable_baseline": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/roles.py + /api/v1/roles + tests/test_roles.py + tests/test_controlplane.py + PR #9 CI run 121",
+      "evidence": "aeris_runtime/roles.py + /api/v1/roles + tests/test_roles.py + tests/test_controlplane.py + dual-platform CI",
       "note": "Every canonical seat is addressable and local-AI callable under a common safety contract; this is not per-seat domain maturity."
+    },
+    "100_role_contract_framework_baseline": {
+      "state": "TESTED",
+      "evidence": "config/role_contracts.v1.json + aeris_runtime/role_contracts.py + tests/test_role_contracts.py + PR #20 dual-platform CI + post-merge main CI run 170",
+      "note": "Machine-readable baseline contracts and referenced metadata exist for all 100 seats while each seat remains explicitly not domain-verified."
     },
     "100_role_executable_domain_contracts": {
       "state": "NOT_IMPLEMENTED",
-      "required": "per-role domain contract + skills + methods + standards/tool permissions + evidence rubric + golden/negative/regression tests + independent review"
+      "required": "per-role mature domain contract + skills + methods + standards/tool permissions + evidence rubric + production Golden/negative/regression tests + independent domain review"
     },
     "dynamic_pod_engine": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/roles.py deterministic pod planner + tests/test_roles.py + control-plane Pod API + PR #9 CI run 121",
+      "evidence": "aeris_runtime/roles.py deterministic pod planner + tests/test_roles.py + control-plane Pod API + dual-platform CI",
       "note": "keyword/rule baseline, not a fully evaluated domain router."
     },
     "task_identity_and_engineering_state_machine": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/taskstate.py + tests/test_taskstate.py + PR #9 CI run 121"
+      "evidence": "aeris_runtime/taskstate.py + tests/test_taskstate.py + dual-platform CI"
     },
     "risk_authority_and_approval_engine": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/authority.py + tests/test_authority.py + PR #9 CI run 121",
+      "evidence": "aeris_runtime/authority.py + tests/test_authority.py + dual-platform CI",
       "required": "real R2/R3/R4 cases before production-grade VERIFIED claim"
     },
     "evidence_bundle_engine": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/evidence.py + tests/test_evidence.py + workflow tests + PR #9 CI run 121",
+      "evidence": "aeris_runtime/evidence.py + tests/test_evidence.py + workflow tests + dual-platform CI",
       "note": "application hash-manifest integrity; not WORM/external attestation."
     },
     "verification_g0_g5_engine": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/verification.py + tests/test_verification.py + workflow tests + PR #9 CI run 121",
-      "note": "structured gates/authority are tested; complete acoustic-domain G2/G3/golden logic is not."
+      "evidence": "aeris_runtime/verification.py + tests/test_verification.py + workflow tests + dual-platform CI",
+      "note": "structured gates/authority are tested; complete production acoustic-domain G2/G3 logic is not."
     },
     "independent_reviewer_allocation_engine": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/reviewer_allocation.py + tests/test_reviewer_allocation.py + PR #20 dual-platform CI + post-merge main CI run 170",
+      "evidence": "aeris_runtime/reviewer_allocation.py + tests/test_reviewer_allocation.py + PR #20 dual-platform CI + post-merge main CI run 170 + PR #21 truth regression",
       "note": "Deterministic task-aware reviewer-seat allocation separates primary execution from review identity/context/permissions and does not launch Claude or any external model by default; allocation is not proof that an independent review occurred."
     },
     "append_only_audit_ledger": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/audit.py + tests/test_audit.py + PR #9 CI run 121",
+      "evidence": "aeris_runtime/audit.py + tests/test_audit.py + dual-platform CI",
       "note": "hash-chain tamper detection is not immutable/WORM storage."
     },
     "reproduction_runner": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/reproduction.py + tests/test_reproduction.py path-normalized deterministic replay + PR #9 CI run 121",
-      "note": "verified only for deterministic local Skill replay, not proprietary tools/hardware."
+      "evidence": "aeris_runtime/reproduction.py + tests/test_reproduction.py path-normalized deterministic replay + dual-platform CI",
+      "note": "tested only for deterministic local Skill replay, not proprietary tools/hardware."
     },
     "local_supervisor_heartbeat": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/operations.py + tests/test_operations.py + control-plane HTTP tests + PR #9 CI run 121",
+      "evidence": "aeris_runtime/operations.py + tests/test_operations.py + control-plane HTTP tests + dual-platform CI",
       "required": "real reboot/stale-heartbeat evidence before VERIFIED"
     },
     "expected_run_health_monitor": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/expected_runs.py + tests/test_expected_runs.py including explicit latest-result ordering + PR #9 CI run 121",
+      "evidence": "aeris_runtime/expected_runs.py + tests/test_expected_runs.py including latest-result ordering + dual-platform CI",
       "note": "expected run/artifact freshness, not whole-company correctness."
     },
     "unattended_watchdog_baseline": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/watchdog.py + tests/test_watchdog.py + Windows/Linux unattended non-mutating smoke + PR #9 CI run 121",
+      "evidence": "aeris_runtime/watchdog.py + tests/test_watchdog.py + Windows/Linux unattended non-mutating smoke + dual-platform CI",
       "required": "actual local crash/recovery and reboot evidence before VERIFIED"
     },
     "windows_user_logon_persistence": {
@@ -118,21 +124,26 @@
       "state": "NOT_IMPLEMENTED",
       "required": "machine-specific service account/admin policy + local AI/license availability before login + reboot E2E"
     },
+    "golden_acoustic_regression_baseline": {
+      "state": "TESTED",
+      "evidence": "golden/acoustics/v1/manifest.json + aeris_runtime/golden_acoustics.py + tests/test_golden_acoustics.py + PR #19 Windows/Ubuntu CI + later main CI",
+      "note": "SHA-256-pinned five-case deterministic FR/import/requirement regression baseline; explicitly not a production-complete Speaker/Microphone Golden Dataset."
+    },
     "golden_acoustic_dataset_suite": {
       "state": "NOT_IMPLEMENTED",
-      "required": "versioned speaker/microphone golden, negative and regression cases with expected outcomes"
+      "required": "production-complete versioned Speaker/Microphone Golden, negative and regression coverage across product/transducer/fixture/chamber/direction/distance/noise/language/tolerance/uncertainty/calibration with reviewed provenance"
     },
     "initial_deterministic_acoustic_skills_slice": {
       "state": "TESTED",
-      "evidence": "measurement import validation + FR analysis + requirement verification implementations, manifests and tests/test_acoustic_skills.py + PR #9 CI run 121"
+      "evidence": "measurement import validation + FR analysis + requirement verification implementations, manifests and tests/test_acoustic_skills.py + dual-platform CI"
     },
     "full_skills_library": {
       "state": "NOT_IMPLEMENTED",
-      "required": "broad Speaker/Microphone × six-domain Skill coverage with versioning, golden, negative and regression tests"
+      "required": "broad Speaker/Microphone × six-domain Skill coverage with versioning, Golden, negative and regression tests"
     },
     "initial_versioned_methods_slice": {
       "state": "TESTED",
-      "evidence": "three versioned method packages used by deterministic acoustic Skills + workflow tests + PR #9 CI run 121"
+      "evidence": "three versioned method packages used by deterministic acoustic Skills + workflow tests + dual-platform CI"
     },
     "full_methods_library": {
       "state": "NOT_IMPLEMENTED",
@@ -140,7 +151,7 @@
     },
     "standards_registry_metadata_baseline": {
       "state": "TESTED",
-      "evidence": "standards/registry.v1.json + aeris_runtime/standards_registry.py + tests/test_standards_registry.py + PR #9 CI run 121",
+      "evidence": "standards/registry.v1.json + aeris_runtime/standards_registry.py + tests/test_standards_registry.py + dual-platform CI",
       "note": "metadata/status/source registry only; not licensed standard full text and not proof every revision is continuously current."
     },
     "full_live_standards_corpus": {
@@ -149,7 +160,7 @@
     },
     "workflow_engine_baseline": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/workflow.py + tests/test_workflow.py + Evidence/G0/G1 integration + PR #9 CI run 121",
+      "evidence": "aeris_runtime/workflow.py + tests/test_workflow.py + Evidence/G0/G1 integration + dual-platform CI",
       "note": "does not auto-pass G2 domain, G3 regression, G4 independent review or G5 Human approval."
     },
     "professional_acoustic_corpus": {
@@ -158,30 +169,30 @@
     },
     "local_knowledge_sqlite": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/knowledge.py + tests/test_knowledge.py + role local-Knowledge grounding + PR #9 CI run 121",
+      "evidence": "aeris_runtime/knowledge.py + tests/test_knowledge.py + role local-Knowledge grounding + dual-platform CI",
       "note": "self-cleaning local text/FTS baseline; Knowledge is supporting context, not Evidence."
     },
     "local_model_router": {
       "state": "TESTED",
-      "evidence": "tests/test_router.py + tests/test_provider_health.py + tests/test_local_endpoint_policy.py + PR #9 CI run 121",
+      "evidence": "tests/test_router.py + tests/test_provider_health.py + tests/test_local_endpoint_policy.py + dual-platform CI",
       "required": "real local model inference in machine acceptance before VERIFIED"
     },
     "private_local_endpoint_scope_enforcement": {
       "state": "TESTED",
-      "evidence": "provider endpoint policy tests on loopback/trusted-LAN/public-host rejection + PR #9 CI run 121"
+      "evidence": "provider endpoint policy tests on loopback/trusted-LAN/public-host rejection + dual-platform CI"
     },
     "cloud_public_research_router": {
       "state": "TESTED",
-      "evidence": "router/privacy tests + PR #9 CI run 121",
+      "evidence": "router/privacy tests + dual-platform CI",
       "note": "OpenAI-compatible baseline; each live provider still needs interoperability/license/policy verification."
     },
     "cloud_secret_file_support": {
       "state": "TESTED",
-      "evidence": "tests/test_config.py + PR #9 CI run 121"
+      "evidence": "tests/test_config.py + dual-platform CI"
     },
     "application_privacy_boundary": {
       "state": "TESTED",
-      "evidence": "privacy + private endpoint tests + PR #9 CI run 121",
+      "evidence": "privacy + private endpoint tests + dual-platform CI",
       "note": "does not prove every arbitrary process on the OS can never exfiltrate data."
     },
     "os_network_egress_enforcement": {
@@ -190,11 +201,11 @@
     },
     "public_ingress_ssrf_dns_rebinding_guard": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py + PR #9 CI run 121"
+      "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py + dual-platform CI"
     },
     "public_ingress_quarantine_human_promotion": {
       "state": "TESTED",
-      "evidence": "quarantine/promotion positive and rejection tests + PR #9 CI run 121"
+      "evidence": "quarantine/promotion positive and rejection tests + dual-platform CI"
     },
     "public_ingress_malware_scanning": {
       "state": "IMPLEMENTED",
@@ -202,39 +213,55 @@
     },
     "live_local_ui_and_control_plane": {
       "state": "TESTED",
-      "evidence": "ui/web + aeris_runtime/controlplane.py + tests/test_controlplane.py root/UI/API tests + PR #9 CI run 121",
-      "note": "same-origin dependency-free local UI/API tested; full browser E2E/accessibility/visual regression suite remains future work."
+      "evidence": "ui/web + aeris_runtime/controlplane.py + tests/test_controlplane.py root/UI/API tests + real-browser semantic E2E + dual-platform CI",
+      "note": "same-origin dependency-free local UI/API and semantic browser routing/rendering are tested; pixel visual/accessibility regression remains separate future work."
+    },
+    "real_browser_semantic_e2e": {
+      "state": "TESTED",
+      "evidence": "tests/browser_e2e.py + PR #18 Windows 2025/Ubuntu 24.04 CI + later main CI",
+      "note": "Real installed headless browser executes the SPA and verifies Dashboard/Workspace/Services semantics; this is not pixel visual regression."
     },
     "browser_e2e_visual_regression": {
       "state": "NOT_IMPLEMENTED",
-      "required": "Playwright or equivalent real-browser workflow/visual/accessibility regression on supported local UI"
+      "required": "pixel visual and accessibility regression coverage for the supported local UI; semantic real-browser E2E already exists separately"
     },
     "supported_machine_profile_detection": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/machine.py + CI machine detection + PR #9 run 121",
+      "evidence": "aeris_runtime/machine.py + CI machine detection + dual-platform CI",
       "note": "profile match is not resource qualification."
+    },
+    "machine_resource_qualification_baseline": {
+      "state": "TESTED",
+      "evidence": "config/machine_qualification.v1.json + aeris_runtime/machine_qualification.py + tests/test_machine_qualification.py + PR #19 Windows/Ubuntu CI + later main CI",
+      "note": "Deterministic profile/RAM/free-disk/Python/tool/NVIDIA/VRAM checks only; not sustained-load, latency, thermal, reboot or target-machine VERIFIED evidence."
     },
     "machine_resource_qualification": {
       "state": "NOT_IMPLEMENTED",
-      "required": "profile-specific OS/RAM/disk/GPU/VRAM/driver/runtime/latency/thermal sustained-load criteria"
+      "required": "production target-specific OS/driver/runtime compatibility plus sustained-load, latency, thermal/headroom and reboot acceptance; deterministic inventory baseline already exists separately"
     },
     "windows_linux_ci_kernel": {
       "state": "VERIFIED",
-      "evidence": "PR #9 CI run 121: explicit Ubuntu 24.04 + Windows 2025 complete automated jobs",
+      "evidence": "explicit Ubuntu 24.04 + Windows 2025 complete automated jobs across protected CI history",
       "note": "VERIFIED only for the automated CI scope, never a user-PC claim."
+    },
+    "zero_cost_no_claude_default_deployment": {
+      "state": "TESTED",
+      "evidence": "config/zero_cost_no_claude.v1.json + aeris_runtime/deployment_policy.py + tests/test_zero_cost_deployment.py + Windows fail-closed winget regression + PR #20 dual-platform CI + post-merge main CI run 170",
+      "note": "Default opening requires no Claude Code/token, paid cloud API or paid professional software; explicit license/source agreement and external paid-tool scopes remain Human/External Gates."
     },
     "one_click_installer_smoke": {
       "state": "TESTED",
-      "evidence": "Windows/Linux installer smoke in PR #9 run 121",
+      "evidence": "Windows/Linux installer smoke in dual-platform CI",
       "note": "external model/runtime install is deliberately excluded from CI smoke."
     },
     "full_autopilot_entrypoint_ci": {
       "state": "TESTED",
-      "evidence": "AERIS_AUTOPILOT.ps1/.sh full CI-smoke entrypoints passed on Ubuntu 24.04 + Windows 2025 in PR #9 run 121"
+      "evidence": "AERIS_AUTOPILOT.ps1/.sh full CI-smoke entrypoints pass on Ubuntu 24.04 + Windows 2025"
     },
     "full_claude_entrypoint_ci": {
       "state": "TESTED",
-      "evidence": "CLAUDE_VERIFY_AERIS.ps1/.sh CI-smoke entrypoints passed on both OS jobs in PR #9 run 121"
+      "evidence": "CLAUDE_VERIFY_AERIS.ps1/.sh optional wrapper CI-smoke entrypoints pass on both OS jobs without Claude/token invocation",
+      "note": "CI wiring evidence only; not a requirement to use Claude Code."
     },
     "offline_staged_python_windows": {
       "state": "IMPLEMENTED",
@@ -250,12 +277,12 @@
     },
     "core_airgap_snapshot_integrity": {
       "state": "TESTED",
-      "evidence": "corecache snapshot tests + PR #9 CI run 121",
+      "evidence": "corecache snapshot tests + dual-platform CI",
       "note": "hash integrity still needs a trusted manifest authenticity path for high assurance."
     },
     "core_git_cache_content_integrity": {
       "state": "TESTED",
-      "evidence": "clean/tampered/head-mismatch/wrong-remote corecache tests + PR #9 CI run 121"
+      "evidence": "clean/tampered/head-mismatch/wrong-remote corecache tests + dual-platform CI"
     },
     "clean_windows_install": {
       "state": "IMPLEMENTED",
@@ -275,16 +302,16 @@
     },
     "portable_software_image": {
       "state": "TESTED",
-      "evidence": "Windows/Linux portable package smoke + PR #9 CI run 121"
+      "evidence": "Windows/Linux portable package smoke + dual-platform CI"
     },
     "software_sbom_provenance": {
       "state": "TESTED",
-      "evidence": "release-metadata generation and package smoke + PR #9 CI run 121",
+      "evidence": "release-metadata generation and package smoke + dual-platform CI",
       "note": "metadata is not a cryptographic authenticity signature."
     },
     "portable_package_external_sha256": {
       "state": "TESTED",
-      "evidence": "external SHA-256 sidecar verification in package smoke + PR #9 CI run 121"
+      "evidence": "external SHA-256 sidecar verification in package smoke + dual-platform CI"
     },
     "release_signing_and_attestation": {
       "state": "NOT_IMPLEMENTED",
@@ -292,7 +319,7 @@
     },
     "private_state_archive_safety": {
       "state": "TESTED",
-      "evidence": "scripts/private-state.py archive traversal/symlink/hardlink/device tests + PR #9 CI run 121"
+      "evidence": "scripts/private-state.py archive traversal/symlink/hardlink/device tests + dual-platform CI"
     },
     "encrypted_private_state_backup_restore": {
       "state": "IMPLEMENTED",
@@ -328,7 +355,7 @@
     },
     "commercial_release_readiness": {
       "state": "NOT_IMPLEMENTED",
-      "required": "release-critical acoustic capabilities/golden cases VERIFIED + legal model/tool/data licenses + supported configuration frozen + signing/attestation + Human R4 approval"
+      "required": "release-critical acoustic capabilities/production Golden cases VERIFIED + legal model/tool/data licenses + supported configuration frozen + signing/attestation + Human R4 approval"
     }
   }
 }
