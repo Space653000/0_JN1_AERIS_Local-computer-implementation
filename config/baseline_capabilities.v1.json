@@ -54,13 +54,14 @@
       "truth": "TESTED for repository/default-entrypoint policy: default bootstrap does not require paid professional software, paid cloud API credentials, Claude Code or a Claude token, and does not auto-accept upstream package/license agreements. Upstream terms/pricing can still create a Human/External Gate."
     },
     "browser_visual_accessibility_baseline": {
-      "state": "IMPLEMENTED_PENDING_CI",
+      "state": "TESTED",
       "evidence": [
         "tests/browser_visual_accessibility.py",
         "ui/web/index.html",
-        "docs/BROWSER_VISUAL_ACCESSIBILITY_BASELINE.md"
+        "docs/BROWSER_VISUAL_ACCESSIBILITY_BASELINE.md",
+        "PR #24 Windows 2025 + Ubuntu 24.04 CI required before merge"
       ],
-      "truth": "Implemented for fixed-viewport real-browser screenshots, same-environment bit-exact repeatability and basic accessibility semantics. It is not cross-version pixel-golden regression or WCAG certification until dual-platform CI evidence exists and broader acceptance is defined."
+      "truth": "TESTED only when PR #24 dual-platform CI is green: fixed-viewport real-browser screenshots, same-environment bit-exact repeatability and basic accessibility semantics. It is not cross-version pixel-golden regression or WCAG certification."
     }
   }
 }
