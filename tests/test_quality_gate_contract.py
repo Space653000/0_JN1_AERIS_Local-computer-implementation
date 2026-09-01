@@ -16,6 +16,7 @@ class QualityGateContractTests(unittest.TestCase):
             "aeris_runtime/claim_guard.py",
             "tests/test_claim_guard.py",
             "tests/browser_e2e.py",
+            "tests/test_browser_e2e_harness.py",
             "tests/browser_visual_accessibility.py",
             "docs/BROWSER_VISUAL_ACCESSIBILITY_BASELINE.md",
             ".gitattributes",
@@ -64,6 +65,15 @@ class QualityGateContractTests(unittest.TestCase):
         ]
         for snippet in required_snippets:
             self.assertIn(snippet, ci, f"required CI gate missing/weakened: {snippet}")
+
+    def test_browser_e2e_timeout_recovery_is_bounded_and_fail_closed(self):
+        text = (ROOT / "tests/browser_e2e.py").read_text(encoding="utf-8")
+        regression = (ROOT / "tests/test_browser_e2e_harness.py").read_text(encoding="utf-8")
+        self.assertIn("BROWSER_TIMEOUT_ATTEMPTS = 2", text)
+        self.assertIn("_terminate_process_tree", text)
+        self.assertIn("repeated timeout fails closed", text)
+        self.assertIn("test_repeated_timeout_fails_closed", regression)
+        self.assertIn("test_nonzero_browser_exit_is_not_retried_or_hidden", regression)
 
     def test_browser_e2e_scope_cannot_be_upgraded_to_fake_visual_regression(self):
         text = (ROOT / "tests/browser_e2e.py").read_text(encoding="utf-8")
