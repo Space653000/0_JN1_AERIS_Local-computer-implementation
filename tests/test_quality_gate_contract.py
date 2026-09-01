@@ -70,7 +70,7 @@ class QualityGateContractTests(unittest.TestCase):
         self.assertIn('id=\"workspace\" class=\"view active-view\"', text)
         self.assertIn('id=\"services\" class=\"view active-view\"', text)
         self.assertIn("NOT cross-version pixel-golden regression", visual)
-        self.assertIn("not** a cross-version pixel-golden visual regression suite".replace("not**", "not**"), docs.lower())
+        self.assertIn("**not** a cross-version pixel-golden visual regression suite", docs.lower())
 
     def test_browser_accessibility_markers_are_permanent(self):
         html = (ROOT / "ui/web/index.html").read_text(encoding="utf-8")
