@@ -26,6 +26,10 @@ class QualityGateContractTests(unittest.TestCase):
             "aeris_runtime/reviewer_allocation.py",
             "tests/test_role_contracts.py",
             "tests/test_reviewer_allocation.py",
+            "config/zero_cost_no_claude.v1.json",
+            "aeris_runtime/deployment_policy.py",
+            "tests/test_zero_cost_deployment.py",
+            "docs/ZERO_COST_NO_CLAUDE_DEPLOYMENT.md",
             "INSTALL_AERIS_LOCAL.ps1",
             "AERIS_AUTOPILOT.ps1",
             ".github/workflows/ci.yml",
@@ -42,6 +46,7 @@ class QualityGateContractTests(unittest.TestCase):
             "Windows Python resolver Store-alias regression",
             "Machine qualification and Golden acoustic baseline gate",
             "Role contract and independent reviewer allocation gate",
+            "Zero-cost no-Claude default deployment gate",
             "Real browser semantic E2E for Dashboard Workspace Services",
             "Windows one-click installer smoke without external runtime installation",
             "Windows full Autopilot entrypoint CI smoke",
@@ -72,6 +77,17 @@ class QualityGateContractTests(unittest.TestCase):
         self.assertIn("same_context_repair_and_approval_forbidden", allocation)
         self.assertIn("launch_external_model_by_default", allocation)
         self.assertIn('"Human Chief Engineer" if human_required else None', allocation)
+
+    def test_zero_cost_no_claude_default_cannot_silently_regress(self):
+        policy = (ROOT / "config/zero_cost_no_claude.v1.json").read_text(encoding="utf-8")
+        validator = (ROOT / "aeris_runtime/deployment_policy.py").read_text(encoding="utf-8")
+        installer = (ROOT / "scripts/one-click-install.ps1").read_text(encoding="utf-8")
+        autopilot = (ROOT / "config/autopilot.json").read_text(encoding="utf-8")
+        self.assertIn('"claude_token_required": false', policy)
+        self.assertIn('"paid_software_required": false', policy)
+        self.assertIn("FORBIDDEN_DEFAULT_INSTALLER_TOKEN", validator)
+        self.assertIn("Install-WingetPackageNoAgreement", installer)
+        self.assertIn('"deployment_profile": "AERIS-ZERO-COST-NO-CLAUDE-V1"', autopilot)
 
     def test_windows_resolver_contract_is_not_reverted(self):
         resolver = (ROOT / "scripts/windows-python-resolution.ps1").read_text(encoding="utf-8")
