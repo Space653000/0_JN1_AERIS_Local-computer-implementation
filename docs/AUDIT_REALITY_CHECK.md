@@ -6,19 +6,21 @@
 
 ## 1. Non-negotiable truth rule
 
-AERIS uses five implementation states:
+AERIS uses:
 
-`NOT_IMPLEMENTED → IMPLEMENTED → TESTED → VERIFIED`
+```text
+NOT_IMPLEMENTED → IMPLEMENTED → TESTED → VERIFIED
+```
 
-External dependencies that cannot be completed inside this public repository use `BLOCKED_EXTERNAL`.
+External dependencies that cannot be completed in this repository use `BLOCKED_EXTERNAL`.
 
-No AI, README, dashboard or installer may promote a capability by prose alone.
+No AI, README, dashboard, installer or Human optimism may promote a capability by prose alone.
 
 - `IMPLEMENTED` = code/config exists.
-- `TESTED` = automated tests exercise the claimed contract.
-- `VERIFIED` = required real-machine / real-tool / real-evidence acceptance has passed.
-- CI green means only the checks executed by CI passed.
-- A 100-seat registry means 100 capability slots are defined; it does **not** mean 100 mature engineers already exist.
+- `TESTED` = automated tests exercise the claimed contract and pass.
+- `VERIFIED` = required real-machine / real-tool / real-evidence acceptance passes for a specified configuration.
+- CI green means only the checks executed by that CI run passed.
+- A 100-seat registry means 100 capability slots exist; it does **not** mean 100 mature acoustic engineers already exist.
 
 Machine-readable source: `config/maturity.json`.
 
@@ -26,25 +28,44 @@ Machine-readable source: `config/maturity.json`.
 
 **PRE_ALPHA Portable Company Kernel.**
 
-Currently real and testable:
+Existing real baseline includes:
 
-- 100-seat registry count and grouping;
+- 100-seat registry count/grouping;
 - local/private chat routing to Ollama-compatible local AI;
-- public-research-only cloud adapter boundary;
-- application-level cloud egress policy and DLP screening;
-- public URL ingress with non-public-address/SSRF protection;
-- SQLite local knowledge index;
-- Windows/Linux CI kernel tests;
-- machine detection baseline;
-- one-click installer implementation and CI smoke mode;
-- read-only cached Core sync mechanism;
-- portable software-image packaging;
+- explicit public-research-only cloud channel;
+- application-level cloud-egress policy and DLP screening;
+- local SQLite Knowledge baseline;
+- Windows/Linux CI kernel baseline;
+- Machine Profile detection baseline;
+- one-click installer kernel;
+- read-only cached Core sync/drift mechanism;
+- portable software packaging;
 - real-machine local/offline acceptance scripts;
-- encrypted private-state backup/restore mechanism using `age`.
+- encrypted private-state export/import mechanism using `age`.
 
-Not yet a completed professional acoustic company:
+The reliability-hardening branch adds, pending PR CI and subsequent merge:
 
-- 100 executable role contracts;
+- fail-closed online/offline installer behavior;
+- staged Windows Python + staged GGUF model verification/import;
+- explicit unsupported-machine behavior;
+- self-cleaning Knowledge index and FTS5 fallback;
+- Core air-gap snapshot with exact file hashes;
+- pinned public-IP TLS ingress to reduce DNS-rebinding TOCTOU;
+- quarantine, malware scanner integration, prompt-injection/content-risk flags and Human promotion;
+- private-state tar rejection of links/devices/FIFO/traversal;
+- multi-path HardOffline probes with non-absolute claim wording;
+- cloud secret-file support;
+- pinned GitHub Actions commits;
+- SPDX 2.3 file inventory + provenance + SHA256SUMS in Software Images;
+- Human–AI Reliability Contract and Local Verification SOP.
+
+These branch changes are **not promoted to TESTED merely because they are written**. Their state remains conservative until CI/real-machine evidence exists.
+
+## 3. Still not a completed professional acoustic company
+
+The following remain materially incomplete:
+
+- 100 executable Role Contracts;
 - mature acoustic Skill library;
 - deterministic Methods library;
 - live standards registry with lifecycle refresh;
@@ -53,60 +74,114 @@ Not yet a completed professional acoustic company:
 - Evidence Bundle engine and append-only audit;
 - G0–G5 verification engine;
 - Golden acoustic datasets/regression suite;
-- COMSOL/MATLAB/APx/KLIPPEL/SoundCheck/ACQUA adapters;
+- professional acoustic corpus / semantic/provenance retrieval;
+- COMSOL/MATLAB/APx/KLIPPEL/SoundCheck/ACQUA production adapters;
 - live local Dashboard/Workspace/Services backend;
-- OS-level DLP/network egress enforcement;
+- OS-level DLP/network/process enforcement;
 - clean-machine Windows/Linux/Jetson verification evidence;
-- full-company relocation verified across machines.
+- full-company relocation verified on a second machine;
+- production release signing/attestation and complete commercial/legal release gate.
 
-## 3. Core repository write boundary
+## 4. Core repository write boundary
 
-The Core repository is policy-defined read-only for Codex and local implementation. Local cached clones disable the push URL and install a deny `pre-push` hook.
+The Core repo is defined read-only for Codex/implementation in its own governance files.
 
-This is **not equivalent to GitHub server-side branch protection**. Server-side protection/rulesets and write credential scoping must be configured by the Human on GitHub. Until that exists, maturity must not claim cryptographic/administrative immutability of Core.
+Local Core representations are either:
 
-## 4. Privacy claim boundary
+- guarded Git cache: disabled push URL + deny pre-push hook; or
+- checksum-manifested snapshot: no Git remote, canonical Core SHA + exact per-file hashes.
+
+GitHub server-side protection is a separate Human-controlled layer. A live Ruleset now exists and direct implementation-to-main writing has been observed blocked by GitHub; the Human should still review the exact Ruleset requirements (approvals/status checks/code-owner/bypass policy) rather than equating “a ruleset exists” with maximum protection.
+
+Implementation changes now follow branch → CI → PR → main instead of normal direct-to-main mutation.
+
+## 5. Privacy claim boundary
 
 AERIS can truthfully claim:
 
-> AERIS application code never automatically attaches local Memory, Evidence, files or customer data to cloud research requests; private engineering chat is hard-routed to local AI.
+> AERIS application code does not automatically attach local Memory, Evidence, files or customer data to cloud research requests; private engineering chat is hard-routed to local AI.
 
 AERIS must **not** claim:
 
 > No process on the computer can ever leak data.
 
-That stronger statement requires local OS/network enforcement, process controls and verification. See `docs/security/LOCAL_NETWORK_ENFORCEMENT.md`.
+That stronger statement cannot be proven by a Python router. It requires OS/network/process controls and, for highest sensitivity, separate security zones or air gap.
 
-The `research` command is a **public channel**. DLP heuristics block obvious secrets/confidential markers, but heuristics cannot prove absence of sensitive information. Human classification remains required.
+`research` is a public channel. Best-effort DLP cannot prove absence of private information; the Human still classifies the query.
 
-## 5. Offline claim boundary
+## 6. Public ingress claim boundary
 
-`mode=offline` prevents AERIS model routing from using cloud and now blocks AERIS public URL ingress. A machine is not `HARD_OFFLINE_VERIFIED` until:
+Public URL ingress is untrusted input.
 
-1. local inference runtime/model is installed;
+Hardening target:
+
+```text
+public-only DNS answers
+→ connect to validated IP
+→ TLS hostname validation
+→ revalidate redirects
+→ quarantine
+→ hash
+→ local malware scanner if present
+→ content/prompt-injection markers
+→ Human promotion
+```
+
+This reduces SSRF/rebinding and content-risk exposure but does not prove an internet artifact is factually correct, legally reusable, or malware-free when no trusted scanner/signature exists.
+
+Downloads are never automatically treated as Knowledge authority.
+
+## 7. Offline claim boundary
+
+`mode=offline` blocks AERIS cloud routing and public URL ingress. It is not an air gap by itself.
+
+A machine is not hard-offline accepted until:
+
+1. all required local runtime/model/data/Skills/tools are already present;
 2. real local inference succeeds;
-3. external network is physically disconnected or blocked;
-4. `scripts/local-acceptance.*` passes in hard-offline mode;
-5. required Skills/data/tools for that workflow are local.
+3. real offline-mode inference succeeds;
+4. external network is physically disconnected or intentionally blocked;
+5. multi-path outbound probes do not succeed;
+6. acceptance evidence is preserved.
 
-## 6. Model baseline
+Even then, the correct evidence statement is “tested outbound paths were blocked”, not mathematical proof about every possible process/protocol/firmware path.
 
-Default local continuity model is `qwen3:4b-instruct` through Ollama-compatible API. Model licensing and exact tag must be rechecked before commercial release. The model is replaceable compute, not AERIS identity and not evidence of 100-person capability.
+## 8. Model baseline
 
-## 7. Professional tools
+Default continuity baseline is `qwen3:4b-instruct` through Ollama-compatible API.
 
-COMSOL, MATLAB, APx, KLIPPEL, SoundCheck, ACQUA, Ansys and Simcenter remain external/licensed dependencies. Documentation or detection does not equal an adapter. They may only move to `VERIFIED` after legal installation, version capture, adapter implementation, tool-specific E2E test and where applicable hardware/calibration evidence.
+A local model is replaceable compute. It is not AERIS identity and not evidence of 100-person professional capability. Exact model/tag/digest/license must be reviewed for the actual commercial/formal release.
 
-## 8. Relocation truth
+## 9. Professional tools
 
-There are three different objects:
+COMSOL, MATLAB, APx, KLIPPEL, SoundCheck, ACQUA, Ansys and Simcenter are external/licensed dependencies.
 
-1. **Software Company Image** — public repository/package; no secrets/private state.
-2. **Encrypted Private State** — `.env`, local Knowledge/Memory/Evidence/data/logs encrypted with `age`.
-3. **Private Asset Pack** — model weights, proprietary installers/licenses, drivers/calibration, private datasets.
+Documentation or detection does not equal an adapter. Promotion to VERIFIED requires legal install, exact version capture, implemented adapter, tool-specific E2E and where applicable hardware/calibration/raw evidence.
 
-A real company move requires all applicable objects plus restore acceptance. A software ZIP alone is not a full-company relocation.
+## 10. Relocation truth
 
-## 9. Release rule
+There are distinct artifacts:
 
-No release may be called `COMPLETE`, `PRODUCTION READY`, `100 ENGINEERS READY`, `OFFLINE VERIFIED`, `PRIVACY GUARANTEED`, or `FULL COMPANY RELOCATABLE` unless the corresponding state in `config/maturity.json` is `VERIFIED` and the required evidence artifact exists.
+1. **Software Company Image** — public software only; no secret/private state.
+2. **Release metadata** — SBOM, provenance and checksums for the software inventory.
+3. **Encrypted Private State** — local state encrypted with `age`.
+4. **Private Asset Pack** — model weights, proprietary installers/licenses, drivers/calibration/private datasets/credentials.
+5. **Destination acceptance evidence** — proves what actually works after restore.
+
+A Software ZIP/tarball alone is never called a full-company relocation.
+
+## 11. Supported-machine truth
+
+AERIS does not claim “any computer”.
+
+The valid statement is:
+
+> A machine is a supported baseline only if a versioned AERIS Machine Profile exists; it is VERIFIED only after that physical machine passes required acceptance.
+
+No profile → `UNSUPPORTED_PROFILE`, not guessed compatibility.
+
+## 12. Release rule
+
+No release may be called `COMPLETE`, `PRODUCTION READY`, `100 ENGINEERS READY`, `OFFLINE VERIFIED`, `PRIVACY GUARANTEED`, `ALL AI PROVIDERS SUPPORTED`, `ALL COMPUTERS SUPPORTED`, or `FULL COMPANY RELOCATABLE` unless the exact scoped capability is VERIFIED and the required evidence exists.
+
+AERIS treats a gate that finds a real defect as a successful reliability mechanism.
