@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "gate_id": "AERIS-PRE-CODEX-CLOUD-GATE-V1",
+  "purpose": "Define the cloud-side conditions that must be closed before asking the Human to spend local Codex time on one concentrated deployment/acceptance cycle.",
+  "required": {
+    "core_governance_main_ci_success": true,
+    "implementation_pr_windows_ci_success": true,
+    "implementation_pr_ubuntu_ci_success": true,
+    "implementation_post_merge_windows_ci_success": true,
+    "implementation_post_merge_ubuntu_ci_success": true,
+    "zero_cost_no_claude_default_gate": true,
+    "no_known_p0_p1_p2_cloud_reproducible_blocker": true,
+    "no_known_stale_truth_contradiction": true,
+    "paid_professional_tools_not_required": true,
+    "claude_code_or_token_not_required": true,
+    "no_auto_accept_license_or_eula": true
+  },
+  "not_required_before_local_cycle": [
+    "real local Ollama inference evidence on the target machine",
+    "hard-offline physical network isolation evidence",
+    "reboot/sign-out persistence evidence",
+    "machine sustained-load/thermal qualification",
+    "licensed COMSOL/MATLAB/APx/KLIPPEL/SoundCheck/ACQUA evidence",
+    "full production Golden Dataset and full 100-seat domain verification",
+    "commercial release signing/attestation"
+  ],
+  "truth": "This gate means GitHub/cloud-reproducible blockers have been driven down before local Codex work. PR Windows+Ubuntu CI and merge-after-main Windows+Ubuntu CI must both be successful before the Human is told to enter Codex. It does not mean the complete AERIS product is production-complete or that real-machine evidence already exists."
+}
