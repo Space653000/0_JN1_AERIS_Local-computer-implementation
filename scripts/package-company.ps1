@@ -30,6 +30,11 @@ if($LASTEXITCODE -ne 0){ throw 'Release metadata generation failed.' }
 $Zip = Join-Path $Out "AERIS-Portable-Company-Software-$Stamp.zip"
 Compress-Archive -Path (Join-Path $Stage '*') -DestinationPath $Zip -Force
 Remove-Item $Stage -Recurse -Force
+$Hash = (Get-FileHash -Algorithm SHA256 $Zip).Hash.ToLowerInvariant()
+$Sidecar = "$Zip.sha256"
+"$Hash  $([IO.Path]::GetFileName($Zip))" | Set-Content -Encoding ascii $Sidecar
 Write-Host "Created software-only package: $Zip"
+Write-Host "Created external package digest: $Sidecar"
 Write-Host 'Package includes SBOM.spdx.json, PROVENANCE.json and SHA256SUMS under release-metadata/.'
+Write-Host 'The SHA-256 sidecar provides transfer integrity only; production authenticity still requires a trusted signing/attestation policy.'
 Write-Host 'Private state and portable_assets were deliberately excluded. See docs/deployment/STATE_BACKUP_RESTORE.md.'
