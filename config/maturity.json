@@ -1,21 +1,30 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "product_stage": "PRE_ALPHA",
   "truth_rule": "Nothing is COMPLETE unless implementation + automated test + required real-machine or real-tool evidence exist for a specified supported configuration. Deployment maturity must never substitute for acoustic-engineering trust maturity.",
+  "evidence_snapshot": {
+    "implementation_main_commit": "bfacc5a5dd1ab07dee3d09286bcb59cccb558633",
+    "repair_pr": 2,
+    "repair_pr_ci_run": 104,
+    "post_merge_main_ci_run": 105,
+    "post_merge_main_ci_conclusion": "success",
+    "canonical_core_reviewed_sha": "bde158944ac21f076f39894600e172136c3a8c5a"
+  },
   "states": ["NOT_IMPLEMENTED", "IMPLEMENTED", "TESTED", "VERIFIED", "BLOCKED_EXTERNAL"],
   "capabilities": {
     "architecture_and_governance_baseline": {
       "state": "TESTED",
-      "evidence": "company/company.manifest.json + docs/AUDIT_REALITY_CHECK.md + tests/test_maturity_truth.py",
+      "evidence": "company/company.manifest.json + docs/AUDIT_REALITY_CHECK.md + tests/test_maturity_truth.py + main CI run 105",
       "note": "documentation/policy consistency only; not a company-complete claim"
     },
     "core_semantic_alignment_contract": {
-      "state": "IMPLEMENTED",
-      "required": "current repair PR Windows+Ubuntu CI must pass tests/test_core_alignment.py before promotion to TESTED"
+      "state": "TESTED",
+      "evidence": "config/core_alignment.json + tests/test_core_alignment.py + PR #2 CI run 104 + post-merge main CI run 105",
+      "note": "tested against reviewed Core SHA; any future Core SHA change must fail drift gate and require Human semantic review"
     },
     "100_role_registry": {
       "state": "TESTED",
-      "evidence": "tests/test_company_image.py + CI company status",
+      "evidence": "tests/test_company_image.py + company status + main CI run 105",
       "note": "role names/capability seats are not equivalent to 100 mature engineers"
     },
     "100_role_executable_contracts": {
@@ -43,25 +52,26 @@
     "golden_acoustic_dataset_suite": {"state": "NOT_IMPLEMENTED"},
     "local_model_router": {
       "state": "TESTED",
-      "evidence": "tests/test_router.py + tests/test_provider_health.py + GitHub Actions main run 74 for commit 16e0b85f5cb68926d44d2a77c75b3c5eba0a42bb",
-      "note": "baseline routing tested; new private-endpoint network-scope enforcement remains separately IMPLEMENTED until current repair CI passes"
+      "evidence": "tests/test_router.py + tests/test_provider_health.py + tests/test_local_endpoint_policy.py + PR #2 CI run 104 + main CI run 105",
+      "note": "routing and endpoint-policy contracts are automated-tested; real local inference still requires machine acceptance"
     },
     "private_local_endpoint_scope_enforcement": {
-      "state": "IMPLEMENTED",
-      "required": "current repair PR must pass tests/test_local_endpoint_policy.py on Windows+Ubuntu; trusted-LAN use still requires real network acceptance"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/providers.py + tests/test_local_endpoint_policy.py + PR #2 CI run 104 + main CI run 105",
+      "note": "public/global endpoints and arbitrary trusted-LAN hostnames are rejected; real trusted-LAN network segmentation/TLS/firewall remain local verification concerns"
     },
     "cloud_public_research_router": {
       "state": "TESTED",
-      "evidence": "tests/test_router.py + tests/test_privacy.py + GitHub Actions main run 74",
-      "note": "current implementation is OpenAI-compatible; each real provider/model still needs live interoperability and license/policy validation"
+      "evidence": "tests/test_router.py + tests/test_privacy.py + PR #2 CI run 104 + main CI run 105",
+      "note": "OpenAI-compatible baseline only; each real provider/model still needs live interoperability and license/policy validation"
     },
     "cloud_secret_file_support": {
       "state": "TESTED",
-      "evidence": "tests/test_config.py + GitHub Actions main run 74"
+      "evidence": "tests/test_config.py + main CI run 105"
     },
     "application_privacy_boundary": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/privacy.py + tests/test_privacy.py + GitHub Actions main run 74",
+      "evidence": "aeris_runtime/privacy.py + tests/test_privacy.py + tests/test_local_endpoint_policy.py + main CI run 105",
       "note": "does not prove that every process on the OS can never leak data"
     },
     "os_network_egress_enforcement": {
@@ -70,12 +80,13 @@
     },
     "public_ingress_ssrf_and_dns_rebinding_guard": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py + GitHub Actions main run 74",
+      "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py + main CI run 105",
       "note": "live HTTPS interoperability and scanner behavior remain real-network/machine concerns"
     },
     "public_ingress_quarantine_and_human_promotion": {
-      "state": "IMPLEMENTED",
-      "required": "current repair PR adds explicit positive promotion test; real scanner/path acceptance still required before VERIFIED"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py positive promotion and rejection cases + PR #2 CI run 104 + main CI run 105",
+      "note": "automated contract tested; real malware-scanner/path/operator acceptance remains required before any real-machine VERIFIED claim"
     },
     "public_ingress_malware_scanning": {
       "state": "IMPLEMENTED",
@@ -83,7 +94,7 @@
     },
     "local_knowledge_sqlite": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/knowledge.py + tests/test_knowledge.py + GitHub Actions main run 74",
+      "evidence": "aeris_runtime/knowledge.py + tests/test_knowledge.py + main CI run 105",
       "note": "self-cleaning basic local text index with FTS5 fallback; not a provenance-aware professional acoustic knowledge system"
     },
     "professional_acoustic_corpus": {"state": "NOT_IMPLEMENTED"},
@@ -118,7 +129,7 @@
     "live_local_ui": {"state": "NOT_IMPLEMENTED"},
     "supported_machine_profile_detection": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/machine.py + tests/test_knowledge.py + GitHub Actions main run 74 machine detect",
+      "evidence": "aeris_runtime/machine.py + tests/test_knowledge.py + main CI run 105 machine detect",
       "note": "profile match is not resource qualification and not real-machine verification"
     },
     "machine_resource_qualification": {
@@ -127,12 +138,12 @@
     },
     "windows_linux_ci_kernel": {
       "state": "VERIFIED",
-      "evidence": ".github/workflows/ci.yml + GitHub Actions main run 74 on commit 16e0b85f5cb68926d44d2a77c75b3c5eba0a42bb",
-      "note": "VERIFIED only for the exact automated CI kernel scope, never the whole company or real machine"
+      "evidence": ".github/workflows/ci.yml + post-merge GitHub Actions main run 105 on commit bfacc5a5dd1ab07dee3d09286bcb59cccb558633",
+      "note": "VERIFIED only for the exact automated CI kernel scope, never the whole company or a user's real machine"
     },
     "one_click_installer_smoke": {
       "state": "TESTED",
-      "evidence": ".github/workflows/ci.yml installer-smoke steps + GitHub Actions main run 74",
+      "evidence": ".github/workflows/ci.yml installer-smoke steps + main CI run 105",
       "note": "CI smoke deliberately skips external local-AI installation"
     },
     "offline_staged_python_windows": {
@@ -149,12 +160,13 @@
     },
     "core_airgap_snapshot_integrity": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/corecache.py snapshot mode + tests/test_corecache.py + GitHub Actions main run 74",
+      "evidence": "aeris_runtime/corecache.py snapshot mode + tests/test_corecache.py + main CI run 105",
       "note": "per-file hash integrity is not source authenticity unless the manifest/digest is independently trusted or signed"
     },
     "core_git_cache_content_integrity": {
-      "state": "IMPLEMENTED",
-      "required": "current repair PR Windows+Ubuntu CI must prove canonical fetch URL + disabled push + detached HEAD + HEAD/origin-main/recorded-SHA equality + clean worktree"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/corecache.py + tests/test_corecache.py clean/tampered/head-mismatch/wrong-remote cases + PR #2 CI run 104 + main CI run 105",
+      "note": "automated contract tested; each real local cache must still pass `aeris core verify` during acceptance"
     },
     "clean_windows_install": {
       "state": "IMPLEMENTED",
@@ -174,16 +186,17 @@
     },
     "portable_software_image": {
       "state": "TESTED",
-      "evidence": ".github/workflows/ci.yml Windows/Linux package smoke + GitHub Actions main run 74"
+      "evidence": ".github/workflows/ci.yml Windows/Linux package smoke + main CI run 105"
     },
     "software_sbom_provenance": {
       "state": "TESTED",
-      "evidence": "scripts/release-metadata.py + Windows/Linux package smoke + GitHub Actions main run 74",
+      "evidence": "scripts/release-metadata.py + Windows/Linux package smoke + main CI run 105",
       "note": "SBOM/provenance metadata is not a cryptographic authenticity signature"
     },
     "portable_package_external_sha256": {
-      "state": "IMPLEMENTED",
-      "required": "current repair PR package smoke must verify external .sha256 on Windows+Ubuntu; production authenticity still needs signing/attestation"
+      "state": "TESTED",
+      "evidence": "scripts/package-company.sh + scripts/package-company.ps1 + external .sha256 verification in PR #2 CI run 104 + main CI run 105",
+      "note": "proves package transfer integrity against the sidecar; production authenticity still requires signing/attestation"
     },
     "release_signing_and_attestation": {
       "state": "NOT_IMPLEMENTED",
@@ -191,7 +204,7 @@
     },
     "private_state_archive_safety": {
       "state": "TESTED",
-      "evidence": "scripts/private-state.py + tests/test_private_state.py + GitHub Actions main run 74",
+      "evidence": "scripts/private-state.py + tests/test_private_state.py + main CI run 105",
       "note": "tests archive member safety only, not real age transfer/restore"
     },
     "encrypted_private_state_backup_restore": {
