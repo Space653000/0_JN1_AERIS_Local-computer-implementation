@@ -7,7 +7,7 @@
   "core_target": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "7c528d44a3a497e99eaa6abbb26d5abac5170d6b",
+    "reviewed_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
     "authority": "read_only_highest_design_target",
     "implementation_rule": "implementation_must_adapt_to_core; implementation_must_not_write_core"
   },
