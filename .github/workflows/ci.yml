@@ -2,7 +2,7 @@ name: AERIS Portable Company CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'repair/**']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -20,20 +20,26 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout portable company repo
-        uses: actions/checkout@v4
+        # actions/checkout v4 pinned to immutable commit observed 2026-09-01.
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Setup Python
-        uses: actions/setup-python@v5
+        # actions/setup-python v5 pinned to immutable commit observed 2026-09-01.
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: ${{ matrix.python }}
-      - name: Compile runtime
-        run: python -m compileall aeris_runtime tests scripts/check-core-drift.py
-      - name: Unit tests including privacy and ingress security
+      - name: Compile runtime and Python tooling
+        run: python -m compileall aeris_runtime tests scripts
+      - name: Bash syntax checks
+        if: runner.os == 'Linux'
+        shell: bash
+        run: bash -n INSTALL_AERIS_LOCAL.sh scripts/*.sh
+      - name: Unit tests including privacy ingress archive and Core snapshot security
         run: python -m unittest discover -s tests -v
       - name: Validate 100-role company image and maturity truth
         run: python -m aeris_runtime company status
       - name: Verify canonical Core has not drifted
         run: python scripts/check-core-drift.py
-      - name: Build local-only knowledge database
+      - name: Build self-cleaning local-only knowledge database
         run: python -m aeris_runtime knowledge build
       - name: Detect CI machine profile
         run: python -m aeris_runtime machine detect --write
@@ -52,6 +58,13 @@ jobs:
           code=$?
           if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then exit "$code"; fi
           exit 0
+      - name: Standalone release metadata smoke
+        shell: bash
+        run: |
+          rm -rf .aeris/metadata-ci
+          python scripts/release-metadata.py --root . --output .aeris/metadata-ci --source-commit "${{ github.sha }}"
+          python -c "import json; json.load(open('.aeris/metadata-ci/SBOM.spdx.json')); json.load(open('.aeris/metadata-ci/PROVENANCE.json'))"
+          test -s .aeris/metadata-ci/SHA256SUMS
       - name: Linux one-click installer smoke without external runtime installation
         if: runner.os == 'Linux'
         shell: bash
@@ -62,17 +75,30 @@ jobs:
         shell: pwsh
         run: |
           ./INSTALL_AERIS_LOCAL.ps1 -Mode auto -SkipLocalModelInstall -SkipCoreSync
-      - name: Linux portable package smoke
+      - name: Linux portable package smoke with SBOM/provenance
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          rm -rf /tmp/aeris-dist
+          rm -rf /tmp/aeris-dist /tmp/aeris-check
           bash scripts/package-company.sh /tmp/aeris-dist
-          test -n "$(find /tmp/aeris-dist -maxdepth 1 -name 'AERIS-Portable-Company-*.tar.gz' -print -quit)"
-      - name: Windows portable package smoke
+          pkg="$(find /tmp/aeris-dist -maxdepth 1 -name 'AERIS-Portable-Company-*.tar.gz' -print -quit)"
+          test -n "$pkg"
+          mkdir -p /tmp/aeris-check
+          tar -xzf "$pkg" -C /tmp/aeris-check
+          test -s /tmp/aeris-check/release-metadata/SBOM.spdx.json
+          test -s /tmp/aeris-check/release-metadata/PROVENANCE.json
+          test -s /tmp/aeris-check/release-metadata/SHA256SUMS
+      - name: Windows portable package smoke with SBOM/provenance
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           ./scripts/package-company.ps1 -OutputDir dist-ci
           $pkg = Get-ChildItem dist-ci -Filter 'AERIS-Portable-Company-*.zip' | Select-Object -First 1
           if (-not $pkg) { throw 'Portable ZIP was not created.' }
+          $check = Join-Path $env:RUNNER_TEMP 'aeris-package-check'
+          if (Test-Path $check) { Remove-Item $check -Recurse -Force }
+          Expand-Archive $pkg.FullName -DestinationPath $check
+          foreach($f in @('SBOM.spdx.json','PROVENANCE.json','SHA256SUMS')) {
+            $p = Join-Path $check ("release-metadata\" + $f)
+            if (-not (Test-Path $p)) { throw "Missing release metadata: $f" }
+          }
