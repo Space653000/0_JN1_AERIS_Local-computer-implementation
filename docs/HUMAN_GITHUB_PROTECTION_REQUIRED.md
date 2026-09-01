@@ -2,113 +2,111 @@
 
 AERIS uses two repositories with deliberately different authority.
 
+**Observed 2026-09-01:** active Rulesets exist on both default branches and direct main writes are now rejected by the PR rule. No bypass actors are configured. This is real progress, but the current effective rules still need Human review because required approvals/status checks are not yet encoded as strongly as the target policy below.
+
 ## A. Canonical Core — strongest protection
 
 Repository: `Space653000/0_JN1_AERIS`  
 Branch: `main`
 
-Repository files can tell Codex "do not write", and local cached clones can disable their push URL/hook. Those controls do **not** remove server-side write permission from a GitHub credential that already has `push/admin` authority.
+Core is the read-only design authority for Codex/implementation. Repository instructions and local push guards do not replace server-side authority controls.
 
-The current ChatGPT GitHub integration exposes read access to branch/ruleset state but does not expose a mutation for repository rulesets/branch protection. Therefore AERIS must not pretend this was completed automatically.
-
-### Required Core outcome
-
-Configure a GitHub ruleset or branch protection so normal automation/Codex credentials cannot directly modify canonical `main`.
-
-Recommended policy:
-
-- target branch: `main`;
-- block force-push and deletion;
-- restrict direct updates;
-- require Human-controlled publication/review path;
-- require CODEOWNER approval where supported;
-- do not give Codex/local-implementation credentials bypass rights;
-- periodically review GitHub Apps/tokens with write permission.
-
-Acceptance evidence:
+Current observed Ruleset properties:
 
 ```text
-repository: Space653000/0_JN1_AERIS
-branch: main
-protection/ruleset: ENABLED
-force push: DENIED
-deletion: DENIED
-unauthorized direct update: DENIED
-Codex/implementation credential bypass: NO
-verified_at:
-verified_by:
+active: YES
+default branch targeted: YES
+deletion blocked: YES
+non-fast-forward / force-push blocked: YES
+Pull Request required: YES
+bypass actors: NONE
+required approving reviews: 0
+CODEOWNER review required: NO
+required AERIS status checks in Ruleset: not observed
 ```
 
-A strong test uses a non-owner test credential representing the automation role and confirms a direct update is rejected. Do **not** test destructive operations against production `main` with an owner credential.
+Recommended Core policy:
+
+- keep deletion/force-push blocked;
+- keep direct main update behind PR;
+- no Codex/implementation bypass;
+- use Human-controlled publication;
+- require CODEOWNER/Human approval **only if the account/team setup can satisfy it without creating a solo-owner deadlock**;
+- periodically review GitHub Apps/tokens with write authority;
+- prefer signed/verified Human publication commits/tags/releases for future high-assurance Core revisions.
+
+Core acceptance evidence should record the exact effective Ruleset, not merely `protected=true`.
 
 ## B. Implementation repository — PR + CI protection
 
 Repository: `Space653000/0_JN1_AERIS_Local-computer-implementation`  
 Branch: `main`
 
-This repository is writable construction space, but long-term reliability is stronger if `main` stops accepting unreviewed direct changes.
+Current observed Ruleset properties:
 
-Recommended target workflow after the ruleset is enabled:
+```text
+active: YES
+deletion blocked: YES
+non-fast-forward / force-push blocked: YES
+Pull Request required: YES
+bypass actors: NONE
+required approving reviews: 0
+required AERIS Portable Company CI status checks in Ruleset: not observed
+```
+
+The desired workflow is now the normal workflow:
 
 ```text
 ChatGPT / Codex
-→ feature branch
+→ feature/repair branch
 → changes + tests
 → Pull Request
-→ AERIS Portable Company CI required PASS
-→ review / evidence check
+→ Windows + Ubuntu AERIS Portable Company CI
+→ review/evidence check
 → merge to implementation main
+→ main CI rerun
 ```
 
-Recommended implementation-main rules:
+Recommended implementation-main Ruleset additions:
 
-- block force-push/deletion;
-- require Pull Request before merge;
-- require current `AERIS Portable Company CI` status check to pass;
-- require branch to be up to date before merge where practical;
-- dismiss stale approvals after new commits where practical;
-- do not allow automation to bypass required checks;
-- optionally require Human approval for security/privacy/installer/tool-adapter changes.
+- require the current Windows/Ubuntu AERIS CI checks before merge;
+- require branch to be up to date where practical;
+- dismiss stale approvals if Human approvals are adopted;
+- no AI/automation bypass;
+- optionally require Human approval for privacy/security/installer/professional-tool/release changes.
 
-This does **not** make the implementation repo read-only. It changes the write path from "direct main mutation" to "branch → CI → PR → merge".
+Do not disable the Ruleset just to make AI writes convenient.
 
-Acceptance evidence:
+## C. Local Core boundary remains mandatory
 
-```text
-repository: Space653000/0_JN1_AERIS_Local-computer-implementation
-branch: main
-protection/ruleset: ENABLED
-force push: DENIED
-deletion: DENIED
-PR required: YES
-AERIS Portable Company CI required: YES
-bypass for normal AI automation: NO
-verified_at:
-verified_by:
-```
-
-## C. Local Core boundary remains required
-
-Even after GitHub-side protection, every cached Core clone must retain:
+Every guarded Git Core cache must verify:
 
 ```text
-origin push URL = DISABLED://...
+fetch URL = canonical Core
+push URL = DISABLED://...
 pre-push hook = DENY
-checkout = detached origin/main
+HEAD detached
+HEAD == origin/main == recorded Core SHA
+working tree clean
 ```
 
-Defense in depth is intentional:
+Air-gap snapshot mode must verify exact file inventory + SHA-256. Snapshot hash integrity is not source authenticity unless the manifest/digest is independently trusted or signed.
+
+## D. Defense in depth
 
 ```text
-Agent policy
-+ local Git guard
-+ GitHub server ruleset
+Core semantic policy
++ Core remote drift gate
++ local Core content verification
++ local push guard
++ GitHub Ruleset
 + scoped credentials
 + CI/PR gate
++ Human approval for high-impact publication
 ```
 
-## D. Important transition note
+No single layer is called "100% immutable" by itself.
 
-Until the implementation-main ruleset is enabled, ChatGPT may still be able to write directly to implementation `main`. Once the Human enables PR-required protection, future AERIS development should switch to feature branches and Pull Requests rather than weakening the ruleset for convenience.
+## E. Verification rule
 
-The exact GitHub UI/options depend on repository/account plan and current GitHub product behavior. Verify the effective rule after saving; never infer protection merely from the existence of this document.
+Whenever GitHub rules are changed, read back the effective Ruleset through GitHub and, where safe, test a non-destructive forbidden direct update using an automation-equivalent credential/path. A document saying protection exists is not evidence that GitHub enforces it.
