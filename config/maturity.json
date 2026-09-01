@@ -3,7 +3,8 @@
   "product_stage": "PRE_ALPHA",
   "truth_rule": "Nothing is COMPLETE merely because code exists or CI is green. TESTED means the stated automated scope passed; VERIFIED additionally requires the specified real-machine, real-tool, physical, license, calibration or release evidence where applicable.",
   "evidence_snapshot": {
-    "canonical_core_reviewed_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
+    "canonical_core_reviewed_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+    "truth_alignment_contract": "canonical_core_reviewed_sha must equal core.lock baseline, core_alignment reviewed_sha, autopilot canonical_core_sha and company manifest reviewed_sha; CI fails on any mismatch",
     "control_plane_main_commit": "54db59e40cc24e0e7b915966daf77a687a026947",
     "acoustic_skills_main_commit": "86dec79f9f97e0e1bdfdf42b10ee97f94a62a71c",
     "trust_services_main_commit": "d8ea32e875e1511efb908a4f1528eac8bc2889ab",
