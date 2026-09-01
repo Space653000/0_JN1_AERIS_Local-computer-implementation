@@ -1,19 +1,64 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "product_stage": "PRE_ALPHA",
-  "truth_rule": "Nothing is COMPLETE unless implementation + automated test + required real-machine evidence exist.",
+  "truth_rule": "Nothing is COMPLETE unless implementation + automated test + required real-machine or real-tool evidence exist for a specified supported configuration.",
   "states": ["NOT_IMPLEMENTED", "IMPLEMENTED", "TESTED", "VERIFIED", "BLOCKED_EXTERNAL"],
   "capabilities": {
-    "architecture_and_governance": {"state": "VERIFIED", "evidence": "company/company.manifest.json + docs/AUDIT_REALITY_CHECK.md + docs/DEFINITION_OF_COMPANY_DONE.md"},
-    "100_role_registry": {"state": "TESTED", "evidence": "tests/test_company_image.py + CI company status", "note": "role names are not equivalent to 100 mature engineers"},
-    "100_role_executable_contracts": {"state": "NOT_IMPLEMENTED", "required": "per-role skills, methods, tool permissions, evidence and acceptance rubric"},
+    "architecture_and_governance_baseline": {
+      "state": "TESTED",
+      "evidence": "company/company.manifest.json + docs/AUDIT_REALITY_CHECK.md + tests/test_maturity_truth.py",
+      "note": "documentation and policy consistency are tested; this is not a claim that the full AERIS company is verified"
+    },
+    "100_role_registry": {
+      "state": "TESTED",
+      "evidence": "tests/test_company_image.py + CI company status",
+      "note": "role names/capability seats are not equivalent to 100 mature engineers"
+    },
+    "100_role_executable_contracts": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "per-role role contract + skills + methods + tool permissions + required evidence + golden/negative/regression tests + acceptance rubric + independent review"
+    },
     "dynamic_pod_engine": {"state": "NOT_IMPLEMENTED"},
-    "local_model_router": {"state": "TESTED", "evidence": "tests/test_router.py + tests/test_provider_health.py", "note": "real local inference still requires machine acceptance"},
-    "cloud_public_research_router": {"state": "TESTED", "evidence": "tests/test_router.py + tests/test_privacy.py", "note": "provider interoperability still requires live-provider validation"},
-    "application_privacy_boundary": {"state": "TESTED", "evidence": "aeris_runtime/privacy.py + tests/test_privacy.py"},
-    "os_network_egress_enforcement": {"state": "NOT_IMPLEMENTED", "required": "machine-specific firewall/DLP/isolation validation"},
-    "public_ingress_ssrf_guard": {"state": "TESTED", "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py"},
-    "local_knowledge_sqlite": {"state": "TESTED", "evidence": "aeris_runtime/knowledge.py + tests/test_knowledge.py + CI knowledge build", "note": "basic text index, not yet full acoustic knowledge system"},
+    "local_model_router": {
+      "state": "TESTED",
+      "evidence": "tests/test_router.py + tests/test_provider_health.py",
+      "note": "real local inference remains machine-scoped until local acceptance passes"
+    },
+    "cloud_public_research_router": {
+      "state": "TESTED",
+      "evidence": "tests/test_router.py + tests/test_privacy.py",
+      "note": "current implementation is OpenAI-compatible; each real provider/model still needs live interoperability and license/policy validation"
+    },
+    "application_privacy_boundary": {
+      "state": "TESTED",
+      "evidence": "aeris_runtime/privacy.py + tests/test_privacy.py",
+      "note": "does not prove that every process on the OS can never leak data"
+    },
+    "cloud_secret_file_support": {
+      "state": "IMPLEMENTED",
+      "required": "PR CI must pass tests/test_config.py before promotion to TESTED"
+    },
+    "os_network_egress_enforcement": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "machine-specific firewall/DLP/process isolation configuration + independent outbound validation"
+    },
+    "public_ingress_ssrf_and_dns_rebinding_guard": {
+      "state": "IMPLEMENTED",
+      "required": "PR CI must pass ingress security tests; live HTTPS interoperability must still be validated on a real network"
+    },
+    "public_ingress_quarantine_and_human_promotion": {
+      "state": "IMPLEMENTED",
+      "required": "PR CI + real-machine scanner/path acceptance before VERIFIED"
+    },
+    "public_ingress_malware_scanning": {
+      "state": "IMPLEMENTED",
+      "required": "requires an available local scanner such as Microsoft Defender or ClamAV; scanner-specific real-machine acceptance"
+    },
+    "local_knowledge_sqlite": {
+      "state": "TESTED",
+      "evidence": "aeris_runtime/knowledge.py + tests/test_knowledge.py + CI knowledge build",
+      "note": "basic local text index only; future PR adds stale cleanup/FTS hardening and must pass CI before its added claims are promoted"
+    },
     "professional_acoustic_corpus": {"state": "NOT_IMPLEMENTED"},
     "skills_library": {"state": "NOT_IMPLEMENTED"},
     "methods_library": {"state": "NOT_IMPLEMENTED"},
@@ -21,19 +66,94 @@
     "workflow_engine": {"state": "NOT_IMPLEMENTED"},
     "evidence_engine": {"state": "NOT_IMPLEMENTED"},
     "verification_g0_g5_engine": {"state": "NOT_IMPLEMENTED"},
-    "comsol_adapter": {"state": "BLOCKED_EXTERNAL", "required": "licensed COMSOL installation + adapter implementation + E2E test"},
-    "matlab_adapter": {"state": "BLOCKED_EXTERNAL", "required": "licensed MATLAB installation + adapter implementation + E2E test"},
-    "apx_adapter": {"state": "BLOCKED_EXTERNAL", "required": "APx software/hardware/license/calibration + adapter implementation"},
-    "klippel_adapter": {"state": "BLOCKED_EXTERNAL", "required": "KLIPPEL software/hardware/license/calibration + adapter implementation"},
+    "golden_acoustic_dataset_suite": {"state": "NOT_IMPLEMENTED"},
+    "comsol_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "licensed COMSOL installation + exact-version API adapter + E2E model run + provenance/evidence"
+    },
+    "matlab_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "licensed MATLAB installation + compatible Engine/API + E2E script + provenance/evidence"
+    },
+    "apx_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "APx software/hardware/license/calibration + exact-version adapter + E2E measurement evidence"
+    },
+    "klippel_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "KLIPPEL software/hardware/license/calibration + supported automation module + E2E measurement evidence"
+    },
+    "soundcheck_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "SoundCheck installation/license + supported Python/TCP integration + E2E measurement evidence"
+    },
+    "acqua_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "HEAD/ACQUA licensed environment + exact supported automation interface + E2E evidence"
+    },
     "live_local_ui": {"state": "NOT_IMPLEMENTED"},
-    "windows_linux_ci_kernel": {"state": "VERIFIED", "evidence": ".github/workflows/ci.yml + GitHub Actions completed Windows/Ubuntu jobs"},
-    "one_click_installer_smoke": {"state": "TESTED", "evidence": ".github/workflows/ci.yml installer-smoke steps", "note": "CI smoke deliberately skips external local-AI installation"},
-    "clean_windows_install": {"state": "IMPLEMENTED", "required": "fresh-machine E2E evidence before VERIFIED"},
-    "clean_linux_install": {"state": "IMPLEMENTED", "required": "fresh-machine E2E evidence before VERIFIED"},
-    "jetson_orin_install": {"state": "IMPLEMENTED", "required": "real Jetson E2E/thermal/reboot/offline evidence before VERIFIED"},
-    "hard_offline_operation": {"state": "IMPLEMENTED", "required": "network-isolated real inference test before VERIFIED"},
-    "portable_software_image": {"state": "TESTED", "evidence": ".github/workflows/ci.yml Windows/Linux package smoke"},
-    "encrypted_private_state_backup_restore": {"state": "IMPLEMENTED", "required": "real age export/import/restore acceptance before TESTED or VERIFIED"},
-    "full_company_relocation": {"state": "NOT_IMPLEMENTED", "required": "software image + encrypted state + private asset pack + restore/tool acceptance on second machine"}
+    "supported_machine_profile_gate": {
+      "state": "IMPLEMENTED",
+      "required": "PR CI + real-machine profile acceptance; a profile never equals VERIFIED"
+    },
+    "windows_linux_ci_kernel": {
+      "state": "VERIFIED",
+      "evidence": ".github/workflows/ci.yml + previously completed Windows/Ubuntu jobs",
+      "note": "VERIFIED only for the previously executed CI kernel scope, not the unmerged hardening branch or whole company"
+    },
+    "one_click_installer_smoke": {
+      "state": "TESTED",
+      "evidence": ".github/workflows/ci.yml installer-smoke steps",
+      "note": "CI smoke deliberately skips external local-AI installation"
+    },
+    "offline_staged_python_windows": {
+      "state": "IMPLEMENTED",
+      "required": "fresh offline Windows machine evidence with checksum-verified staged installer"
+    },
+    "offline_staged_model_gguf": {
+      "state": "IMPLEMENTED",
+      "required": "real Ollama staged GGUF import + inference evidence on each supported machine family"
+    },
+    "core_airgap_snapshot_integrity": {
+      "state": "IMPLEMENTED",
+      "required": "PR CI must pass tests/test_corecache.py; destination local acceptance must run core verify"
+    },
+    "clean_windows_install": {
+      "state": "IMPLEMENTED",
+      "required": "fresh-machine online and air-gap E2E evidence before VERIFIED"
+    },
+    "clean_linux_install": {
+      "state": "IMPLEMENTED",
+      "required": "fresh-machine supported-distro online and air-gap E2E evidence before VERIFIED"
+    },
+    "jetson_orin_install": {
+      "state": "IMPLEMENTED",
+      "required": "real Jetson E2E + memory + latency + thermal + reboot + offline evidence before VERIFIED"
+    },
+    "hard_offline_operation": {
+      "state": "IMPLEMENTED",
+      "required": "network-isolated real inference + multi-path outbound probe block + OS firewall/process review; probe blocking is not a mathematical zero-egress proof"
+    },
+    "portable_software_image": {
+      "state": "TESTED",
+      "evidence": ".github/workflows/ci.yml Windows/Linux package smoke",
+      "note": "existing verified scope predates SBOM/provenance hardening; new metadata remains pending PR CI"
+    },
+    "software_sbom_provenance": {
+      "state": "IMPLEMENTED",
+      "required": "PR CI must validate SPDX 2.3 structure, provenance JSON and SHA256SUMS inside both package formats"
+    },
+    "encrypted_private_state_backup_restore": {
+      "state": "IMPLEMENTED",
+      "required": "real age export + transfer + import + checksum + restore acceptance; archive hardening must pass PR CI"
+    },
+    "full_company_relocation": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "software image + encrypted private state + legal private asset pack + restore + tool/calibration + second-machine acceptance"
+    },
+    "commercial_release_readiness": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "all release-critical capabilities VERIFIED + model/tool/data licenses reviewed + supported configuration frozen + signed provenance/release policy"
+    }
   }
 }

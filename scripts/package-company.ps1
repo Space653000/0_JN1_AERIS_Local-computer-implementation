@@ -15,12 +15,21 @@ $meta = [ordered]@{
   source_commit='UNKNOWN'
   private_state_included=$false
   portable_assets_included=$false
+  release_metadata='release-metadata/'
   restore_requirement='For full relocation, separately supply encrypted private state and Human-controlled Private Asset Pack, then run local acceptance.'
 }
 try { $meta.source_commit = (git -C $Root rev-parse HEAD 2>$null).Trim() } catch {}
 $meta | ConvertTo-Json | Set-Content -Encoding UTF8 (Join-Path $Stage 'RELOCATION_MANIFEST.json')
+$Python = Join-Path $Root '.venv\Scripts\python.exe'
+if(-not (Test-Path $Python)){
+  $cmd=Get-Command python -ErrorAction SilentlyContinue
+  if($cmd){ $Python=$cmd.Source } else { throw 'Python is required to generate SBOM/provenance metadata before packaging.' }
+}
+& $Python (Join-Path $Stage 'scripts\release-metadata.py') --root $Stage --output (Join-Path $Stage 'release-metadata') --source-commit $meta.source_commit
+if($LASTEXITCODE -ne 0){ throw 'Release metadata generation failed.' }
 $Zip = Join-Path $Out "AERIS-Portable-Company-Software-$Stamp.zip"
 Compress-Archive -Path (Join-Path $Stage '*') -DestinationPath $Zip -Force
 Remove-Item $Stage -Recurse -Force
 Write-Host "Created software-only package: $Zip"
+Write-Host 'Package includes SBOM.spdx.json, PROVENANCE.json and SHA256SUMS under release-metadata/.'
 Write-Host 'Private state and portable_assets were deliberately excluded. See docs/deployment/STATE_BACKUP_RESTORE.md.'

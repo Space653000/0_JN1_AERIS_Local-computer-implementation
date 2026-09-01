@@ -1,8 +1,10 @@
 # AERIS One-Click Installation — PRE-ALPHA
 
-目標：沒有開發經驗的人，拿到 repository/ZIP 後只需要一個主要入口；但 AERIS 會明確區分 **INSTALLED** 與 **VERIFIED**，不會因 installer 結束就宣稱整間公司完成。
+目標：沒有開發經驗的人，拿到 repository / Software Image 後只有一個主要入口；但 AERIS 嚴格區分 **INSTALLED**、**TESTED**、**VERIFIED**，installer 結束不等於整間公司完成。
 
-## Windows
+完整本機驗收請接著讀 [`LOCAL_VERIFICATION_SOP.md`](LOCAL_VERIFICATION_SOP.md)。
+
+## 1. Windows
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\INSTALL_AERIS_LOCAL.ps1
@@ -17,45 +19,119 @@ powershell -ExecutionPolicy Bypass -File .\INSTALL_AERIS_LOCAL.ps1
 .\INSTALL_AERIS_LOCAL.ps1 -SkipLocalModelInstall
 ```
 
-`-Skip*` 只用於 CI、已預先配置的機器或受控維修情境；使用後不得宣稱完整 local/offline continuity 已驗證。
+`-Skip*` 只用於 CI、已預先配置的機器或受控維修；使用後不得宣稱完整 local/offline continuity 已驗證。
 
 Windows installer 會：
 
-1. 找 Python，並硬性確認版本 >= 3.10；
-2. 建立 `.venv`；
-3. online 時同步 read-only Core，offline bundle 可從 `portable_assets/core-reference` 還原；
-4. 優先使用有 `.sha256` sidecar 的 staged Ollama installer，否則使用 winget；
-5. 安裝/確認 local model；
-6. 建立 machine report / Knowledge DB；
-7. 跑 unit/security tests；
-8. 驗證 100-role company manifest；
-9. 跑 doctor；
-10. local runtime/model 未完成且不是 Human 明確 skip 時，installer 以失敗結束。
+1. 找 Python，硬性確認 `>= 3.10`；
+2. online 可用 winget；offline fresh machine 可使用 checksum-verifed staged Python；
+3. 建立 `.venv`；
+4. 把 `-LocalModel` 真正寫入 local runtime `.env`，避免 pull/doctor 使用不同模型；
+5. online 同步 read-only Core，air-gap 可使用 checksum-manifested Core snapshot；
+6. 安裝/確認 Ollama-compatible local runtime；
+7. 優先使用已存在或 staged GGUF model；`offline` 不得因缺模型偷偷上網 pull；
+8. 建立 Machine Report / Knowledge DB；
+9. 跑 unit/security tests；
+10. 驗證 Company Manifest / 100-seat registry；
+11. 跑 doctor；
+12. 缺少必要 local continuity dependency 且不是 Human 明確 skip 時，installer 以 BLOCK/FAIL 結束。
 
-## Linux / Jetson
+### Windows offline staged Python
+
+```text
+portable_assets/installers/python-3.11-amd64.exe
+portable_assets/installers/python-3.11-amd64.exe.sha256
+```
+
+SHA-256 sidecar 必須與檔案吻合。實際 Python installer 版本/架構必須與目的 Windows 相容。
+
+### Windows offline staged Ollama
+
+```text
+portable_assets/installers/OllamaSetup.exe
+portable_assets/installers/OllamaSetup.exe.sha256
+```
+
+Installer 仍必須在真實 Windows 版本驗 silent install、啟動、reboot recovery；文件存在不等於 vendor installer 永遠維持同一參數。
+
+---
+
+## 2. Linux / Jetson
 
 ```bash
 bash ./INSTALL_AERIS_LOCAL.sh
 ```
 
-支援 apt/dnf/yum/pacman/zypper 的基礎 prerequisite 安裝，並硬性確認 Python >= 3.10。
+連網模式支援 apt/dnf/yum/pacman/zypper 的基礎 prerequisite 安裝；最後一定硬性確認可用 Python `>=3.10`。
 
-Local runtime 安裝優先順序：
+Python resolver 會依序考慮：
 
-1. `portable_assets/installers/ollama-install.sh` + 必須存在並吻合的 `.sha256` sidecar；
-2. 若沒有 staged installer，才從精確官方 HTTPS URL `https://ollama.com/install.sh` 取得。
-
-線上取得的 installer 會保存下載來源、時間與 SHA-256 provenance；這是 **TLS transport + recorded hash**，不是 upstream signature/pinned digest，因此不得描述成 cryptographically pinned supply chain。
-
-CI 可使用：
-
-```bash
-AERIS_SKIP_CORE_SYNC=1 AERIS_SKIP_LOCAL_RUNTIME_INSTALL=1 bash ./INSTALL_AERIS_LOCAL.sh auto
+```text
+portable_assets/python/bin/python3
+python3.13
+python3.12
+python3.11
+python3
 ```
 
-這只測 installer kernel，不代表 Ollama/model clean install 已驗證。
+`portable_assets/python/bin/python3` **不是通用 Linux binary 承諾**。它必須由 Human 為該 OS/architecture/glibc/Machine Profile 準備相容 runtime。
 
-## Default local model
+若 `offline` 且沒有 Python >=3.10 或 venv support，直接 BLOCK；不會偷偷執行 package-manager 網路安裝。
+
+### Linux / Jetson Ollama runtime
+
+優先：
+
+```text
+portable_assets/installers/ollama-install.sh
+portable_assets/installers/ollama-install.sh.sha256
+```
+
+若連網且沒有 staged installer，才允許從官方 HTTPS URL取得目前 installer。線上取得後保存 source/time/SHA-256 provenance；這只能稱為 **TLS transport + recorded hash**，不是 upstream signature 或 pinned vendor digest。
+
+`offline` 時沒有 staged/preinstalled runtime 直接 BLOCK。
+
+---
+
+## 3. Offline staged GGUF model
+
+Windows / Linux / Jetson 的 baseline offline importer 支援：
+
+```text
+portable_assets/models/
+├─ model.manifest.json
+└─ <model-file>.gguf
+```
+
+`model.manifest.json`：
+
+```json
+{
+  "schema_version": 1,
+  "model_name": "qwen3:4b-instruct",
+  "format": "gguf",
+  "file": "model.gguf",
+  "sha256": "<actual-sha256>"
+}
+```
+
+流程：
+
+```text
+model name must equal requested AERIS_LOCAL_MODEL
+→ format must be gguf
+→ file exists
+→ SHA-256 matches
+→ Ollama create
+→ doctor
+→ real inference during local acceptance
+```
+
+沒有 model、manifest/hash 錯誤、或 import/inference 失敗，都不可叫 offline ready。
+
+---
+
+## 4. Default local model
 
 目前 continuity baseline：
 
@@ -63,11 +139,13 @@ AERIS_SKIP_CORE_SYNC=1 AERIS_SKIP_LOCAL_RUNTIME_INSTALL=1 bash ./INSTALL_AERIS_L
 qwen3:4b-instruct
 ```
 
-原因：本 repo 需要可本地運行、Ollama 有正式 tag、且目前官方模型資料標示 Apache-2.0 的 baseline。**每次商用 release 前仍要重新確認實際 model/tag/license；模型不是 AERIS 身份，也不是 100-seat capability 的證明。**
+它是可替換的 local continuity/retrieval/reasoning baseline，**不是 100-seat professional capability 的證明**。商用/formal release 前重新確認 exact model/tag/digest/license。
 
-## Core reference
+---
 
-Online 安裝會執行 `scripts/sync-core.*`：
+## 5. Canonical Core reference
+
+Online 安裝可執行 `scripts/sync-core.*`：
 
 ```text
 0_JN1_AERIS/main
@@ -75,18 +153,39 @@ Online 安裝會執行 `scripts/sync-core.*`：
 → detached origin/main
 → push URL DISABLED
 → pre-push DENY
-→ SHA recorded
+→ Core SHA recorded
 ```
 
-Air-gapped fresh machine 若無法連 GitHub，必須在離線包中預先帶入：
+驗證：
+
+```bash
+python -m aeris_runtime core verify
+```
+
+### 建立 air-gap Core snapshot
+
+在已同步並審查 Core 的連網機：
+
+```bash
+python -m aeris_runtime core snapshot --output portable_assets/core-reference
+```
+
+Snapshot 不帶 `.git`，而是帶：
 
 ```text
-portable_assets/core-reference/
+CORE_SNAPSHOT_MANIFEST.json
++ repository / branch / canonical Core SHA
++ exact file inventory
++ per-file SHA-256
 ```
 
-否則 Knowledge DB 只能索引 implementation 本身，不能聲稱已載入 canonical Core。
+目的機器 `core verify` 會拒絕 missing / extra / tampered file。
 
-## 安裝後一定要做 real-machine acceptance
+因此 air-gap fresh machine 不一定需要 Git，但一定需要可驗證 Core snapshot 或已受 guard 的 Git cache。
+
+---
+
+## 6. 安裝後一定要做 Real-Machine Acceptance
 
 Windows：
 
@@ -100,11 +199,23 @@ Linux / Jetson：
 bash scripts/local-acceptance.sh
 ```
 
-此步會做真實 local inference 與 offline-mode inference。沒有這個 evidence，只能標 `INSTALLED / NOT_VERIFIED`。
+它至少驗：
 
-## Hard offline
+- Company Manifest；
+- tests；
+- self-cleaning Knowledge build；
+- Supported Machine Profile；
+- Core integrity；
+- real local inference；
+- real offline-mode inference。
 
-斷開或阻擋 external network 後：
+沒有 `.aeris/state/LOCAL_ACCEPTANCE.json`，只能標 `INSTALLED / NOT_VERIFIED`。
+
+---
+
+## 7. HARD OFFLINE
+
+先物理斷網或套用 Human 已審核的 external-egress deny policy，再跑：
 
 ```powershell
 .\scripts\local-acceptance.ps1 -HardOffline
@@ -116,40 +227,125 @@ bash scripts/local-acceptance.sh
 AERIS_HARD_OFFLINE=1 bash scripts/local-acceptance.sh
 ```
 
-這才是 HARD OFFLINE acceptance。詳細見 `docs/security/LOCAL_NETWORK_ENFORCEMENT.md`。
+Acceptance 會做多 IPv4 / DNS+TCP / IPv6 outbound probes。任何探針成功即 FAIL。
 
-## Air-gapped asset requirements
+全部被阻擋時，狀態刻意記為：
 
-完全斷網的新機器至少必須事先準備：
+```text
+OUTBOUND_PROBES_BLOCKED_NOT_GLOBAL_PROOF
+```
 
-- implementation source/package；
-- Python >= 3.10 或合法離線 installer；
-- local inference runtime；
-- selected model weights/model store；
-- Core snapshot；
-- intended workflow 所需 Skills/Methods/data；
-- 必要 driver / proprietary tool / license / calibration assets。
+有限探針不是數學證明所有 OS process/path 永遠無法外傳；最高敏感部署仍應使用 air-gap / private zone / OS firewall / least privilege / no-cloud-sync 等多層控制。
 
-這些資產是否可搬遷必須符合各自 license/公司政策。
+---
 
-## 私有公司狀態
+## 8. Public information ingress
 
-Software ZIP 不包含 `.env/.aeris/data/logs/portable_assets`。Memory/Knowledge/Evidence/customer data 等私有狀態使用：
+Public URL 不是可信資料。
+
+```bash
+python -m aeris_runtime ingress "https://public.example/file"
+```
+
+現在流程：
+
+```text
+URL syntax/credential check
+→ resolve all DNS answers
+→ any non-public IP => DENY
+→ connect directly to validated public IP
+→ TLS SNI/certificate validates original hostname
+→ redirect revalidate + repin
+→ download size limit
+→ local quarantine
+→ SHA-256
+→ local malware scanner if available
+→ content/prompt-injection risk markers
+→ Human promotion only
+```
+
+下載不會自動進 Knowledge。
+
+```bash
+python -m aeris_runtime ingress-approve ".aeris/ingress/quarantine/<id>"
+```
+
+沒有 clean malware scan 時，只有 Human 明確 review 後才能刻意 `--allow-unscanned`；有 content-risk marker 時同理需 `--acknowledge-content-risk`。這些旗標表示接受剩餘風險，不是「系統證明安全」。
+
+---
+
+## 9. Cloud credential
+
+優先使用 process environment 或 local secret file：
+
+```text
+AERIS_CLOUD_API_KEY_FILE=<path outside Git/cloud-sync where practical>
+```
+
+`.env` 仍可支援相容性，但不應把 real API key commit 到 Git 或放入雲端同步目錄。
+
+Cloud research 只接受 explicit public query；使用者自己輸入的 query 文字仍會送到 Cloud，因此 private data 必須留在 `aeris chat` / local tools。
+
+---
+
+## 10. Portable software image / provenance
+
+打包：
+
+```powershell
+.\scripts\package-company.ps1
+```
+
+或：
+
+```bash
+bash scripts/package-company.sh
+```
+
+Software Image 故意排除 `.env/.aeris/data/logs/portable_assets/private-backups`。
+
+每包包含：
+
+```text
+release-metadata/
+├─ SBOM.spdx.json
+├─ PROVENANCE.json
+└─ SHA256SUMS
+```
+
+SPDX inventory 同時記 SHA-1（SPDX 2.3 Package Verification Code 所需）與 SHA-256；安全傳輸驗證使用 SHA-256。
+
+這些 metadata 是 integrity/provenance 基礎，不等於 cryptographic signing/attestation。正式 release signing 仍是後續 gate。
+
+---
+
+## 11. Private company state
+
+Software Image 不等於整間公司狀態。
+
+Memory/Knowledge/Evidence/customer/local state 使用 `age`：
 
 ```bash
 python scripts/private-state.py export private-backups/AERIS-private-state.age
+python scripts/private-state.py import private-backups/AERIS-private-state.age
 ```
 
-需要 `age`。詳見 `docs/deployment/STATE_BACKUP_RESTORE.md`。
+Private-state archive 會拒絕 path traversal、symlink、hardlink、device、FIFO 等危險 member；restore 後仍必須重新跑 Local Acceptance。
 
-## 最低驗收
+---
 
-```bash
-python -m aeris_runtime company status
-python -m aeris_runtime machine detect --write
-python -m aeris_runtime knowledge build
-python -m aeris_runtime knowledge stats
-python -m aeris_runtime doctor
+## 12. 目前不允許的宣稱
+
+即使 installer 正常結束，也不能說：
+
+```text
+100 位成熟聲學工程師完成
+所有電腦都支援
+所有 Cloud AI 都已整合
+完全不可能資料外流
+所有公開資料都安全可信
+COMSOL/MATLAB/APx/KLIPPEL 已驗證
+完整公司搬遷已驗證
 ```
 
-再加 `scripts/local-acceptance.*` 才能從 installed 升級到 real-machine verified scope。
+真正判斷看 `config/maturity.json`、CI 與目的機器 Evidence。

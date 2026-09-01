@@ -14,11 +14,16 @@ MODE_FILE = STATE_DIR / "mode.txt"
 
 
 def load_dotenv(path: Path | None = None) -> None:
-    """Minimal .env loader with no third-party dependency."""
+    """Minimal .env loader with no third-party dependency.
+
+    `utf-8-sig` intentionally accepts the BOM written by Windows PowerShell 5.1.
+    `.env` is local-only and gitignored; long-lived secrets should preferably be
+    supplied through the process environment or AERIS_*_FILE references.
+    """
     path = path or (ROOT / ".env")
     if not path.exists():
         return
-    for raw in path.read_text(encoding="utf-8").splitlines():
+    for raw in path.read_text(encoding="utf-8-sig").splitlines():
         line = raw.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
@@ -42,6 +47,22 @@ def _int(name: str, default: int) -> int:
         return default
 
 
+def _secret(name: str, file_name: str) -> str:
+    direct = os.getenv(name, "").strip()
+    if direct:
+        return direct
+    path_raw = os.getenv(file_name, "").strip()
+    if not path_raw:
+        return ""
+    path = Path(path_raw).expanduser()
+    if not path.is_absolute():
+        path = ROOT / path
+    try:
+        return path.read_text(encoding="utf-8-sig").strip()
+    except OSError:
+        return ""
+
+
 @dataclass(frozen=True)
 class RuntimeConfig:
     mode: str
@@ -63,7 +84,7 @@ class RuntimeConfig:
 def get_persisted_mode() -> str | None:
     if not MODE_FILE.exists():
         return None
-    value = MODE_FILE.read_text(encoding="utf-8").strip().lower()
+    value = MODE_FILE.read_text(encoding="utf-8-sig").strip().lower()
     return value if value in {"offline", "local", "cloud", "auto"} else None
 
 
@@ -89,7 +110,7 @@ def load_config() -> RuntimeConfig:
         local_timeout_sec=_int("AERIS_LOCAL_TIMEOUT_SEC", 120),
         cloud_base_url=os.getenv("AERIS_CLOUD_BASE_URL", "https://api.openai.com/v1").rstrip("/"),
         cloud_model=os.getenv("AERIS_CLOUD_MODEL", ""),
-        cloud_api_key=os.getenv("AERIS_CLOUD_API_KEY", ""),
+        cloud_api_key=_secret("AERIS_CLOUD_API_KEY", "AERIS_CLOUD_API_KEY_FILE"),
         cloud_timeout_sec=_int("AERIS_CLOUD_TIMEOUT_SEC", 120),
         cloud_fallback_to_local=_bool("AERIS_CLOUD_FALLBACK_TO_LOCAL", True),
         system_prompt=os.getenv(
@@ -101,4 +122,4 @@ def load_config() -> RuntimeConfig:
 
 def load_runtime_manifest() -> Dict[str, object]:
     path = ROOT / "config" / "runtime.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
