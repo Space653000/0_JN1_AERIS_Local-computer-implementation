@@ -70,6 +70,12 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
         blockers.append("CLAUDE_TEST_REPORT_MISSING")
     elif tests.get("result") != "PASS":
         failures.append("DETERMINISTIC_TESTS_FAILED")
+    else:
+        drift_state = str(tests.get("remote_core_drift_gate", "NOT_TESTED"))
+        if drift_state == "FAIL":
+            failures.append("REMOTE_CANONICAL_CORE_DRIFT_DETECTED")
+        elif drift_state != "PASS":
+            limits.append("REMOTE_CANONICAL_CORE_DRIFT_NOT_LIVE_VERIFIED")
 
     if not machine.get("supported_baseline"):
         blockers.append("UNSUPPORTED_MACHINE_PROFILE")
@@ -108,6 +114,7 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
         "runtime_mode": config.mode,
         "private_endpoint_scope": config.local_network_scope,
         "unit_test_result": tests.get("result") if tests else "NOT_RECORDED",
+        "remote_core_drift_gate": tests.get("remote_core_drift_gate") if tests else "NOT_RECORDED",
         "core_integrity_result": "PASS" if core.get("valid") else "FAIL",
         "audit_integrity_result": "PASS" if audit.get("valid") else "FAIL",
         "local_inference_result": acceptance.get("result") if acceptance else "NOT_TESTED",
@@ -119,7 +126,7 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
         "versioned_worktree_detail": dirty_detail,
         "failures": failures,
         "blockers": blockers,
-        "limits": limits,
+        "limits": sorted(set(limits)),
         "evidence_paths": {
             "tests": str(CLAUDE_TESTS_FILE),
             "acceptance": str(ACCEPTANCE_FILE),
@@ -129,5 +136,5 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
         "truth": "This report is deterministic review evidence. Claude must still inspect raw evidence and challenge scope; it is not self-authenticating approval.",
     }
     CLAUDE_REPORT_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    append_event("INDEPENDENT_ACCEPTANCE_RECORDED", reviewer, {"result": result, "failures": failures, "blockers": blockers, "limits": limits})
+    append_event("INDEPENDENT_ACCEPTANCE_RECORDED", reviewer, {"result": result, "failures": failures, "blockers": blockers, "limits": payload["limits"]})
     return payload
