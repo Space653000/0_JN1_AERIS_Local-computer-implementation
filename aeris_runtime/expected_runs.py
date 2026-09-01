@@ -1,7 +1,8 @@
 """Expected-run monitor for AERIS observability.
 
 A process heartbeat is not proof that expected work ran. This registry tracks expected
-artifacts/success times and reports bounded health states.
+artifacts/success times and reports bounded health states. Latest outcome is stored
+explicitly so correctness does not depend on wall-clock timestamp resolution.
 """
 from __future__ import annotations
 
@@ -43,6 +44,8 @@ def register(name: str, *, max_age_sec: int, artifact_path: str | None = None, a
         "name": name,
         "max_age_sec": int(max_age_sec),
         "artifact_path": artifact_path,
+        "last_result": None,
+        "last_event_at_utc": None,
         "last_success_at_utc": None,
         "last_failure_at_utc": None,
         "last_error": None,
@@ -58,6 +61,8 @@ def mark(name: str, success: bool, *, error: str = "", actor: str = "AERIS") -> 
     if not item:
         raise KeyError(name)
     stamp = _now().isoformat()
+    item["last_result"] = "SUCCESS" if success else "FAILURE"
+    item["last_event_at_utc"] = stamp
     if success:
         item["last_success_at_utc"] = stamp
         item["last_error"] = None
@@ -82,6 +87,7 @@ def _parse(value: str | None) -> datetime | None:
 def assess_one(item: dict[str, Any]) -> dict[str, Any]:
     success = _parse(item.get("last_success_at_utc"))
     failure = _parse(item.get("last_failure_at_utc"))
+    last_result = str(item.get("last_result") or "").upper()
     artifact = item.get("artifact_path")
     artifact_exists = None
     if artifact:
@@ -89,9 +95,29 @@ def assess_one(item: dict[str, Any]) -> dict[str, Any]:
         if not p.is_absolute():
             p = ROOT / p
         artifact_exists = p.exists()
-    if failure and (not success or failure > success):
+
+    # New records use explicit event ordering. Legacy records fall back to timestamps.
+    if last_result == "FAILURE":
         state = "FAILED"
         reason = "latest recorded run failed"
+    elif last_result == "SUCCESS":
+        if not success:
+            state = "UNKNOWN"
+            reason = "latest result says success but success timestamp is missing/invalid"
+        else:
+            age = (_now() - success).total_seconds()
+            if age > int(item["max_age_sec"]):
+                state = "STALE"
+                reason = f"last success age {int(age)}s exceeds {item['max_age_sec']}s"
+            elif artifact_exists is False:
+                state = "DEGRADED"
+                reason = "expected artifact is missing"
+            else:
+                state = "HEALTHY"
+                reason = "fresh successful run and expected artifact condition satisfied"
+    elif failure and (not success or failure >= success):
+        state = "FAILED"
+        reason = "latest recorded run failed (legacy timestamp ordering)"
     elif not success:
         state = "UNKNOWN"
         reason = "no successful run recorded"
