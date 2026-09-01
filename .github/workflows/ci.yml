@@ -63,6 +63,8 @@ jobs:
         run: ./tests/windows/test-zero-cost-bootstrap.ps1
       - name: Repository quality-gate contract
         run: python tests/test_quality_gate_contract.py
+      - name: Pre-Codex cloud contract gate
+        run: python -m unittest tests.test_pre_codex_gate -v
       - name: Machine qualification and Golden acoustic baseline gate
         run: python -m unittest tests.test_machine_qualification tests.test_golden_acoustics -v
       - name: Role contract and independent reviewer allocation gate
