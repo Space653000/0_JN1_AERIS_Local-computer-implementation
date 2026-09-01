@@ -1,14 +1,21 @@
 {
-  "schema_version": 2,
-  "contract_id": "AERIS-LOCAL-AUTOPILOT-V2",
+  "schema_version": 3,
+  "contract_id": "AERIS-LOCAL-AUTOPILOT-V3",
   "canonical_core_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
   "default_mode": "auto",
   "default_local_model": "qwen3:4b-instruct",
   "entrypoints": {
     "windows": "AERIS_AUTOPILOT.ps1",
     "linux_jetson": "AERIS_AUTOPILOT.sh",
-    "claude_windows": "CLAUDE_VERIFY_AERIS.ps1",
-    "claude_linux_jetson": "CLAUDE_VERIFY_AERIS.sh"
+    "optional_reviewer_windows": "CLAUDE_VERIFY_AERIS.ps1",
+    "optional_reviewer_linux_jetson": "CLAUDE_VERIFY_AERIS.sh"
+  },
+  "default_execution_policy": {
+    "use_codex_tasks_or_scheduler": false,
+    "launch_claude_code": false,
+    "launch_second_model_reviewer": false,
+    "local_acceptance_cycles": 1,
+    "ask_human_only_at_human_gate": true
   },
   "phases": [
     "SAFE_PREFLIGHT",
@@ -31,7 +38,6 @@
     "heartbeat": ".aeris/state/HEARTBEAT.json",
     "unattended_install": ".aeris/state/UNATTENDED_INSTALL.json",
     "unattended_runtime": ".aeris/state/UNATTENDED_OPERATIONS.json",
-    "claude_review": ".aeris/state/CLAUDE_ACCEPTANCE.json",
     "audit_ledger": ".aeris/audit/audit.jsonl"
   },
   "supervisor": {
@@ -59,10 +65,10 @@
     "self_heal_loopback_supervisor": true
   },
   "persistence_truth": {
+    "codex_scheduler": "NOT_USED",
     "windows_default": "current-user Scheduled Task at logon with restart policy; Startup fallback if policy blocks ScheduledTasks",
     "linux_default": "systemd user service with Restart=always; crontab reboot wrapper fallback",
-    "prelogin_system_service": "NOT_CLAIMED_BY_DEFAULT",
-    "reason": "Local model/runtime/license environment is user-scoped on many supported machines; elevation or headless pre-login service is a separate machine-specific Human/OS-policy gate."
+    "prelogin_system_service": "NOT_CLAIMED_BY_DEFAULT"
   },
   "safety": {
     "destructive_workspace_reinitialization": false,
@@ -84,6 +90,7 @@
     "PHYSICAL_FIXTURE_OR_CALIBRATION_REQUIRED",
     "UNRELATED_DESTRUCTIVE_NETWORK_OR_STORAGE_CHANGE_REQUIRED",
     "CORE_POLICY_CHANGE_REQUIRED",
+    "ONE_TIME_REBOOT_OR_LOGOFF_REQUIRED_FOR_PERSISTENCE_ACCEPTANCE",
     "PRODUCTION_CUSTOMER_FORMAL_RELEASE"
   ],
   "opening_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
