@@ -16,13 +16,14 @@ MODE_FILE = STATE_DIR / "mode.txt"
 def load_dotenv(path: Path | None = None) -> None:
     """Minimal .env loader with no third-party dependency.
 
-    `.env` is local-only and gitignored, but long-lived secrets should preferably be
+    `utf-8-sig` intentionally accepts the BOM written by Windows PowerShell 5.1.
+    `.env` is local-only and gitignored; long-lived secrets should preferably be
     supplied through the process environment or AERIS_*_FILE references.
     """
     path = path or (ROOT / ".env")
     if not path.exists():
         return
-    for raw in path.read_text(encoding="utf-8").splitlines():
+    for raw in path.read_text(encoding="utf-8-sig").splitlines():
         line = raw.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
@@ -57,7 +58,7 @@ def _secret(name: str, file_name: str) -> str:
     if not path.is_absolute():
         path = ROOT / path
     try:
-        return path.read_text(encoding="utf-8").strip()
+        return path.read_text(encoding="utf-8-sig").strip()
     except OSError:
         return ""
 
@@ -83,7 +84,7 @@ class RuntimeConfig:
 def get_persisted_mode() -> str | None:
     if not MODE_FILE.exists():
         return None
-    value = MODE_FILE.read_text(encoding="utf-8").strip().lower()
+    value = MODE_FILE.read_text(encoding="utf-8-sig").strip().lower()
     return value if value in {"offline", "local", "cloud", "auto"} else None
 
 
@@ -121,4 +122,4 @@ def load_config() -> RuntimeConfig:
 
 def load_runtime_manifest() -> Dict[str, object]:
     path = ROOT / "config" / "runtime.json"
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
