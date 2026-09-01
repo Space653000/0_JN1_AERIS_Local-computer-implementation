@@ -48,3 +48,8 @@ exit /b %AERIS_WINGET_TEST_EXIT%
   $env:AERIS_WINGET_TEST_EXIT=$OldExit
   Remove-Item $Temp -Recurse -Force -ErrorAction SilentlyContinue
 }
+
+# The negative-path native process intentionally exits nonzero. PowerShell preserves
+# that value even though the Human-Gate exception was correctly caught and asserted.
+$global:LASTEXITCODE=0
+exit 0
