@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "profile": "linux-x86-cpu",
+  "status": "SUPPORTED_BASELINE_NOT_VERIFIED",
+  "os": "linux",
+  "architecture": ["x86_64", "amd64"],
+  "minimums": {
+    "python": ">=3.10",
+    "ram_gb": 8,
+    "free_storage_gb": 20
+  },
+  "local_ai": {
+    "provider": "ollama-compatible",
+    "default_model": "qwen3:4b-instruct",
+    "expectation": "CPU inference is allowed but latency must be measured on the actual machine"
+  },
+  "offline": {
+    "supported_in_principle": true,
+    "verified_only_after": "scripts/local-acceptance.sh with external network isolation"
+  },
+  "limitations": [
+    "No GPU acceleration is assumed",
+    "Professional engineering tools require separate machine/tool-specific validation",
+    "This profile is not a claim that every Linux distribution is supported"
+  ]
+}
