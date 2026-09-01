@@ -34,6 +34,7 @@ class QualityGateContractTests(unittest.TestCase):
             "windows-2025",
             "Parse every tracked PowerShell file",
             "Windows Python resolver Store-alias regression",
+            "Machine qualification and Golden acoustic baseline gate",
             "Real browser semantic E2E for Dashboard Workspace Services",
             "Windows one-click installer smoke without external runtime installation",
             "Windows full Autopilot entrypoint CI smoke",
