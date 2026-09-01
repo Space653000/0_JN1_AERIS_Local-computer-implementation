@@ -18,6 +18,7 @@ from typing import Any
 from .audit import append_event, verify_ledger
 from .company import validate_company_manifest
 from .config import ROOT, load_config
+from .controlplane import handle_get as controlplane_get, handle_post as controlplane_post
 from .corecache import verify_core_cache
 from .machine import detect as machine_detect
 from .router import ModelRouter
@@ -160,7 +161,7 @@ def _write_heartbeat(port: int, opening: dict[str, Any]) -> None:
 
 
 class _Handler(BaseHTTPRequestHandler):
-    server_version = "AERISLocalSupervisor/1"
+    server_version = "AERISLocalSupervisor/2"
 
     def _json(self, code: int, payload: dict[str, Any]) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
@@ -174,6 +175,8 @@ class _Handler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:  # noqa: N802
         opening = _read_json(OPENING_FILE) or assess_opening()
         _write_heartbeat(self.server.server_port, opening)  # type: ignore[attr-defined]
+        if controlplane_get(self, opening):
+            return
         if self.path == "/health":
             self._json(200, {
                 "service": "AERIS_LOCAL_SUPERVISOR",
@@ -189,6 +192,8 @@ class _Handler(BaseHTTPRequestHandler):
         self._json(404, {"error": "not_found"})
 
     def do_POST(self) -> None:  # noqa: N802
+        if controlplane_post(self):
+            return
         if self.path != "/shutdown":
             self._json(404, {"error": "not_found"})
             return
@@ -201,7 +206,6 @@ class _Handler(BaseHTTPRequestHandler):
         threading.Thread(target=self.server.shutdown, daemon=True).start()
 
     def log_message(self, format: str, *args: object) -> None:
-        # Deliberately avoid request data in stdout; supervisor has structured state/audit instead.
         return
 
 
@@ -222,13 +226,15 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
     server = ThreadingHTTPServer((DEFAULT_HOST, int(port)), _Handler)
     server.shutdown_token = token  # type: ignore[attr-defined]
     supervisor_state = {
-        "schema_version": 1,
+        "schema_version": 2,
         "pid": os.getpid(),
         "bind_host": DEFAULT_HOST,
         "port": int(port),
         "started_at_utc": _now(),
         "company_opening_state": opening.get("operational_state"),
         "public_bind_forbidden": True,
+        "web_ui": f"http://{DEFAULT_HOST}:{int(port)}/",
+        "api_base": f"http://{DEFAULT_HOST}:{int(port)}/api/v1/",
     }
     SUPERVISOR_FILE.write_text(json.dumps(supervisor_state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     append_event("SUPERVISOR_STARTED", "AERIS Supervisor", {k: v for k, v in supervisor_state.items() if k != "schema_version"})
@@ -267,7 +273,7 @@ def supervisor_status(port: int = DEFAULT_PORT, timeout: float = 1.0) -> dict[st
 def start_supervisor_background(port: int = DEFAULT_PORT) -> dict[str, Any]:
     existing = supervisor_status(port)
     if existing.get("reachable"):
-        return {"started": False, "already_running": True, **existing}
+        return {"started": False, "already_running": True, **existing, "web_ui": f"http://{DEFAULT_HOST}:{int(port)}/"}
     log_dir = ROOT / ".aeris" / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / "supervisor.log"
@@ -283,7 +289,7 @@ def start_supervisor_background(port: int = DEFAULT_PORT) -> dict[str, Any]:
     while time.monotonic() < deadline:
         status = supervisor_status(port, timeout=0.5)
         if status.get("reachable"):
-            return {"started": True, "pid": process.pid, "log": str(log_path), **status}
+            return {"started": True, "pid": process.pid, "log": str(log_path), **status, "web_ui": f"http://{DEFAULT_HOST}:{int(port)}/"}
         if process.poll() is not None:
             break
         time.sleep(0.25)
