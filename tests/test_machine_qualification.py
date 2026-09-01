@@ -1,5 +1,7 @@
 import unittest
+from unittest.mock import patch
 
+import aeris_runtime.machine as machine
 from aeris_runtime.machine_qualification import qualify_facts
 
 
@@ -54,6 +56,20 @@ class MachineQualificationTests(unittest.TestCase):
         facts["profile"] = "unsupported-unprofiled"
         result = qualify_facts(facts)
         self.assertEqual(result["overall_state"], "UNSUPPORTED_PROFILE")
+
+    def test_machine_detect_embeds_qualification_without_fake_verification(self):
+        with patch.object(machine.platform, "system", return_value="Windows"), \
+             patch.object(machine.platform, "machine", return_value="AMD64"), \
+             patch.object(machine, "_gpu", return_value="not_detected"), \
+             patch.object(machine, "_vram_gb", return_value=None), \
+             patch.object(machine, "_ram_gb", return_value=16), \
+             patch.object(machine, "_disk_free_gb", return_value=50), \
+             patch.object(machine.shutil, "which", side_effect=lambda name: f"C:/fake/{name}.exe" if name in {"git", "python", "ollama"} else None):
+            result = machine.detect()
+        self.assertEqual(result["profile"], "windows-cpu")
+        self.assertEqual(result["support_state"], "SUPPORTED_PROFILE_QUALIFIED_BASELINE")
+        self.assertEqual(result["qualification"]["overall_state"], "QUALIFIED_BASELINE")
+        self.assertIn("not real-machine verification", result["truth"])
 
 
 if __name__ == "__main__":
