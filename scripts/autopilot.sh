@@ -53,11 +53,11 @@ restore_mode(){
   if [ -n "$PY" ] && [ -x "$PY" ]; then "$PY" -m aeris_runtime mode set "$MODE" >/dev/null 2>&1 || true; fi
 }
 write_result(){
-  local status="$1" stage="$2" failure="${3:-}" opening_file="$STATE/COMPANY_OPENING.json"
+  local status="$1" stage="$2" failure="${3:-}" opening_file="$STATE/COMPANY_OPENING.json" unattended="$STATE/UNATTENDED_INSTALL.json"
   if [ -n "$PY" ] && [ -x "$PY" ]; then
-    "$PY" - "$RESULT" "$status" "$stage" "$failure" "$STARTED" "$MODE" "$MODEL" "$HARD_OFFLINE" "$CI_SMOKE" "$ROOT" "$opening_file" <<'PYCODE'
+    "$PY" - "$RESULT" "$status" "$stage" "$failure" "$STARTED" "$MODE" "$MODEL" "$HARD_OFFLINE" "$CI_SMOKE" "$ROOT" "$opening_file" "$unattended" <<'PYCODE'
 import datetime,json,pathlib,subprocess,sys
-out,status,stage,failure,started,mode,model,hard,ci,root,opening_path=sys.argv[1:]
+out,status,stage,failure,started,mode,model,hard,ci,root,opening_path,unattended_path=sys.argv[1:]
 root=pathlib.Path(root)
 def git(*args):
     try:return subprocess.check_output(['git','-C',str(root),*args],text=True,stderr=subprocess.DEVNULL,timeout=5).strip()
@@ -65,30 +65,30 @@ def git(*args):
 def read_json(path):
     try:return json.loads(pathlib.Path(path).read_text(encoding='utf-8-sig'))
     except Exception:return None
-try: core=read_json(root/'core.lock.json') or {}
-except Exception: core={}
-opening=read_json(opening_path)
+core=read_json(root/'core.lock.json') or {}
+opening=read_json(opening_path); unattended=read_json(unattended_path)
 payload={
- 'schema_version':1,
- 'run_kind':'CI_SMOKE' if ci=='1' else 'REAL_AUTOPILOT',
+ 'schema_version':2,'run_kind':'CI_SMOKE' if ci=='1' else 'REAL_AUTOPILOT',
  'result':status,'stage':stage,'started_at_utc':started,
  'finished_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
  'local_target_path':str(root),'canonical_core_sha':core.get('baseline_sha','UNKNOWN'),
  'implementation_sha':git('rev-parse','HEAD'),'requested_mode':mode,'requested_local_model':model,
  'hard_offline_requested':hard=='1','company_opening_state':opening.get('operational_state') if opening else 'NOT_OPENED',
- 'company_complete':False,'failure':failure or None,
+ 'company_complete':False,'unattended_operations':unattended,'failure':failure or None,
  'evidence_paths':{
    'preflight':str(root/'.aeris/state/AUTOPILOT_PREFLIGHT.json'),
    'deployment':str(root/'.aeris/state/DEPLOYMENT_REPORT.json'),
    'local_acceptance':str(root/'.aeris/state/LOCAL_ACCEPTANCE.json'),
    'company_opening':str(root/'.aeris/state/COMPANY_OPENING.json'),
    'heartbeat':str(root/'.aeris/state/HEARTBEAT.json'),
+   'unattended_install':str(root/'.aeris/state/UNATTENDED_INSTALL.json'),
+   'unattended_runtime':str(root/'.aeris/state/UNATTENDED_OPERATIONS.json'),
    'audit':str(root/'.aeris/audit/audit.jsonl')},
- 'truth':'Autopilot result reports automation scope only; never all acoustic capabilities/tools/release gates.'}
+ 'truth':'Autopilot completion means the supported local control plane was deployed/opened for its verified scope; never every acoustic capability/tool/release gate.'}
 pathlib.Path(out).write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 PYCODE
   else
-    printf '{"schema_version":1,"result":"%s","stage":"%s","company_complete":false,"truth":"Python unavailable; see stderr for blocker. No verified opening claimed."}\n' "$status" "$stage" > "$RESULT"
+    printf '{"schema_version":1,"result":"%s","stage":"%s","company_complete":false,"truth":"Python unavailable; no verified opening claimed."}\n' "$status" "$stage" > "$RESULT"
   fi
 }
 fail(){
@@ -131,6 +131,7 @@ if [ "$CI_SMOKE" = 1 ]; then
   STAGE='CI_SMOKE_ONLY'
   "$PY" -m unittest discover -s tests -v || fail 'CI Autopilot unit/security tests failed.'
   "$PY" -m aeris_runtime company status || fail 'CI Autopilot company manifest check failed.'
+  bash "$ROOT/scripts/install-unattended-linux.sh" --ci-smoke || fail 'CI unattended-operations smoke failed.'
   write_result 'CI_SMOKE_PASS_NOT_REAL_OPENING' "$STAGE" ''
   echo "AERIS Autopilot CI smoke PASS. No real-machine acceptance or company opening was claimed. Report: $RESULT"
   exit 0
@@ -159,8 +160,13 @@ set -e
 OPENING_STATE="$(printf '%s' "$OPENING_JSON" | "$PY" -c 'import json,sys; print(json.load(sys.stdin).get("operational_state","UNKNOWN"))')"
 [ "$OPENING_STATE" = 'OPEN_VERIFIED_SCOPE' ] || fail "Real acceptance passed but opening state is $OPENING_STATE"
 
+if [ "$NO_SUPERVISOR" = 0 ]; then
+  STAGE='UNATTENDED_OPERATIONS'
+  bash "$ROOT/scripts/install-unattended-linux.sh" --port 8765 --interval 20 || fail 'Persistent unattended operations could not be registered. This is a real OS-policy/session Human Gate.'
+fi
+
 STAGE='EVIDENCE_HANDOFF'
 write_result 'PASS_OPEN_VERIFIED_SCOPE' "$STAGE" ''
-echo 'AERIS local company kernel is OPEN for the verified baseline scope.'
+echo 'AERIS local company control plane is OPEN for the verified scope and unattended continuity has been registered.'
 echo "Autopilot report: $RESULT"
-echo 'This does NOT mean all acoustic Skills/Methods/Standards/tools or production release gates are complete.'
+echo 'External licensed tools, physical calibration and formal R3/R4 release remain real Human/External gates.'
