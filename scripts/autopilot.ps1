@@ -35,8 +35,10 @@ function Write-FinalResult($Status,$Opening,$Failure){
   try { $CoreSha=(Get-Content (Join-Path $Root 'core.lock.json') -Raw | ConvertFrom-Json).baseline_sha } catch {}
   $Machine=$null
   if($Py){ try { $Machine=((& $Py -m aeris_runtime machine detect) -join "`n") | ConvertFrom-Json } catch {} }
+  $Unattended=$null
+  try { $Unattended=Get-Content (Join-Path $State 'UNATTENDED_INSTALL.json') -Raw | ConvertFrom-Json } catch {}
   $Payload=[ordered]@{
-    schema_version=1
+    schema_version=2
     run_kind=($(if($CISmoke){'CI_SMOKE'}else{'REAL_AUTOPILOT'}))
     result=$Status
     started_at_utc=$Started
@@ -51,6 +53,7 @@ function Write-FinalResult($Status,$Opening,$Failure){
     company_opening_state=$(if($Opening){$Opening.operational_state}else{'NOT_OPENED'})
     company_complete=$false
     supervisor=$(if($Opening -and $Opening.PSObject.Properties.Name -contains 'supervisor'){$Opening.supervisor}else{$null})
+    unattended_operations=$Unattended
     failure=$Failure
     evidence_paths=[ordered]@{
       preflight=$Preflight
@@ -58,9 +61,11 @@ function Write-FinalResult($Status,$Opening,$Failure){
       local_acceptance=(Join-Path $State 'LOCAL_ACCEPTANCE.json')
       company_opening=(Join-Path $State 'COMPANY_OPENING.json')
       heartbeat=(Join-Path $State 'HEARTBEAT.json')
+      unattended_install=(Join-Path $State 'UNATTENDED_INSTALL.json')
+      unattended_runtime=(Join-Path $State 'UNATTENDED_OPERATIONS.json')
       audit=(Join-Path $Root '.aeris\audit\audit.jsonl')
     }
-    truth='Autopilot result reports automation scope only. It never means all acoustic capabilities, tools or release gates are complete.'
+    truth='Autopilot completion means the supported local control plane was deployed/opened for its verified scope. It never means every acoustic capability, proprietary tool or release gate is complete.'
   }
   Write-JsonFile $Result $Payload
 }
@@ -119,6 +124,8 @@ try {
     if($LASTEXITCODE -ne 0){ throw 'CI Autopilot unit/security tests failed.' }
     & $Py -m aeris_runtime company status | Out-Host
     if($LASTEXITCODE -ne 0){ throw 'CI Autopilot company manifest check failed.' }
+    & (Join-Path $Root 'scripts\install-unattended-windows.ps1') -CISmoke
+    if($LASTEXITCODE -ne 0){ throw 'CI unattended-operations smoke failed.' }
     Write-FinalResult 'CI_SMOKE_PASS_NOT_REAL_OPENING' $null $null
     Write-Host "AERIS Autopilot CI smoke PASS. No real-machine acceptance or company opening was claimed. Report: $Result" -ForegroundColor Green
     exit 0
@@ -133,7 +140,6 @@ try {
     }
     if($LASTEXITCODE -ne 0){ throw "Real-machine acceptance failed with exit $LASTEXITCODE" }
   } finally {
-    # Acceptance deliberately tests local and offline modes. Restore the requested operating mode for normal company operation.
     if($Py){ & $Py -m aeris_runtime mode set $Mode | Out-Host }
   }
 
@@ -150,12 +156,18 @@ try {
     throw "Real Autopilot acceptance passed but opening did not reach OPEN_VERIFIED_SCOPE; observed $($Opening.operational_state)"
   }
 
+  if(-not $NoSupervisor){
+    $Stage='UNATTENDED_OPERATIONS'
+    & (Join-Path $Root 'scripts\install-unattended-windows.ps1') -Port 8765 -IntervalSec 20
+    if($LASTEXITCODE -ne 0){ throw 'Persistent unattended operations could not be registered. This is a real OS-policy/admin Human Gate.' }
+  }
+
   $Stage='EVIDENCE_HANDOFF'
   Write-FinalResult 'PASS_OPEN_VERIFIED_SCOPE' $Opening $null
   Write-Host ''
-  Write-Host 'AERIS local company kernel is OPEN for the verified baseline scope.' -ForegroundColor Green
+  Write-Host 'AERIS local company control plane is OPEN for the verified scope and unattended continuity has been registered.' -ForegroundColor Green
   Write-Host "Autopilot report: $Result"
-  Write-Host 'This does NOT mean all acoustic Skills/Methods/Standards/tools or production release gates are complete.'
+  Write-Host 'External licensed tools, physical calibration and formal R3/R4 release remain real Human/External gates.'
   exit 0
 }
 catch {
