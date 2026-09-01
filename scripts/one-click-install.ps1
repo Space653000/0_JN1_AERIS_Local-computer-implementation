@@ -7,6 +7,7 @@ param(
 $ErrorActionPreference='Stop'
 $Root=Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'windows-python-resolution.ps1')
+. (Join-Path $PSScriptRoot 'windows-zero-cost-bootstrap.ps1')
 Write-Host '=== AERIS One-Click Company Installer ==='
 Write-Host 'Default profile: zero paid professional software; no Claude/Claude token required.'
 Write-Host 'Privacy: AERIS private engineering is application-routed to local AI; OS/network isolation still requires local verification.'
@@ -18,26 +19,6 @@ function Verify-StagedHash($file) {
   $expected=((Get-Content $sidecar -Raw).Trim().Split()[0]).ToLowerInvariant()
   $actual=(Get-FileHash -Algorithm SHA256 $file).Hash.ToLowerInvariant()
   if ($actual -ne $expected) { throw "SHA-256 mismatch for staged installer: $file" }
-}
-function Install-WingetPackageNoAgreement($Id,$Label) {
-  if(-not (Have 'winget')){ return $false }
-  Write-Host "Installing $Label via winget without automatic agreement acceptance..."
-  & winget install --id $Id -e --source winget --disable-interactivity
-  if($LASTEXITCODE -ne 0){
-    throw "HUMAN_GATE_PACKAGE_OR_SOURCE_AGREEMENT_OR_INSTALL_POLICY: $Label could not be installed non-interactively without AERIS accepting agreements on your behalf. Review/accept any required upstream terms manually, then rerun."
-  }
-  return $true
-}
-function Refresh-KnownToolPaths {
-  foreach($candidate in @(
-    "$env:LOCALAPPDATA\Programs\Ollama",
-    "$env:LOCALAPPDATA\Programs\Git\cmd",
-    "$env:ProgramFiles\Git\cmd"
-  )){
-    if((Test-Path $candidate) -and (($env:PATH -split ';') -notcontains $candidate)){
-      $env:PATH += ';' + $candidate
-    }
-  }
 }
 function Set-DotEnvValue($Path,$Key,$Value) {
   $lines=@()
@@ -111,7 +92,7 @@ try {
 
   if (-not $SkipCoreSync -and -not (Have 'git') -and $Mode -ne 'offline') {
     if(Install-WingetPackageNoAgreement 'Git.Git' 'Git'){
-      Refresh-KnownToolPaths
+      Refresh-AerisKnownToolPaths
     }
     if(-not (Have 'git')){
       throw 'Git is required for clean online canonical Core synchronization and could not be installed under the zero-cost/no-auto-agreement policy.'
@@ -141,9 +122,9 @@ try {
     } elseif ($Mode -eq 'offline') {
       throw 'Offline install requires a checksum-verified portable_assets/installers/OllamaSetup.exe or preinstalled Ollama.'
     } elseif (Install-WingetPackageNoAgreement 'Ollama.Ollama' 'Ollama') {
-      Refresh-KnownToolPaths
+      Refresh-AerisKnownToolPaths
     } else { throw 'Ollama could not be installed automatically under the zero-cost/no-auto-agreement policy. Stage a verified installer or install it before rerunning.' }
-    Refresh-KnownToolPaths
+    Refresh-AerisKnownToolPaths
   }
 
   if (-not $SkipLocalModelInstall -and (Have 'ollama')) {
