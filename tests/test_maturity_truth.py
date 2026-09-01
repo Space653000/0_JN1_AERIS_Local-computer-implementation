@@ -47,6 +47,32 @@ class MaturityTruthTests(unittest.TestCase):
         for source, sha in observed.items():
             self.assertEqual(sha, expected, f"Core truth drift at {source}: {sha} != {expected}")
 
+    def test_tested_baselines_cannot_remain_stale_not_implemented_in_maturity(self):
+        maturity = load_json("config/maturity.json")
+        baselines = load_json("config/baseline_capabilities.v1.json")["capabilities"]
+
+        reviewer_baseline = baselines["task_aware_independent_reviewer_allocation_baseline"]
+        self.assertEqual(reviewer_baseline["state"], "TESTED")
+        reviewer_maturity = maturity["capabilities"]["independent_reviewer_allocation_engine"]
+        self.assertEqual(reviewer_maturity["state"], "TESTED")
+        self.assertTrue(str(reviewer_maturity.get("evidence", "")).strip())
+        self.assertIn("allocation is not proof", reviewer_maturity.get("note", "").lower())
+
+        role_baseline = baselines["role_contract_framework_baseline"]
+        self.assertEqual(role_baseline["state"], "TESTED")
+        full_role_maturity = maturity["capabilities"]["100_role_executable_domain_contracts"]
+        self.assertEqual(full_role_maturity["state"], "NOT_IMPLEMENTED")
+
+        machine_baseline = baselines["machine_resource_qualification_engine_baseline"]
+        self.assertEqual(machine_baseline["state"], "TESTED")
+        full_machine_maturity = maturity["capabilities"]["machine_resource_qualification"]
+        self.assertEqual(full_machine_maturity["state"], "NOT_IMPLEMENTED")
+
+        golden_baseline = baselines["golden_acoustic_regression_baseline"]
+        self.assertEqual(golden_baseline["state"], "TESTED")
+        full_golden_maturity = maturity["capabilities"]["golden_acoustic_dataset_suite"]
+        self.assertEqual(full_golden_maturity["state"], "NOT_IMPLEMENTED")
+
 
 if __name__ == "__main__":
     unittest.main()
