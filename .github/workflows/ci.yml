@@ -20,10 +20,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout portable company repo
-        # actions/checkout v4 pinned to immutable commit observed 2026-09-01.
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Setup Python
-        # actions/setup-python v5 pinned to immutable commit observed 2026-09-01.
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: ${{ matrix.python }}
@@ -32,8 +30,24 @@ jobs:
       - name: Bash syntax checks
         if: runner.os == 'Linux'
         shell: bash
-        run: bash -n INSTALL_AERIS_LOCAL.sh scripts/*.sh
-      - name: Unit tests including Core alignment, private endpoint, ingress and archive security
+        run: bash -n INSTALL_AERIS_LOCAL.sh AERIS_AUTOPILOT.sh CLAUDE_VERIFY_AERIS.sh scripts/*.sh
+      - name: PowerShell syntax checks
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $files = @(Get-ChildItem -File *.ps1) + @(Get-ChildItem scripts -File -Filter *.ps1)
+          $failed = $false
+          foreach($file in $files) {
+            $tokens=$null; $errors=$null
+            [System.Management.Automation.Language.Parser]::ParseFile($file.FullName,[ref]$tokens,[ref]$errors) | Out-Null
+            if($errors.Count -gt 0) {
+              $failed=$true
+              Write-Host "PowerShell parse errors in $($file.FullName)" -ForegroundColor Red
+              $errors | ForEach-Object { Write-Host $_.Message -ForegroundColor Red }
+            }
+          }
+          if($failed){ throw 'PowerShell syntax validation failed.' }
+      - name: Unit tests including Core alignment privacy trust acoustics and watchdog
         run: python -m unittest discover -s tests -v
       - name: Validate 100-role company image and maturity truth
         run: python -m aeris_runtime company status
@@ -68,13 +82,19 @@ jobs:
       - name: Linux one-click installer smoke without external runtime installation
         if: runner.os == 'Linux'
         shell: bash
-        run: |
-          AERIS_SKIP_CORE_SYNC=1 AERIS_SKIP_LOCAL_RUNTIME_INSTALL=1 bash ./INSTALL_AERIS_LOCAL.sh auto
+        run: AERIS_SKIP_CORE_SYNC=1 AERIS_SKIP_LOCAL_RUNTIME_INSTALL=1 bash ./INSTALL_AERIS_LOCAL.sh auto
       - name: Windows one-click installer smoke without external runtime installation
         if: runner.os == 'Windows'
         shell: pwsh
-        run: |
-          ./INSTALL_AERIS_LOCAL.ps1 -Mode auto -SkipLocalModelInstall -SkipCoreSync
+        run: ./INSTALL_AERIS_LOCAL.ps1 -Mode auto -SkipLocalModelInstall -SkipCoreSync
+      - name: Linux unattended operations smoke without OS persistence mutation
+        if: runner.os == 'Linux'
+        shell: bash
+        run: bash scripts/install-unattended-linux.sh --ci-smoke
+      - name: Windows unattended operations smoke without OS persistence mutation
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/install-unattended-windows.ps1 -CISmoke
       - name: Linux portable package smoke with SBOM/provenance and external digest
         if: runner.os == 'Linux'
         shell: bash
