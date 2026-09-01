@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "contract_id": "AERIS-LOCAL-AUTOPILOT-V1",
+  "canonical_core_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
+  "default_mode": "auto",
+  "default_local_model": "qwen3:4b-instruct",
+  "entrypoints": {
+    "windows": "AERIS_AUTOPILOT.ps1",
+    "linux_jetson": "AERIS_AUTOPILOT.sh",
+    "claude_windows": "CLAUDE_VERIFY_AERIS.ps1",
+    "claude_linux_jetson": "CLAUDE_VERIFY_AERIS.sh"
+  },
+  "phases": [
+    "SAFE_PREFLIGHT",
+    "MACHINE_INVENTORY",
+    "CORE_ALIGNMENT",
+    "INSTALL_CONFIGURE",
+    "DETERMINISTIC_TESTS",
+    "REAL_MACHINE_ACCEPTANCE",
+    "COMPANY_OPENING",
+    "LOCAL_SUPERVISOR",
+    "EVIDENCE_HANDOFF"
+  ],
+  "reports": {
+    "preflight": ".aeris/state/AUTOPILOT_PREFLIGHT.json",
+    "bootstrap": ".aeris/state/AUTOPILOT_RESULT.json",
+    "deployment": ".aeris/state/DEPLOYMENT_REPORT.json",
+    "acceptance": ".aeris/state/LOCAL_ACCEPTANCE.json",
+    "opening": ".aeris/state/COMPANY_OPENING.json",
+    "heartbeat": ".aeris/state/HEARTBEAT.json",
+    "claude_review": ".aeris/state/CLAUDE_ACCEPTANCE.json",
+    "audit_ledger": ".aeris/audit/audit.jsonl"
+  },
+  "supervisor": {
+    "bind_host": "127.0.0.1",
+    "port": 8765,
+    "health_path": "/health",
+    "status_path": "/status",
+    "heartbeat_interval_sec": 30,
+    "public_bind_forbidden": true
+  },
+  "automatic_actions": {
+    "inventory": true,
+    "create_isolated_state": true,
+    "install_supported_redistributable_dependencies": true,
+    "sync_and_verify_read_only_core": true,
+    "configure_local_model": true,
+    "build_local_knowledge": true,
+    "run_unit_security_tests": true,
+    "run_local_acceptance_if_runtime_available": true,
+    "initialize_p0_trust_primitives": true,
+    "open_company_to_evidence_supported_scope": true,
+    "start_loopback_supervisor": true
+  },
+  "safety": {
+    "destructive_workspace_reinitialization": false,
+    "delete_private_data_to_repair": false,
+    "auto_accept_core_drift": false,
+    "auto_accept_license_or_eula": false,
+    "auto_invent_credentials": false,
+    "auto_weaken_privacy": false,
+    "auto_ignore_failed_test": false,
+    "auto_publish_external_release": false,
+    "auto_modify_unrelated_firewall": false
+  },
+  "human_gates": [
+    "ADMIN_PRIVILEGE_DENIED",
+    "LICENSE_OR_EULA_REQUIRED",
+    "SECRET_OR_HARDWARE_TOKEN_REQUIRED",
+    "PHYSICAL_FIXTURE_OR_CALIBRATION_REQUIRED",
+    "UNRELATED_DESTRUCTIVE_NETWORK_OR_STORAGE_CHANGE_REQUIRED",
+    "CORE_POLICY_CHANGE_REQUIRED",
+    "PRODUCTION_CUSTOMER_FORMAL_RELEASE"
+  ],
+  "opening_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
+  "truth_rule": "Autopilot completion means the automation run completed; it never means all AERIS acoustic capabilities are complete."
+}
