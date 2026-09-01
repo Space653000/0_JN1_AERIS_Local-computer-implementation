@@ -3,7 +3,7 @@
   "canonical_core": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "7c528d44a3a497e99eaa6abbb26d5abac5170d6b"
+    "reviewed_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
   },
   "non_negotiable_invariants": {
     "human_authority": "Human Chief Engineer",
@@ -33,8 +33,10 @@
     "software_gap_closure_before_final_opening": true,
     "do_not_stop_on_safe_software_not_implemented": true,
     "installation_equals_company_opening": false,
-    "opening_requires_evidence_supported_scope": true
+    "opening_requires_evidence_supported_scope": true,
+    "core_policy_must_match_autopilot_contract": true,
+    "tracked_truth_snapshots_must_match_reviewed_core_sha": true
   },
   "operational_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
-  "change_policy": "If canonical Core SHA changes, remote drift gate must fail. Human reviews semantic changes before deliberately updating this alignment contract; never auto-accept Core drift."
+  "change_policy": "If canonical Core SHA changes, remote drift gate must fail. Human reviews semantic changes before deliberately updating lock, alignment, Autopilot, company manifest and maturity evidence together; never auto-accept Core drift."
 }

@@ -6,37 +6,11 @@ param(
 )
 $ErrorActionPreference='Stop'
 $Root=Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'windows-python-resolution.ps1')
 Write-Host '=== AERIS One-Click Company Installer ==='
 Write-Host 'Privacy: AERIS private engineering is application-routed to local AI; OS/network isolation still requires local verification.'
 
 function Have($cmd){ return [bool](Get-Command $cmd -ErrorAction SilentlyContinue) }
-function Resolve-Python {
-  $commands=@('python','py')
-  foreach($name in $commands){
-    $p=Get-Command $name -ErrorAction SilentlyContinue
-    if($p){
-      if($name -eq 'py'){
-        try { $candidate=(& py -3.11 -c "import sys; print(sys.executable)" 2>$null).Trim(); if($candidate){ return $candidate } } catch {}
-      } else { return $p.Source }
-    }
-  }
-  $candidates=@(
-    "$env:LOCALAPPDATA\Programs\Python\Python313\python.exe",
-    "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe",
-    "$env:LOCALAPPDATA\Programs\Python\Python311\python.exe",
-    "$env:ProgramFiles\Python313\python.exe",
-    "$env:ProgramFiles\Python312\python.exe",
-    "$env:ProgramFiles\Python311\python.exe"
-  )
-  foreach($c in $candidates){ if(Test-Path $c){ return $c } }
-  $base=Join-Path $env:LOCALAPPDATA 'Programs\Python'
-  if(Test-Path $base){ $found=Get-ChildItem $base -Filter python.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1; if($found){ return $found.FullName } }
-  return $null
-}
-function Assert-PythonVersion($exe) {
-  & $exe -c "import sys; raise SystemExit(0 if sys.version_info >= (3,10) else 9)"
-  if ($LASTEXITCODE -ne 0) { throw 'AERIS requires Python 3.10 or newer.' }
-}
 function Verify-StagedHash($file) {
   $sidecar="$file.sha256"
   if (-not (Test-Path $sidecar)) { throw "Staged installer requires SHA-256 sidecar: $sidecar" }
@@ -86,30 +60,32 @@ function Install-StagedModel($Model) {
   return $true
 }
 
-$PythonExe=Resolve-Python
-if ($PythonExe) { try { Assert-PythonVersion $PythonExe } catch { $PythonExe=$null } }
+$PythonExe=Resolve-AerisPython
 if (-not $PythonExe) {
   $StagedPython=Join-Path $Root 'portable_assets\installers\python-3.11-amd64.exe'
   if(Test-Path $StagedPython){
     Verify-StagedHash $StagedPython
     Write-Host 'Installing checksum-verified staged Python 3.11...'
     Start-Process -FilePath $StagedPython -ArgumentList '/quiet InstallAllUsers=0 PrependPath=1 Include_test=0 Include_launcher=1' -Wait
-    $PythonExe=Resolve-Python
+    $PythonExe=Resolve-AerisPython
   } elseif($Mode -eq 'offline') {
     throw 'Offline clean-machine install requires portable_assets/installers/python-3.11-amd64.exe plus .sha256, or preinstalled Python 3.10+.'
   } elseif (Have 'winget') {
     Write-Host 'Installing Python 3.11 via winget...'
     winget install --id Python.Python.3.11 -e --accept-package-agreements --accept-source-agreements
-    $PythonExe=Resolve-Python
+    $PythonExe=Resolve-AerisPython
   }
   if (-not $PythonExe) { throw 'Python 3.10+ could not be installed automatically. See docs/ONE_CLICK_INSTALL.md.' }
-  Assert-PythonVersion $PythonExe
 }
+$PythonExe=Assert-AerisPythonVersion -Executable $PythonExe
+Write-Host "Python interpreter: $PythonExe"
 
 Push-Location $Root
 try {
   if (-not (Test-Path '.venv')) { & $PythonExe -m venv .venv }
+  if ($LASTEXITCODE -ne 0) { throw 'Python virtual environment creation failed.' }
   $Py=Join-Path $Root '.venv\Scripts\python.exe'
+  if (-not (Test-Path $Py -PathType Leaf)) { throw "AERIS virtualenv interpreter missing after creation: $Py" }
   if (-not (Test-Path '.env') -and (Test-Path '.env.example')) { Copy-Item '.env.example' '.env' }
   Set-DotEnvValue '.env' 'AERIS_LOCAL_MODEL' $LocalModel
   New-Item -ItemType Directory -Force -Path '.aeris\state','.aeris\knowledge','.aeris\ingress','.aeris\installers','data','logs' | Out-Null

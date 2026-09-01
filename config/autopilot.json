@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "contract_id": "AERIS-LOCAL-FULL-BUILD-AUTOPILOT-V5",
-  "canonical_core_sha": "7c528d44a3a497e99eaa6abbb26d5abac5170d6b",
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "trigger": {
     "required_urls": [
       "https://github.com/Space653000/0_JN1_AERIS",

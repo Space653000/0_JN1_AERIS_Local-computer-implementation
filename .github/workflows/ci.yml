@@ -34,22 +34,29 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: bash -n INSTALL_AERIS_LOCAL.sh AERIS_AUTOPILOT.sh CLAUDE_VERIFY_AERIS.sh scripts/*.sh
-      - name: PowerShell syntax checks
+      - name: Parse every tracked PowerShell file
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $files = @(Get-ChildItem -File *.ps1) + @(Get-ChildItem scripts -File -Filter *.ps1)
+          $files = @(git ls-files '*.ps1')
+          if ($files.Count -eq 0) { throw 'No tracked PowerShell files found.' }
           $failed = $false
-          foreach($file in $files) {
+          foreach($relative in $files) {
+            $path = (Resolve-Path -LiteralPath $relative).Path
             $tokens=$null; $errors=$null
-            [System.Management.Automation.Language.Parser]::ParseFile($file.FullName,[ref]$tokens,[ref]$errors) | Out-Null
+            [System.Management.Automation.Language.Parser]::ParseFile($path,[ref]$tokens,[ref]$errors) | Out-Null
             if($errors.Count -gt 0) {
               $failed=$true
-              Write-Host "PowerShell parse errors in $($file.FullName)" -ForegroundColor Red
+              Write-Host "PowerShell parse errors in $relative" -ForegroundColor Red
               $errors | ForEach-Object { Write-Host $_.Message -ForegroundColor Red }
             }
           }
           if($failed){ throw 'PowerShell syntax validation failed.' }
+          Write-Host "POWERSHELL_TRACKED_PARSE=PASS count=$($files.Count)"
+      - name: Windows Python resolver Store-alias regression
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./tests/windows/test-python-resolution.ps1
       - name: Unit tests including Core alignment privacy trust acoustics watchdog reproduction
         run: python -m unittest discover -s tests -v
       - name: Validate 100-role company image and maturity truth
