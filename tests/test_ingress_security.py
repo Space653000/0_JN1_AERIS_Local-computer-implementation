@@ -1,7 +1,9 @@
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
-from aeris_runtime.ingress import _assert_public_url, _content_risk_reasons, download_public_url
+from aeris_runtime.ingress import _assert_public_url, _content_risk_reasons, approve_quarantined_ingress, download_public_url
 from aeris_runtime.config import MODE_FILE, set_persisted_mode
 
 
@@ -43,6 +45,13 @@ class IngressSecurityTests(unittest.TestCase):
     def test_executable_magic_is_quarantine_risk(self):
         risks = _content_risk_reasons(b"MZ" + b"0" * 20, "application/octet-stream")
         self.assertTrue(any("executable" in item.lower() for item in risks))
+
+    def test_forged_manifest_outside_quarantine_is_denied(self):
+        with tempfile.TemporaryDirectory() as td:
+            manifest = Path(td) / "manifest.json"
+            manifest.write_text("{}", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                approve_quarantined_ingress(str(manifest), allow_unscanned=True, acknowledge_content_risk=True)
 
     def test_offline_mode_blocks_external_ingress_before_network(self):
         set_persisted_mode("offline")
