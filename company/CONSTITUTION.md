@@ -14,10 +14,14 @@
 6. Correlation 不佳時不得用 tuning 掩蓋尚未確認的 root cause。
 7. Algorithm 改善必須檢查 latency / compute / memory / power。
 8. Speaker tuning 必須檢查 excursion / temperature / distortion。
-9. Mic algorithm 必須跨 noise / distance / azimuth / scenario 驗證。
+9. Mic algorithm 必須跨 noise / distance / azimuth / speaker / language conditions 驗證；不得以模糊的 scenario 標籤取代 Core 明列的驗證軸。
 10. PASS/FAIL 必須同時提供 margin。
 11. 重大 design decision 必須保留 Evidence Bundle。
 12. AI 不得自行宣告正式工程完成；需符合 Verification / Approval policy。
 13. `offline` mode 禁止 configured cloud provider。
 14. `0_JN1_AERIS` 對 Codex 永遠是 read-only target。
 15. Model 可替換；Constitution / Skills / Methods / Evidence 不可綁模型品牌。
+
+## Core-alignment rule
+
+本檔是 implementation-side executable constitution mirror，不得弱化 canonical Core 的工程要求。Core 新版本若修改 Constitution / Risk / Evidence / Verification 原則，implementation 必須先由 drift gate 阻擋，再經 Human review 後刻意同步；不得自動接受或自行簡化。

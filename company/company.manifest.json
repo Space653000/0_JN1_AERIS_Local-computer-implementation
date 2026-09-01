@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "company_id": "AERIS",
   "company_name": "Acoustic Engineering & Research Intelligence System",
   "image_type": "portable_company_image",
@@ -15,7 +15,12 @@
     "virtual_role_count": 100,
     "role_registry": "company/organization/roles.v1.json",
     "role_maturity": "DEFINED_NOT_ALL_EXECUTABLE",
-    "runtime_active_role_target": "5-15",
+    "runtime_active_role_target": {
+      "ordinary_task": {"min": 2, "max": 8},
+      "complex_task": {"min": 5, "max": 15},
+      "all_100_available_as_capabilities": true,
+      "not_100_persistent_processes": true
+    },
     "groups": {
       "Chief Council": 8,
       "Speaker CoE": 18,
@@ -27,10 +32,12 @@
   },
   "runtime": {
     "modes": ["offline", "local", "cloud", "auto"],
-    "private_engineering": "local_only_by_application_router",
+    "private_engineering": "local_only_by_application_router_and_endpoint_scope_policy",
     "public_research": "cloud_optional_explicit_channel",
     "default_strategy": "local_first",
     "local_provider_baseline": "ollama_compatible",
+    "local_provider_network_default": "loopback",
+    "trusted_lan_provider": "explicit_human_opt_in_literal_private_ip_only",
     "default_local_model": "qwen3:4b-instruct",
     "cloud_provider_baseline": "openai_compatible",
     "provider_truth": "model_neutral_architecture_does_not_mean_every_provider_is_already_implemented"
@@ -56,7 +63,7 @@
   },
   "deployment": {
     "one_click_installer": "IMPLEMENTED_SECURITY_HARDENED_NOT_CLEAN_MACHINE_VERIFIED",
-    "machine_detection": "IMPLEMENTED_SUPPORTED_PROFILE_GATE",
+    "machine_detection": "IMPLEMENTED_PROFILE_MATCHING_NOT_FULL_RESOURCE_QUALIFICATION",
     "deployment_report": ".aeris/state/DEPLOYMENT_REPORT.json",
     "profiles": [
       "windows-cpu",
@@ -68,16 +75,19 @@
     ],
     "unsupported_behavior": "no_profile_means_unsupported_not_guessed",
     "offline_prerequisite_behavior": "missing_required_staged_asset_blocks_install_instead_of_silently_using_network",
+    "linux_offline_ollama_truth": "bootstrap_install_script_is_not_treated_as_self_contained_airgap_runtime",
     "verification_source": "config/maturity.json"
   },
   "portability": {
     "software_image": "software_only_no_private_state_no_private_assets",
     "software_release_metadata": ["SBOM.spdx.json", "PROVENANCE.json", "SHA256SUMS"],
-    "core_airgap_cache": "checksum_manifested_read_only_snapshot_or_guarded_git_cache",
+    "core_airgap_cache": "checksum_manifested_read_only_snapshot_or_guarded_clean_git_cache",
+    "core_snapshot_assurance": "integrity_only_unless_manifest_or_digest_is_independently_trusted_or_signed",
     "private_state": "age_encrypted_separate_artifact",
     "private_asset_pack": "human_controlled_not_public_git",
     "full_relocation_requires_destination_acceptance": true
   },
+  "permanent_assets_semantics": "target inventory: an item listed here is required by the final AERIS architecture; presence in this list does not mean it is implemented or verified",
   "permanent_assets": [
     "constitution",
     "role_contracts",
@@ -97,7 +107,7 @@
   ],
   "portable_external_assets": [
     "local_model_weights",
-    "inference_server_installer",
+    "inference_server_installer_or_verified_machine_specific_runtime_package",
     "offline_python_or_runtime_prerequisites",
     "proprietary_tool_licenses",
     "hardware_specific_drivers",

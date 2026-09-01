@@ -1,3 +1,5 @@
+import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -52,6 +54,27 @@ class IngressSecurityTests(unittest.TestCase):
             manifest.write_text("{}", encoding="utf-8")
             with self.assertRaises(ValueError):
                 approve_quarantined_ingress(str(manifest), allow_unscanned=True, acknowledge_content_risk=True)
+
+    def test_human_can_promote_checksum_verified_quarantine_only_explicitly(self):
+        with tempfile.TemporaryDirectory() as td:
+            ingress_root = Path(td) / "ingress"
+            qdir = ingress_root / "quarantine" / "case-1"
+            qdir.mkdir(parents=True)
+            payload = qdir / "payload.txt"
+            data = b"public reviewed text"
+            payload.write_bytes(data)
+            manifest = {
+                "classification": "PUBLIC_INGRESS_QUARANTINED",
+                "saved_to": str(payload),
+                "sha256": hashlib.sha256(data).hexdigest(),
+                "malware_scan": {"scanner": None, "status": "NOT_AVAILABLE"},
+                "content_risk_reasons": [],
+            }
+            (qdir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+            with patch("aeris_runtime.ingress.INGRESS_ROOT", ingress_root):
+                approved = approve_quarantined_ingress(str(qdir), allow_unscanned=True)
+            self.assertEqual(approved["classification"], "PUBLIC_INGRESS_HUMAN_APPROVED")
+            self.assertTrue(Path(approved["saved_to"]).exists())
 
     def test_offline_mode_blocks_external_ingress_before_network(self):
         set_persisted_mode("offline")
