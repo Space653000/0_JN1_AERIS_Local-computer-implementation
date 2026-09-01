@@ -22,12 +22,15 @@ payload={
   'source_commit':sha,
   'private_state_included':False,
   'portable_assets_included':False,
+  'release_metadata':'release-metadata/',
   'restore_requirement':'For full relocation, separately supply encrypted private state and Human-controlled Private Asset Pack, then run local acceptance.'
 }
 open(path,'w',encoding='utf-8').write(json.dumps(payload,indent=2)+'\n')
 PY
+python3 "$STAGE/scripts/release-metadata.py" --root "$STAGE" --output "$STAGE/release-metadata" --source-commit "$SHA"
 PKG="$OUT/AERIS-Portable-Company-Software-$STAMP.tar.gz"
 tar -czf "$PKG" -C "$STAGE" .
 rm -rf "$STAGE"
 echo "Created software-only package: $PKG"
+echo 'Package includes SBOM.spdx.json, PROVENANCE.json and SHA256SUMS under release-metadata/.'
 echo 'Private state and portable_assets were deliberately excluded. See docs/deployment/STATE_BACKUP_RESTORE.md.'
