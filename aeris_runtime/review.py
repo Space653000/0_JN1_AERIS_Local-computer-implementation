@@ -11,12 +11,15 @@ from .audit import append_event, verify_ledger
 from .company import validate_company_manifest
 from .config import ROOT, load_config
 from .corecache import verify_core_cache
+from .expected_runs import assess_all as expected_run_health
 from .machine import detect as machine_detect
 from .operations import ACCEPTANCE_FILE, OPENING_FILE, supervisor_status
 
 STATE_DIR = ROOT / ".aeris" / "state"
 CLAUDE_TESTS_FILE = STATE_DIR / "CLAUDE_TESTS.json"
 CLAUDE_REPORT_FILE = STATE_DIR / "CLAUDE_ACCEPTANCE.json"
+UNATTENDED_INSTALL_FILE = STATE_DIR / "UNATTENDED_INSTALL.json"
+UNATTENDED_RUNTIME_FILE = STATE_DIR / "UNATTENDED_OPERATIONS.json"
 
 
 def _read(path: Path) -> dict[str, Any] | None:
@@ -51,6 +54,9 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
     acceptance = _read(ACCEPTANCE_FILE)
     opening = _read(OPENING_FILE)
     tests = _read(CLAUDE_TESTS_FILE)
+    unattended_install = _read(UNATTENDED_INSTALL_FILE)
+    unattended_runtime = _read(UNATTENDED_RUNTIME_FILE)
+    expected_runs = expected_run_health()
     supervisor = supervisor_status()
     dirty, dirty_detail = _versioned_worktree_dirty()
 
@@ -92,6 +98,30 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
     if acceptance and acceptance.get("hard_offline_network_state") == "NOT_TESTED":
         limits.append("HARD_OFFLINE_NOT_TESTED")
 
+    if not unattended_install:
+        limits.append("UNATTENDED_PERSISTENCE_NOT_RECORDED")
+    else:
+        persistence_status = str(unattended_install.get("status", "UNKNOWN"))
+        if persistence_status == "BLOCKED":
+            failures.append("UNATTENDED_PERSISTENCE_BLOCKED")
+        elif persistence_status == "REGISTERED_WITH_LIMITS":
+            limits.append("UNATTENDED_PERSISTENCE_FALLBACK_ONLY")
+        elif persistence_status not in {"REGISTERED", "CI_SMOKE_PASS_NOT_REGISTERED"}:
+            limits.append("UNATTENDED_PERSISTENCE_STATE_UNKNOWN")
+    if unattended_runtime:
+        runtime_state = str(unattended_runtime.get("state", "UNKNOWN"))
+        if runtime_state == "BLOCKED_OR_FAILED":
+            failures.append("UNATTENDED_RUNTIME_RECOVERY_FAILED")
+        elif runtime_state not in {"HEALTHY", "RECOVERED"}:
+            limits.append("UNATTENDED_RUNTIME_NOT_HEALTHY")
+    else:
+        limits.append("UNATTENDED_RUNTIME_EVIDENCE_NOT_PRESENT")
+
+    if expected_runs.get("overall") == "FAILED":
+        failures.append("EXPECTED_RUN_MONITOR_FAILED")
+    elif expected_runs.get("overall") in {"DEGRADED", "NOT_CONFIGURED"}:
+        limits.append("EXPECTED_RUN_MONITOR_NOT_HEALTHY_OR_NOT_CONFIGURED")
+
     if failures:
         result = "FAIL"
     elif blockers:
@@ -102,7 +132,7 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
         result = "PASS"
 
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "reviewer": reviewer,
         "reviewer_role": "independent_reviewer",
         "reviewed_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -122,6 +152,9 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
         "hard_offline_result": acceptance.get("hard_offline_network_state", "NOT_TESTED") if acceptance else "NOT_TESTED",
         "company_opening_state": opening.get("operational_state") if opening else "NOT_OPENED",
         "supervisor": supervisor,
+        "unattended_install": unattended_install,
+        "unattended_runtime": unattended_runtime,
+        "expected_runs": expected_runs,
         "versioned_worktree_dirty": dirty,
         "versioned_worktree_detail": dirty_detail,
         "failures": failures,
@@ -131,9 +164,11 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
             "tests": str(CLAUDE_TESTS_FILE),
             "acceptance": str(ACCEPTANCE_FILE),
             "opening": str(OPENING_FILE),
+            "unattended_install": str(UNATTENDED_INSTALL_FILE),
+            "unattended_runtime": str(UNATTENDED_RUNTIME_FILE),
             "audit": str(ROOT / ".aeris" / "audit" / "audit.jsonl"),
         },
-        "truth": "This report is deterministic review evidence. Claude must still inspect raw evidence and challenge scope; it is not self-authenticating approval.",
+        "truth": "This deterministic review checks persistence/continuity evidence too. It is not self-authenticating approval and does not replace raw engineering Evidence or Human release authority.",
     }
     CLAUDE_REPORT_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     append_event("INDEPENDENT_ACCEPTANCE_RECORDED", reviewer, {"result": result, "failures": failures, "blockers": blockers, "limits": payload["limits"]})
