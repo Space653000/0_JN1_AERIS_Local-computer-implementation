@@ -1,187 +1,241 @@
 # AERIS Reality Check / Anti-Fantasy Audit
 
-**Status date:** 2026-09-01  
+**Status date:** 2026-09-01 (Asia/Taipei)  
 **Applies to:** `Space653000/0_JN1_AERIS_Local-computer-implementation`  
-**Canonical design authority:** read-only `Space653000/0_JN1_AERIS@main`
+**Canonical design authority:** read-only `Space653000/0_JN1_AERIS@main`  
+**Reviewed Core SHA:** `bde158944ac21f076f39894600e172136c3a8c5a`
 
 ## 1. Non-negotiable truth rule
-
-AERIS uses:
 
 ```text
 NOT_IMPLEMENTED → IMPLEMENTED → TESTED → VERIFIED
 ```
 
-External dependencies that cannot be completed in this repository use `BLOCKED_EXTERNAL`.
-
-No AI, README, dashboard, installer or Human optimism may promote a capability by prose alone.
+External dependencies may use `BLOCKED_EXTERNAL`.
 
 - `IMPLEMENTED` = code/config exists.
-- `TESTED` = automated tests exercise the claimed contract and pass.
+- `TESTED` = automated tests exercise the stated contract and pass.
 - `VERIFIED` = required real-machine / real-tool / real-evidence acceptance passes for a specified configuration.
-- CI green means only the checks executed by that CI run passed.
-- A 100-seat registry means 100 capability slots exist; it does **not** mean 100 mature acoustic engineers already exist.
+- CI green proves only the exact CI scope.
+- A 100-seat registry means capability slots, not 100 mature engineers.
+- A secure installer does not substitute for an Evidence/Verification engineering system.
 
-Machine-readable source: `config/maturity.json`.
+Machine-readable truth: `config/maturity.json`.
 
-## 2. Current product stage
+## 2. Fourth-audit center-philosophy result
 
-**PRE_ALPHA Portable Company Kernel.**
-
-Existing real baseline includes:
-
-- 100-seat registry count/grouping;
-- local/private chat routing to Ollama-compatible local AI;
-- explicit public-research-only cloud channel;
-- application-level cloud-egress policy and DLP screening;
-- local SQLite Knowledge baseline;
-- Windows/Linux CI kernel baseline;
-- Machine Profile detection baseline;
-- one-click installer kernel;
-- read-only cached Core sync/drift mechanism;
-- portable software packaging;
-- real-machine local/offline acceptance scripts;
-- encrypted private-state export/import mechanism using `age`.
-
-The reliability-hardening branch adds, pending PR CI and subsequent merge:
-
-- fail-closed online/offline installer behavior;
-- staged Windows Python + staged GGUF model verification/import;
-- explicit unsupported-machine behavior;
-- self-cleaning Knowledge index and FTS5 fallback;
-- Core air-gap snapshot with exact file hashes;
-- pinned public-IP TLS ingress to reduce DNS-rebinding TOCTOU;
-- quarantine, malware scanner integration, prompt-injection/content-risk flags and Human promotion;
-- private-state tar rejection of links/devices/FIFO/traversal;
-- multi-path HardOffline probes with non-absolute claim wording;
-- cloud secret-file support;
-- pinned GitHub Actions commits;
-- SPDX 2.3 file inventory + provenance + SHA256SUMS in Software Images;
-- Human–AI Reliability Contract and Local Verification SOP.
-
-These branch changes are **not promoted to TESTED merely because they are written**. Their state remains conservative until CI/real-machine evidence exists.
-
-## 3. Still not a completed professional acoustic company
-
-The following remain materially incomplete:
-
-- 100 executable Role Contracts;
-- mature acoustic Skill library;
-- deterministic Methods library;
-- live standards registry with lifecycle refresh;
-- Dynamic Pod engine;
-- workflow execution/state engine;
-- Evidence Bundle engine and append-only audit;
-- G0–G5 verification engine;
-- Golden acoustic datasets/regression suite;
-- professional acoustic corpus / semantic/provenance retrieval;
-- COMSOL/MATLAB/APx/KLIPPEL/SoundCheck/ACQUA production adapters;
-- live local Dashboard/Workspace/Services backend;
-- OS-level DLP/network/process enforcement;
-- clean-machine Windows/Linux/Jetson verification evidence;
-- full-company relocation verified on a second machine;
-- production release signing/attestation and complete commercial/legal release gate.
-
-## 4. Core repository write boundary
-
-The Core repo is defined read-only for Codex/implementation in its own governance files.
-
-Local Core representations are either:
-
-- guarded Git cache: disabled push URL + deny pre-push hook; or
-- checksum-manifested snapshot: no Git remote, canonical Core SHA + exact per-file hashes.
-
-GitHub server-side protection is a separate Human-controlled layer. A live Ruleset now exists and direct implementation-to-main writing has been observed blocked by GitHub; the Human should still review the exact Ruleset requirements (approvals/status checks/code-owner/bypass policy) rather than equating “a ruleset exists” with maximum protection.
-
-Implementation changes now follow branch → CI → PR → main instead of normal direct-to-main mutation.
-
-## 5. Privacy claim boundary
-
-AERIS can truthfully claim:
-
-> AERIS application code does not automatically attach local Memory, Evidence, files or customer data to cloud research requests; private engineering chat is hard-routed to local AI.
-
-AERIS must **not** claim:
-
-> No process on the computer can ever leak data.
-
-That stronger statement cannot be proven by a Python router. It requires OS/network/process controls and, for highest sensitivity, separate security zones or air gap.
-
-`research` is a public channel. Best-effort DLP cannot prove absence of private information; the Human still classifies the query.
-
-## 6. Public ingress claim boundary
-
-Public URL ingress is untrusted input.
-
-Hardening target:
+Overall direction remains aligned with canonical Core:
 
 ```text
-public-only DNS answers
-→ connect to validated IP
-→ TLS hostname validation
-→ revalidate redirects
-→ quarantine
-→ hash
-→ local malware scanner if present
-→ content/prompt-injection markers
-→ Human promotion
+1 Human Chief Engineer
++ 100 capability seats, not 100 persistent agents
++ ordinary pod 2–8 / complex pod 5–15
++ model-neutral compute
++ local-first / offline continuity
++ Memory != Evidence
++ Execution != Completion
++ Evidence / Verification / Reproducibility
++ Human authority for high-impact release
 ```
 
-This reduces SSRF/rebinding and content-risk exposure but does not prove an internet artifact is factually correct, legally reusable, or malware-free when no trusted scanner/signature exists.
+However the audit found real implementation drift/holes and did not accept them as harmless:
 
-Downloads are never automatically treated as Knowledge authority.
+1. implementation Constitution had weakened the Core mic-algorithm axes from `noise/distance/azimuth/speaker/language` to a vague `scenario` form;
+2. guarded Git Core-cache verification checked write guards but did not prove local cached content/HEAD matched the recorded Core SHA;
+3. private engineering was routed through the `local` adapter but the configured local base URL itself was not constrained against a public endpoint;
+4. Linux/Jetson offline logic could treat a staged `ollama-install.sh` bootstrap script as if it were an air-gap runtime installer;
+5. maturity/audit text still referred to a hardening PR as pending after that PR and main CI had already passed;
+6. generic doctor `READY` wording could be misread as whole-company readiness;
+7. package metadata had internal checksums but no external archive digest;
+8. implementation had preserved only a 5–15 pod target instead of Core's ordinary 2–8 / complex 5–15 distinction.
 
-## 7. Offline claim boundary
+These are repairable engineering defects, not impossible architecture. The current repair branch addresses them and remains `IMPLEMENTED` until Windows+Ubuntu CI passes.
 
-`mode=offline` blocks AERIS cloud routing and public URL ingress. It is not an air gap by itself.
+## 3. Current verified/tested kernel baseline before current repair promotion
 
-A machine is not hard-offline accepted until:
+Main commit `16e0b85f5cb68926d44d2a77c75b3c5eba0a42bb` passed GitHub Actions main run 74 on Windows and Ubuntu for its automated scope, including:
 
-1. all required local runtime/model/data/Skills/tools are already present;
-2. real local inference succeeds;
-3. real offline-mode inference succeeds;
-4. external network is physically disconnected or intentionally blocked;
-5. multi-path outbound probes do not succeed;
-6. acceptance evidence is preserved.
+- compile/unit/security tests;
+- 100-seat manifest validation;
+- Core remote drift gate;
+- Knowledge rebuild;
+- machine profile detection;
+- mode switching;
+- scoped doctor behavior available at that revision;
+- installer smoke with external runtime intentionally skipped;
+- SPDX/provenance generation;
+- Windows/Linux portable package smoke.
 
-Even then, the correct evidence statement is “tested outbound paths were blocked”, not mathematical proof about every possible process/protocol/firmware path.
+This does **not** prove clean-machine installation, real hardware, real professional tools, offline network isolation or Company Done.
 
-## 8. Model baseline
+## 4. Core P0 priority gap — the main strategic risk now
 
-Default continuity baseline is `qwen3:4b-instruct` through Ollama-compatible API.
+Canonical Core explicitly prioritizes trust infrastructure before a mature autonomous organization.
 
-A local model is replaceable compute. It is not AERIS identity and not evidence of 100-person professional capability. Exact model/tag/digest/license must be reviewed for the actual commercial/formal release.
+The implementation currently has substantial deployment/privacy/portability work, but the following central AERIS P0/P1 capabilities remain materially absent:
 
-## 9. Professional tools
+- task identity and formal engineering state machine;
+- machine-enforced STOP/ASK/REROUTE/VERIFY contract;
+- Evidence Bundle engine;
+- G0–G5 verification engine;
+- independent reviewer allocation;
+- R0–R4 authority/approval records;
+- Golden acoustic failure/regression cases;
+- append-only audit ledger;
+- expected-run/health monitor;
+- production Skills library;
+- deterministic Methods library;
+- live Standards Registry/lifecycle checks;
+- professional acoustic corpus and reviewed knowledge-promotion workflow.
 
-COMSOL, MATLAB, APx, KLIPPEL, SoundCheck, ACQUA, Ansys and Simcenter are external/licensed dependencies.
+Therefore the next major development priority must pivot from mostly deployment hardening to the Core P0 engineering-trust foundation. Otherwise AERIS could become a well-protected portable AI shell rather than the intended Acoustic Engineering Organization OS.
 
-Documentation or detection does not equal an adapter. Promotion to VERIFIED requires legal install, exact version capture, implemented adapter, tool-specific E2E and where applicable hardware/calibration/raw evidence.
+## 5. Core repository boundary
 
-## 10. Relocation truth
+Canonical Core is never written by implementation/Codex.
 
-There are distinct artifacts:
+Current tracked `core.lock.json` matches reviewed Core main SHA. Remote drift CI is read-only and fails if Core changes.
 
-1. **Software Company Image** — public software only; no secret/private state.
-2. **Release metadata** — SBOM, provenance and checksums for the software inventory.
-3. **Encrypted Private State** — local state encrypted with `age`.
-4. **Private Asset Pack** — model weights, proprietary installers/licenses, drivers/calibration/private datasets/credentials.
-5. **Destination acceptance evidence** — proves what actually works after restore.
+Local Core representations:
 
-A Software ZIP/tarball alone is never called a full-company relocation.
+- guarded Git cache; or
+- checksum-manifested air-gap snapshot.
 
-## 11. Supported-machine truth
+The repaired Git-cache verification requires canonical fetch URL, disabled push URL, deny hook, detached HEAD, clean working tree and equality of `HEAD == origin/main == recorded Core SHA`.
 
-AERIS does not claim “any computer”.
+Snapshot exact-file hashes provide integrity relative to the trusted manifest. They do **not** prove source authenticity if an attacker can replace both snapshot and manifest. High-assurance release/relocation still needs signed/trusted manifest or package attestation.
 
-The valid statement is:
+## 6. GitHub server-side governance
 
-> A machine is a supported baseline only if a versioned AERIS Machine Profile exists; it is VERIFIED only after that physical machine passes required acceptance.
+Active Rulesets now exist on both repositories and direct main writes are blocked by the PR rule. No bypass actor is configured.
 
-No profile → `UNSUPPORTED_PROFILE`, not guessed compatibility.
+Current Ruleset limitation observed during this audit:
 
-## 12. Release rule
+- required approving review count = 0;
+- no CODEOWNERS review requirement;
+- no required CI status check is encoded in the Ruleset itself.
 
-No release may be called `COMPLETE`, `PRODUCTION READY`, `100 ENGINEERS READY`, `OFFLINE VERIFIED`, `PRIVACY GUARANTEED`, `ALL AI PROVIDERS SUPPORTED`, `ALL COMPUTERS SUPPORTED`, or `FULL COMPANY RELOCATABLE` unless the exact scoped capability is VERIFIED and the required evidence exists.
+Therefore the Human should finish the chosen governance policy. For the implementation repo, required Windows/Ubuntu AERIS CI checks are strongly recommended. For a solo-owned Core, review-count policy must be chosen so it does not create an impossible self-deadlock while still preventing AI bypass.
 
-AERIS treats a gate that finds a real defect as a successful reliability mechanism.
+## 7. Privacy boundary
+
+AERIS may truthfully claim only the scoped application behavior it actually enforces.
+
+Private engineering endpoint policy after repair:
+
+```text
+loopback (default)
+OR
+explicit trusted_lan + literal RFC1918/ULA/loopback IP
+```
+
+A global/public IP or arbitrary hostname is rejected as a private local provider. Cloud/public research remains a separate explicit channel with no automatic Memory/Evidence/customer-file attachment.
+
+This still cannot prove that unrelated software, compromised OS/firmware or an authorized Human cannot exfiltrate data. Strong deployments require firewall/process/filesystem isolation or air gap.
+
+## 8. Public ingress boundary
+
+```text
+public DNS/IP validation
+→ connect pinned to validated public IP
+→ TLS hostname verification
+→ redirect revalidation
+→ quarantine
+→ SHA-256
+→ local malware scan when available
+→ content/prompt-injection risk markers
+→ explicit Human promotion
+```
+
+This reduces SSRF/rebinding/content-risk exposure. It does not prove downloaded information is true, legally reusable or malware-free. Approved public ingress is not automatically canonical Knowledge.
+
+## 9. Offline truth
+
+Software `mode=offline` is not an air gap.
+
+A clean Linux/Jetson machine with no Ollama cannot be made genuinely offline merely by staging `ollama-install.sh`, because that script is a bootstrap installer and can require network downloads. Repaired behavior blocks this case instead of pretending success.
+
+A machine/workflow is not `OFFLINE VERIFIED` until local dependencies exist, Core verifies, real local/offline inference passes and applicable Hard Offline/network evidence is retained.
+
+## 10. Supported-machine truth
+
+A versioned profile match is only a profile match. It is not equivalent to full resource qualification or real-machine verification.
+
+`machine_resource_qualification` remains unfinished: profile-specific OS/version/RAM/free-disk/accelerator/latency/headroom acceptance still needs to become a formal gate.
+
+## 11. Knowledge truth
+
+Current SQLite/FTS baseline is a self-cleaning local text index. It is not the final AERIS professional acoustic Knowledge System.
+
+Canonical knowledge must eventually follow:
+
+```text
+Observation
+→ Finding
+→ Verified Finding
+→ Lesson Candidate
+→ Engineering Review
+→ Canonical Knowledge
+```
+
+LLM inference must not directly overwrite permanent engineering knowledge.
+
+## 12. Professional tools
+
+COMSOL, MATLAB, APx, KLIPPEL, SoundCheck, ACQUA, Ansys and Simcenter remain external/licensed dependencies. A README, detected executable or public API documentation is not an adapter.
+
+`VERIFIED` requires the exact installed/versioned environment, implemented adapter, E2E execution and applicable hardware/calibration/raw evidence.
+
+## 13. Core internal consistency note for Human review
+
+Canonical Core itself contains one policy area that should eventually be consolidated by Human-controlled publication:
+
+- the Master Baseline risk section describes R0–R3;
+- the later Web UI / Control Plane baseline defines R0–R4, with R4 for customer/official release.
+
+Implementation follows the later R0–R4 control-plane model because it is more explicit for formal release. This is not permission for implementation to rewrite Core; the Core should eventually expose one canonical machine-readable Risk Policy.
+
+## 14. Relocation / supply-chain truth
+
+A complete move is not one ZIP.
+
+```text
+Software Image
++ external package digest
++ SBOM / provenance
++ Encrypted Private State
++ legal Human-controlled Private Asset Pack
++ trusted source/signing policy where required
++ destination restore
++ real-machine/tool/calibration acceptance
+```
+
+External `.sha256` proves transfer integrity against the sidecar. It is not signer identity. Release signing/attestation remains NOT_IMPLEMENTED.
+
+## 15. Still not a completed professional acoustic company
+
+The implementation remains **PRE_ALPHA**. It is not legitimate to claim:
+
+- `100 ENGINEERS READY`;
+- complete Skills/Methods/Standards;
+- production Dynamic Pod;
+- complete Evidence/G0–G5;
+- verified professional tool adapters;
+- absolute OS-wide zero egress;
+- all computers/all AI providers supported;
+- clean-machine Windows/Linux/Jetson verified;
+- full-company relocation verified;
+- production/commercial release ready;
+- guaranteed revenue/profit.
+
+## 16. Final fourth-audit conclusion
+
+No examined AERIS north-star requirement requires fictional physics or a nonexistent category of software. The architecture is engineering-feasible **as a staged system with explicit supported configurations and external dependencies**.
+
+But this is not equivalent to saying every target is already implemented, or that arbitrary hardware/provider/tool/data can be guaranteed 100% compatible.
+
+The valid 100% statement is narrower:
+
+> For one explicitly specified AERIS configuration and workflow, every required gate can eventually be required to produce evidence and pass before that scope is called VERIFIED.
+
+That is the standard this repository must enforce.
