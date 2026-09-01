@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "method_id": "fr-analysis",
+  "version": "1.0.0",
+  "purpose": "Compute basic deterministic frequency-response statistics over an explicit frequency band.",
+  "applicable_skills": ["frequency-response-analysis"],
+  "metrics": ["average_db", "minimum_db", "maximum_db", "peak_to_peak_db", "rms_deviation_db", "extrema_points"],
+  "assumptions": ["input level values are already expressed in the intended dB quantity", "no smoothing or weighting is applied"],
+  "not_proven": ["psychoacoustic quality", "target curve compliance unless separately specified", "measurement uncertainty", "spatial consistency"],
+  "evidence_class": "DETERMINISTIC_NUMERICAL_ANALYSIS",
+  "status": "IMPLEMENTED_BASELINE"
+}
