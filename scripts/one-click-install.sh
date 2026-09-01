@@ -5,7 +5,7 @@ MODEL="${AERIS_LOCAL_MODEL:-qwen3:4b-instruct}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 echo '=== AERIS One-Click Company Installer ==='
-echo 'Privacy: AERIS private engineering is application-routed to local AI; OS/network isolation still requires local verification.'
+echo 'Privacy: AERIS private engineering is application-routed to loopback or explicit trusted-LAN AI; OS/network isolation still requires local verification.'
 
 run_root(){ if [ "$(id -u)" -eq 0 ]; then "$@"; elif command -v sudo >/dev/null 2>&1; then sudo "$@"; else echo "Need administrator privilege for: $*" >&2; exit 2; fi; }
 install_python(){
@@ -40,7 +40,7 @@ set_env_value(){
 from pathlib import Path
 import sys
 path,key,value=Path(sys.argv[1]),sys.argv[2],sys.argv[3]
-lines=path.read_text(encoding='utf-8').splitlines() if path.exists() else []
+lines=path.read_text(encoding='utf-8-sig').splitlines() if path.exists() else []
 out=[]; found=False
 for line in lines:
     if line.startswith(key+'='):
@@ -109,13 +109,14 @@ if [ "${AERIS_SKIP_LOCAL_RUNTIME_INSTALL:-0}" != "1" ]; then
   if ! command -v ollama >/dev/null 2>&1; then
     STAGED="$ROOT/portable_assets/installers/ollama-install.sh"
     INSTALLER="$ROOT/.aeris/installers/ollama-install.sh"
-    if [ -f "$STAGED" ]; then
+    if [ "$MODE" = 'offline' ]; then
+      echo 'BLOCKED: offline mode will not execute ollama-install.sh because it is a network/bootstrap installer, not a self-contained air-gap runtime package.' >&2
+      echo 'Preinstall Ollama on this supported machine before disconnecting, or provide a future machine-specific self-contained runtime package after that package format is implemented and verified.' >&2
+      exit 3
+    elif [ -f "$STAGED" ]; then
       verify_staged_hash "$STAGED"
       cp "$STAGED" "$INSTALLER"
-      echo 'Using checksum-verified staged Ollama installer.'
-    elif [ "$MODE" = 'offline' ]; then
-      echo 'Offline install requires a checksum-verified portable_assets/installers/ollama-install.sh or preinstalled Ollama.' >&2
-      exit 3
+      echo 'Using checksum-verified staged Ollama bootstrap script in ONLINE mode. It may still fetch runtime assets.'
     else
       echo 'Ollama not found; downloading official HTTPS installer. This is transport-protected but NOT a pinned upstream signature.'
       if command -v curl >/dev/null 2>&1; then curl -fsSL https://ollama.com/install.sh -o "$INSTALLER";
