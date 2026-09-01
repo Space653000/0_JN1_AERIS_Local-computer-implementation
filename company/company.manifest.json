@@ -1,16 +1,124 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "company_id": "AERIS",
   "company_name": "Acoustic Engineering & Research Intelligence System",
   "image_type": "portable_company_image",
   "product_stage": "PRE_ALPHA",
-  "core_target": {"repository": "Space653000/0_JN1_AERIS", "branch": "main", "authority": "read_only_highest_design_target"},
-  "organization": {"human_authority": "Human Chief Engineer", "virtual_role_count": 100, "role_registry": "company/organization/roles.v1.json", "role_maturity": "DEFINED_NOT_ALL_EXECUTABLE", "runtime_active_role_target": "5-15", "groups": {"Chief Council": 8, "Speaker CoE": 18, "Microphone CoE": 18, "Product Chiefs": 24, "Distinguished Experts": 20, "Engineering Ops": 12}},
-  "runtime": {"modes": ["offline", "local", "cloud", "auto"], "private_engineering": "local_only", "public_research": "cloud_optional", "default_strategy": "local_first", "local_provider_baseline": "ollama_compatible", "default_local_model": "qwen3:4b-instruct", "cloud_provider_baseline": "openai_compatible"},
-  "privacy": {"default_local_classification": "LOCAL_ONLY", "local_data_cloud_egress": "DENY_BY_AERIS_APPLICATION_POLICY", "cloud_public_ingress": "ALLOW_WITH_DLP_AND_PUBLIC_NETWORK_GUARDS", "local_memory_cloud_sync": "DENY", "local_evidence_cloud_sync": "DENY", "os_level_enforcement": "REQUIRES_LOCAL_MACHINE_CONFIGURATION_AND_VERIFICATION"},
-  "knowledge": {"database": ".aeris/knowledge/aeris.sqlite3", "engine": "sqlite", "local_only": true, "indexes_core_cache_read_only": true, "maturity": "BASIC_TEXT_INDEX_NOT_FULL_ENGINEERING_KNOWLEDGE_SYSTEM"},
-  "deployment": {"one_click_installer": "IMPLEMENTED_NOT_CLEAN_MACHINE_VERIFIED", "machine_detection": "IMPLEMENTED_BASIC", "deployment_report": ".aeris/state/DEPLOYMENT_REPORT.json", "profiles": ["windows-cpu", "windows-nvidia-workstation", "linux-x86-nvidia", "jetson-orin-family", "trusted-lan-ai-server"], "verification_source": "config/maturity.json"},
-  "permanent_assets": ["constitution", "role_contracts", "skills", "methods", "standards_registry", "workflows", "memory_contract", "knowledge_database", "evidence_contract", "verification", "tool_adapters", "ui", "deployment", "audit", "reproduction"],
-  "portable_external_assets": ["local_model_weights", "inference_server_installer", "proprietary_tool_licenses", "hardware_specific_drivers", "private_engineering_data", "credentials"],
-  "truth_rules": ["core_overrides_implementation_when_conflicting", "memory_is_not_evidence", "execution_is_not_completion", "dashboard_is_not_truth", "model_is_compute_not_identity", "local_private_data_never_auto_egresses_to_public_cloud", "implemented_is_not_verified", "ci_kernel_pass_is_not_company_complete"]
+  "core_target": {
+    "repository": "Space653000/0_JN1_AERIS",
+    "branch": "main",
+    "authority": "read_only_highest_design_target",
+    "implementation_rule": "implementation_must_adapt_to_core; implementation_must_not_write_core"
+  },
+  "organization": {
+    "human_authority": "Human Chief Engineer",
+    "virtual_role_count": 100,
+    "role_registry": "company/organization/roles.v1.json",
+    "role_maturity": "DEFINED_NOT_ALL_EXECUTABLE",
+    "runtime_active_role_target": "5-15",
+    "groups": {
+      "Chief Council": 8,
+      "Speaker CoE": 18,
+      "Microphone CoE": 18,
+      "Product Chiefs": 24,
+      "Distinguished Experts": 20,
+      "Engineering Ops": 12
+    }
+  },
+  "runtime": {
+    "modes": ["offline", "local", "cloud", "auto"],
+    "private_engineering": "local_only_by_application_router",
+    "public_research": "cloud_optional_explicit_channel",
+    "default_strategy": "local_first",
+    "local_provider_baseline": "ollama_compatible",
+    "default_local_model": "qwen3:4b-instruct",
+    "cloud_provider_baseline": "openai_compatible",
+    "provider_truth": "model_neutral_architecture_does_not_mean_every_provider_is_already_implemented"
+  },
+  "privacy": {
+    "default_local_classification": "LOCAL_ONLY",
+    "local_data_cloud_egress": "DENY_BY_AERIS_APPLICATION_POLICY",
+    "cloud_public_research": "ALLOW_EXPLICIT_PUBLIC_QUERY_WITH_BEST_EFFORT_DLP",
+    "public_url_ingress": "PIN_PUBLIC_IP_TLS_VALIDATE_QUARANTINE_SCAN_HUMAN_PROMOTION",
+    "local_memory_cloud_sync": "DENY",
+    "local_evidence_cloud_sync": "DENY",
+    "os_level_enforcement": "REQUIRES_LOCAL_MACHINE_CONFIGURATION_AND_VERIFICATION",
+    "absolute_claim_forbidden": "application_policy_cannot_prove_that_no_other_process_or_compromised_os_can_ever_egress"
+  },
+  "knowledge": {
+    "database": ".aeris/knowledge/aeris.sqlite3",
+    "engine": "sqlite_fts5_when_available_else_like",
+    "local_only": true,
+    "indexes_core_cache_read_only": true,
+    "removes_stale_versioned_documents": true,
+    "public_ingress_auto_index": false,
+    "maturity": "BASIC_SELF_CLEANING_TEXT_INDEX_NOT_FULL_ENGINEERING_KNOWLEDGE_SYSTEM"
+  },
+  "deployment": {
+    "one_click_installer": "IMPLEMENTED_SECURITY_HARDENED_NOT_CLEAN_MACHINE_VERIFIED",
+    "machine_detection": "IMPLEMENTED_SUPPORTED_PROFILE_GATE",
+    "deployment_report": ".aeris/state/DEPLOYMENT_REPORT.json",
+    "profiles": [
+      "windows-cpu",
+      "windows-nvidia-workstation",
+      "linux-x86-cpu",
+      "linux-x86-nvidia",
+      "jetson-orin-family",
+      "trusted-lan-ai-server"
+    ],
+    "unsupported_behavior": "no_profile_means_unsupported_not_guessed",
+    "offline_prerequisite_behavior": "missing_required_staged_asset_blocks_install_instead_of_silently_using_network",
+    "verification_source": "config/maturity.json"
+  },
+  "portability": {
+    "software_image": "software_only_no_private_state_no_private_assets",
+    "software_release_metadata": ["SBOM.spdx.json", "PROVENANCE.json", "SHA256SUMS"],
+    "core_airgap_cache": "checksum_manifested_read_only_snapshot_or_guarded_git_cache",
+    "private_state": "age_encrypted_separate_artifact",
+    "private_asset_pack": "human_controlled_not_public_git",
+    "full_relocation_requires_destination_acceptance": true
+  },
+  "permanent_assets": [
+    "constitution",
+    "role_contracts",
+    "skills",
+    "methods",
+    "standards_registry",
+    "workflows",
+    "memory_contract",
+    "knowledge_database",
+    "evidence_contract",
+    "verification",
+    "tool_adapters",
+    "ui",
+    "deployment",
+    "audit",
+    "reproduction"
+  ],
+  "portable_external_assets": [
+    "local_model_weights",
+    "inference_server_installer",
+    "offline_python_or_runtime_prerequisites",
+    "proprietary_tool_licenses",
+    "hardware_specific_drivers",
+    "private_engineering_data",
+    "calibration_assets",
+    "credentials"
+  ],
+  "truth_rules": [
+    "core_overrides_implementation_when_conflicting",
+    "memory_is_not_evidence",
+    "execution_is_not_completion",
+    "dashboard_is_not_truth",
+    "model_is_compute_not_identity",
+    "defined_role_is_not_verified_engineer",
+    "supported_machine_profile_is_not_verified_machine",
+    "installed_is_not_verified",
+    "application_privacy_is_not_os_wide_absolute_guarantee",
+    "blocked_outbound_probes_are_not_mathematical_proof_of_zero_egress_paths",
+    "implemented_is_not_tested",
+    "tested_is_not_verified",
+    "ci_kernel_pass_is_not_company_complete",
+    "commercial_release_requires_current_license_and_external_dependency_review"
+  ]
 }
