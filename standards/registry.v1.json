@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "formal_use_requires": "LIVE_VERIFIED",
+    "rule": "A registry mention is not evidence that an edition is current. Formal/customer/regulatory use must verify exact edition, status, scope and source before G2/G4/G5.",
+    "offline_behavior": "Previously live-verified entries may be used only within their recorded scope/date; stale or never-verified entries must be flagged."
+  },
+  "standards": [
+    {
+      "standard_id": "IEC 60268-5",
+      "title": "Sound system equipment — Part 5: Loudspeakers",
+      "keywords": ["speaker", "loudspeaker", "electroacoustic measurement"],
+      "edition": null,
+      "status": "UNKNOWN_UNTIL_LIVE_VERIFIED",
+      "verification_state": "NEEDS_LIVE_VERIFICATION",
+      "verified_at_utc": null,
+      "source_url": null,
+      "note": "Core research references this family; do not infer current edition/status from memory."
+    },
+    {
+      "standard_id": "IEC 60268-4",
+      "title": "Sound system equipment — Part 4: Microphones",
+      "keywords": ["microphone", "mic", "electroacoustic measurement"],
+      "edition": null,
+      "status": "UNKNOWN_UNTIL_LIVE_VERIFIED",
+      "verification_state": "NEEDS_LIVE_VERIFICATION",
+      "verified_at_utc": null,
+      "source_url": null,
+      "note": "Formal use requires live source verification."
+    },
+    {
+      "standard_id": "CTA-2034",
+      "title": "Standard Method of Measurement for In-Home Loudspeakers",
+      "keywords": ["speaker", "spinorama", "directivity"],
+      "edition": null,
+      "status": "UNKNOWN_UNTIL_LIVE_VERIFIED",
+      "verification_state": "NEEDS_LIVE_VERIFICATION",
+      "verified_at_utc": null,
+      "source_url": null,
+      "note": "Formal use requires live source verification."
+    },
+    {
+      "standard_id": "AES75",
+      "title": "AES standard related to loudspeaker maximum linear sound levels",
+      "keywords": ["speaker", "maximum level", "linearity"],
+      "edition": null,
+      "status": "UNKNOWN_UNTIL_LIVE_VERIFIED",
+      "verification_state": "NEEDS_LIVE_VERIFICATION",
+      "verified_at_utc": null,
+      "source_url": null,
+      "note": "Registry intentionally avoids asserting edition from stale memory."
+    },
+    {
+      "standard_id": "ITU-T P.1100",
+      "title": "Narrow-band hands-free communication in motor vehicles",
+      "keywords": ["automotive", "hands-free", "speech"],
+      "edition": null,
+      "status": "UNKNOWN_UNTIL_LIVE_VERIFIED",
+      "verification_state": "NEEDS_LIVE_VERIFICATION",
+      "verified_at_utc": null,
+      "source_url": null,
+      "note": "Formal automotive use requires current recommendation verification."
+    },
+    {
+      "standard_id": "ITU-T P.1110",
+      "title": "Wideband hands-free communication in motor vehicles",
+      "keywords": ["automotive", "hands-free", "wideband", "speech"],
+      "edition": null,
+      "status": "UNKNOWN_UNTIL_LIVE_VERIFIED",
+      "verification_state": "NEEDS_LIVE_VERIFICATION",
+      "verified_at_utc": null,
+      "source_url": null,
+      "note": "Formal automotive use requires current recommendation verification."
+    }
+  ]
+}
