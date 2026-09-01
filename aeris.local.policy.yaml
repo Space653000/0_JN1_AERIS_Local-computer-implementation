@@ -1,4 +1,4 @@
-schema_version: 2
+schema_version: 3
 policy_id: AERIS-PORTABLE-COMPANY
 status: active
 
@@ -7,14 +7,56 @@ core_target:
   branch: main
   authority: highest_read_only_design_target
   access_for_codex: read_only
+  access_for_claude_review: read_only
   allowed: [clone, fetch, read, inspect_history, compare]
-  forbidden: [push, pull_request_write, repository_file_write, update_ref, issue_mutation, settings_change]
+  forbidden: [push, pull_request_write, repository_file_write, update_ref, issue_mutation, settings_change, auto_accept_drift]
+
+human_ai:
+  human_chief_engineer:
+    authority: final
+    r3_r4_approval: required
+    formal_release_authority: true
+  codex:
+    role: primary_local_executor_installer_implementer
+    self_certification: forbidden
+  claude_code:
+    role: independent_reviewer_acceptance_auditor
+    default_mode: review_only
+    same_context_repair_and_approval: forbidden
+  evidence:
+    role: engineering_decision_basis
+  agent_consensus:
+    counts_as_engineering_evidence: false
 
 implementation:
   repository: Space653000/0_JN1_AERIS_Local-computer-implementation
   purpose: portable_company_image_and_executable_realization
-  may_extend_only_for: [deployment, runtime, machine_adaptation, packaging, tests, local_data_services, provider_adapters]
+  normal_deployment_remote_write: forbidden
+  explicit_development_publication: branch_ci_pr_protected_main
+  machine_specific_state_location: local_generated_only
   must_not_override_core_product_direction: true
+
+autopilot:
+  trigger: two_repositories_plus_local_target_path
+  ask_optional_questions_before_preflight: false
+  config: config/autopilot.json
+  windows_entrypoint: AERIS_AUTOPILOT.ps1
+  linux_jetson_entrypoint: AERIS_AUTOPILOT.sh
+  claude_windows_entrypoint: CLAUDE_VERIFY_AERIS.ps1
+  claude_linux_jetson_entrypoint: CLAUDE_VERIFY_AERIS.sh
+  normal_sequence:
+    - safe_preflight
+    - machine_inventory
+    - core_alignment
+    - install_configure
+    - deterministic_tests
+    - real_machine_acceptance
+    - company_opening
+    - local_supervisor
+    - evidence_handoff
+    - independent_claude_acceptance
+  ci_smoke_is_real_machine_acceptance: false
+  ci_smoke_is_company_opening: false
 
 runtime:
   modes:
@@ -24,6 +66,33 @@ runtime:
     auto: private_engineering_local_public_research_local_first_cloud_when_needed
   default: auto
   offline_continuity_required: true
+
+opening:
+  states: [CLOSED, BOOTSTRAPPING, BLOCKED, OPEN_WITH_LIMITS, OPEN_VERIFIED_SCOPE]
+  installation_equals_opening: false
+  verified_opening_requires_real_machine_acceptance: true
+  verified_scope_baseline: LOCAL_PORTABLE_COMPANY_KERNEL_BASELINE
+  company_complete_from_kernel_opening: false
+  local_supervisor:
+    bind: 127.0.0.1
+    public_bind: forbidden
+    heartbeat_is_whole_company_health_proof: false
+
+risk_authority:
+  policy: config/risk_authority.json
+  levels: [R0, R1, R2, R3, R4]
+  r3_r4_ai_self_approval: forbidden
+  g5_human_authority: Human Chief Engineer
+
+trust_primitives:
+  task_state_machine: required
+  evidence_bundle: required
+  g0_g5_gate_records: required
+  audit_hash_chain: required
+  independent_review: required
+  opening_scope: required
+  audit_hash_chain_is_worm: false
+  evidence_hash_manifest_is_external_attestation: false
 
 privacy:
   default_data_classification: LOCAL_ONLY
@@ -48,8 +117,25 @@ security:
   commit_model_weights: forbidden
   commit_private_engineering_data: forbidden
   core_cached_clone_push: denied
+  tracked_dirty_worktree_zero_touch_opening: blocked
+  checksum_failure_bypass: forbidden
+  failed_verification_bypass: forbidden
+
+human_gate:
+  ask_only_when:
+    - admin_privilege_denied
+    - proprietary_license_or_eula
+    - secret_customer_credential_or_hardware_token
+    - physical_fixture_cable_chamber_instrument_or_calibration
+    - destructive_unrelated_network_storage_firewall_change
+    - canonical_core_policy_change
+    - production_customer_formal_external_release
 
 truth:
   core_main: target_specification
   implementation_repo: portable_company_source
   local_state_and_evidence: execution_truth
+  installation: not_verification
+  ci: exact_test_scope_only
+  supervisor_heartbeat: service_liveness_not_company_health
+  open_verified_scope: named_scope_only_not_company_complete
