@@ -20,6 +20,33 @@
         "GitHub Actions PR #19 run #164 Windows 2025 + Ubuntu 24.04"
       ],
       "truth": "TESTED only for the small deterministic FR regression baseline; full production Speaker/Microphone Golden Dataset remains incomplete."
+    },
+    "role_contract_framework_baseline": {
+      "state": "IMPLEMENTED_PENDING_CI",
+      "evidence": [
+        "config/role_contracts.v1.json",
+        "aeris_runtime/role_contracts.py",
+        "tests/test_role_contracts.py"
+      ],
+      "truth": "100 machine-readable baseline contracts with checked current asset references; all 100 intentionally remain NOT_DOMAIN_VERIFIED until specialty assets and acceptance evidence exist."
+    },
+    "task_aware_independent_reviewer_allocation_baseline": {
+      "state": "IMPLEMENTED_PENDING_CI",
+      "evidence": [
+        "aeris_runtime/reviewer_allocation.py",
+        "tests/test_reviewer_allocation.py"
+      ],
+      "truth": "Deterministic task/domain-hint reviewer-seat allocation with identity/context/permission separation. Allocation is not proof that a review occurred and does not require Claude."
+    },
+    "zero_cost_no_claude_default_deployment_policy": {
+      "state": "IMPLEMENTED_PENDING_CI",
+      "evidence": [
+        "config/zero_cost_no_claude.v1.json",
+        "aeris_runtime/deployment_policy.py",
+        "tests/test_zero_cost_deployment.py",
+        "scripts/one-click-install.ps1"
+      ],
+      "truth": "Default bootstrap is constrained not to require paid professional software, paid cloud API credentials, Claude Code or a Claude token, and must not auto-accept upstream package/license agreements. Upstream terms/pricing can still create a Human/External Gate."
     }
   }
 }
