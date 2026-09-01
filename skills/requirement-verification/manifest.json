@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "skill_id": "requirement-verification",
+  "name": "Comparison / Requirement Verification",
+  "domain": ["speaker", "microphone", "validation", "quality"],
+  "executor": "aeris_runtime.skills_runtime:requirement_verification",
+  "inputs": {"input_path": "validated local FR CSV", "requirement": "JSON requirement object"},
+  "supported_checks": ["max_peak_to_peak_db", "max_rms_deviation_db", "minimum_average_db", "maximum_average_db"],
+  "outputs": ["overall_result", "per_check_result", "margin", "analysis"],
+  "evidence_class": "DETERMINISTIC_REQUIREMENT_CHECK",
+  "maturity": "IMPLEMENTED_NOT_DOMAIN_VERIFIED",
+  "cloud_allowed": false
+}

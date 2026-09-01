@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "method_id": "measurement-validation",
+  "version": "1.0.0",
+  "purpose": "Validate imported frequency-response table structure before acoustic calculation.",
+  "applicable_skills": ["measurement-import-validation"],
+  "required_inputs": ["frequency_hz", "level_db"],
+  "checks": ["numeric_finite", "frequency_positive", "minimum_two_points", "duplicate_frequency", "strict_frequency_order"],
+  "not_proven": ["calibration_validity", "fixture_correctness", "environmental_condition", "channel_mapping", "instrument_accuracy"],
+  "evidence_class": "DETERMINISTIC_FILE_VALIDATION",
+  "status": "IMPLEMENTED_BASELINE"
+}
