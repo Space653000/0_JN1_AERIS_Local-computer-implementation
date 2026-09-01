@@ -27,13 +27,13 @@
         <div>
           <div class="eyebrow">COMPANY CONTROL PLANE</div>
           <h2>AERIS 在線_</h2>
-          <p>100 席聲學工程能力組織、本機 AI、Knowledge、Evidence 與工程控制面，全部由這台電腦執行。</p>
+          <p>100 席聲學工程能力組織、本機 AI、Knowledge、Skills、Evidence、Standards 與工程控制面，由這台電腦執行。</p>
         </div>
         <div class="hero-badge">LOCAL</div>
       </div>
       <div class="metrics">
         <div class="card metric"><span>角色席位</span><strong id="roleCount">—</strong><small>可呼叫 baseline</small></div>
-        <div class="card metric"><span>Knowledge</span><strong id="knowledgeCount">—</strong><small>本機文件</small></div>
+        <div class="card metric"><span>Skills</span><strong id="skillCount">—</strong><small>deterministic</small></div>
         <div class="card metric"><span>進行中任務</span><strong id="taskCount">—</strong><small>SQLite 工作台</small></div>
         <div class="card metric"><span>Local AI</span><strong id="modelState">—</strong><small id="modelName">—</small></div>
       </div>
@@ -45,6 +45,14 @@
         <div class="card">
           <div class="section-title"><h3>成熟度真值</h3></div>
           <div id="maturityBars" class="maturity"></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h3>Expected-run 健康</h3></div>
+          <div id="expectedRuns" class="task-list"></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h3>Knowledge</h3></div>
+          <div class="metric"><strong id="knowledgeCount">—</strong><small>本機索引文件；Memory/Knowledge 不等於 Evidence</small></div>
         </div>
       </div>
     </section>
@@ -70,7 +78,7 @@
           <div id="podRoles" class="role-list empty">輸入工程問題後按「規劃 Dynamic Pod」</div>
           <div class="invoke-box">
             <label>向 Pod Lead 詢問</label>
-            <textarea id="invokePrompt" rows="4" placeholder="可直接把工程問題送給第一席角色；內容只走本地 AI"></textarea>
+            <textarea id="invokePrompt" rows="4" placeholder="工程問題只送本機 AI；Knowledge 僅作 supporting context"></textarea>
             <button id="invokeLead">執行本機角色</button>
             <pre id="invokeResult" class="pre response"></pre>
           </div>
@@ -89,6 +97,19 @@
           <div id="allRoles" class="role-browser"></div>
         </div>
         <div class="stack">
+          <div class="card">
+            <div class="section-title"><h3>Deterministic Skills</h3></div>
+            <div id="skillList" class="task-list"></div>
+          </div>
+          <div class="card">
+            <div class="section-title"><h3>Engineering Workflows</h3></div>
+            <div id="workflowList" class="task-list"></div>
+          </div>
+          <div class="card">
+            <div class="section-title"><h3>Standards Registry</h3></div>
+            <div class="row"><input id="standardQuery" placeholder="IEC / AES / CTA / ITU"><button id="standardSearch">搜尋</button></div>
+            <div id="standardResults" class="search-results"></div>
+          </div>
           <div class="card">
             <div class="section-title"><h3>Knowledge 搜尋</h3></div>
             <div class="row"><input id="knowledgeQuery" placeholder="搜尋本機知識"><button id="knowledgeSearch">搜尋</button></div>
