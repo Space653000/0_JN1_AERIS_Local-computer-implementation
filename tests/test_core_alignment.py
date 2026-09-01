@@ -42,6 +42,25 @@ class CoreAlignmentTests(unittest.TestCase):
         self.assertTrue(inv["independent_verification_required_for_formal_completion"])
         self.assertFalse(inv["core_is_writable_by_codex_or_implementation"])
 
+    def test_two_urls_are_full_build_command_without_second_prompt(self):
+        autopilot = json.loads((ROOT / "config" / "autopilot.json").read_text(encoding="utf-8"))
+        trigger = autopilot["trigger"]
+        self.assertEqual(trigger["interpretation"], "AERIS_FULL_BUILD_AUTOPILOT_REQUEST")
+        self.assertTrue(trigger["two_urls_are_sufficient_when_target_path_is_unambiguous_in_codex"])
+        self.assertFalse(trigger["requires_additional_prompt"])
+        self.assertFalse(trigger["requires_plan_confirmation"])
+
+    def test_default_path_is_codex_only_and_closes_software_gaps(self):
+        autopilot = json.loads((ROOT / "config" / "autopilot.json").read_text(encoding="utf-8"))
+        policy = autopilot["default_execution_policy"]
+        self.assertFalse(policy["launch_claude_code"])
+        self.assertFalse(policy["launch_second_model_reviewer"])
+        self.assertFalse(policy["use_codex_tasks_or_scheduler"])
+        self.assertFalse(policy["stop_for_plan_confirmation"])
+        self.assertTrue(policy["close_software_only_gaps_before_final_opening"])
+        self.assertTrue(policy["continue_until_no_safe_software_gap_remains"])
+        self.assertTrue(autopilot["software_gap_closure"]["not_implemented_is_not_a_stop_reason_when_software_only"])
+
 
 if __name__ == "__main__":
     unittest.main()
