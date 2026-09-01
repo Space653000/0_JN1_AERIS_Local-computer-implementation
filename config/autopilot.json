@@ -1,7 +1,21 @@
 {
-  "schema_version": 3,
-  "contract_id": "AERIS-LOCAL-AUTOPILOT-V3",
+  "schema_version": 4,
+  "contract_id": "AERIS-LOCAL-AUTOPILOT-V4",
   "canonical_core_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
+  "trigger": {
+    "required_urls": [
+      "https://github.com/Space653000/0_JN1_AERIS",
+      "https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation"
+    ],
+    "two_urls_are_sufficient_when_target_path_is_unambiguous_in_codex": true,
+    "target_path_resolution_order": [
+      "human_selected_or_opened_codex_path",
+      "single_unambiguous_active_writable_workspace_root",
+      "explicit_local_target_path_if_supplied"
+    ],
+    "ask_for_target_path_only_if_unresolved_or_ambiguous": true,
+    "embedded_instruction": "Run AERIS_AUTOPILOT automatically using latest CI-passed main; detect/inventory/install/configure/test/accept/open Dashboard/frontend/backend; register OS-native persistence and watchdog; preserve Evidence/Audit; do not use Codex scheduler or launch Claude by default; ask Human only at genuine Human Gates; never fake blocked/unimplemented capabilities."
+  },
   "default_mode": "auto",
   "default_local_model": "qwen3:4b-instruct",
   "entrypoints": {
@@ -83,6 +97,7 @@
     "watchdog_bypass_opening_or_human_gate": false
   },
   "human_gates": [
+    "NO_SAFE_OR_UNAMBIGUOUS_LOCAL_TARGET",
     "ADMIN_OR_OS_POLICY_DENIES_REQUIRED_PERSISTENCE",
     "HEADLESS_PRELOGIN_SERVICE_REQUIRED_BUT_USER_SERVICE_IS_INSUFFICIENT",
     "LICENSE_OR_EULA_REQUIRED",
