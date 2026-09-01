@@ -171,8 +171,9 @@ if [ "$NO_SUPERVISOR" = 0 ]; then
   bash "$ROOT/scripts/install-unattended-linux.sh" --port 8765 --interval 20 || fail 'Persistent unattended operations could not be registered. This is a real OS-policy/session Human Gate.'
 fi
 
+STAGE='SOFTWARE_GAP_CLOSURE'
+"$PY" -m aeris_runtime.completion --write >/dev/null || fail 'Software-local completion gate failed; see SOFTWARE_COMPLETION.json'
 STAGE='EVIDENCE_HANDOFF'
-"$PY" -m aeris_runtime.completion --write >/dev/null || true
 write_result 'PASS_OPEN_VERIFIED_SCOPE' "$STAGE" ''
 echo 'AERIS local company control plane is OPEN for the verified scope and unattended continuity has been registered.'
 echo "Autopilot report: $RESULT"

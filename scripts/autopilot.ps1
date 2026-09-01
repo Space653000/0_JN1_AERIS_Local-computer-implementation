@@ -39,8 +39,14 @@ function Write-FinalResult($Status,$Opening,$Failure){
   try { $Unattended=Get-Content (Join-Path $State 'UNATTENDED_INSTALL.json') -Raw | ConvertFrom-Json } catch {}
   $Completion=$null
   if($Py){ try { $Completion=((& $Py -m aeris_runtime.completion --write) -join "`n") | ConvertFrom-Json } catch {} }
-  [object[]]$UnresolvedSoftwareGaps=$(if($Completion){@($Completion.unresolved_software_gaps)}else{@([ordered]@{id='COMPLETION_ASSESSMENT_UNAVAILABLE';status='UNKNOWN'})})
-  [object[]]$RemainingExternalBlockers=$(if($Completion){@($Completion.remaining_external_blockers)}else{@()})
+  $UnresolvedSoftwareGaps=[System.Collections.ArrayList]::new()
+  $RemainingExternalBlockers=[System.Collections.ArrayList]::new()
+  if($Completion){
+    foreach($Item in @($Completion.unresolved_software_gaps)){[void]$UnresolvedSoftwareGaps.Add($Item)}
+    foreach($Item in @($Completion.remaining_external_blockers)){[void]$RemainingExternalBlockers.Add($Item)}
+  } else {
+    [void]$UnresolvedSoftwareGaps.Add([ordered]@{id='COMPLETION_ASSESSMENT_UNAVAILABLE';status='UNKNOWN'})
+  }
   $Payload=[ordered]@{
     schema_version=2
     run_kind=($(if($CISmoke){'CI_SMOKE'}else{'REAL_AUTOPILOT'}))
@@ -169,6 +175,14 @@ try {
     $Stage='UNATTENDED_OPERATIONS'
     & (Join-Path $Root 'scripts\install-unattended-windows.ps1') -Port 8765 -IntervalSec 20
     if($LASTEXITCODE -ne 0){ throw 'Persistent unattended operations could not be registered. This is a real OS-policy/admin Human Gate.' }
+  }
+
+  $Stage='SOFTWARE_GAP_CLOSURE'
+  $CompletionText=(& $Py -m aeris_runtime.completion --write) -join "`n"
+  $CompletionExit=$LASTEXITCODE
+  $CompletionGate=$CompletionText | ConvertFrom-Json
+  if($CompletionExit -ne 0 -or -not $CompletionGate.software_local_fixable_zero){
+    throw "Software-local completion gate failed; unresolved=$(@($CompletionGate.unresolved_software_gaps).Count)"
   }
 
   $Stage='EVIDENCE_HANDOFF'

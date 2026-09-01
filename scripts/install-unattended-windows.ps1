@@ -43,13 +43,24 @@ if($CISmoke){
 
 try {
   Import-Module ScheduledTasks -ErrorAction Stop
-  $Action=New-ScheduledTaskAction -Execute $Py -Argument "-m aeris_runtime.watchdog --port $Port --interval $IntervalSec" -WorkingDirectory $Root
+  $TaskPy=((& $Py -c "import sys; print(getattr(sys, '_base_executable', None) or sys.executable)") -join '').Trim()
+  if(-not $TaskPy -or -not (Test-Path -LiteralPath $TaskPy)){ throw 'Unable to resolve the base Python executable for the watchdog.' }
+  $TaskArgs="-m aeris_runtime.watchdog --port $Port --interval $IntervalSec"
+  $Action=New-ScheduledTaskAction -Execute $TaskPy -Argument $TaskArgs -WorkingDirectory $Root
   $Trigger=New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
   $Settings=New-ScheduledTaskSettingsSet -StartWhenAvailable -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1) -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew
   $Principal=New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType Interactive -RunLevel Limited
-  Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Settings -Principal $Principal -Description 'AERIS local-company watchdog; loopback service continuity only.' -Force | Out-Null
+  $Existing=Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+  $DefinitionMatches=$false
+  if($Existing){
+    $ExistingAction=@($Existing.Actions)[0]
+    $DefinitionMatches=($ExistingAction.Execute -eq $TaskPy -and $ExistingAction.Arguments -eq $TaskArgs -and $ExistingAction.WorkingDirectory -eq $Root)
+  }
+  if(-not $DefinitionMatches){
+    Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Settings -Principal $Principal -Description 'AERIS local-company watchdog; loopback service continuity only.' -Force | Out-Null
+  }
   $Before=Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
-  $StartDisposition='START_REQUESTED'
+  $StartDisposition=$(if($DefinitionMatches){'DEFINITION_MATCHED_PRESERVED'}else{'DEFINITION_UPDATED_START_REQUESTED'})
   if($Before.State -eq 'Running'){
     $StartDisposition='ALREADY_RUNNING_NO_DUPLICATE_START'
   } else {

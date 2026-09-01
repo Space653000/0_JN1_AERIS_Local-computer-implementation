@@ -109,10 +109,16 @@ def analyze(params: dict[str, Any]) -> dict[str, Any]:
         "fft": {"bin_hz": rate / len(samples), "peak_hz": freqs[fundamental_bin], "levels_db": [round(x, 6) for x in levels]},
         "frequency_response": [{"frequency_hz": round(f, 6), "level_db": round(v, 6)} for f, v in zip(freqs, levels)],
         "thd_percent": round(thd * 100, 6), "snr_db": round(snr, 6), "spl_db_re_20upa": round(spl, 6),
-        "impulse_response": samples, "octave_fraction": fraction, "octave_bands": centers, "stft": stft,
+        "time_domain_samples": samples, "octave_fraction": fraction, "octave_bands": centers, "stft": stft,
         "deterministic_plot_svg": _svg(freqs, levels),
         "report": {"speaker_microphone_basic_analysis": "computed", "calibration_model": "linear_pa_per_input_unit", "limitations": ["No traceable microphone/calibrator certificate is implied", "No licensed professional tool correlation is implied"]},
     }
+    input_kind = str(params.get("input_kind", "signal"))
+    if input_kind not in {"signal", "impulse_response"}:
+        raise ValueError("input_kind must be signal or impulse_response")
+    if input_kind == "impulse_response":
+        output["impulse_response"] = samples
+        output["impulse_response_method"] = "caller-declared measured_or_simulated_ir_input; no deconvolution claimed"
     reference = params.get("reference_samples")
     if reference is not None:
         ref = _samples(reference, "reference_samples")

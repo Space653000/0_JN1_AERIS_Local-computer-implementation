@@ -1,32 +1,146 @@
-"""Deterministic completion-pass and remaining-gate inventory."""
+"""Evidence-derived completion-pass and remaining-gate inventory."""
 from __future__ import annotations
 
-import json
 import argparse
+import json
+import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from .config import ROOT
+from .pptx_provenance import verify as verify_pptx
 
 PASS = ROOT / "config" / "completion_pass.v1.json"
 MATURITY = ROOT / "config" / "maturity.json"
 REPORT = ROOT / ".aeris" / "state" / "SOFTWARE_COMPLETION.json"
-GATE_STATES = {"HUMAN_GATE", "EXTERNAL_LICENSE", "PHYSICAL_HARDWARE", "REBOOT_LOGOFF_REQUIRED"}
+GATE_STATES = {"HUMAN_GATE", "EXTERNAL_LICENSE", "PHYSICAL_HARDWARE", "REBOOT_LOGOFF_REQUIRED", "BLOCKED_EXTERNAL"}
+
+
+def _read(path: Path) -> dict[str, Any]:
+    try:
+        return json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return {}
+
+
+def _files(*paths: str) -> tuple[bool, str]:
+    missing = [path for path in paths if not (ROOT / path).is_file()]
+    return (not missing, "required files present" if not missing else f"missing files: {missing}")
+
+
+def _workspace() -> tuple[bool, str]:
+    db = ROOT / ".aeris" / "control" / "control.sqlite3"
+    if not db.is_file():
+        return False, "control SQLite database missing"
+    try:
+        with sqlite3.connect(db) as conn:
+            count = conn.execute("SELECT COUNT(*) FROM tasks WHERE workflow_id IS NOT NULL AND workflow_id <> ''").fetchone()[0]
+        return count > 0, f"linked task/workflow records={count}"
+    except Exception as exc:
+        return False, f"SQLite workflow-link query failed: {exc}"
+
+
+def _telemetry() -> tuple[bool, str]:
+    try:
+        from .telemetry import service_telemetry
+        payload = service_telemetry({"projects": 0, "tasks": 0})
+        services = payload.get("services", [])
+        required = {"state", "reason", "evidence_ref", "last_update_utc", "capability_maturity"}
+        valid = len(services) >= 20 and set(payload.get("planes", [])) == {"CONTROL", "KNOWLEDGE", "EXECUTION", "TRUST", "OPERATIONS"} and all(required <= set(item) for item in services)
+        return valid, f"five-plane service records={len(services)}"
+    except Exception as exc:
+        return False, f"telemetry assessment failed: {exc}"
+
+
+def _free_acoustics() -> tuple[bool, str]:
+    try:
+        from .free_acoustics import analyze
+        result = analyze({"samples": [0, 1, 0, -1, 0, 1, 0, -1], "sample_rate_hz": 8000, "input_kind": "impulse_response"})
+        valid = result.get("result") == "PASS" and result.get("capability_maturity") == "FREE_BASELINE" and result.get("professional_verification") == "NOT_CLAIMED"
+        return valid, "deterministic free baseline executed with professional claim denied"
+    except Exception as exc:
+        return False, f"free acoustic execution failed: {exc}"
+
+
+def _pptx() -> tuple[bool, str]:
+    try:
+        result = verify_pptx()
+        valid = result.get("provenance_valid") is True and result.get("authenticode") == "NOT_SIGNED" and result.get("production_acceptance") == "NOT_RUN_NO_INPUT_PPTX"
+        return valid, f"provenance={result.get('result')}; authenticode={result.get('authenticode')}"
+    except Exception as exc:
+        return False, f"PPTX provenance failed: {exc}"
+
+
+def _watchdog() -> tuple[bool, str]:
+    report = _read(ROOT / ".aeris" / "state" / "UNATTENDED_INSTALL.json")
+    valid = report.get("status") == "REGISTERED_RUNNING" and report.get("verified") is True and report.get("target_path", "").casefold() == str(ROOT).casefold()
+    return valid, f"status={report.get('status', 'MISSING')}; verified={report.get('verified')}"
+
+
+def _autopilot_contract() -> tuple[bool, str]:
+    required = ("unresolved_software_gaps", "remaining_external_blockers", "remote_write_performed", "local_only_scope")
+    texts = [(ROOT / path).read_text(encoding="utf-8") for path in ("scripts/autopilot.ps1", "scripts/autopilot.sh")]
+    missing = [field for field in required if any(field not in text for text in texts)]
+    return not missing, "both Autopilot implementations contain truth fields" if not missing else f"missing contract fields: {missing}"
+
+
+def _browser() -> tuple[bool, str]:
+    root = ROOT / ".aeris" / "evidence" / "browser-visual" / "latest"
+    report = _read(root / "report.json")
+    routes = report.get("routes", [])
+    artifacts_ok = len(routes) == 6 and all(Path(item.get("artifact", "")).is_file() for item in routes)
+    valid = report.get("AERIS_BROWSER_VISUAL_ACCESSIBILITY_BASELINE") == "PASS" and artifacts_ok and int(report.get("accessibility_markers_checked", 0)) >= 7
+    return valid, f"visual routes={len(routes)}; artifacts_present={artifacts_ok}"
+
+
+def _acceptance() -> tuple[bool, str]:
+    report = _read(ROOT / ".aeris" / "state" / "LOCAL_ACCEPTANCE.json")
+    required = {"company_manifest", "unit_tests", "knowledge_build", "supported_machine_profile", "core_cache_integrity", "local_doctor", "real_local_inference", "offline_mode_doctor", "real_offline_mode_inference"}
+    checks = set(report.get("checks", []))
+    valid = report.get("result") == "PASS" and required <= checks
+    return valid, f"result={report.get('result', 'MISSING')}; checks={len(checks)}"
+
+
+CHECKS: dict[str, Callable[[], tuple[bool, str]]] = {
+    "core_ui_ssot_six_pages": lambda: _files("ui/web/dashboard.html", "ui/web/workspace.html", "ui/web/services.html", ".aeris/core-reference/aeris.css", ".aeris/core-reference/aeris-theme.js"),
+    "workspace_fields_sqlite_workflow": _workspace,
+    "five_plane_runtime_telemetry": _telemetry,
+    "free_local_acoustic_baseline": _free_acoustics,
+    "pptx_skill_registry_sha256_provenance": _pptx,
+    "scheduled_task_watchdog_persistence": _watchdog,
+    "expected_run_concurrent_atomic_write": lambda: _files("aeris_runtime/expected_runs.py", "tests/test_expected_runs_concurrency.py"),
+    "autopilot_completion_fields": _autopilot_contract,
+    "six_page_visual_accessibility_regression": _browser,
+    "full_local_acceptance_and_gap_rescan": _acceptance,
+}
 
 
 def assess(write: bool = False) -> dict[str, Any]:
-    spec = json.loads(PASS.read_text(encoding="utf-8-sig"))
-    maturity = json.loads(MATURITY.read_text(encoding="utf-8-sig"))
-    unresolved = [item for item in spec["items"] if item["classification"] == "SOFTWARE_LOCAL_FIXABLE" and item["status"] != "COMPLETE"]
-    gates = [{"capability": name, "classification": item["state"], "required": item.get("required", "")} for name, item in maturity["capabilities"].items() if item.get("state") in GATE_STATES]
+    spec = _read(PASS)
+    maturity = _read(MATURITY)
+    assessed: list[dict[str, Any]] = []
+    unresolved: list[dict[str, Any]] = []
+    for item in spec.get("items", []):
+        if item.get("classification") != "SOFTWARE_LOCAL_FIXABLE":
+            continue
+        check = CHECKS.get(str(item.get("id")))
+        valid, detail = check() if check else (False, "no executable completion validator")
+        result = {**item, "status": "COMPLETE" if valid else "UNRESOLVED", "evidence_check": detail}
+        assessed.append(result)
+        if not valid:
+            unresolved.append(result)
+    for name, item in maturity.get("capabilities", {}).items():
+        if item.get("state") == "NOT_IMPLEMENTED":
+            unresolved.append({"id": name, "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "UNRESOLVED", "evidence_check": "maturity state is NOT_IMPLEMENTED"})
+    gates = [{"capability": name, "classification": item["state"], "required": item.get("required", "")} for name, item in maturity.get("capabilities", {}).items() if item.get("state") in GATE_STATES]
     payload = {
-        "schema_version": 1, "assessed_at_utc": datetime.now(timezone.utc).isoformat(),
-        "software_local_gaps_before": int(spec["software_local_gaps_before"]),
+        "schema_version": 2, "assessed_at_utc": datetime.now(timezone.utc).isoformat(),
+        "software_local_gaps_before": int(spec.get("software_local_gaps_before", len(assessed))),
         "software_local_gaps_after": len(unresolved), "software_local_fixable_zero": not unresolved,
-        "unresolved_software_gaps": unresolved, "remaining_external_blockers": gates,
-        "remote_write_performed": False, "local_only_scope": True,
-        "truth": spec["truth"],
+        "assessed_software_items": assessed, "unresolved_software_gaps": unresolved,
+        "remaining_external_blockers": gates, "remote_write_performed": False, "local_only_scope": True,
+        "truth": "Completion is derived from executable evidence checks plus the maturity scan; tracked COMPLETE labels are not trusted as proof.",
     }
     if write:
         REPORT.parent.mkdir(parents=True, exist_ok=True)
@@ -37,10 +151,10 @@ def assess(write: bool = False) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser=argparse.ArgumentParser(description="Assess AERIS software-local completion")
+    parser = argparse.ArgumentParser(description="Assess AERIS software-local completion")
     parser.add_argument("--write", action="store_true")
-    args=parser.parse_args()
-    payload=assess(write=args.write)
+    args = parser.parse_args()
+    payload = assess(write=args.write)
     print(json.dumps(payload, ensure_ascii=False, indent=2))
     return 0 if payload["software_local_fixable_zero"] else 8
 

@@ -8,6 +8,7 @@ from typing import Any
 
 from .audit import LEDGER_PATH, verify_ledger
 from .config import ROOT, load_config
+from .evidence import validate_bundle
 from .expected_runs import assess_all
 from .knowledge import stats as knowledge_stats
 from .machine import detect as machine_detect
@@ -60,25 +61,33 @@ def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
     opening = _read(opening_path)
     config = load_config()
     local_ok, local_reason = ModelRouter(config).local.health()
-    evidence_runs = len([p for p in EVIDENCE.iterdir() if p.is_dir()]) if EVIDENCE.exists() else 0
+    evidence_dirs = [p for p in EVIDENCE.iterdir() if p.is_dir() and p.name.startswith("RUN-")] if EVIDENCE.exists() else []
+    valid_evidence = [p for p in evidence_dirs if validate_bundle(p.name).get("valid")]
+    evidenced_workflows = [item for item in workflows if item.get("state") in {"EVIDENCED", "VERIFIED"}]
+    verified_workflows = [item for item in workflows if item.get("state") == "VERIFIED"]
+    free_skill = next((item for item in skills if item.get("skill_id") == "free-local-acoustic-baseline"), None)
+    store_path = ROOT / ".aeris" / "control" / "control.sqlite3"
+    store_ok = store_path.is_file() and {"projects", "tasks"} <= set(control_summary)
+    rules_path = ROOT / "config" / "core_alignment.json"
+    rules_ok = bool(_read(rules_path).get("canonical_core", {}).get("reviewed_sha"))
     standards = search_standards("")
 
     services = [
         _service("AERIS Orchestrator", "CONTROL", "HEALTHY" if opening.get("operational_state") == "OPEN_VERIFIED_SCOPE" else "DEGRADED", f"opening={opening.get('operational_state','UNKNOWN')}; projects={control_summary['projects']}; tasks={control_summary['tasks']}", str(opening_path.relative_to(ROOT)), "TESTED", _mtime(opening_path)),
-        _service("Requirement / Task Store", "CONTROL", "HEALTHY", f"SQLite accepted {control_summary['tasks']} task records", str((ROOT/'.aeris/control/control.sqlite3').relative_to(ROOT)), "TESTED", _mtime(ROOT/'.aeris/control/control.sqlite3')),
+        _service("Requirement / Task Store", "CONTROL", "HEALTHY" if store_ok else "FAILED", f"SQLite query succeeded={store_ok}; task_records={control_summary.get('tasks',0)}", str(store_path.relative_to(ROOT)), "TESTED", _mtime(store_path)),
         _service("Role / Pod Router", "CONTROL", "HEALTHY" if len(roles) == 100 else "FAILED", f"{len(roles)} executable capability contracts available", "company/organization/roles.v1.json", "TESTED", now),
         _service("Workflow State Machine", "CONTROL", "HEALTHY" if templates else "NOT_CONFIGURED", f"templates={len(templates)}; instantiated_runs={len(workflows)}", ".aeris/workflows", "TESTED", _mtime(ROOT/'.aeris/workflows')),
-        _service("Constitution / Rules", "KNOWLEDGE", "HEALTHY", "Versioned Core alignment and company rules are present", "config/core_alignment.json", "TESTED", _mtime(ROOT/'config/core_alignment.json')),
+        _service("Constitution / Rules", "KNOWLEDGE", "HEALTHY" if rules_ok else "FAILED", f"versioned Core alignment parse valid={rules_ok}", "config/core_alignment.json", "TESTED", _mtime(rules_path)),
         _service("Skill + Method Registry", "KNOWLEDGE", "HEALTHY" if skills else "NOT_CONFIGURED", f"skills={len(skills)}", "skills", "IMPLEMENTED_NOT_PROFESSIONALLY_VERIFIED", now),
         _service("Standards Registry", "KNOWLEDGE", "DEGRADED" if standards else "NOT_CONFIGURED", f"metadata_records={len(standards)}; licensed full text is not implied", "standards/registry.v1.json", "METADATA_BASELINE", _mtime(ROOT/'standards/registry.v1.json')),
         _service("Memory + Knowledge", "KNOWLEDGE", "HEALTHY" if knowledge.get("documents", 0) else "NOT_CONFIGURED", f"indexed_documents={knowledge.get('documents',0)}", ".aeris/knowledge/knowledge.sqlite3", "TESTED", _mtime(ROOT/'.aeris/knowledge/knowledge.sqlite3')),
         _service("Local Model Router", "EXECUTION", "HEALTHY" if local_ok else "DEGRADED", str(local_reason), "config/aeris.yaml", "RUNTIME_PROBED", now),
-        _service("Free Local Acoustic Baseline", "EXECUTION", "HEALTHY" if skills else "NOT_CONFIGURED", "Deterministic local adapters; not licensed-professional verification", "skills", "FREE_BASELINE", now),
+        _service("Free Local Acoustic Baseline", "EXECUTION", "HEALTHY" if free_skill else "NOT_CONFIGURED", f"registered={bool(free_skill)}; deterministic adapter, not licensed-professional verification", "skills/free-local-acoustic-baseline/manifest.json", "FREE_BASELINE", _mtime(ROOT/'skills/free-local-acoustic-baseline/manifest.json')),
         _service("Licensed Professional Tool Bus", "EXECUTION", "BLOCKED", "COMSOL/MATLAB/APx/KLIPPEL/SoundCheck/ACQUA licenses or devices unavailable", "config/maturity.json", "LICENSED_PROFESSIONAL_UNAVAILABLE", _mtime(MATURITY)),
-        _service("Evidence Store", "TRUST", "HEALTHY" if evidence_runs else "NOT_CONFIGURED", f"evidence_bundles={evidence_runs}", ".aeris/evidence", "TESTED", _mtime(EVIDENCE)),
-        _service("Verification Engine", "TRUST", "HEALTHY" if workflows else "NOT_CONFIGURED", f"workflow_records={len(workflows)}; per-run gates remain authoritative", ".aeris/workflows", "TESTED", _mtime(ROOT/'.aeris/workflows')),
+        _service("Evidence Store", "TRUST", "HEALTHY" if valid_evidence else "NOT_CONFIGURED", f"sealed_valid_bundles={len(valid_evidence)}; candidate_bundles={len(evidence_dirs)}", ".aeris/evidence", "TESTED", _mtime(EVIDENCE)),
+        _service("Verification Engine", "TRUST", "HEALTHY" if evidenced_workflows else "NOT_CONFIGURED", f"evidenced_or_verified_runs={len(evidenced_workflows)}; verified_runs={len(verified_workflows)}; per-run gates remain authoritative", ".aeris/workflows", "TESTED", _mtime(ROOT/'.aeris/workflows')),
         _service("Audit Ledger", "TRUST", "HEALTHY" if audit.get("valid") else "FAILED", f"valid={audit.get('valid')}; records={audit.get('records',0)}", str(LEDGER_PATH.relative_to(ROOT)), "TESTED", _mtime(LEDGER_PATH)),
-        _service("Reproduction Runner", "TRUST", "HEALTHY" if evidence_runs else "NOT_CONFIGURED", "Available for sealed deterministic evidence bundles", "aeris_runtime/reproduction.py", "TESTED", _mtime(ROOT/'aeris_runtime/reproduction.py')),
+        _service("Reproduction Runner", "TRUST", "HEALTHY" if valid_evidence else "NOT_CONFIGURED", f"valid sealed replay inputs={len(valid_evidence)}", "aeris_runtime/reproduction.py", "TESTED", _mtime(ROOT/'aeris_runtime/reproduction.py')),
         _service("Expected-run Health", "OPERATIONS", "HEALTHY" if expected.get("overall") == "HEALTHY" else str(expected.get("overall", "UNKNOWN")), f"contracts={len(expected.get('runs',[]))}", ".aeris/state/EXPECTED_RUNS.json", "TESTED", now),
         _service("Watchdog Recovery", "OPERATIONS", str(watchdog.get("state", "UNKNOWN")), str(watchdog.get("action", "No watchdog evidence")), str(watchdog_path.relative_to(ROOT)), "TESTED", _mtime(watchdog_path)),
         _service("Machine / GPU Qualification", "OPERATIONS", "HEALTHY" if machine.get("qualification",{}).get("overall_state") == "QUALIFIED_BASELINE" else "DEGRADED", f"{machine.get('profile')}; GPU={machine.get('gpu')}; VRAM={machine.get('vram_gb')} GB", "config/machine_qualification.v1.json", "QUALIFIED_BASELINE", now),

@@ -9,7 +9,9 @@ from __future__ import annotations
 import json
 import os
 import threading
+import time
 import uuid
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -21,6 +23,42 @@ REGISTRY_PATH = ROOT / ".aeris" / "health" / "expected_runs.json"
 DEFAULTS_PATH = ROOT / "config" / "expected_runs.defaults.json"
 VALID_STATES = {"HEALTHY", "DEGRADED", "FAILED", "UNKNOWN", "NO_HEARTBEAT", "STALE", "NOT_CONFIGURED", "BLOCKED"}
 _LOCK = threading.RLock()
+LOCK_PATH = REGISTRY_PATH.with_suffix(".lock")
+
+
+@contextmanager
+def _process_lock():
+    """Serialize read-modify-write across supervisor/watchdog/test processes."""
+    LOCK_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with LOCK_PATH.open("a+b") as handle:
+        if handle.tell() == 0:
+            handle.write(b"0")
+            handle.flush()
+        deadline = time.monotonic() + 10
+        while True:
+            try:
+                if os.name == "nt":
+                    import msvcrt
+                    handle.seek(0)
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except OSError:
+                if time.monotonic() >= deadline:
+                    raise TimeoutError("expected-run registry process lock timed out")
+                time.sleep(0.05)
+        try:
+            yield
+        finally:
+            handle.seek(0)
+            if os.name == "nt":
+                import msvcrt
+                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
 def _now() -> datetime:
@@ -56,19 +94,20 @@ def ensure_defaults(*, actor: str = "AERIS", audit_event: bool = True) -> dict[s
     items = defaults.get("expected_runs", [])
     if not isinstance(items, list):
         raise ValueError("expected_runs.defaults.json expected_runs must be a list")
-    data = _read()
-    runs = data.setdefault("expected_runs", {})
-    added: list[str] = []
-    for spec in items:
-        if not isinstance(spec, dict):
-            raise ValueError("expected-run default must be an object")
-        name = str(spec.get("name", "")).strip()
-        max_age = int(spec.get("max_age_sec", 0) or 0)
-        if not name or max_age <= 0:
-            raise ValueError("default expected run requires name and positive max_age_sec")
-        if name in runs:
-            continue
-        runs[name] = {
+    with _process_lock():
+        data = _read()
+        runs = data.setdefault("expected_runs", {})
+        added: list[str] = []
+        for spec in items:
+            if not isinstance(spec, dict):
+                raise ValueError("expected-run default must be an object")
+            name = str(spec.get("name", "")).strip()
+            max_age = int(spec.get("max_age_sec", 0) or 0)
+            if not name or max_age <= 0:
+                raise ValueError("default expected run requires name and positive max_age_sec")
+            if name in runs:
+                continue
+            runs[name] = {
             "name": name,
             "max_age_sec": max_age,
             "artifact_path": spec.get("artifact_path"),
@@ -78,10 +117,10 @@ def ensure_defaults(*, actor: str = "AERIS", audit_event: bool = True) -> dict[s
             "last_success_at_utc": None,
             "last_failure_at_utc": None,
             "last_error": None,
-        }
-        added.append(name)
-    if added:
-        _write(data)
+            }
+            added.append(name)
+        if added:
+            _write(data)
         if audit_event:
             append_event("EXPECTED_RUN_DEFAULTS_INITIALIZED", actor, {"added": added})
     return data
@@ -91,8 +130,9 @@ def register(name: str, *, max_age_sec: int, artifact_path: str | None = None, a
     name = name.strip()
     if not name or max_age_sec <= 0:
         raise ValueError("name and positive max_age_sec are required")
-    data = _read()
-    data["expected_runs"][name] = {
+    with _process_lock():
+        data = _read()
+        data["expected_runs"][name] = {
         "name": name,
         "max_age_sec": int(max_age_sec),
         "artifact_path": artifact_path,
@@ -102,8 +142,8 @@ def register(name: str, *, max_age_sec: int, artifact_path: str | None = None, a
         "last_success_at_utc": None,
         "last_failure_at_utc": None,
         "last_error": None,
-    }
-    _write(data)
+        }
+        _write(data)
     append_event("EXPECTED_RUN_REGISTERED", actor, {"name": name, "max_age_sec": int(max_age_sec), "artifact_path": artifact_path})
     return data["expected_runs"][name]
 
@@ -116,20 +156,21 @@ def mark(
     actor: str = "AERIS",
     audit_event: bool = True,
 ) -> dict[str, Any]:
-    data = _read()
-    item = data["expected_runs"].get(name)
-    if not item:
-        raise KeyError(name)
-    stamp = _now().isoformat()
-    item["last_result"] = "SUCCESS" if success else "FAILURE"
-    item["last_event_at_utc"] = stamp
-    if success:
-        item["last_success_at_utc"] = stamp
-        item["last_error"] = None
-    else:
-        item["last_failure_at_utc"] = stamp
-        item["last_error"] = error[:2000]
-    _write(data)
+    with _process_lock():
+        data = _read()
+        item = data["expected_runs"].get(name)
+        if not item:
+            raise KeyError(name)
+        stamp = _now().isoformat()
+        item["last_result"] = "SUCCESS" if success else "FAILURE"
+        item["last_event_at_utc"] = stamp
+        if success:
+            item["last_success_at_utc"] = stamp
+            item["last_error"] = None
+        else:
+            item["last_failure_at_utc"] = stamp
+            item["last_error"] = error[:2000]
+        _write(data)
     if audit_event:
         append_event("EXPECTED_RUN_RESULT", actor, {"name": name, "success": bool(success), "error": error[:500]})
     return assess_one(item)

@@ -13,6 +13,7 @@ class FreeAcousticBaselineTests(unittest.TestCase):
         tone = self._tone()
         result = run_skill("free-local-acoustic-baseline", {
             "samples": tone, "reference_samples": tone, "sample_rate_hz": 8000,
+            "input_kind": "impulse_response",
             "fundamental_hz": 1000, "octave_fraction": 3,
             "filter_type": "lowpass", "filter_cutoff_hz": 1500,
             "calibration_pa_per_unit": 1,
@@ -29,6 +30,8 @@ class FreeAcousticBaselineTests(unittest.TestCase):
             analyze({"samples": [0.0] * 7 + [float("nan")], "sample_rate_hz": 8000})
         with self.assertRaises(ValueError):
             analyze({"samples": [0.0] * 16, "sample_rate_hz": 8000, "calibration_pa_per_unit": 0})
+        with self.assertRaises(ValueError):
+            analyze({"samples": [0.0] * 16, "sample_rate_hz": 8000, "input_kind": "guessed_ir"})
 
 
 if __name__ == "__main__":
