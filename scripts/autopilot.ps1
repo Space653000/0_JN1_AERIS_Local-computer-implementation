@@ -174,7 +174,7 @@ catch {
   $Failure=[ordered]@{stage=$Stage;message=$_.Exception.Message;type=$_.Exception.GetType().FullName}
   if($Py){ try { & $Py -m aeris_runtime mode set $Mode *> $null } catch {} }
   Write-FinalResult 'BLOCKED_OR_FAILED' $null $Failure
-  Write-Error "AERIS Autopilot stopped at $Stage: $($_.Exception.Message). Evidence: $Result"
+  Write-Error "AERIS Autopilot stopped at ${Stage}: $($_.Exception.Message). Evidence: $Result"
   exit 20
 }
 finally {
