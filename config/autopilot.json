@@ -10,10 +10,11 @@
     ],
     "interpretation": "AERIS_FULL_BUILD_AUTOPILOT_REQUEST",
     "two_urls_are_sufficient_when_target_path_is_unambiguous_in_codex": true,
+    "explicit_target_path_overrides_active_workspace": true,
     "target_path_resolution_order": [
+      "explicit_local_target_path_if_supplied",
       "human_selected_or_opened_codex_path",
-      "single_unambiguous_active_writable_workspace_root",
-      "explicit_local_target_path_if_supplied"
+      "single_unambiguous_active_writable_workspace_root"
     ],
     "requires_additional_prompt": false,
     "requires_plan_confirmation": false,
