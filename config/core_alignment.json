@@ -23,6 +23,7 @@
     "independent_verification_required_for_formal_completion": true,
     "core_is_writable_by_codex_or_implementation": false,
     "codex_role": "primary_local_executor_installer_implementer",
+    "claude_role": "optional_independent_reviewer_only_when_human_explicitly_requests",
     "claude_default_launch": false,
     "codex_scheduler_for_continuity": false,
     "reviewer_same_context_self_repair_and_approval_allowed": false,
