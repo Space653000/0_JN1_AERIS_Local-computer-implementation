@@ -8,10 +8,17 @@ shown as authoritative prose.
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 SCHEMA_VERSION = 1
 ALLOWED_CLASSIFICATIONS = {"EVIDENCE", "INFERENCE", "HYPOTHESIS", "UNKNOWN"}
+
+_MEASURED_FACT_PATTERNS = (
+    re.compile(r"\b(measured|recorded|observed|verified|validated|calibrated)\b", re.I),
+    re.compile(r"\b(test|measurement|calibration)\s+(passed|failed|shows?|showed|indicates?|indicated)\b", re.I),
+    re.compile(r"測得|實測|量測(?:結果|記錄|資料|顯示)|記錄顯示|測試(?:已)?(?:通過|失敗)|校正(?:已)?完成|已有.{0,6}(?:量測|測試|校正)"),
+)
 
 
 def _extract_json(text: str) -> dict[str, Any]:
@@ -42,6 +49,10 @@ def _extract_json(text: str) -> dict[str, Any]:
             if isinstance(value, dict):
                 return value
         raise ValueError("model output is not valid Evidence Schema JSON")
+
+
+def _uses_measured_fact_wording(statement: str) -> bool:
+    return any(pattern.search(statement) for pattern in _MEASURED_FACT_PATTERNS)
 
 
 def validate_role_output(text: str, *, approved_evidence_refs: list[str] | None = None) -> dict[str, Any]:
@@ -92,6 +103,15 @@ def validate_role_output(text: str, *, approved_evidence_refs: list[str] | None 
             errors.append(f"claim[{index}] EVIDENCE classification requires approved evidence_refs")
         if classification == "EVIDENCE" and not approved:
             errors.append(f"claim[{index}] cannot be EVIDENCE because no authoritative Evidence was supplied")
+        if classification != "EVIDENCE" and _uses_measured_fact_wording(statement):
+            errors.append(f"claim[{index}] uses measured/verified-fact wording without EVIDENCE classification")
+        if confidence is not None:
+            try:
+                number = float(confidence)
+                if not 0.0 <= number <= 1.0:
+                    errors.append(f"claim[{index}] confidence must be between 0 and 1")
+            except (TypeError, ValueError):
+                errors.append(f"claim[{index}] confidence must be numeric or null")
         normalized_claims.append(
             {
                 "statement": statement,
