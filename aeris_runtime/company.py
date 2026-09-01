@@ -117,6 +117,10 @@ def validate_company_manifest(path: Path = MANIFEST) -> CompanyStatus:
         maturity = json.loads(MATURITY.read_text(encoding="utf-8-sig"))
         if maturity.get("product_stage") != data.get("product_stage"):
             errors.append("maturity/product stage mismatch")
+        maturity_sha = str(maturity.get("evidence_snapshot", {}).get("canonical_core_reviewed_sha", ""))
+        manifest_sha = str(data.get("core_target", {}).get("reviewed_sha", ""))
+        if not maturity_sha or maturity_sha != manifest_sha:
+            errors.append("maturity canonical Core reviewed SHA does not match company manifest")
     except Exception as exc:
         errors.append(f"maturity matrix unreadable: {exc}")
 
