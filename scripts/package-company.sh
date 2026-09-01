@@ -31,6 +31,12 @@ python3 "$STAGE/scripts/release-metadata.py" --root "$STAGE" --output "$STAGE/re
 PKG="$OUT/AERIS-Portable-Company-Software-$STAMP.tar.gz"
 tar -czf "$PKG" -C "$STAGE" .
 rm -rf "$STAGE"
+command -v sha256sum >/dev/null 2>&1 || { echo 'sha256sum is required to create the external package integrity sidecar.' >&2; exit 3; }
+PKG_NAME="$(basename "$PKG")"
+PKG_HASH="$(sha256sum "$PKG" | awk '{print tolower($1)}')"
+printf '%s  %s\n' "$PKG_HASH" "$PKG_NAME" > "$PKG.sha256"
 echo "Created software-only package: $PKG"
+echo "Created external package digest: $PKG.sha256"
 echo 'Package includes SBOM.spdx.json, PROVENANCE.json and SHA256SUMS under release-metadata/.'
+echo 'The SHA-256 sidecar provides transfer integrity only; production authenticity still requires a trusted signing/attestation policy.'
 echo 'Private state and portable_assets were deliberately excluded. See docs/deployment/STATE_BACKUP_RESTORE.md.'
