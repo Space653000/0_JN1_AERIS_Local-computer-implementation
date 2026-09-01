@@ -37,20 +37,35 @@ class ControlPlaneTests(unittest.TestCase):
         self.addCleanup(lambda: (server.shutdown(), server.server_close(), p2.stop(), p1.stop()))
         return server
 
+    def _get_json(self, server, path):
+        with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}{path}", timeout=3) as response:
+            self.assertEqual(response.status, 200)
+            return json.loads(response.read().decode("utf-8"))
+
     def test_root_is_real_dashboard_not_404(self):
         server = self._server()
         with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}/", timeout=3) as response:
             body = response.read().decode("utf-8")
             self.assertEqual(response.status, 200)
             self.assertIn("本機聲學工程公司", body)
+            self.assertIn("Deterministic Skills", body)
+            self.assertIn("Standards Registry", body)
             self.assertIn("/assets/app.js", body)
 
     def test_roles_api_returns_100(self):
         server = self._server()
-        with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}/api/v1/roles", timeout=3) as response:
-            data = json.loads(response.read().decode("utf-8"))
-            self.assertEqual(data["count"], 100)
-            self.assertEqual(data["roles"][0]["id"], "R001")
+        data = self._get_json(server, "/api/v1/roles")
+        self.assertEqual(data["count"], 100)
+        self.assertEqual(data["roles"][0]["id"], "R001")
+
+    def test_skills_standards_and_expected_run_apis_are_real(self):
+        server = self._server()
+        skills = self._get_json(server, "/api/v1/skills")
+        self.assertGreaterEqual(len(skills["skills"]), 3)
+        standards = self._get_json(server, "/api/v1/standards?q=IEC")
+        self.assertIn("standards", standards)
+        health = self._get_json(server, "/api/v1/expected-runs")
+        self.assertIn(health["overall"], {"HEALTHY", "DEGRADED", "FAILED", "NOT_CONFIGURED"})
 
     def test_project_and_task_sqlite_roundtrip(self):
         store = controlplane.ControlStore()
