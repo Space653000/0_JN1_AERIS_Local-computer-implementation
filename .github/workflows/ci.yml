@@ -63,8 +63,8 @@ jobs:
         run: ./tests/windows/test-zero-cost-bootstrap.ps1
       - name: Repository quality-gate contract
         run: python tests/test_quality_gate_contract.py
-      - name: Pre-Codex truth consistency gate
-        run: python -m unittest tests.test_maturity_truth tests.test_truth_docs -v
+      - name: Pre-Codex cloud contract gate
+        run: python -m unittest tests.test_pre_codex_gate -v
       - name: Machine qualification and Golden acoustic baseline gate
         run: python -m unittest tests.test_machine_qualification tests.test_golden_acoustics -v
       - name: Role contract and independent reviewer allocation gate
@@ -75,6 +75,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Real browser semantic E2E for Dashboard Workspace Services
         run: python tests/browser_e2e.py
+      - name: Browser screenshot repeatability and accessibility baseline
+        run: python tests/browser_visual_accessibility.py
       - name: Validate 100-role company image and maturity truth
         run: python -m aeris_runtime company status
       - name: Verify canonical Core has not drifted
