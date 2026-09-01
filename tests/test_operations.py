@@ -17,6 +17,8 @@ class OperationsTests(unittest.TestCase):
         router.local.health.return_value = (local_ok, "test")
         return [
             patch.object(operations, "STATE_DIR", state),
+            patch.object(operations, "OPENING_FILE", state / "COMPANY_OPENING.json"),
+            patch.object(operations, "HEARTBEAT_FILE", state / "HEARTBEAT.json"),
             patch.object(operations, "ACCEPTANCE_FILE", state / "LOCAL_ACCEPTANCE.json"),
             patch.object(operations, "MATURITY_FILE", maturity),
             patch.object(operations, "load_config", return_value=SimpleNamespace(mode="auto", local_network_scope="loopback", local_model="test-model")),
@@ -65,6 +67,30 @@ class OperationsTests(unittest.TestCase):
                 self.assertIn("PROFESSIONAL_ACOUSTIC_CAPABILITIES_REMAIN_UNVERIFIED_OR_INCOMPLETE", result["limits"])
             finally:
                 for p in reversed(patches): p.stop()
+
+    def test_open_company_records_real_expected_run_result(self):
+        acceptance = {"result": "PASS", "hard_offline_network_state": "NOT_TESTED"}
+        with tempfile.TemporaryDirectory() as td:
+            patches = self._patch_common(td, acceptance=acceptance)
+            for p in patches: p.start()
+            try:
+                with patch.object(operations, "ensure_expected_runs") as ensure, patch.object(operations, "mark_expected_run") as mark, patch.object(operations, "append_event"):
+                    result = operations.open_company("test-actor")
+                    self.assertEqual(result["operational_state"], "OPEN_VERIFIED_SCOPE")
+                    self.assertTrue(operations.OPENING_FILE.is_file())
+                    ensure.assert_called_once_with(actor="test-actor")
+                    mark.assert_called_once_with("company-opening-assessment", True, error="", actor="test-actor")
+            finally:
+                for p in reversed(patches): p.stop()
+
+    def test_heartbeat_updates_expected_run_without_audit_spam(self):
+        with tempfile.TemporaryDirectory() as td:
+            state = Path(td) / "state"
+            state.mkdir()
+            with patch.object(operations, "STATE_DIR", state), patch.object(operations, "HEARTBEAT_FILE", state / "HEARTBEAT.json"), patch.object(operations, "mark_expected_run") as mark:
+                operations._write_heartbeat(8765, {"operational_state": "OPEN_VERIFIED_SCOPE"})
+                self.assertTrue((state / "HEARTBEAT.json").is_file())
+                mark.assert_called_once_with("supervisor-heartbeat", True, actor="AERIS Supervisor", audit_event=False)
 
     def test_supervisor_is_hard_bound_to_loopback(self):
         self.assertEqual(operations.DEFAULT_HOST, "127.0.0.1")
