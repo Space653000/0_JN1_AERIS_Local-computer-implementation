@@ -45,16 +45,22 @@ class PreCodexCloudGateTests(unittest.TestCase):
         self.assertEqual(maturity["independent_reviewer_allocation_engine"]["state"], "TESTED")
 
         self.assertEqual(baselines["machine_resource_qualification_engine_baseline"]["state"], "TESTED")
+        self.assertEqual(maturity["machine_resource_qualification_baseline"]["state"], "TESTED")
         self.assertEqual(maturity["machine_resource_qualification"]["state"], "NOT_IMPLEMENTED")
 
         self.assertEqual(baselines["golden_acoustic_regression_baseline"]["state"], "TESTED")
+        self.assertEqual(maturity["golden_acoustic_regression_baseline"]["state"], "TESTED")
         self.assertEqual(maturity["golden_acoustic_dataset_suite"]["state"], "NOT_IMPLEMENTED")
 
         self.assertEqual(baselines["role_contract_framework_baseline"]["state"], "TESTED")
+        self.assertEqual(maturity["100_role_contract_framework_baseline"]["state"], "TESTED")
         self.assertEqual(maturity["100_role_executable_domain_contracts"]["state"], "NOT_IMPLEMENTED")
 
-        browser_state = baselines["browser_visual_accessibility_baseline"]["state"]
-        self.assertIn(browser_state, {"IMPLEMENTED_PENDING_CI", "TESTED"})
+        self.assertEqual(baselines["zero_cost_no_claude_default_deployment_policy"]["state"], "TESTED")
+        self.assertEqual(maturity["zero_cost_no_claude_default_deployment"]["state"], "TESTED")
+
+        self.assertEqual(baselines["browser_visual_accessibility_baseline"]["state"], "TESTED")
+        self.assertEqual(maturity["real_browser_semantic_e2e"]["state"], "TESTED")
         self.assertEqual(maturity["browser_e2e_visual_regression"]["state"], "NOT_IMPLEMENTED")
 
     def test_pre_codex_gate_never_means_product_complete(self):
