@@ -12,6 +12,11 @@ class QualityGateContractTests(unittest.TestCase):
             "tests/windows/test-python-resolution.ps1",
             "tests/test_maturity_truth.py",
             "tests/test_truth_docs.py",
+            "tests/test_pre_codex_gate.py",
+            "tests/browser_visual_accessibility.py",
+            "config/pre_codex_gate.v1.json",
+            "config/baseline_capabilities.v1.json",
+            "docs/BROWSER_VISUAL_ACCESSIBILITY_BASELINE.md",
             "docs/AUDIT_REALITY_CHECK.md",
             "aeris_runtime/claim_guard.py",
             "tests/test_claim_guard.py",
@@ -51,10 +56,12 @@ class QualityGateContractTests(unittest.TestCase):
             "Windows zero-cost winget fail-closed regression",
             "Repository quality-gate contract",
             "Pre-Codex truth consistency gate",
+            "Pre-Codex cloud contract gate",
             "Machine qualification and Golden acoustic baseline gate",
             "Role contract and independent reviewer allocation gate",
             "Zero-cost no-Claude default deployment gate",
             "Real browser semantic E2E for Dashboard Workspace Services",
+            "Browser screenshot repeatability and accessibility baseline",
             "Windows one-click installer smoke without external runtime installation",
             "Windows full Autopilot entrypoint CI smoke",
             "Verify canonical Core has not drifted",
@@ -65,9 +72,12 @@ class QualityGateContractTests(unittest.TestCase):
 
     def test_browser_e2e_scope_cannot_be_upgraded_to_fake_visual_regression(self):
         text = (ROOT / "tests/browser_e2e.py").read_text(encoding="utf-8")
+        visual = (ROOT / "tests/browser_visual_accessibility.py").read_text(encoding="utf-8")
         self.assertIn("real headless browser SPA route/render semantic E2E; NOT pixel visual regression", text)
         self.assertIn('id=\"workspace\" class=\"view active-view\"', text)
         self.assertIn('id=\"services\" class=\"view active-view\"', text)
+        self.assertIn("NOT a cross-version pixel-golden visual regression suite", visual)
+        self.assertIn("same-environment bit-exact repeatability", visual)
 
     def test_machine_and_golden_baselines_cannot_be_upgraded_to_fake_verification(self):
         machine = (ROOT / "aeris_runtime/machine_qualification.py").read_text(encoding="utf-8")
@@ -91,6 +101,7 @@ class QualityGateContractTests(unittest.TestCase):
         installer = (ROOT / "scripts/one-click-install.ps1").read_text(encoding="utf-8")
         helper = (ROOT / "scripts/windows-zero-cost-bootstrap.ps1").read_text(encoding="utf-8")
         autopilot = (ROOT / "config/autopilot.json").read_text(encoding="utf-8")
+        gate = (ROOT / "config/pre_codex_gate.v1.json").read_text(encoding="utf-8")
         self.assertIn('"claude_token_required": false', policy)
         self.assertIn('"paid_software_required": false', policy)
         self.assertIn("FORBIDDEN_DEFAULT_INSTALLER_TOKEN", validator)
@@ -98,6 +109,8 @@ class QualityGateContractTests(unittest.TestCase):
         self.assertIn("Install-WingetPackageNoAgreement", helper)
         self.assertIn("--disable-interactivity", helper)
         self.assertIn('"deployment_profile": "AERIS-ZERO-COST-NO-CLAUDE-V1"', autopilot)
+        self.assertIn('"claude_code_or_token_not_required": true', gate)
+        self.assertIn('"paid_professional_tools_not_required": true', gate)
 
     def test_windows_resolver_contract_is_not_reverted(self):
         resolver = (ROOT / "scripts/windows-python-resolution.ps1").read_text(encoding="utf-8")
