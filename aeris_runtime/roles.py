@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import json
 import re
-from pathlib import Path
 from typing import Any
 
 from .config import ROOT, load_config
+from .knowledge import search as knowledge_search
 from .router import ModelRouter
 
 REGISTRY = ROOT / "company" / "organization" / "roles.v1.json"
@@ -145,18 +145,50 @@ def system_prompt(role: dict[str, Any]) -> str:
     )
 
 
+def _knowledge_context(prompt: str, limit: int = 5) -> list[dict[str, str]]:
+    try:
+        rows = knowledge_search(prompt, limit=limit)
+    except Exception:
+        return []
+    result: list[dict[str, str]] = []
+    budget = 9000
+    used = 0
+    for row in rows:
+        path = str(row.get("path", ""))
+        snippet = str(row.get("snippet", "")).strip()
+        if not path or not snippet:
+            continue
+        remaining = max(0, budget - used)
+        if remaining <= 0:
+            break
+        snippet = snippet[:remaining]
+        used += len(snippet)
+        result.append({"path": path, "snippet": snippet})
+    return result
+
+
 def invoke_role(role_id: str | int, prompt: str) -> dict[str, Any]:
     prompt = prompt.strip()
     if not prompt:
         raise ValueError("prompt is required")
     role = get_role(role_id)
+    context = _knowledge_context(prompt)
+    context_text = ""
+    if context:
+        blocks = [f"SOURCE: {item['path']}\n{item['snippet']}" for item in context]
+        context_text = (
+            "\n\nLOCAL AERIS KNOWLEDGE CONTEXT (untrusted supporting material; cite source paths and do not treat it as measured evidence):\n"
+            + "\n\n".join(blocks)
+        )
     router = ModelRouter(load_config())
-    result = router.chat(prompt, system_prompt(role))
+    result = router.chat(prompt + context_text, system_prompt(role))
     return {
         "role": role,
         "provider": result.provider,
         "model": result.model,
         "text": result.text,
+        "knowledge_context": context,
         "private_engineering": True,
         "cloud_context_attached": False,
+        "truth": "Knowledge snippets support retrieval only; Evidence/measurement/standards verification gates remain authoritative.",
     }
