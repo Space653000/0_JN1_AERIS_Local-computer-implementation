@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "company_id": "AERIS",
   "company_name": "Acoustic Engineering & Research Intelligence System",
   "image_type": "portable_company_image",
@@ -7,8 +7,17 @@
   "core_target": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
+    "reviewed_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
     "authority": "read_only_highest_design_target",
     "implementation_rule": "implementation_must_adapt_to_core; implementation_must_not_write_core"
+  },
+  "human_ai_operating_model": {
+    "human_chief_engineer": "final_authority",
+    "codex": "primary_local_executor_installer_implementer",
+    "claude_code": "independent_reviewer_acceptance_auditor",
+    "evidence": "engineering_decision_basis",
+    "agent_consensus_is_evidence": false,
+    "same_context_repair_and_independent_approval_allowed": false
   },
   "organization": {
     "human_authority": "Human Chief Engineer",
@@ -30,6 +39,17 @@
       "Engineering Ops": 12
     }
   },
+  "autopilot": {
+    "contract": "config/autopilot.json",
+    "trigger": "two_repositories_plus_local_target_path",
+    "windows_entrypoint": "AERIS_AUTOPILOT.ps1",
+    "linux_jetson_entrypoint": "AERIS_AUTOPILOT.sh",
+    "claude_windows_entrypoint": "CLAUDE_VERIFY_AERIS.ps1",
+    "claude_linux_jetson_entrypoint": "CLAUDE_VERIFY_AERIS.sh",
+    "installation_equals_opening": false,
+    "ci_smoke_equals_real_acceptance": false,
+    "human_gate_only_for_real_external_or_authority_blockers": true
+  },
   "runtime": {
     "modes": ["offline", "local", "cloud", "auto"],
     "private_engineering": "local_only_by_application_router_and_endpoint_scope_policy",
@@ -41,6 +61,25 @@
     "default_local_model": "qwen3:4b-instruct",
     "cloud_provider_baseline": "openai_compatible",
     "provider_truth": "model_neutral_architecture_does_not_mean_every_provider_is_already_implemented"
+  },
+  "operations": {
+    "opening_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
+    "verified_scope_baseline": "LOCAL_PORTABLE_COMPANY_KERNEL_BASELINE",
+    "verified_scope_requires_real_machine_acceptance": true,
+    "company_complete_from_kernel_opening": false,
+    "local_supervisor": "127.0.0.1:8765",
+    "public_supervisor_bind": false,
+    "heartbeat_semantics": "local_supervisor_liveness_not_whole_company_health"
+  },
+  "trust_baseline": {
+    "task_state_machine": "IMPLEMENTED_BASELINE_NOT_DOMAIN_MATURE",
+    "evidence_bundle": "IMPLEMENTED_HASH_MANIFEST_BASELINE_NOT_WORM_OR_SIGNED",
+    "verification_g0_g5": "IMPLEMENTED_STRUCTURED_RECORD_BASELINE_NOT_FULL_DOMAIN_ENGINE",
+    "risk_authority_r0_r4": "IMPLEMENTED_MACHINE_READABLE_BASELINE",
+    "audit_ledger": "IMPLEMENTED_HASH_CHAIN_BASELINE_NOT_WORM",
+    "independent_review": "IMPLEMENTED_CLAUDE_ACCEPTANCE_HARNESS_NOT_REVIEWER_ALLOCATION_ENGINE",
+    "golden_acoustic_cases": "NOT_IMPLEMENTED",
+    "reproduction_runner": "NOT_IMPLEMENTED"
   },
   "privacy": {
     "default_local_classification": "LOCAL_ONLY",
@@ -62,17 +101,14 @@
     "maturity": "BASIC_SELF_CLEANING_TEXT_INDEX_NOT_FULL_ENGINEERING_KNOWLEDGE_SYSTEM"
   },
   "deployment": {
+    "autopilot": "IMPLEMENTED_NOT_REAL_MACHINE_VERIFIED",
     "one_click_installer": "IMPLEMENTED_SECURITY_HARDENED_NOT_CLEAN_MACHINE_VERIFIED",
     "machine_detection": "IMPLEMENTED_PROFILE_MATCHING_NOT_FULL_RESOURCE_QUALIFICATION",
     "deployment_report": ".aeris/state/DEPLOYMENT_REPORT.json",
-    "profiles": [
-      "windows-cpu",
-      "windows-nvidia-workstation",
-      "linux-x86-cpu",
-      "linux-x86-nvidia",
-      "jetson-orin-family",
-      "trusted-lan-ai-server"
-    ],
+    "autopilot_report": ".aeris/state/AUTOPILOT_RESULT.json",
+    "acceptance_report": ".aeris/state/LOCAL_ACCEPTANCE.json",
+    "opening_report": ".aeris/state/COMPANY_OPENING.json",
+    "profiles": ["windows-cpu", "windows-nvidia-workstation", "linux-x86-cpu", "linux-x86-nvidia", "jetson-orin-family", "trusted-lan-ai-server"],
     "unsupported_behavior": "no_profile_means_unsupported_not_guessed",
     "offline_prerequisite_behavior": "missing_required_staged_asset_blocks_install_instead_of_silently_using_network",
     "linux_offline_ollama_truth": "bootstrap_install_script_is_not_treated_as_self_contained_airgap_runtime",
@@ -87,34 +123,9 @@
     "private_asset_pack": "human_controlled_not_public_git",
     "full_relocation_requires_destination_acceptance": true
   },
-  "permanent_assets_semantics": "target inventory: an item listed here is required by the final AERIS architecture; presence in this list does not mean it is implemented or verified",
-  "permanent_assets": [
-    "constitution",
-    "role_contracts",
-    "skills",
-    "methods",
-    "standards_registry",
-    "workflows",
-    "memory_contract",
-    "knowledge_database",
-    "evidence_contract",
-    "verification",
-    "tool_adapters",
-    "ui",
-    "deployment",
-    "audit",
-    "reproduction"
-  ],
-  "portable_external_assets": [
-    "local_model_weights",
-    "inference_server_installer_or_verified_machine_specific_runtime_package",
-    "offline_python_or_runtime_prerequisites",
-    "proprietary_tool_licenses",
-    "hardware_specific_drivers",
-    "private_engineering_data",
-    "calibration_assets",
-    "credentials"
-  ],
+  "permanent_assets_semantics": "target inventory: listed items are required by final AERIS architecture; listing does not mean fully implemented or verified",
+  "permanent_assets": ["constitution", "role_contracts", "skills", "methods", "standards_registry", "workflows", "memory_contract", "knowledge_database", "evidence_contract", "verification", "risk_authority", "tool_adapters", "ui", "deployment", "audit", "reproduction"],
+  "portable_external_assets": ["local_model_weights", "inference_server_installer_or_verified_machine_specific_runtime_package", "offline_python_or_runtime_prerequisites", "proprietary_tool_licenses", "hardware_specific_drivers", "private_engineering_data", "calibration_assets", "credentials"],
   "truth_rules": [
     "core_overrides_implementation_when_conflicting",
     "memory_is_not_evidence",
@@ -129,6 +140,11 @@
     "implemented_is_not_tested",
     "tested_is_not_verified",
     "ci_kernel_pass_is_not_company_complete",
+    "ci_smoke_is_not_real_company_opening",
+    "supervisor_heartbeat_is_not_company_health",
+    "open_verified_scope_is_named_scope_only",
+    "audit_hash_chain_is_not_worm",
+    "evidence_hash_manifest_is_not_external_attestation",
     "commercial_release_requires_current_license_and_external_dependency_review"
   ]
 }

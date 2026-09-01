@@ -1,8 +1,10 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "core_repository": "https://github.com/Space653000/0_JN1_AERIS.git",
   "branch": "main",
-  "baseline_sha": "bde158944ac21f076f39894600e172136c3a8c5a",
+  "baseline_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
   "role": "read_only_target",
-  "note": "Online sync scripts refresh the cached local reference and record the actual fetched SHA under .aeris/state/core-target.json. This tracked lock is the bootstrap baseline, not a claim that the remote has not changed."
+  "reviewed_change": "Human-commissioned Core PR #1 adds canonical AERIS Autopilot, Codex executor/Claude independent reviewer separation, exact AI read order, governance CI and direct-screenshot UI v0.5 correction.",
+  "implementation_obligation": "Implementation must provide executable Autopilot/Claude verification entrypoints and preserve Core no-write, evidence-before-opening and Human-gate semantics.",
+  "note": "Online sync scripts refresh the cached local reference and record the actual fetched SHA under .aeris/state/core-target.json. This tracked lock changes only after deliberate semantic review; never auto-accept Core drift."
 }

@@ -1,12 +1,13 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "canonical_core": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "bde158944ac21f076f39894600e172136c3a8c5a"
+    "reviewed_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912"
   },
   "non_negotiable_invariants": {
     "human_authority": "Human Chief Engineer",
+    "human_final_release_authority": true,
     "virtual_seats": 100,
     "seat_semantics": "capabilities_not_100_persistent_agents",
     "pod_targets": {
@@ -17,9 +18,18 @@
     "model_is_identity": false,
     "memory_is_evidence": false,
     "execution_is_completion": false,
+    "dashboard_is_truth": false,
     "agent_consensus_establishes_engineering_truth": false,
     "independent_verification_required_for_formal_completion": true,
-    "core_is_writable_by_codex_or_implementation": false
+    "core_is_writable_by_codex_or_implementation": false,
+    "codex_role": "primary_local_executor_installer_implementer",
+    "claude_role": "independent_reviewer_acceptance_auditor",
+    "reviewer_same_context_self_repair_and_approval_allowed": false,
+    "autopilot_trigger": "two_repositories_plus_local_target_path",
+    "autopilot_asks_optional_questions_before_preflight": false,
+    "installation_equals_company_opening": false,
+    "opening_requires_evidence_supported_scope": true
   },
+  "operational_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
   "change_policy": "If canonical Core SHA changes, remote drift gate must fail. Human reviews semantic changes before deliberately updating this alignment contract; never auto-accept Core drift."
 }
