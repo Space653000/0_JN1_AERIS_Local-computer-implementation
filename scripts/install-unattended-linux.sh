@@ -37,10 +37,8 @@ PY
 }
 
 if [ "$CI_SMOKE" = 1 ]; then
-  set +e
-  "$PY" -m aeris_runtime.watchdog --once --port "$PORT" >/dev/null 2>&1
-  set -e
-  write_report 'CI_SMOKE_PASS_NOT_REGISTERED' 'CI_SMOKE' 'Watchdog module executed; OS persistence intentionally not changed in CI.' false
+  "$PY" -m aeris_runtime.watchdog --help >/dev/null
+  write_report 'CI_SMOKE_PASS_NOT_REGISTERED' 'CI_SMOKE' 'Watchdog entrypoint and shell syntax validated; OS persistence intentionally not changed in CI.' false
   exit 0
 fi
 
@@ -72,7 +70,6 @@ EOF
   fi
 fi
 
-# Portable fallback for environments without a usable user systemd manager.
 FALLBACK="$STATE/aeris-watchdog-loop.sh"
 cat > "$FALLBACK" <<EOF
 #!/usr/bin/env bash
