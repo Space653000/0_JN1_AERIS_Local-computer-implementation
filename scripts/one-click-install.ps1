@@ -45,12 +45,19 @@ function Verify-StagedHash($file) {
   if ($actual -ne $expected) { throw "SHA-256 mismatch for staged installer: $file" }
 }
 function Set-DotEnvValue($Path,$Key,$Value) {
-  $lines=@(); if(Test-Path $Path){ $lines=@(Get-Content $Path) }
+  $lines=@()
+  if(Test-Path $Path){ $lines=@(Get-Content $Path) }
   $matched=$false
-  $out=@($lines | ForEach-Object {
-    if($_ -match ('^'+[regex]::Escape($Key)+'=')){ $matched=$true; "$Key=$Value" } else { $_ }
-  })
-  if(-not $matched){ $out += "$Key=$Value" }
+  $out=New-Object System.Collections.Generic.List[string]
+  foreach($line in $lines){
+    if($line -match ('^'+[regex]::Escape($Key)+'=')){
+      if(-not $matched){ $out.Add("$Key=$Value") }
+      $matched=$true
+    } else {
+      $out.Add([string]$line)
+    }
+  }
+  if(-not $matched){ $out.Add("$Key=$Value") }
   $out | Set-Content -Path $Path -Encoding utf8
 }
 function Test-OllamaModel($Model) {
