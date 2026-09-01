@@ -1,15 +1,31 @@
 # AERIS Autopilot — Zero-Touch SOP
 
-## Human input
+## Normal Human input
+
+If Codex already has one explicit/active writable workspace path, the Human only needs to paste:
 
 ```text
 https://github.com/Space653000/0_JN1_AERIS
 https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation
-<LOCAL_TARGET_PATH>
+```
 
-請依 AERIS_AUTOPILOT 全自動部署、驗收、開幕並持續運行儀表板、前端、後端。
-不要使用 Codex Tasks/排程；不要啟動 Claude Code 或其他額外模型驗收。
-除非遇到真正 Human Gate，否則不要問我。
+Those two URLs mean: **run AERIS_AUTOPILOT now**. Do not ask the Human to paste another long instruction.
+
+Target-path resolution order:
+
+1. Human-selected/opened Codex path;
+2. single unambiguous active writable workspace root;
+3. explicitly supplied `<LOCAL_TARGET_PATH>`.
+
+Only ask for a path if none can be resolved safely or multiple conflicting targets exist.
+
+The embedded default instruction is:
+
+```text
+Use the latest GitHub main that passed Windows + Ubuntu CI.
+Run AERIS_AUTOPILOT automatically: detect, inventory, install, configure, test, Local/Offline accept, open AERIS, start Dashboard/frontend/backend, register OS-native unattended persistence and watchdog/self-recovery, and preserve Evidence/Audit.
+Do not use Codex Tasks/scheduler. Do not launch Claude Code or a second model reviewer by default. Do not return safely automatable work to the Human. Stop only at a genuine Human Gate and ask for the minimum exact action needed to resume.
+Never claim unimplemented or License/hardware/calibration-blocked capabilities are complete.
 ```
 
 ## Automatic flow
@@ -42,7 +58,7 @@ AERIS continuity does not depend on Codex remaining open and does not use Codex 
 
 ## Human Gates only
 
-Stop only for denied OS privilege/policy, License/EULA, secret/token, physical fixture/calibration, destructive unrelated system change, Core policy change, one-time reboot/logoff acceptance, or R3/R4 formal release.
+Stop only for: ambiguous/no safe target path, denied OS privilege/policy, License/EULA, secret/token, physical fixture/calibration, destructive unrelated system change, Core policy change, one-time reboot/logoff acceptance, or R3/R4 formal release.
 
 ## Truth boundary
 
