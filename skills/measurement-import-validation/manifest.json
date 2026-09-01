@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "skill_id": "measurement-import-validation",
+  "name": "Measurement Import / Validation",
+  "domain": ["speaker", "microphone", "validation"],
+  "executor": "aeris_runtime.skills_runtime:measurement_import_validation",
+  "inputs": {"input_path": "local CSV under data/ or .aeris/imports/"},
+  "outputs": ["point_count", "frequency_span", "ordering", "duplicate_frequency_count", "issues"],
+  "evidence_class": "DETERMINISTIC_FILE_VALIDATION",
+  "maturity": "IMPLEMENTED_NOT_DOMAIN_VERIFIED",
+  "cloud_allowed": false
+}
