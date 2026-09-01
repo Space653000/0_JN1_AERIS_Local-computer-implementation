@@ -1,6 +1,6 @@
 {
-  "schema_version": 1,
-  "contract_id": "AERIS-LOCAL-AUTOPILOT-V1",
+  "schema_version": 2,
+  "contract_id": "AERIS-LOCAL-AUTOPILOT-V2",
   "canonical_core_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
   "default_mode": "auto",
   "default_local_model": "qwen3:4b-instruct",
@@ -19,6 +19,7 @@
     "REAL_MACHINE_ACCEPTANCE",
     "COMPANY_OPENING",
     "LOCAL_SUPERVISOR",
+    "UNATTENDED_OPERATIONS",
     "EVIDENCE_HANDOFF"
   ],
   "reports": {
@@ -28,6 +29,8 @@
     "acceptance": ".aeris/state/LOCAL_ACCEPTANCE.json",
     "opening": ".aeris/state/COMPANY_OPENING.json",
     "heartbeat": ".aeris/state/HEARTBEAT.json",
+    "unattended_install": ".aeris/state/UNATTENDED_INSTALL.json",
+    "unattended_runtime": ".aeris/state/UNATTENDED_OPERATIONS.json",
     "claude_review": ".aeris/state/CLAUDE_ACCEPTANCE.json",
     "audit_ledger": ".aeris/audit/audit.jsonl"
   },
@@ -37,6 +40,7 @@
     "health_path": "/health",
     "status_path": "/status",
     "heartbeat_interval_sec": 30,
+    "watchdog_interval_sec": 20,
     "public_bind_forbidden": true
   },
   "automatic_actions": {
@@ -50,7 +54,15 @@
     "run_local_acceptance_if_runtime_available": true,
     "initialize_p0_trust_primitives": true,
     "open_company_to_evidence_supported_scope": true,
-    "start_loopback_supervisor": true
+    "start_loopback_supervisor": true,
+    "register_unattended_user_session_persistence": true,
+    "self_heal_loopback_supervisor": true
+  },
+  "persistence_truth": {
+    "windows_default": "current-user Scheduled Task at logon with restart policy; Startup fallback if policy blocks ScheduledTasks",
+    "linux_default": "systemd user service with Restart=always; crontab reboot wrapper fallback",
+    "prelogin_system_service": "NOT_CLAIMED_BY_DEFAULT",
+    "reason": "Local model/runtime/license environment is user-scoped on many supported machines; elevation or headless pre-login service is a separate machine-specific Human/OS-policy gate."
   },
   "safety": {
     "destructive_workspace_reinitialization": false,
@@ -61,10 +73,12 @@
     "auto_weaken_privacy": false,
     "auto_ignore_failed_test": false,
     "auto_publish_external_release": false,
-    "auto_modify_unrelated_firewall": false
+    "auto_modify_unrelated_firewall": false,
+    "watchdog_bypass_opening_or_human_gate": false
   },
   "human_gates": [
-    "ADMIN_PRIVILEGE_DENIED",
+    "ADMIN_OR_OS_POLICY_DENIES_REQUIRED_PERSISTENCE",
+    "HEADLESS_PRELOGIN_SERVICE_REQUIRED_BUT_USER_SERVICE_IS_INSUFFICIENT",
     "LICENSE_OR_EULA_REQUIRED",
     "SECRET_OR_HARDWARE_TOKEN_REQUIRED",
     "PHYSICAL_FIXTURE_OR_CALIBRATION_REQUIRED",
@@ -73,5 +87,5 @@
     "PRODUCTION_CUSTOMER_FORMAL_RELEASE"
   ],
   "opening_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
-  "truth_rule": "Autopilot completion means the automation run completed; it never means all AERIS acoustic capabilities are complete."
+  "truth_rule": "Autopilot completion means the supported local control plane was deployed, accepted, opened and persistence was registered for its verified scope; it never means all AERIS acoustic capabilities, proprietary tools or formal release gates are complete."
 }
