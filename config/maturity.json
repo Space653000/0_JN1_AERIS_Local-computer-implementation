@@ -1,218 +1,332 @@
 {
-  "schema_version": 6,
+  "schema_version": 8,
   "product_stage": "PRE_ALPHA",
-  "truth_rule": "Nothing is COMPLETE unless implementation + automated test + required real-machine or real-tool evidence exist for a specified supported configuration. Deployment/Autopilot maturity must never substitute for acoustic-engineering trust maturity.",
+  "truth_rule": "Nothing is COMPLETE merely because code exists or CI is green. TESTED means the stated automated scope passed; VERIFIED additionally requires the specified real-machine, real-tool, physical, license, calibration or release evidence where applicable.",
   "evidence_snapshot": {
-    "implementation_main_before_current_branch": "baf01f7b3dd1fa863b800f9ef0bbe349e0ba9497",
-    "previous_repair_pr": 2,
-    "previous_repair_pr_ci_run": 104,
-    "previous_post_merge_main_ci_run": 105,
-    "previous_post_merge_main_ci_conclusion": "success",
     "canonical_core_reviewed_sha": "5ee7c77869ce2e467f210c6a59bd9030876a4912",
-    "current_branch": "feature/autopilot-company-operations-20260901",
-    "current_branch_truth": "new Autopilot/P0 mechanisms are IMPLEMENTED until current final Windows+Ubuntu CI and later real-machine evidence justify promotion"
+    "control_plane_main_commit": "54db59e40cc24e0e7b915966daf77a687a026947",
+    "acoustic_skills_main_commit": "86dec79f9f97e0e1bdfdf42b10ee97f94a62a71c",
+    "trust_services_main_commit": "d8ea32e875e1511efb908a4f1528eac8bc2889ab",
+    "unattended_operations_main_commit": "1e7fb303e7551a550eecf4fbf7f44742f96d4eda",
+    "full_entrypoint_ci_main_commit": "1b31c59e914bcd9898ae0188a5c7592d75ea6fd2",
+    "full_entrypoint_pr": 9,
+    "full_entrypoint_pr_ci_run": 121,
+    "full_entrypoint_pr_ci_scope": "Ubuntu 24.04 + Windows 2025; syntax, unit/security/acoustic/reproduction, Core drift, installer, unattended smoke, full Autopilot CI smoke, full Claude CI smoke, packaging/SBOM",
+    "truth": "No GitHub CI run substitutes for the final local-machine reboot/inference/persistence/license/hardware evidence cycle."
   },
   "states": ["NOT_IMPLEMENTED", "IMPLEMENTED", "TESTED", "VERIFIED", "BLOCKED_EXTERNAL"],
   "capabilities": {
     "architecture_and_governance_baseline": {
-      "state": "IMPLEMENTED",
-      "required": "current branch Windows+Ubuntu CI must validate the updated Core Autopilot mapping, company manifest, policies and truth tests before re-promotion to TESTED",
-      "note": "Core governance itself passed Core PR #1 CI; this item tracks the Implementation realization of the new Core contract"
+      "state": "TESTED",
+      "evidence": "Core governance contract + tests/test_core_alignment.py + PR #9 CI run 121",
+      "note": "Canonical Core remains the read-only WHAT authority; implementation remains HOW."
     },
     "core_semantic_alignment_contract": {
-      "state": "IMPLEMENTED",
-      "required": "current branch tests/test_core_alignment.py + remote Core drift gate must pass against reviewed Core SHA 5ee7c77869ce2e467f210c6a59bd9030876a4912",
-      "note": "never auto-promote merely because core.lock was edited"
+      "state": "TESTED",
+      "evidence": "config/core_alignment.json + tests/test_core_alignment.py + remote Core drift gate + PR #9 CI run 121"
     },
     "autopilot_zero_experience_orchestrator": {
-      "state": "IMPLEMENTED",
-      "required": "Windows+Ubuntu Autopilot CI smoke plus fresh supported-machine real Autopilot install/accept/open evidence before VERIFIED",
-      "note": "CI smoke may only report CI_SMOKE_PASS_NOT_REAL_OPENING"
+      "state": "TESTED",
+      "evidence": "AERIS_AUTOPILOT.ps1/.sh + scripts/autopilot.* + full Autopilot entrypoint CI-smoke on Ubuntu 24.04 and Windows 2025 in PR #9 run 121",
+      "required": "fresh supported-machine real install + local inference + offline inference + opening + persistence evidence before VERIFIED"
     },
     "claude_independent_acceptance_harness": {
-      "state": "IMPLEMENTED",
-      "required": "Windows+Ubuntu deterministic CI smoke and real post-Autopilot independent review evidence; review remains separate from repair",
-      "note": "a fixed Claude reviewer role is not the same as a general independent-reviewer allocation engine"
+      "state": "TESTED",
+      "evidence": "CLAUDE_VERIFY_AERIS.ps1/.sh + scripts/claude-verify.* + full Claude entrypoint CI-smoke on both OSes in PR #9 run 121",
+      "required": "real post-Autopilot review evidence before real-machine VERIFIED claim"
     },
     "100_role_registry": {
       "state": "TESTED",
-      "evidence": "tests/test_company_image.py + company status + previous main CI run 105",
-      "note": "role names/capability seats are not equivalent to 100 mature engineers"
+      "evidence": "company/organization/roles.v1.json + tests/test_company_image.py + tests/test_roles.py + PR #9 CI run 121",
+      "note": "100 capability seats are not 100 domain-verified human-equivalent engineers."
     },
-    "100_role_executable_contracts": {
+    "100_role_callable_baseline": {
+      "state": "TESTED",
+      "evidence": "aeris_runtime/roles.py + /api/v1/roles + tests/test_roles.py + tests/test_controlplane.py + PR #9 CI run 121",
+      "note": "Every canonical seat is addressable and local-AI callable under a common safety contract; this is not per-seat domain maturity."
+    },
+    "100_role_executable_domain_contracts": {
       "state": "NOT_IMPLEMENTED",
-      "required": "per-role role contract + skills + methods + tool permissions + required evidence + golden/negative/regression tests + acceptance rubric + independent review"
+      "required": "per-role domain contract + skills + methods + standards/tool permissions + evidence rubric + golden/negative/regression tests + independent review"
     },
-    "dynamic_pod_engine": {"state": "NOT_IMPLEMENTED"},
+    "dynamic_pod_engine": {
+      "state": "TESTED",
+      "evidence": "aeris_runtime/roles.py deterministic pod planner + tests/test_roles.py + control-plane Pod API + PR #9 CI run 121",
+      "note": "keyword/rule baseline, not a fully evaluated domain router."
+    },
     "task_identity_and_engineering_state_machine": {
-      "state": "IMPLEMENTED",
-      "required": "current branch transition/authority tests must pass; domain workflows must later integrate task state and real Evidence before VERIFIED",
-      "note": "baseline implements guarded DRAFT→READY→EXECUTING→EXECUTED→EVIDENCED→VERIFIED→APPROVED→RELEASED plus explicit failure states"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/taskstate.py + tests/test_taskstate.py + PR #9 CI run 121"
     },
     "risk_authority_and_approval_engine": {
-      "state": "IMPLEMENTED",
-      "required": "current branch authority tests + workflow integration + real R2/R3/R4 evidence before VERIFIED",
-      "note": "R3/R4 AI self-approval is forbidden; G5 requires Human Chief Engineer evidence"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/authority.py + tests/test_authority.py + PR #9 CI run 121",
+      "required": "real R2/R3/R4 cases before production-grade VERIFIED claim"
     },
     "evidence_bundle_engine": {
-      "state": "IMPLEMENTED",
-      "required": "current branch create/seal/tamper tests + real engineering runs + immutable/external assurance strategy before mature VERIFIED claim",
-      "note": "current baseline is local hash-manifest integrity, not WORM or external cryptographic attestation"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/evidence.py + tests/test_evidence.py + workflow tests + PR #9 CI run 121",
+      "note": "application hash-manifest integrity; not WORM/external attestation."
     },
     "verification_g0_g5_engine": {
-      "state": "IMPLEMENTED",
-      "required": "current branch G0-G5 authority/evidence tests + acoustic-domain gate implementations/golden cases before mature VERIFIED claim",
-      "note": "structured gate records and independence/Human guards exist; full domain verification logic is still incomplete"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/verification.py + tests/test_verification.py + workflow tests + PR #9 CI run 121",
+      "note": "structured gates/authority are tested; complete acoustic-domain G2/G3/golden logic is not."
     },
-    "independent_reviewer_allocation": {
+    "independent_reviewer_allocation_engine": {
       "state": "NOT_IMPLEMENTED",
-      "required": "task-aware reviewer assignment that is independent in identity/context/permissions/rubric and prevents self-review; Claude harness is one fixed reviewer path only"
+      "required": "task-aware independent reviewer assignment with identity/context/permission separation; Claude is one reviewer path, not the general allocator"
     },
-    "reproduction_runner": {"state": "NOT_IMPLEMENTED"},
     "append_only_audit_ledger": {
-      "state": "IMPLEMENTED",
-      "required": "current branch chain/tamper tests + concurrency/backup/retention/stronger storage assurance before VERIFIED",
-      "note": "application hash chain detects ordinary mutation but is not WORM storage or external attestation"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/audit.py + tests/test_audit.py + PR #9 CI run 121",
+      "note": "hash-chain tamper detection is not immutable/WORM storage."
+    },
+    "reproduction_runner": {
+      "state": "TESTED",
+      "evidence": "aeris_runtime/reproduction.py + tests/test_reproduction.py path-normalized deterministic replay + PR #9 CI run 121",
+      "note": "verified only for deterministic local Skill replay, not proprietary tools/hardware."
     },
     "local_supervisor_heartbeat": {
-      "state": "IMPLEMENTED",
-      "required": "Windows+Ubuntu loopback policy tests + real machine start/reboot/stale-heartbeat acceptance before VERIFIED",
-      "note": "heartbeat proves local supervisor liveness only, not whole-company health"
+      "state": "TESTED",
+      "evidence": "aeris_runtime/operations.py + tests/test_operations.py + control-plane HTTP tests + PR #9 CI run 121",
+      "required": "real reboot/stale-heartbeat evidence before VERIFIED"
     },
     "expected_run_health_monitor": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "expected-run ledger + freshness/deadline semantics + missing-run/stale artifact detection + escalation; basic supervisor heartbeat does not satisfy this"
-    },
-    "golden_acoustic_dataset_suite": {"state": "NOT_IMPLEMENTED"},
-    "local_model_router": {
       "state": "TESTED",
-      "evidence": "tests/test_router.py + tests/test_provider_health.py + tests/test_local_endpoint_policy.py + PR #2 CI run 104 + main CI run 105",
-      "note": "routing and endpoint-policy contracts are automated-tested; real local inference still requires machine acceptance"
+      "evidence": "aeris_runtime/expected_runs.py + tests/test_expected_runs.py including explicit latest-result ordering + PR #9 CI run 121",
+      "note": "expected run/artifact freshness, not whole-company correctness."
     },
-    "private_local_endpoint_scope_enforcement": {
+    "unattended_watchdog_baseline": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/providers.py + tests/test_local_endpoint_policy.py + PR #2 CI run 104 + main CI run 105",
-      "note": "public/global endpoints and arbitrary trusted-LAN hostnames are rejected; real trusted-LAN segmentation/TLS/firewall remain local verification concerns"
+      "evidence": "aeris_runtime/watchdog.py + tests/test_watchdog.py + Windows/Linux unattended non-mutating smoke + PR #9 CI run 121",
+      "required": "actual local crash/recovery and reboot evidence before VERIFIED"
     },
-    "cloud_public_research_router": {
-      "state": "TESTED",
-      "evidence": "tests/test_router.py + tests/test_privacy.py + PR #2 CI run 104 + main CI run 105",
-      "note": "OpenAI-compatible baseline only; each real provider/model still needs live interoperability and license/policy validation"
-    },
-    "cloud_secret_file_support": {
-      "state": "TESTED",
-      "evidence": "tests/test_config.py + main CI run 105"
-    },
-    "application_privacy_boundary": {
-      "state": "TESTED",
-      "evidence": "aeris_runtime/privacy.py + tests/test_privacy.py + tests/test_local_endpoint_policy.py + main CI run 105",
-      "note": "does not prove that every process on the OS can never leak data"
-    },
-    "os_network_egress_enforcement": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "machine-specific firewall/DLP/process isolation configuration + independent outbound validation"
-    },
-    "public_ingress_ssrf_and_dns_rebinding_guard": {
-      "state": "TESTED",
-      "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py + main CI run 105",
-      "note": "live HTTPS interoperability and scanner behavior remain real-network/machine concerns"
-    },
-    "public_ingress_quarantine_and_human_promotion": {
-      "state": "TESTED",
-      "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py positive promotion and rejection cases + PR #2 CI run 104 + main CI run 105",
-      "note": "real malware-scanner/path/operator acceptance remains required before any real-machine VERIFIED claim"
-    },
-    "public_ingress_malware_scanning": {
+    "windows_user_logon_persistence": {
       "state": "IMPLEMENTED",
-      "required": "available Microsoft Defender or ClamAV + scanner-specific real-machine acceptance"
+      "required": "real Windows Scheduled Task registration + sign-out/reboot + watchdog recovery evidence",
+      "note": "Startup-folder fallback may be used if policy blocks Scheduled Tasks; default does not claim pre-login SYSTEM service."
+    },
+    "linux_jetson_user_persistence": {
+      "state": "IMPLEMENTED",
+      "required": "real systemd-user or cron registration + reboot/session recovery evidence",
+      "note": "headless pre-login may require linger/admin system service."
+    },
+    "prelogin_system_service_operation": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "machine-specific service account/admin policy + local AI/license availability before login + reboot E2E"
+    },
+    "golden_acoustic_dataset_suite": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "versioned speaker/microphone golden, negative and regression cases with expected outcomes"
+    },
+    "initial_deterministic_acoustic_skills_slice": {
+      "state": "TESTED",
+      "evidence": "measurement import validation + FR analysis + requirement verification implementations, manifests and tests/test_acoustic_skills.py + PR #9 CI run 121"
+    },
+    "full_skills_library": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "broad Speaker/Microphone × six-domain Skill coverage with versioning, golden, negative and regression tests"
+    },
+    "initial_versioned_methods_slice": {
+      "state": "TESTED",
+      "evidence": "three versioned method packages used by deterministic acoustic Skills + workflow tests + PR #9 CI run 121"
+    },
+    "full_methods_library": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "complete domain methods with assumptions, applicability, uncertainty and version controls"
+    },
+    "standards_registry_metadata_baseline": {
+      "state": "TESTED",
+      "evidence": "standards/registry.v1.json + aeris_runtime/standards_registry.py + tests/test_standards_registry.py + PR #9 CI run 121",
+      "note": "metadata/status/source registry only; not licensed standard full text and not proof every revision is continuously current."
+    },
+    "full_live_standards_corpus": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "licensed/legal source ingestion + revision monitoring + supersession checks + scope applicability + live verification"
+    },
+    "workflow_engine_baseline": {
+      "state": "TESTED",
+      "evidence": "aeris_runtime/workflow.py + tests/test_workflow.py + Evidence/G0/G1 integration + PR #9 CI run 121",
+      "note": "does not auto-pass G2 domain, G3 regression, G4 independent review or G5 Human approval."
+    },
+    "professional_acoustic_corpus": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "provenance-aware legal corpus across theory, standards metadata, product history, validated measurements, methods and engineering lessons"
     },
     "local_knowledge_sqlite": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/knowledge.py + tests/test_knowledge.py + main CI run 105",
-      "note": "self-cleaning local text index with FTS5 fallback; not a provenance-aware professional acoustic knowledge system"
+      "evidence": "aeris_runtime/knowledge.py + tests/test_knowledge.py + role local-Knowledge grounding + PR #9 CI run 121",
+      "note": "self-cleaning local text/FTS baseline; Knowledge is supporting context, not Evidence."
     },
-    "professional_acoustic_corpus": {"state": "NOT_IMPLEMENTED"},
-    "skills_library": {"state": "NOT_IMPLEMENTED"},
-    "methods_library": {"state": "NOT_IMPLEMENTED"},
-    "standards_registry": {"state": "NOT_IMPLEMENTED"},
-    "workflow_engine": {"state": "NOT_IMPLEMENTED"},
-    "comsol_adapter": {"state": "BLOCKED_EXTERNAL", "required": "licensed COMSOL installation + exact-version API adapter + E2E model run + provenance/evidence"},
-    "matlab_adapter": {"state": "BLOCKED_EXTERNAL", "required": "licensed MATLAB installation + compatible Engine/API + E2E script + provenance/evidence"},
-    "apx_adapter": {"state": "BLOCKED_EXTERNAL", "required": "APx software/hardware/license/calibration + exact-version adapter + E2E measurement evidence"},
-    "klippel_adapter": {"state": "BLOCKED_EXTERNAL", "required": "KLIPPEL software/hardware/license/calibration + supported automation module + E2E measurement evidence"},
-    "soundcheck_adapter": {"state": "BLOCKED_EXTERNAL", "required": "SoundCheck installation/license + supported Python/TCP integration + E2E measurement evidence"},
-    "acqua_adapter": {"state": "BLOCKED_EXTERNAL", "required": "HEAD/ACQUA licensed environment + exact supported automation interface + E2E evidence"},
-    "live_local_ui": {"state": "NOT_IMPLEMENTED"},
+    "local_model_router": {
+      "state": "TESTED",
+      "evidence": "tests/test_router.py + tests/test_provider_health.py + tests/test_local_endpoint_policy.py + PR #9 CI run 121",
+      "required": "real local model inference in machine acceptance before VERIFIED"
+    },
+    "private_local_endpoint_scope_enforcement": {
+      "state": "TESTED",
+      "evidence": "provider endpoint policy tests on loopback/trusted-LAN/public-host rejection + PR #9 CI run 121"
+    },
+    "cloud_public_research_router": {
+      "state": "TESTED",
+      "evidence": "router/privacy tests + PR #9 CI run 121",
+      "note": "OpenAI-compatible baseline; each live provider still needs interoperability/license/policy verification."
+    },
+    "cloud_secret_file_support": {
+      "state": "TESTED",
+      "evidence": "tests/test_config.py + PR #9 CI run 121"
+    },
+    "application_privacy_boundary": {
+      "state": "TESTED",
+      "evidence": "privacy + private endpoint tests + PR #9 CI run 121",
+      "note": "does not prove every arbitrary process on the OS can never exfiltrate data."
+    },
+    "os_network_egress_enforcement": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "machine-specific firewall/DLP/process isolation configuration and independent outbound validation"
+    },
+    "public_ingress_ssrf_dns_rebinding_guard": {
+      "state": "TESTED",
+      "evidence": "aeris_runtime/ingress.py + tests/test_ingress_security.py + PR #9 CI run 121"
+    },
+    "public_ingress_quarantine_human_promotion": {
+      "state": "TESTED",
+      "evidence": "quarantine/promotion positive and rejection tests + PR #9 CI run 121"
+    },
+    "public_ingress_malware_scanning": {
+      "state": "IMPLEMENTED",
+      "required": "real Defender or ClamAV availability and scanner-specific local acceptance"
+    },
+    "live_local_ui_and_control_plane": {
+      "state": "TESTED",
+      "evidence": "ui/web + aeris_runtime/controlplane.py + tests/test_controlplane.py root/UI/API tests + PR #9 CI run 121",
+      "note": "same-origin dependency-free local UI/API tested; full browser E2E/accessibility/visual regression suite remains future work."
+    },
+    "browser_e2e_visual_regression": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "Playwright or equivalent real-browser workflow/visual/accessibility regression on supported local UI"
+    },
     "supported_machine_profile_detection": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/machine.py + previous main CI run 105 machine detect",
-      "note": "profile match is not resource qualification and not real-machine verification"
+      "evidence": "aeris_runtime/machine.py + CI machine detection + PR #9 run 121",
+      "note": "profile match is not resource qualification."
     },
     "machine_resource_qualification": {
       "state": "NOT_IMPLEMENTED",
-      "required": "profile-specific minimum OS/version/RAM/free-disk/accelerator/runtime checks plus measured latency/headroom criteria"
+      "required": "profile-specific OS/RAM/disk/GPU/VRAM/driver/runtime/latency/thermal sustained-load criteria"
     },
     "windows_linux_ci_kernel": {
       "state": "VERIFIED",
-      "evidence": ".github/workflows/ci.yml + post-merge main run 105 for previous implementation kernel scope",
-      "note": "VERIFIED only for that exact automated CI scope; current Autopilot/P0 branch remains IMPLEMENTED pending its own CI"
+      "evidence": "PR #9 CI run 121: explicit Ubuntu 24.04 + Windows 2025 complete automated jobs",
+      "note": "VERIFIED only for the automated CI scope, never a user-PC claim."
     },
     "one_click_installer_smoke": {
       "state": "TESTED",
-      "evidence": ".github/workflows/ci.yml installer-smoke steps + previous main CI run 105",
-      "note": "CI smoke deliberately skips external local-AI installation"
+      "evidence": "Windows/Linux installer smoke in PR #9 run 121",
+      "note": "external model/runtime install is deliberately excluded from CI smoke."
     },
-    "offline_staged_python_windows": {"state": "IMPLEMENTED", "required": "fresh offline Windows machine evidence with checksum-verified staged installer"},
-    "offline_staged_model_gguf": {"state": "IMPLEMENTED", "required": "real Ollama staged GGUF import + inference evidence on each supported machine family"},
+    "full_autopilot_entrypoint_ci": {
+      "state": "TESTED",
+      "evidence": "AERIS_AUTOPILOT.ps1/.sh full CI-smoke entrypoints passed on Ubuntu 24.04 + Windows 2025 in PR #9 run 121"
+    },
+    "full_claude_entrypoint_ci": {
+      "state": "TESTED",
+      "evidence": "CLAUDE_VERIFY_AERIS.ps1/.sh CI-smoke entrypoints passed on both OS jobs in PR #9 run 121"
+    },
+    "offline_staged_python_windows": {
+      "state": "IMPLEMENTED",
+      "required": "fresh offline Windows checksum-verified staged installer evidence"
+    },
+    "offline_staged_model_gguf": {
+      "state": "IMPLEMENTED",
+      "required": "real staged GGUF import and inference evidence per supported machine family"
+    },
     "linux_self_contained_offline_ollama_runtime_package": {
       "state": "NOT_IMPLEMENTED",
-      "required": "machine-specific redistributable runtime/package format + checksum/signature/provenance + offline install E2E; ollama-install.sh bootstrap is explicitly not treated as an air-gap runtime package"
+      "required": "machine-specific redistributable runtime/package + trusted checksum/signature/provenance + air-gap install E2E"
     },
     "core_airgap_snapshot_integrity": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/corecache.py snapshot mode + tests/test_corecache.py + main CI run 105",
-      "note": "per-file hash integrity is not source authenticity unless the manifest/digest is independently trusted or signed"
+      "evidence": "corecache snapshot tests + PR #9 CI run 121",
+      "note": "hash integrity still needs a trusted manifest authenticity path for high assurance."
     },
     "core_git_cache_content_integrity": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/corecache.py + tests/test_corecache.py clean/tampered/head-mismatch/wrong-remote cases + PR #2 CI run 104 + main CI run 105",
-      "note": "each real local cache must still pass aeris core verify during acceptance"
+      "evidence": "clean/tampered/head-mismatch/wrong-remote corecache tests + PR #9 CI run 121"
     },
-    "clean_windows_install": {"state": "IMPLEMENTED", "required": "fresh-machine online and air-gap E2E evidence before VERIFIED"},
-    "clean_linux_install": {"state": "IMPLEMENTED", "required": "fresh supported-distro online E2E; air-gap remains blocked without preinstalled Ollama or future verified self-contained runtime package"},
-    "jetson_orin_install": {"state": "IMPLEMENTED", "required": "real Jetson E2E + memory + latency + thermal + reboot + offline evidence before VERIFIED"},
+    "clean_windows_install": {
+      "state": "IMPLEMENTED",
+      "required": "one fresh supported Windows real-machine Autopilot cycle before VERIFIED"
+    },
+    "clean_linux_install": {
+      "state": "IMPLEMENTED",
+      "required": "one fresh supported Linux real-machine Autopilot cycle before VERIFIED"
+    },
+    "jetson_orin_install": {
+      "state": "IMPLEMENTED",
+      "required": "real Jetson E2E + memory/latency/thermal/reboot/offline evidence"
+    },
     "hard_offline_operation": {
       "state": "IMPLEMENTED",
-      "required": "network-isolated real inference + multi-path outbound probe block + OS firewall/process review; probe blocking is not mathematical proof of zero-egress"
+      "required": "real network-isolated inference + multi-path outbound probes + OS firewall/process review"
     },
-    "portable_software_image": {"state": "TESTED", "evidence": ".github/workflows/ci.yml Windows/Linux package smoke + main CI run 105"},
+    "portable_software_image": {
+      "state": "TESTED",
+      "evidence": "Windows/Linux portable package smoke + PR #9 CI run 121"
+    },
     "software_sbom_provenance": {
       "state": "TESTED",
-      "evidence": "scripts/release-metadata.py + Windows/Linux package smoke + main CI run 105",
-      "note": "metadata is not a cryptographic authenticity signature"
+      "evidence": "release-metadata generation and package smoke + PR #9 CI run 121",
+      "note": "metadata is not a cryptographic authenticity signature."
     },
     "portable_package_external_sha256": {
       "state": "TESTED",
-      "evidence": "scripts/package-company.sh + scripts/package-company.ps1 + external .sha256 verification in PR #2 CI run 104 + main CI run 105",
-      "note": "proves transfer integrity against sidecar; production authenticity still needs signing/attestation"
+      "evidence": "external SHA-256 sidecar verification in package smoke + PR #9 CI run 121"
     },
     "release_signing_and_attestation": {
       "state": "NOT_IMPLEMENTED",
-      "required": "trusted signing identity/key lifecycle + signed package/provenance/manifest policy + verification SOP"
+      "required": "trusted signing identity/key lifecycle + signed package/provenance/manifest + verification policy"
     },
     "private_state_archive_safety": {
       "state": "TESTED",
-      "evidence": "scripts/private-state.py + tests/test_private_state.py + main CI run 105",
-      "note": "tests archive member safety only, not real age transfer/restore"
+      "evidence": "scripts/private-state.py archive traversal/symlink/hardlink/device tests + PR #9 CI run 121"
     },
-    "encrypted_private_state_backup_restore": {"state": "IMPLEMENTED", "required": "real age export + transfer + import + checksum + destination restore acceptance"},
+    "encrypted_private_state_backup_restore": {
+      "state": "IMPLEMENTED",
+      "required": "real age export + transfer + import + checksum + destination restore acceptance"
+    },
     "full_company_relocation": {
       "state": "NOT_IMPLEMENTED",
-      "required": "software image + encrypted private state + legal private asset pack + restore + tool/calibration + second-machine acceptance"
+      "required": "software image + encrypted private state + legal private asset pack + second-machine restore + local model/tool/calibration + acceptance"
+    },
+    "comsol_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "licensed COMSOL + exact-version API adapter + E2E model run + Evidence"
+    },
+    "matlab_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "licensed MATLAB + compatible Engine/API + E2E script + Evidence"
+    },
+    "apx_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "APx software/hardware/license/calibration + exact-version E2E measurement Evidence"
+    },
+    "klippel_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "KLIPPEL software/hardware/license/calibration + supported automation + E2E Evidence"
+    },
+    "soundcheck_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "SoundCheck license + supported Python/TCP integration + E2E Evidence"
+    },
+    "acqua_adapter": {
+      "state": "BLOCKED_EXTERNAL",
+      "required": "HEAD/ACQUA licensed environment + exact automation interface + E2E Evidence"
     },
     "commercial_release_readiness": {
       "state": "NOT_IMPLEMENTED",
-      "required": "Core P0 trust foundation + release-critical capabilities VERIFIED + model/tool/data licenses reviewed + supported configuration frozen + signed provenance/release policy"
+      "required": "release-critical acoustic capabilities/golden cases VERIFIED + legal model/tool/data licenses + supported configuration frozen + signing/attestation + Human R4 approval"
     }
   }
 }
