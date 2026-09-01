@@ -164,7 +164,11 @@ def create_workflow_from_template(
 ) -> dict[str, Any]:
     template = get_workflow_template(template_id)
     params = dict(skill_params or {})
-    missing = [name for name in template.get("required_inputs", []) if name not in params or params[name] in {None, ""}]
+    missing = [
+        name
+        for name in template.get("required_inputs", [])
+        if name not in params or params[name] is None or params[name] == ""
+    ]
     if missing:
         raise ValueError(f"workflow template missing required inputs: {', '.join(missing)}")
     effective_summary = summary.strip() or str(template.get("name", template_id))
