@@ -13,6 +13,7 @@ class QualityGateContractTests(unittest.TestCase):
             "tests/test_maturity_truth.py",
             "aeris_runtime/claim_guard.py",
             "tests/test_claim_guard.py",
+            "tests/browser_e2e.py",
             "INSTALL_AERIS_LOCAL.ps1",
             "AERIS_AUTOPILOT.ps1",
             ".github/workflows/ci.yml",
@@ -27,6 +28,7 @@ class QualityGateContractTests(unittest.TestCase):
             "windows-2025",
             "Parse every tracked PowerShell file",
             "Windows Python resolver Store-alias regression",
+            "Real browser semantic E2E for Dashboard Workspace Services",
             "Windows one-click installer smoke without external runtime installation",
             "Windows full Autopilot entrypoint CI smoke",
             "Verify canonical Core has not drifted",
@@ -34,6 +36,12 @@ class QualityGateContractTests(unittest.TestCase):
         ]
         for snippet in required_snippets:
             self.assertIn(snippet, ci, f"required CI gate missing/weakened: {snippet}")
+
+    def test_browser_e2e_scope_cannot_be_upgraded_to_fake_visual_regression(self):
+        text = (ROOT / "tests/browser_e2e.py").read_text(encoding="utf-8")
+        self.assertIn("real headless browser SPA route/render semantic E2E; NOT pixel visual regression", text)
+        self.assertIn('id=\"workspace\" class=\"view active-view\"', text)
+        self.assertIn('id=\"services\" class=\"view active-view\"', text)
 
     def test_windows_resolver_contract_is_not_reverted(self):
         resolver = (ROOT / "scripts/windows-python-resolution.ps1").read_text(encoding="utf-8")
