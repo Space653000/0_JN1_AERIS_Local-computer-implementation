@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "suite_id": "AERIS-ACOUSTIC-GOLDEN-BASELINE-V1",
+  "scope": "deterministic frequency-response import/analysis/requirement regression baseline",
+  "cases": [
+    {
+      "case_id": "nominal-import-valid",
+      "skill_id": "measurement-import-validation",
+      "input": "fr_nominal.csv",
+      "sha256": "fd6e96a7181ada0eb85847e92b2f8118cf74d87fe3b2826ce9c82c6c170e547c",
+      "params": {},
+      "expected": {"result": "PASS", "points": 5, "strictly_increasing": true, "duplicate_frequency_count": 0}
+    },
+    {
+      "case_id": "nominal-fr-analysis",
+      "skill_id": "frequency-response-analysis",
+      "input": "fr_nominal.csv",
+      "sha256": "fd6e96a7181ada0eb85847e92b2f8118cf74d87fe3b2826ce9c82c6c170e547c",
+      "params": {"low_hz": 100, "high_hz": 2000},
+      "expected": {"result": "PASS", "points": 5, "average_db": 80.4, "peak_to_peak_db": 3.0}
+    },
+    {
+      "case_id": "nominal-requirement-pass",
+      "skill_id": "requirement-verification",
+      "input": "fr_nominal.csv",
+      "sha256": "fd6e96a7181ada0eb85847e92b2f8118cf74d87fe3b2826ce9c82c6c170e547c",
+      "params": {"requirement": {"band_hz": [100, 2000], "max_peak_to_peak_db": 4.0}},
+      "expected": {"result": "PASS", "checks": [{"name": "max_peak_to_peak_db", "actual": 3.0, "margin": 1.0, "result": "PASS"}]}
+    },
+    {
+      "case_id": "regression-requirement-fail",
+      "skill_id": "requirement-verification",
+      "input": "fr_regression.csv",
+      "sha256": "fd2ac384847c8fab60444771dfb626c6e465583b5bba087ea10d3897d76f8973",
+      "params": {"requirement": {"band_hz": [100, 2000], "max_peak_to_peak_db": 4.0}},
+      "expected": {"result": "FAIL", "checks": [{"name": "max_peak_to_peak_db", "actual": 8.0, "margin": -4.0, "result": "FAIL"}]}
+    },
+    {
+      "case_id": "duplicate-frequency-rejected",
+      "skill_id": "measurement-import-validation",
+      "input": "fr_duplicate.csv",
+      "sha256": "5fbb747d078bc497fdfc16ac8a8b4f8e15e9eabcc79e877f4e375176a3a63e6f",
+      "params": {},
+      "expected": {"result": "FAIL", "duplicate_frequency_count": 1, "strictly_increasing": false, "issues": ["DUPLICATE_FREQUENCIES:1", "FREQUENCY_NOT_STRICTLY_INCREASING"]}
+    }
+  ],
+  "truth": "This is a small deterministic regression baseline. It is not a production-complete speaker/microphone Golden Dataset and does not substitute for chamber, fixture, calibration, tolerance, uncertainty or product-specific validation evidence."
+}

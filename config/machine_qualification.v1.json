@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "contract_id": "AERIS-MACHINE-QUALIFICATION-BASELINE-V1",
+  "baseline_required_workloads": [
+    "control_plane",
+    "deterministic_acoustic_analysis"
+  ],
+  "workloads": {
+    "control_plane": {
+      "applies_to_profiles": ["*"],
+      "min_ram_gb": 4,
+      "min_disk_free_gb": 1,
+      "python_min": "3.10",
+      "required_tools": ["git"]
+    },
+    "deterministic_acoustic_analysis": {
+      "applies_to_profiles": ["*"],
+      "min_ram_gb": 4,
+      "min_disk_free_gb": 1,
+      "python_min": "3.10",
+      "required_tools": []
+    },
+    "local_small_model_inference": {
+      "applies_to_profiles": ["windows-cpu", "windows-nvidia-workstation", "linux-x86-cpu", "linux-x86-nvidia", "jetson-orin-family"],
+      "min_ram_gb": 8,
+      "min_disk_free_gb": 4,
+      "python_min": "3.10",
+      "required_tools": ["ollama"]
+    },
+    "nvidia_accelerated_local_ai": {
+      "applies_to_profiles": ["windows-nvidia-workstation", "linux-x86-nvidia"],
+      "min_ram_gb": 16,
+      "min_disk_free_gb": 8,
+      "python_min": "3.10",
+      "required_tools": ["ollama", "nvidia-smi"],
+      "required_gpu_vendor": "nvidia",
+      "min_vram_gb": 6
+    },
+    "jetson_local_ai": {
+      "applies_to_profiles": ["jetson-orin-family"],
+      "min_ram_gb": 8,
+      "min_disk_free_gb": 8,
+      "python_min": "3.10",
+      "required_tools": ["ollama"],
+      "required_gpu_vendor": "nvidia"
+    }
+  },
+  "truth": "This contract qualifies deterministic inventory facts only. It does not verify latency, thermal stability, sustained load, reboot recovery, hard-offline behavior, proprietary tools, instruments or calibration."
+}

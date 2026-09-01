@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "capabilities": {
+    "machine_resource_qualification_engine_baseline": {
+      "state": "TESTED",
+      "evidence": [
+        "config/machine_qualification.v1.json",
+        "aeris_runtime/machine_qualification.py",
+        "tests/test_machine_qualification.py",
+        "GitHub Actions PR #19 run #164 Windows 2025 + Ubuntu 24.04"
+      ],
+      "truth": "TESTED only for deterministic inventory qualification; sustained-load, latency, thermal, reboot, hard-offline and proprietary-tool qualification remain outside this baseline."
+    },
+    "golden_acoustic_regression_baseline": {
+      "state": "TESTED",
+      "evidence": [
+        "golden/acoustics/v1/manifest.json",
+        "aeris_runtime/golden_acoustics.py",
+        "tests/test_golden_acoustics.py",
+        "GitHub Actions PR #19 run #164 Windows 2025 + Ubuntu 24.04"
+      ],
+      "truth": "TESTED only for the small deterministic FR regression baseline; full production Speaker/Microphone Golden Dataset remains incomplete."
+    }
+  }
+}
