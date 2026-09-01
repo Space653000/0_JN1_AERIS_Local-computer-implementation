@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "method_id": "requirement-verification",
+  "version": "1.0.0",
+  "purpose": "Compare deterministic FR metrics against explicit numeric limits and report margin.",
+  "applicable_skills": ["requirement-verification"],
+  "supported_checks": ["max_peak_to_peak_db", "max_rms_deviation_db", "minimum_average_db", "maximum_average_db"],
+  "required_output": ["actual", "operator", "limit", "margin", "PASS_or_FAIL"],
+  "rule": "A PASS without a numerical margin is not a valid output for this method.",
+  "not_proven": ["standards compliance outside explicit requirement snapshot", "uncertainty-adjusted compliance", "formal customer release"],
+  "evidence_class": "DETERMINISTIC_REQUIREMENT_CHECK",
+  "status": "IMPLEMENTED_BASELINE"
+}
