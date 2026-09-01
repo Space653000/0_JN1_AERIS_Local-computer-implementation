@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AERIS — Local Acoustic Engineering Company</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <aside class="rail">
+    <div class="brand">A</div>
+    <button class="nav active" data-view="dashboard" title="Dashboard">◫</button>
+    <button class="nav" data-view="workspace" title="Workspace">⌁</button>
+    <button class="nav" data-view="services" title="Services">⚙</button>
+  </aside>
+  <main>
+    <header>
+      <div>
+        <div class="eyebrow">AERIS · Acoustic Engineering & Research Intelligence System</div>
+        <h1>本機聲學工程公司</h1>
+      </div>
+      <div class="status"><span class="dot"></span><span id="opening">連線中</span></div>
+    </header>
+
+    <section id="dashboard" class="view active-view">
+      <div class="hero card">
+        <div>
+          <div class="eyebrow">COMPANY CONTROL PLANE</div>
+          <h2>AERIS 在線_</h2>
+          <p>100 席聲學工程能力組織、本機 AI、Knowledge、Evidence 與工程控制面，全部由這台電腦執行。</p>
+        </div>
+        <div class="hero-badge">LOCAL</div>
+      </div>
+      <div class="metrics">
+        <div class="card metric"><span>角色席位</span><strong id="roleCount">—</strong><small>可呼叫 baseline</small></div>
+        <div class="card metric"><span>Knowledge</span><strong id="knowledgeCount">—</strong><small>本機文件</small></div>
+        <div class="card metric"><span>進行中任務</span><strong id="taskCount">—</strong><small>SQLite 工作台</small></div>
+        <div class="card metric"><span>Local AI</span><strong id="modelState">—</strong><small id="modelName">—</small></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="section-title"><h3>公司狀態</h3><button id="refreshStatus">重新整理</button></div>
+          <pre id="companyStatus" class="pre"></pre>
+        </div>
+        <div class="card">
+          <div class="section-title"><h3>成熟度真值</h3></div>
+          <div id="maturityBars" class="maturity"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="workspace" class="view">
+      <div class="grid2 workspace-grid">
+        <div class="card">
+          <div class="section-title"><h3>建立工程任務</h3></div>
+          <label>Project</label>
+          <select id="projectSelect"></select>
+          <label>任務標題</label>
+          <input id="taskTitle" placeholder="例如：麥克風遠場收音 SNR 與 Beamforming 問題">
+          <label>問題／需求</label>
+          <textarea id="taskDescription" rows="7" placeholder="輸入工程問題；AERIS 會自動組 Dynamic Pod"></textarea>
+          <div class="row">
+            <select id="riskLevel"><option>R0</option><option>R1</option><option>R2</option><option>R3</option><option>R4</option></select>
+            <button id="planPod">規劃 Dynamic Pod</button>
+            <button id="createTask" class="primary">建立任務</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h3>Dynamic Pod</h3><span id="podMeta" class="chip">尚未規劃</span></div>
+          <div id="podRoles" class="role-list empty">輸入工程問題後按「規劃 Dynamic Pod」</div>
+          <div class="invoke-box">
+            <label>向 Pod Lead 詢問</label>
+            <textarea id="invokePrompt" rows="4" placeholder="可直接把工程問題送給第一席角色；內容只走本地 AI"></textarea>
+            <button id="invokeLead">執行本機角色</button>
+            <pre id="invokeResult" class="pre response"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>任務清單</h3><button id="refreshTasks">重新整理</button></div>
+        <div id="taskList" class="task-list"></div>
+      </div>
+    </section>
+
+    <section id="services" class="view">
+      <div class="grid2">
+        <div class="card">
+          <div class="section-title"><h3>100 席角色</h3><input id="roleFilter" class="compact" placeholder="搜尋角色"></div>
+          <div id="allRoles" class="role-browser"></div>
+        </div>
+        <div class="stack">
+          <div class="card">
+            <div class="section-title"><h3>Knowledge 搜尋</h3></div>
+            <div class="row"><input id="knowledgeQuery" placeholder="搜尋本機知識"><button id="knowledgeSearch">搜尋</button></div>
+            <div id="knowledgeResults" class="search-results"></div>
+          </div>
+          <div class="card">
+            <div class="section-title"><h3>Audit 最近事件</h3></div>
+            <div id="auditList" class="audit-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
