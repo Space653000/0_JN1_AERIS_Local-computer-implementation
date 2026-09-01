@@ -12,15 +12,18 @@ permissions:
 
 jobs:
   test:
+    timeout-minutes: 35
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-24.04, windows-2025]
         python: ['3.11']
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout portable company repo
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
       - name: Setup Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
@@ -47,7 +50,7 @@ jobs:
             }
           }
           if($failed){ throw 'PowerShell syntax validation failed.' }
-      - name: Unit tests including Core alignment privacy trust acoustics and watchdog
+      - name: Unit tests including Core alignment privacy trust acoustics watchdog reproduction
         run: python -m unittest discover -s tests -v
       - name: Validate 100-role company image and maturity truth
         run: python -m aeris_runtime company status
@@ -95,6 +98,22 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./scripts/install-unattended-windows.ps1 -CISmoke
+      - name: Linux full Autopilot entrypoint CI smoke
+        if: runner.os == 'Linux'
+        shell: bash
+        run: bash ./AERIS_AUTOPILOT.sh auto --ci-smoke
+      - name: Windows full Autopilot entrypoint CI smoke
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./AERIS_AUTOPILOT.ps1 -Mode auto -CISmoke
+      - name: Linux Claude independent-review entrypoint CI smoke
+        if: runner.os == 'Linux'
+        shell: bash
+        run: bash ./CLAUDE_VERIFY_AERIS.sh --ci-smoke
+      - name: Windows Claude independent-review entrypoint CI smoke
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./CLAUDE_VERIFY_AERIS.ps1 -CISmoke
       - name: Linux portable package smoke with SBOM/provenance and external digest
         if: runner.os == 'Linux'
         shell: bash
