@@ -14,6 +14,8 @@ class QualityGateContractTests(unittest.TestCase):
             "aeris_runtime/claim_guard.py",
             "tests/test_claim_guard.py",
             "tests/browser_e2e.py",
+            "tests/browser_visual_accessibility.py",
+            "docs/BROWSER_VISUAL_ACCESSIBILITY_BASELINE.md",
             ".gitattributes",
             "config/machine_qualification.v1.json",
             "aeris_runtime/machine_qualification.py",
@@ -51,6 +53,7 @@ class QualityGateContractTests(unittest.TestCase):
             "Role contract and independent reviewer allocation gate",
             "Zero-cost no-Claude default deployment gate",
             "Real browser semantic E2E for Dashboard Workspace Services",
+            "Browser screenshot repeatability and accessibility baseline",
             "Windows one-click installer smoke without external runtime installation",
             "Windows full Autopilot entrypoint CI smoke",
             "Verify canonical Core has not drifted",
@@ -61,9 +64,31 @@ class QualityGateContractTests(unittest.TestCase):
 
     def test_browser_e2e_scope_cannot_be_upgraded_to_fake_visual_regression(self):
         text = (ROOT / "tests/browser_e2e.py").read_text(encoding="utf-8")
+        visual = (ROOT / "tests/browser_visual_accessibility.py").read_text(encoding="utf-8")
+        docs = (ROOT / "docs/BROWSER_VISUAL_ACCESSIBILITY_BASELINE.md").read_text(encoding="utf-8")
         self.assertIn("real headless browser SPA route/render semantic E2E; NOT pixel visual regression", text)
         self.assertIn('id=\"workspace\" class=\"view active-view\"', text)
         self.assertIn('id=\"services\" class=\"view active-view\"', text)
+        self.assertIn("NOT cross-version pixel-golden regression", visual)
+        self.assertIn("not** a cross-version pixel-golden visual regression suite".replace("not**", "not**"), docs.lower())
+
+    def test_browser_accessibility_markers_are_permanent(self):
+        html = (ROOT / "ui/web/index.html").read_text(encoding="utf-8")
+        for marker in (
+            'aria-label="AERIS 主要導覽"',
+            'aria-label="儀表板"',
+            'aria-label="工作區"',
+            'aria-label="服務"',
+            'role="status"',
+            'aria-live="polite"',
+            '<main id="mainContent">',
+            '<label for="projectSelect">',
+            '<label for="taskTitle">',
+            '<label for="taskDescription">',
+            '<label for="riskLevel">',
+            '<label for="invokePrompt">',
+        ):
+            self.assertIn(marker, html)
 
     def test_machine_and_golden_baselines_cannot_be_upgraded_to_fake_verification(self):
         machine = (ROOT / "aeris_runtime/machine_qualification.py").read_text(encoding="utf-8")
