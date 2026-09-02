@@ -109,7 +109,9 @@ def run() -> int:
             route_results: list[dict[str, object]] = []
             route_hashes: set[str] = set()
             ARTIFACT_ROOT.mkdir(parents=True, exist_ok=True)
-            with tempfile.TemporaryDirectory(prefix="aeris-browser-visual-") as temp:
+            test_temp = ROOT / ".aeris" / "test-temp"
+            test_temp.mkdir(parents=True, exist_ok=True)
+            with tempfile.TemporaryDirectory(prefix="aeris-browser-visual-", dir=test_temp) as temp:
                 temp_path = Path(temp)
                 for index, route in enumerate(ROUTES):
                     profile = temp_path / f"profile-{index}"

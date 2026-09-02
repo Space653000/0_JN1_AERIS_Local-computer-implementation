@@ -6,6 +6,7 @@ The separate visual baseline provides fixed-environment screenshot repeatability
 from __future__ import annotations
 
 import json
+import argparse
 import os
 import shutil
 import signal
@@ -25,6 +26,8 @@ import aeris_runtime.operations as operations
 
 BROWSER_TIMEOUT_SEC = 35
 BROWSER_TIMEOUT_ATTEMPTS = 2
+TEST_TEMP = ROOT / ".aeris" / "test-temp"
+SEMANTIC_REPORT = ROOT / ".aeris" / "evidence" / "browser-semantic-live.json"
 
 
 def find_browser() -> str:
@@ -108,7 +111,8 @@ def _dump_dom_with_bounded_timeout_retry(browser: str, url: str, route: str) -> 
     for attempt in range(1, BROWSER_TIMEOUT_ATTEMPTS + 1):
         # A new profile for every attempt prevents a timed-out Chrome process/profile lock
         # from contaminating the retry.
-        with tempfile.TemporaryDirectory(prefix=f"aeris-browser-e2e-{attempt}-") as profile:
+        TEST_TEMP.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix=f"aeris-browser-e2e-{attempt}-", dir=TEST_TEMP) as profile:
             cmd = [
                 browser,
                 "--headless=new",
@@ -126,6 +130,8 @@ def _dump_dom_with_bounded_timeout_retry(browser: str, url: str, route: str) -> 
             ]
             if os.name != "nt":
                 cmd.insert(2, "--no-sandbox")
+            if os.environ.get("AERIS_BROWSER_LOW_RESOURCE") == "1":
+                cmd[1:1] = ["--renderer-process-limit=1", "--disable-extensions", "--disable-software-rasterizer", "--no-proxy-server"]
             try:
                 returncode, stdout, stderr = _run_browser_process(cmd)
             except subprocess.TimeoutExpired:
@@ -186,5 +192,33 @@ def run() -> int:
             thread.join(timeout=3)
 
 
+def run_live(base_url: str) -> int:
+    """Render the deployed service and require values produced by its real APIs."""
+    browser = find_browser()
+    routes = {
+        "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", "100 roles"),
+        "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", " · workflow WF-"),
+        "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", "20 observed services"),
+        "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", "100 roles"),
+        "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", " · workflow WF-"),
+        "/services?theme=light": ('data-page="services"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", "20 observed services"),
+    }
+    results = []
+    for route, required in routes.items():
+        dom = _dump_dom_with_bounded_timeout_retry(browser, base_url.rstrip("/") + route, route)
+        missing = [marker for marker in required if marker not in dom]
+        if missing:
+            raise AssertionError(f"live browser route {route} missing real-API markers: {missing}")
+        results.append({"route": route, "render": "PASS", "required_markers": list(required)})
+    report = {"AERIS_BROWSER_LIVE_SEMANTIC_E2E": "PASS", "browser": browser, "base_url": base_url, "routes": results, "scope": "deployed six-page browser render with real status/roles/services API values; task mutation is covered by API integration tests"}
+    SEMANTIC_REPORT.parent.mkdir(parents=True, exist_ok=True)
+    SEMANTIC_REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0
+
+
 if __name__ == "__main__":
-    raise SystemExit(run())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--live-base-url")
+    args = parser.parse_args()
+    raise SystemExit(run_live(args.live_base_url) if args.live_base_url else run())

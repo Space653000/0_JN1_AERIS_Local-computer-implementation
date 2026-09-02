@@ -34,9 +34,17 @@ def _workspace() -> tuple[bool, str]:
     if not db.is_file():
         return False, "control SQLite database missing"
     try:
+        from .evidence import validate_bundle
         with sqlite3.connect(db) as conn:
-            count = conn.execute("SELECT COUNT(*) FROM tasks WHERE workflow_id IS NOT NULL AND workflow_id <> ''").fetchone()[0]
-        return count > 0, f"linked task/workflow records={count}"
+            workflow_ids = [row[0] for row in conn.execute("SELECT workflow_id FROM tasks WHERE workflow_id IS NOT NULL AND workflow_id <> ''")]
+        evidenced = 0
+        for workflow_id in workflow_ids:
+            workflow = _read(ROOT / ".aeris" / "workflows" / f"{workflow_id}.json")
+            run_id = workflow.get("execution", {}).get("run_id")
+            outcomes = workflow.get("verification", {}).get("outcomes", {})
+            if workflow.get("state") == "EVIDENCED" and run_id and outcomes.get("G0_CONTRACT") == "PASS" and outcomes.get("G1_NUMERICAL") == "PASS" and validate_bundle(str(run_id)).get("valid"):
+                evidenced += 1
+        return evidenced > 0, f"linked workflows={len(workflow_ids)}; evidenced+G0/G1+sealed={evidenced}"
     except Exception as exc:
         return False, f"SQLite workflow-link query failed: {exc}"
 
@@ -90,8 +98,23 @@ def _browser() -> tuple[bool, str]:
     report = _read(root / "report.json")
     routes = report.get("routes", [])
     artifacts_ok = len(routes) == 6 and all(Path(item.get("artifact", "")).is_file() for item in routes)
-    valid = report.get("AERIS_BROWSER_VISUAL_ACCESSIBILITY_BASELINE") == "PASS" and artifacts_ok and int(report.get("accessibility_markers_checked", 0)) >= 7
-    return valid, f"visual routes={len(routes)}; artifacts_present={artifacts_ok}"
+    monitor = _read(ROOT / ".aeris" / "evidence" / "six-page-monitor.json")
+    monitor_ok = monitor.get("result") == "PASS" and int(monitor.get("routes", 0)) == 6 and int(monitor.get("checks", 0)) >= 360 and int(monitor.get("failure_count", -1)) == 0
+    semantic = _read(ROOT / ".aeris" / "evidence" / "browser-semantic-live.json")
+    semantic_ok = semantic.get("AERIS_BROWSER_LIVE_SEMANTIC_E2E") == "PASS" and len(semantic.get("routes", [])) == 6
+    valid = report.get("AERIS_BROWSER_VISUAL_ACCESSIBILITY_BASELINE") == "PASS" and artifacts_ok and int(report.get("accessibility_markers_checked", 0)) >= 7 and monitor_ok and semantic_ok
+    return valid, f"visual routes={len(routes)}; artifacts_present={artifacts_ok}; live_semantic={semantic_ok}; continuous_monitor={monitor_ok}"
+
+
+def _expected_runs() -> tuple[bool, str]:
+    try:
+        from .expected_runs import assess_all
+        report = assess_all()
+        source_ok = _files("aeris_runtime/expected_runs.py", "tests/test_expected_runs_concurrency.py")[0]
+        valid = source_ok and report.get("overall") == "HEALTHY" and len(report.get("runs", [])) >= 2
+        return valid, f"runtime={report.get('overall')}; contracts={len(report.get('runs', []))}; concurrency_regression={source_ok}"
+    except Exception as exc:
+        return False, f"expected-run assessment failed: {exc}"
 
 
 def _acceptance() -> tuple[bool, str]:
@@ -109,7 +132,7 @@ CHECKS: dict[str, Callable[[], tuple[bool, str]]] = {
     "free_local_acoustic_baseline": _free_acoustics,
     "pptx_skill_registry_sha256_provenance": _pptx,
     "scheduled_task_watchdog_persistence": _watchdog,
-    "expected_run_concurrent_atomic_write": lambda: _files("aeris_runtime/expected_runs.py", "tests/test_expected_runs_concurrency.py"),
+    "expected_run_concurrent_atomic_write": _expected_runs,
     "autopilot_completion_fields": _autopilot_contract,
     "six_page_visual_accessibility_regression": _browser,
     "full_local_acceptance_and_gap_rescan": _acceptance,
@@ -133,6 +156,10 @@ def assess(write: bool = False) -> dict[str, Any]:
     for name, item in maturity.get("capabilities", {}).items():
         if item.get("state") == "NOT_IMPLEMENTED":
             unresolved.append({"id": name, "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "UNRESOLVED", "evidence_check": "maturity state is NOT_IMPLEMENTED"})
+        if item.get("state") in GATE_STATES:
+            baseline = maturity.get("gate_software_baselines", {}).get(name, {})
+            if baseline.get("state") != "TESTED" or not str(baseline.get("evidence", "")).strip():
+                unresolved.append({"id": f"{name}:software_baseline", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "UNRESOLVED", "evidence_check": "external/Human gate lacks a separately TESTED local-software baseline"})
     gates = [{"capability": name, "classification": item["state"], "required": item.get("required", "")} for name, item in maturity.get("capabilities", {}).items() if item.get("state") in GATE_STATES]
     payload = {
         "schema_version": 2, "assessed_at_utc": datetime.now(timezone.utc).isoformat(),

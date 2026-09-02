@@ -66,6 +66,11 @@ def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
     evidenced_workflows = [item for item in workflows if item.get("state") in {"EVIDENCED", "VERIFIED"}]
     verified_workflows = [item for item in workflows if item.get("state") == "VERIFIED"]
     free_skill = next((item for item in skills if item.get("skill_id") == "free-local-acoustic-baseline"), None)
+    required_skills = {"measurement-import-validation", "frequency-response-analysis", "requirement-verification", "free-local-acoustic-baseline", "pptx-beautify-lock-local"}
+    registered_skills = {str(item.get("skill_id")) for item in skills}
+    registry_ok = required_skills <= registered_skills
+    reproduction_reports = [_read(path) for path in (ROOT / ".aeris" / "reproduction").glob("*/REPRODUCTION_REPORT.json")] if (ROOT / ".aeris" / "reproduction").exists() else []
+    successful_reproductions = [item for item in reproduction_reports if item.get("result") == "PASS" and item.get("deterministic_result_match") is True]
     store_path = ROOT / ".aeris" / "control" / "control.sqlite3"
     store_ok = store_path.is_file() and {"projects", "tasks"} <= set(control_summary)
     rules_path = ROOT / "config" / "core_alignment.json"
@@ -76,9 +81,9 @@ def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
         _service("AERIS Orchestrator", "CONTROL", "HEALTHY" if opening.get("operational_state") == "OPEN_VERIFIED_SCOPE" else "DEGRADED", f"opening={opening.get('operational_state','UNKNOWN')}; projects={control_summary['projects']}; tasks={control_summary['tasks']}", str(opening_path.relative_to(ROOT)), "TESTED", _mtime(opening_path)),
         _service("Requirement / Task Store", "CONTROL", "HEALTHY" if store_ok else "FAILED", f"SQLite query succeeded={store_ok}; task_records={control_summary.get('tasks',0)}", str(store_path.relative_to(ROOT)), "TESTED", _mtime(store_path)),
         _service("Role / Pod Router", "CONTROL", "HEALTHY" if len(roles) == 100 else "FAILED", f"{len(roles)} executable capability contracts available", "company/organization/roles.v1.json", "TESTED", now),
-        _service("Workflow State Machine", "CONTROL", "HEALTHY" if templates else "NOT_CONFIGURED", f"templates={len(templates)}; instantiated_runs={len(workflows)}", ".aeris/workflows", "TESTED", _mtime(ROOT/'.aeris/workflows')),
+        _service("Workflow State Machine", "CONTROL", "HEALTHY" if templates and evidenced_workflows else "DEGRADED" if templates else "NOT_CONFIGURED", f"templates={len(templates)}; instantiated_runs={len(workflows)}; evidenced_runs={len(evidenced_workflows)}", ".aeris/workflows", "TESTED", _mtime(ROOT/'.aeris/workflows')),
         _service("Constitution / Rules", "KNOWLEDGE", "HEALTHY" if rules_ok else "FAILED", f"versioned Core alignment parse valid={rules_ok}", "config/core_alignment.json", "TESTED", _mtime(rules_path)),
-        _service("Skill + Method Registry", "KNOWLEDGE", "HEALTHY" if skills else "NOT_CONFIGURED", f"skills={len(skills)}", "skills", "IMPLEMENTED_NOT_PROFESSIONALLY_VERIFIED", now),
+        _service("Skill + Method Registry", "KNOWLEDGE", "HEALTHY" if registry_ok else "DEGRADED" if skills else "NOT_CONFIGURED", f"skills={len(skills)}; required_local_registry_complete={registry_ok}", "skills", "IMPLEMENTED_NOT_PROFESSIONALLY_VERIFIED", now),
         _service("Standards Registry", "KNOWLEDGE", "DEGRADED" if standards else "NOT_CONFIGURED", f"metadata_records={len(standards)}; licensed full text is not implied", "standards/registry.v1.json", "METADATA_BASELINE", _mtime(ROOT/'standards/registry.v1.json')),
         _service("Memory + Knowledge", "KNOWLEDGE", "HEALTHY" if knowledge.get("documents", 0) else "NOT_CONFIGURED", f"indexed_documents={knowledge.get('documents',0)}", ".aeris/knowledge/knowledge.sqlite3", "TESTED", _mtime(ROOT/'.aeris/knowledge/knowledge.sqlite3')),
         _service("Local Model Router", "EXECUTION", "HEALTHY" if local_ok else "DEGRADED", str(local_reason), "config/aeris.yaml", "RUNTIME_PROBED", now),
@@ -87,7 +92,7 @@ def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
         _service("Evidence Store", "TRUST", "HEALTHY" if valid_evidence else "NOT_CONFIGURED", f"sealed_valid_bundles={len(valid_evidence)}; candidate_bundles={len(evidence_dirs)}", ".aeris/evidence", "TESTED", _mtime(EVIDENCE)),
         _service("Verification Engine", "TRUST", "HEALTHY" if evidenced_workflows else "NOT_CONFIGURED", f"evidenced_or_verified_runs={len(evidenced_workflows)}; verified_runs={len(verified_workflows)}; per-run gates remain authoritative", ".aeris/workflows", "TESTED", _mtime(ROOT/'.aeris/workflows')),
         _service("Audit Ledger", "TRUST", "HEALTHY" if audit.get("valid") else "FAILED", f"valid={audit.get('valid')}; records={audit.get('records',0)}", str(LEDGER_PATH.relative_to(ROOT)), "TESTED", _mtime(LEDGER_PATH)),
-        _service("Reproduction Runner", "TRUST", "HEALTHY" if valid_evidence else "NOT_CONFIGURED", f"valid sealed replay inputs={len(valid_evidence)}", "aeris_runtime/reproduction.py", "TESTED", _mtime(ROOT/'aeris_runtime/reproduction.py')),
+        _service("Reproduction Runner", "TRUST", "HEALTHY" if successful_reproductions else "DEGRADED" if valid_evidence else "NOT_CONFIGURED", f"successful deterministic replays={len(successful_reproductions)}; valid sealed inputs={len(valid_evidence)}", ".aeris/reproduction", "TESTED", _mtime(ROOT/'.aeris/reproduction')),
         _service("Expected-run Health", "OPERATIONS", "HEALTHY" if expected.get("overall") == "HEALTHY" else str(expected.get("overall", "UNKNOWN")), f"contracts={len(expected.get('runs',[]))}", ".aeris/state/EXPECTED_RUNS.json", "TESTED", now),
         _service("Watchdog Recovery", "OPERATIONS", str(watchdog.get("state", "UNKNOWN")), str(watchdog.get("action", "No watchdog evidence")), str(watchdog_path.relative_to(ROOT)), "TESTED", _mtime(watchdog_path)),
         _service("Machine / GPU Qualification", "OPERATIONS", "HEALTHY" if machine.get("qualification",{}).get("overall_state") == "QUALIFIED_BASELINE" else "DEGRADED", f"{machine.get('profile')}; GPU={machine.get('gpu')}; VRAM={machine.get('vram_gb')} GB", "config/machine_qualification.v1.json", "QUALIFIED_BASELINE", now),
