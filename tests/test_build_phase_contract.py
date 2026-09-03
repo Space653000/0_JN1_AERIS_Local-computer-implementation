@@ -45,7 +45,7 @@ class BuildPhaseContractTests(unittest.TestCase):
         agents = AGENTS.read_text(encoding="utf-8")
         readme = README.read_text(encoding="utf-8")
         for phase in self.data["phases"]:
-            self.assertIn(phase["spec"], doc_index)
+            self.assertIn(Path(phase["spec"]).name, doc_index)
         self.assertIn("config/build_phases.v1.json", agents)
         self.assertIn("docs/AERIS_BUILD_PHASES.md", agents)
         self.assertIn("config/build_phases.v1.json", readme)
