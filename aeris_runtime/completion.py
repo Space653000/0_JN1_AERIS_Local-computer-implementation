@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sqlite3
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -22,6 +24,10 @@ def _read(path: Path) -> dict[str, Any]:
         return json.loads(path.read_text(encoding="utf-8-sig"))
     except Exception:
         return {}
+
+
+def _head_sha() -> str:
+    return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip()
 
 
 def _files(*paths: str) -> tuple[bool, str]:
@@ -97,12 +103,17 @@ def _browser() -> tuple[bool, str]:
     root = ROOT / ".aeris" / "evidence" / "browser-visual" / "latest"
     report = _read(root / "report.json")
     routes = report.get("routes", [])
-    artifacts_ok = len(routes) == 6 and all(Path(item.get("artifact", "")).is_file() for item in routes)
+    artifacts_ok = len(routes) == 6 and all(
+        Path(item.get("artifact", "")).is_file()
+        and hashlib.sha256(Path(item["artifact"]).read_bytes()).hexdigest() == item.get("repeatable_sha256")
+        for item in routes
+    )
+    head = _head_sha()
     monitor = _read(ROOT / ".aeris" / "evidence" / "six-page-monitor.json")
-    monitor_ok = monitor.get("result") == "PASS" and int(monitor.get("routes", 0)) == 6 and int(monitor.get("checks", 0)) >= 360 and int(monitor.get("failure_count", -1)) == 0
+    monitor_ok = monitor.get("result") == "PASS" and monitor.get("implementation_sha") == head and int(monitor.get("routes", 0)) == 6 and int(monitor.get("checks", 0)) >= 360 and int(monitor.get("failure_count", -1)) == 0
     semantic = _read(ROOT / ".aeris" / "evidence" / "browser-semantic-live.json")
-    semantic_ok = semantic.get("AERIS_BROWSER_LIVE_SEMANTIC_E2E") == "PASS" and len(semantic.get("routes", [])) == 6
-    valid = report.get("AERIS_BROWSER_VISUAL_ACCESSIBILITY_BASELINE") == "PASS" and artifacts_ok and int(report.get("accessibility_markers_checked", 0)) >= 7 and monitor_ok and semantic_ok
+    semantic_ok = semantic.get("AERIS_BROWSER_LIVE_SEMANTIC_E2E") == "PASS" and semantic.get("implementation_sha") == head and len(semantic.get("routes", [])) == 6
+    valid = report.get("AERIS_BROWSER_VISUAL_ACCESSIBILITY_BASELINE") == "PASS" and report.get("implementation_sha") == head and artifacts_ok and int(report.get("accessibility_markers_checked", 0)) >= 7 and monitor_ok and semantic_ok
     return valid, f"visual routes={len(routes)}; artifacts_present={artifacts_ok}; live_semantic={semantic_ok}; continuous_monitor={monitor_ok}"
 
 
@@ -121,7 +132,7 @@ def _acceptance() -> tuple[bool, str]:
     report = _read(ROOT / ".aeris" / "state" / "LOCAL_ACCEPTANCE.json")
     required = {"company_manifest", "unit_tests", "knowledge_build", "supported_machine_profile", "core_cache_integrity", "local_doctor", "real_local_inference", "offline_mode_doctor", "real_offline_mode_inference"}
     checks = set(report.get("checks", []))
-    valid = report.get("result") == "PASS" and required <= checks
+    valid = report.get("result") == "PASS" and report.get("implementation_sha") == _head_sha() and required <= checks
     return valid, f"result={report.get('result', 'MISSING')}; checks={len(checks)}"
 
 
@@ -136,6 +147,28 @@ CHECKS: dict[str, Callable[[], tuple[bool, str]]] = {
     "autopilot_completion_fields": _autopilot_contract,
     "six_page_visual_accessibility_regression": _browser,
     "full_local_acceptance_and_gap_rescan": _acceptance,
+}
+
+GATE_CHECKS: dict[str, Callable[[], tuple[bool, str]]] = {
+    "100_role_executable_domain_contracts": lambda: _files("config/role_contracts.v1.json", "tests/test_role_contracts.py", "tests/test_reviewer_allocation.py"),
+    "prelogin_system_service_operation": _watchdog,
+    "golden_acoustic_dataset_suite": lambda: _files("golden/acoustics/v1/manifest.json", "tests/test_golden_acoustics.py"),
+    "full_skills_library": _free_acoustics,
+    "full_methods_library": _free_acoustics,
+    "full_live_standards_corpus": lambda: _files("standards/registry.v1.json", "tests/test_standards_registry.py"),
+    "professional_acoustic_corpus": _acceptance,
+    "os_network_egress_enforcement": lambda: _files("tests/test_privacy.py", "tests/test_ingress_security.py", "tests/test_local_endpoint_policy.py"),
+    "machine_resource_qualification": _acceptance,
+    "linux_self_contained_offline_ollama_runtime_package": lambda: _files("scripts/install-unattended-linux.sh", "tests/test_zero_cost_deployment.py"),
+    "release_signing_and_attestation": _pptx,
+    "full_company_relocation": lambda: _files("docs/deployment/STATE_BACKUP_RESTORE.md", "scripts/private-state.py", "tests/test_private_state.py"),
+    "comsol_adapter": _free_acoustics,
+    "matlab_adapter": _free_acoustics,
+    "apx_adapter": _free_acoustics,
+    "klippel_adapter": _free_acoustics,
+    "soundcheck_adapter": _free_acoustics,
+    "acqua_adapter": _free_acoustics,
+    "commercial_release_readiness": _acceptance,
 }
 
 
@@ -158,7 +191,9 @@ def assess(write: bool = False) -> dict[str, Any]:
             unresolved.append({"id": name, "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "UNRESOLVED", "evidence_check": "maturity state is NOT_IMPLEMENTED"})
         if item.get("state") in GATE_STATES:
             baseline = maturity.get("gate_software_baselines", {}).get(name, {})
-            if baseline.get("state") != "TESTED" or not str(baseline.get("evidence", "")).strip():
+            gate_check = GATE_CHECKS.get(name)
+            gate_valid, gate_detail = gate_check() if gate_check else (False, "no executable gate-baseline validator")
+            if baseline.get("state") != "TESTED" or not str(baseline.get("evidence", "")).strip() or not gate_valid:
                 unresolved.append({"id": f"{name}:software_baseline", "classification": "SOFTWARE_LOCAL_FIXABLE", "status": "UNRESOLVED", "evidence_check": "external/Human gate lacks a separately TESTED local-software baseline"})
     gates = [{"capability": name, "classification": item["state"], "required": item.get("required", "")} for name, item in maturity.get("capabilities", {}).items() if item.get("state") in GATE_STATES]
     payload = {

@@ -131,6 +131,7 @@ def run() -> int:
                 raise AssertionError("dark/light dashboard/workspace/services screenshots are not visually distinct")
             report={
                 "AERIS_BROWSER_VISUAL_ACCESSIBILITY_BASELINE": "PASS",
+                "implementation_sha": subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip(),
                 "browser": browser,
                 "viewport": {"width": VIEWPORT[0], "height": VIEWPORT[1]},
                 "routes": route_results,

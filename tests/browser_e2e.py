@@ -30,6 +30,10 @@ TEST_TEMP = ROOT / ".aeris" / "test-temp"
 SEMANTIC_REPORT = ROOT / ".aeris" / "evidence" / "browser-semantic-live.json"
 
 
+def _implementation_sha() -> str:
+    return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip()
+
+
 def find_browser() -> str:
     env = os.environ.get("AERIS_E2E_BROWSER", "").strip()
     candidates: list[str] = [env] if env else []
@@ -210,7 +214,7 @@ def run_live(base_url: str) -> int:
         if missing:
             raise AssertionError(f"live browser route {route} missing real-API markers: {missing}")
         results.append({"route": route, "render": "PASS", "required_markers": list(required)})
-    report = {"AERIS_BROWSER_LIVE_SEMANTIC_E2E": "PASS", "browser": browser, "base_url": base_url, "routes": results, "scope": "deployed six-page browser render with real status/roles/services API values; task mutation is covered by API integration tests"}
+    report = {"AERIS_BROWSER_LIVE_SEMANTIC_E2E": "PASS", "implementation_sha": _implementation_sha(), "browser": browser, "base_url": base_url, "routes": results, "scope": "deployed six-page browser render with real status/roles/services API values; task mutation is covered by API integration tests"}
     SEMANTIC_REPORT.parent.mkdir(parents=True, exist_ok=True)
     SEMANTIC_REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import time
 import urllib.request
 from datetime import datetime, timezone
@@ -34,6 +35,7 @@ def run(base_url: str, cycles: int, interval: float) -> int:
             time.sleep(interval)
     payload = {
         "schema_version": 1, "result": "PASS" if not failures else "FAIL",
+        "implementation_sha": subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip(),
         "started_at_utc": started, "finished_at_utc": datetime.now(timezone.utc).isoformat(),
         "base_url": base_url, "cycles": cycles, "routes": len(ROUTES), "checks": checks,
         "failures": failures[:100], "failure_count": len(failures),
