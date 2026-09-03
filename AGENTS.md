@@ -50,6 +50,8 @@ latest CI-passed Implementation main
 → OS-native unattended persistence
 → watchdog/self-recovery
 → Evidence/Audit handoff
+→ read persistent Build Phase catalog
+→ resume first unsatisfied professional-company phase
 ```
 
 ## Software Gap Closure Loop
@@ -81,6 +83,37 @@ true License/paid-tool/hardware/secret/physical/Human dependency
 
 Do not stop merely to report `NOT_IMPLEMENTED` when Codex can safely implement the missing software. Continue until no safe zero-cost software-only gap remains or the next gap is a genuine Human/external gate.
 
+## Persistent Build Phase continuation
+
+AERIS construction state must not depend on chat history.
+
+The durable phase catalog is:
+
+- `docs/AERIS_BUILD_PHASES.md`
+- `config/build_phases.v1.json`
+
+Current formal phase specs include:
+
+1. `docs/AERIS_LOCAL_SOFTWARE_COMPLETION_PASS.md`
+2. `docs/AERIS_PROFESSIONAL_COMPANY_BUILD_100_ENGINEER_CAPABILITY_FACTORY.md`
+
+On every two-URL Full-Build trigger, after establishing a safe local workspace and Core integrity:
+
+```text
+read phase catalog
+→ inspect real local Evidence/state
+→ mark already-satisfied phases without rebuilding them
+→ repair only stale/invalid/incompatible completion evidence when required
+→ execute the first unsatisfied phase
+→ continue automatically into later phases when completion contracts are met
+```
+
+Never treat AI prose, a previous chat, or a claimed prior completion as evidence. Conversely, do not make a new machine repeat an expensive completed phase when current compatible evidence proves the phase is satisfied.
+
+Every future major AERIS construction prompt/spec must be persisted in the Implementation repository as a versioned phase document and added to both the human-readable and machine-readable phase catalogs. This is a standing project rule so a new computer can resume AERIS from the two repositories without reconstructing prior work from chat.
+
+If a future phase strengthens an earlier phase, preserve and extend earlier truth/evidence/regression contracts; never silently weaken them.
+
 ## AI change acceptance / regression closure
 
 `docs/AI_CHANGE_ACCEPTANCE_PROTOCOL.md` is mandatory for every GitHub repair or implementation change.
@@ -107,6 +140,8 @@ PR CI success is not enough to tell the Human a GitHub repair is complete. The m
 ## Token-efficiency rule
 
 Use the latest GitHub `main` whose Windows + Ubuntu CI passed. Do not spend local Codex Token rediscovering cloud-reproducible defects. Prefer GitHub/CI validation before local debugging. Normal real-machine acceptance is one cycle; repeat only for genuinely machine-specific evidence/failure.
+
+Persistent Build Phases are part of the token-efficiency contract: inspect phase evidence first and resume, rather than repeating previously satisfied construction work.
 
 ## Default execution policy
 
@@ -149,7 +184,8 @@ Preserve Evidence and resume automatically afterward.
 4. `config/autopilot.json`, `config/zero_cost_no_claude.v1.json`, `config/maturity.json`, `config/core_alignment.json`, `core.lock.json`.
 5. `docs/AUTOPILOT_ZERO_TOUCH_SOP.md`.
 6. `docs/DEFINITION_OF_COMPANY_DONE.md`.
-7. Task-specific files only as needed.
+7. `docs/AERIS_BUILD_PHASES.md` + `config/build_phases.v1.json`.
+8. The first unsatisfied phase spec and only task-specific files needed to execute it.
 
 Optional reviewer documents are not part of the default path.
 
@@ -158,4 +194,4 @@ Optional reviewer documents are not part of the default path.
 Windows: `./AERIS_AUTOPILOT.ps1`  
 Linux/Jetson: `bash ./AERIS_AUTOPILOT.sh`
 
-Completion is determined from real capability gaps + regression gates + PR CI + post-merge main CI + `.aeris/state/*` + Audit/Evidence + actual service reachability — never from AI prose.
+Completion is determined from real capability gaps + persistent phase completion contracts + regression gates + PR CI + post-merge main CI + `.aeris/state/*` + Audit/Evidence + actual service reachability — never from AI prose.
