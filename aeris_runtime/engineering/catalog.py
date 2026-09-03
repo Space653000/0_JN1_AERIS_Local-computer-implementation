@@ -128,6 +128,7 @@ def verify_checks(values: dict, checks: list[dict]) -> list[dict]:
         elif reduction=="sum": actual=float(np.sum(actual))
         expected=rule["expected"]; tolerance=rule["absolute_tolerance"]
         if reduction=="range": passed=bool(np.all(np.asarray(actual)>=expected[0]) and np.all(np.asarray(actual)<=expected[1]))
+        elif expected is None or actual is None: passed=actual is expected
         elif isinstance(expected,bool): passed=actual is expected
         elif isinstance(expected,str): passed=actual==expected
         else: passed=bool(np.allclose(actual,expected,atol=tolerance,rtol=0))

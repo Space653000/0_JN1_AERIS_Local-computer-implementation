@@ -1,0 +1,33 @@
+{
+  "version": "H0001-company-challenges-v1",
+  "source_kind": "SYNTHETIC",
+  "scope": "Hypothetical analytical revisions; no physical improvement, whole-role L3 or company acceptance",
+  "challenges": [
+    {"id":"SPEAKER_FR","implemented":false},
+    {"id":"SPEAKER_POWER","implemented":true,"role_id":"R016",
+     "allowed_revision_fields":["fundamental_rms_pa","input_power_w"],
+     "initial":{"fundamental_rms_pa":0.5,"input_power_w":20},
+     "revised":{"fundamental_rms_pa":1,"input_power_w":1},
+     "requirements":{"max_thd_percent":5,"max_compression_db":3,"max_coil_temperature_c":80},
+     "initial_failures":["COMPRESSION_DB","COIL_TEMPERATURE_C"],
+     "oracles":{"initial":[{"path":"compression_db","expected":6.020599913279624,"absolute_tolerance":1e-7},{"path":"predicted_coil_temperature_c","expected":151.42411176571153,"absolute_tolerance":1e-7}],
+                "revised":[{"path":"compression_db","expected":0,"absolute_tolerance":1e-7},{"path":"checks.1.margin","expected":3,"absolute_tolerance":1e-7},{"path":"checks.2.margin","expected":48.67879441171442,"absolute_tolerance":1e-7}]}},
+    {"id":"MICROPHONE_NOISE","implemented":true,"role_id":"R033",
+     "allowed_revision_fields":["frontend_noise_rms_v"],
+     "initial":{"frontend_noise_rms_v":0.00001},"revised":{"frontend_noise_rms_v":0.000006},
+     "requirements":{"minimum_sensitivity_dbv_per_pa":-42,"maximum_sensitivity_dbv_per_pa":-38,"maximum_self_noise_spl_db":20,"minimum_electrical_headroom_db":3},
+     "initial_failures":["IDENTIFIABLE_SELF_NOISE","SELF_NOISE_UPPER_BOUND"],
+     "oracles":{"initial":[{"path":"self_noise_spl_db","expected":null,"absolute_tolerance":0}],
+                "revised":[{"path":"self_noise_spl_db","expected":12.041199826559248,"absolute_tolerance":1e-7},{"path":"electrical_headroom_db","expected":7.958800173440752,"absolute_tolerance":1e-7}]}},
+    {"id":"ARRAY_DOA","implemented":false},
+    {"id":"TWS_FIT","implemented":true,"role_id":"R048",
+     "allowed_revision_fields":["leak_pole_hz"],"initial":{"leak_pole_hz":200},"revised":{"leak_pole_hz":20},
+     "requirements":{"max_leak_loss_db":3,"min_phase_margin_deg":45,"max_ff_wind_rms_pa":0.003,"min_call_snr_db":20,"safe_peak_excursion_mm":0.5,"max_occlusion_boost_db":6},
+     "initial_failures":["SEAL_LEAK_LOSS_DB"],
+     "oracles":{"initial":[{"path":"leak_loss_db","expected":6.989700043360188,"absolute_tolerance":1e-7}],
+                "revised":[{"path":"leak_loss_db","expected":0.17033339298780367,"absolute_tolerance":1e-7}]}},
+    {"id":"FAILURE_FACA","implemented":false},
+    {"id":"REQUIREMENT_TRACEABILITY","implemented":false},
+    {"id":"STANDARDS_PROVENANCE","implemented":false}
+  ]
+}

@@ -300,3 +300,40 @@ resolved with no new blocker in the reviewed delta. Full local suite then passed
 `.aeris/evidence/H0001-microphone-numeric-full-tests.log`. Live runtime remains
 0752121; its last observed L0=9/L1=91 reflects unrecognized new Skills, not the
 new source's acceptance status. Updated-runtime integration is still required.
+
+## Seventh construction checkpoint — first company challenge flows
+
+The eight-family inventory explicitly implements only SPEAKER_POWER,
+MICROPHONE_NOISE and TWS_FIT; the other five remain SOFTWARE_LOCAL_FIXABLE.
+Each implemented challenge discovers bounded executor/reviewer qualification,
+creates an actual SQLite project and two workflow tasks, records an initial
+rejection, changes only permitted hypothetical design inputs, and requires a
+subsequent independently reviewed acceptance. Requirements cannot be relaxed.
+These are integration cases, not three more role Golden suites or L3 awards.
+
+Aggregate Evidence binds source/registry/attempt, project/task/workflow, sealed
+execution/review/qualification references, complete original report and replay
+snapshots, numerical oracles and actual source-derived Memory events. Status
+revalidates the receipts; a valid result from another attempt is not a substitute.
+Tests reject no-op revisions, relaxed limits, missing qualification/report,
+tampered children, edited reports, stale source and cross-attempt substitution.
+An initial test also reproduced null-oracle arithmetic failure; unknown remains
+null and is never treated as zero or false. Five focused tests passed in 46.821 s.
+
+Local entrypoint (state/evidence remains private under .aeris):
+
+```powershell
+.\.venv\Scripts\python.exe -B -m aeris_runtime.engineering.challenges inventory
+.\.venv\Scripts\python.exe -B -m aeris_runtime.engineering.challenges run SPEAKER_POWER --prepare-qualifications
+.\.venv\Scripts\python.exe -B -m aeris_runtime.engineering.challenges status CHALLENGE-<attempt-id>
+```
+
+The preparation option executes missing suites; it does not assign qualification
+labels. Without it missing qualification returns BLOCKED. Six live route spot
+checks remained HTTP 200; the old supervisor has not been restarted. Full tests,
+independent code review, remaining domain depth, updated runtime/clean CI and
+the new H0001 Draft PR are not represented as completed by this checkpoint.
+
+Full local unit rerun for this implementation passed 277 tests in 111.518 s.
+The local console excerpt retains the final outcome but contains one truncated
+tool-output chunk; it is not represented as an unabridged transcript.
