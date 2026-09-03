@@ -5,6 +5,7 @@ describe HOW each seat works. They do not award maturity; separate executable
 domain scenarios and independent expected decisions are required for acceptance.
 """
 import copy
+import re
 from .role_specs import SEAT_SKILLS
 
 # ID | professional decision | failure modes | competing hypotheses |
@@ -113,25 +114,45 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 '''
 
 
+STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
+ROLE_DOMAIN_CONTRACTS={
+    'R048':{'skill_id':'tws-fit-anc-call-baseline',
+            'method':'methods/roles/tws-fit-anc-call-baseline.json',
+            'suite':'golden/roles/R048/golden.json',
+            'scope':'Bounded TWS seal, FF/FB ANC, outward call noise, excursion and occlusion decisions; not complete product acceptance.'}}
+
+
+def standards_families(value):
+    """Accept complete declared identifiers, never substring approximations."""
+    if value=='-': return []
+    token='(?:'+'|'.join(re.escape(family) for family in STANDARD_FAMILIES)+')'
+    if not re.fullmatch(token+'(?: '+token+')*',value):
+        raise ValueError('unknown standards family: '+value)
+    parsed=re.findall(token,value)
+    if len(parsed)!=len(set(parsed)): raise ValueError('duplicate standards family')
+    return [family for family in STANDARD_FAMILIES if family in parsed]
+
+
 def profiles():
     result={}
     for line in _AUTHORED.strip().splitlines():
         role,decision,failures,counters,uncertainty,neighbors,standards=line.split('|')
         if role in result: raise ValueError('duplicate authored role profile')
         skills=SEAT_SKILLS[int(role[1:])-1].split()
-        # Standards families include spaces; semicolon-free known family tokens
-        # are parsed explicitly, never attached indiscriminately to every seat.
-        families=[]
-        for family in ('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110'):
-            if family in standards: families.append(family)
+        domain=ROLE_DOMAIN_CONTRACTS.get(role)
+        methods=[f'methods/engineering/{s}.json' for s in skills]
+        if domain:
+            skills.append(domain['skill_id']); methods.append(domain['method'])
+        families=standards_families(standards)
         result[role]={'role_id':role,'mission':decision,'professional_decision':decision,
             'common_failure_modes':failures.split(';'),'counter_hypotheses':counters.split(';'),
             'uncertainty_requirements':[uncertainty], 'neighbor_roles':neighbors.split(),
             'standards_metadata_references':families,
             'standards_strategy':'ROLE_SCOPED_METADATA' if families else 'NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH',
             'required_skills':skills,
+            'required_methods':methods,'domain_execution_contract':copy.deepcopy(domain),
             'professional_decision_contract':{'decision_id':role+'-DOMAIN-DECISION','question':decision,
-                'required_methods':[f'methods/engineering/{s}.json' for s in skills],
+                'required_methods':methods,
                 'required_skills':skills,'acceptance_oracle_source':'SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED'},
             'reviewer_qualifications':{'bounded_domain_question':decision,'must_challenge':counters.split(';'),
                 'must_account_for':uncertainty,'human_credential_claimed':False}}
@@ -148,8 +169,15 @@ def enrich_pack(pack):
     """Materialize profession-specific contracts without awarding execution."""
     result=copy.deepcopy(pack); profile=profiles()[pack['identity']['id']]
     for field in ('mission','common_failure_modes','counter_hypotheses','uncertainty_requirements',
-                  'standards_metadata_references','standards_strategy','professional_decision_contract','neighbor_distinctions'):
+                  'standards_metadata_references','standards_strategy','professional_decision_contract','neighbor_distinctions',
+                  'required_skills','required_methods'):
         result[field]=copy.deepcopy(profile[field])
+    domain=profile['domain_execution_contract']
+    if domain:
+        result['domain_execution_contract']=copy.deepcopy(domain)
+        skill=domain['skill_id']
+        result['inputs'][skill]=f'skills/{skill}/input.schema.json'
+        result['outputs'][skill]=f'skills/{skill}/output.schema.json'
     result['professional_profile_version']='H0001-authored-v1'
     result['responsibilities']=[profile['mission'],*('Discriminate: '+h for h in profile['counter_hypotheses'])]
     result['scope']=[profile['mission'],*('Investigate and bound: '+f for f in profile['common_failure_modes'])]

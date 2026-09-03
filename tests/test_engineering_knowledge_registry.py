@@ -7,6 +7,17 @@ from aeris_runtime.engineering.knowledge_registry import summary
 
 
 class KnowledgeClassificationTests(unittest.TestCase):
+    def test_classification_and_provenance_metadata_drift_fails_closed(self):
+        original=factory.read(factory.ROOT/'knowledge/engineering/manifest.json')
+        for field,value in (('rights','PUBLIC_DOMAIN'),('source_kind','PUBLIC_EXTERNAL'),
+                            ('source','https://example.org/forged'),('is_evidence',True),
+                            ('category','Actual measurement'),('provenance_policy','forged')):
+            corpus=copy.deepcopy(original)
+            note=next(n for n in corpus['documents'] if n['id']=='GOLDEN-product-system-plan')
+            note[field]=value
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError,'source note drift'):
+                summary(corpus)
+
     def test_authored_synthetic_notes_are_not_external_professional_documents(self):
         result=get('/api/v1/capabilities/knowledge')
         self.assertEqual(result['documents'],204)

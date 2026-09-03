@@ -37,7 +37,9 @@ def authored_registry(corpus, *, root: Path=ROOT):
         if not path.is_relative_to(root.resolve()) or not path.is_file():
             raise ValueError('missing or unsafe knowledge note file')
         on_disk=json.loads(path.read_text(encoding='utf-8-sig'))
-        if on_disk.get('text')!=note['text'] or on_disk.get('sha256')!=actual:
+        # Classification and provenance are part of the source contract too.
+        # A text-only digest cannot detect a forged rights/source declaration.
+        if on_disk!=note:
             raise ValueError('knowledge manifest and source note drift')
         mapped=role_refs.get(relative,[])
         if re.fullmatch('PRODUCT-R[0-9]{3}',identifier): mapped=[identifier[-4:]]

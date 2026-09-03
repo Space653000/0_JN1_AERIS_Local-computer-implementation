@@ -91,3 +91,50 @@ Still outstanding: Role Acceptance Factory, qualified contextual review routing,
 external Knowledge retrieval provenance, eight integrated challenges, complete
 live API/registry integration and clean-checkout/dual-platform CI/new Draft PR.
 No P02 completion, Human approval or professional certification is claimed.
+
+## Third construction checkpoint — review corrections and first role suite
+
+Independent review of `5da93d9507f18728020918495f8a74308aa11627` retained two axes:
+
+- Standards P1: shared Skill positive/negative/repeat evidence lacked professional
+  boundary evidence yet granted L2. Corrected: shared evaluation is capped at L1;
+  its valid execution coverage remains visible. New profession-specific execution
+  is evaluated separately. The regression failed before the change and now passes.
+- Standards P2: substring standards parsing silently discarded unknown families.
+  Corrected with complete identifier validation; unknown families, suffixes and
+  duplicates fail closed. No additional standards were attached to roles.
+- Spec P1: top-level Methods could be empty/unrelated while the decision contract
+  still passed. Corrected by matching authored Method lists and Skill manifest
+  Method/implementation references. Empty and wrong-Method regressions are kept.
+- Spec P2: manifest rights/provenance could drift from the source note without a
+  text-hash change. Corrected by comparing the complete source-note metadata, not
+  only text. Rights, source-kind, source, category and provenance tampering fail.
+
+R048 now has a fifth, actual domain Skill and its Method in the authored contract.
+`golden/roles/R048/golden.json` contains eight independently authored decisions:
+nominal hybrid ANC, inclusive feedback-delay margin, wrong units, equal-SNR
+wind/ambient counterhypotheses, seal leakage, excursion and occlusion. They are
+not the shared Product planner fixture. These are a bounded TWS baseline, not the
+complete lifecycle/manufacturing/fit-distribution/product validation matrix.
+
+The new Role Acceptance Factory seals role identity, contract, artifacts, suite,
+Method implementation, acceptance engine and review-policy bindings. Status
+replays decisions and ignores mutable index labels. Re-sealed wrong bindings,
+altered decisions, missing boundary records and tampered bundles fail closed.
+It can establish only scoped L2 execution. Independent qualified review remains
+`REVIEW_BLOCKED`; this stage cannot award L3/L4. Role Golden counts count cases,
+not directory names. The matrix/API distinguish contracted and evidenced Skills.
+
+Verification at this checkpoint:
+
+- Full local unit suite: 246 passed (`.aeris/evidence/H0001-batch6-tests.log`).
+- Six-page isolated browser semantic E2E passed (`H0001-batch6-browser.log`).
+- Live six-page HTTP spot checks: 6/6 HTTP 200. No new soak claim.
+- Live supervisor still runs construction `0752121`; updated backend integration
+  has not been deployed/restarted and is not claimed as live acceptance.
+- No new PR CI or H0001 Draft PR yet. Nothing pushed; Core remains unchanged.
+
+Remaining software work still includes qualified reviewer bootstrap and routing,
+all other role suites, Speaker/Microphone depth, full 24-product cases, external
+Knowledge provenance, eight company challenges, live deployment and final clean
+Windows/Ubuntu CI. Passing this checkpoint does not complete H0001 or P02.

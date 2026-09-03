@@ -27,7 +27,9 @@ def get(url):
     parsed=urlsplit(url); path=parsed.path; query=parse_qs(parsed.query)
     if path=="/api/v1/capabilities": return live_matrix()
     if path=="/api/v1/capabilities/skills":
-        return {"skills":[{k:v for k,v in d.items() if k!="fixture"} for d in catalog.definitions().values()]}
+        from .domain_methods import HANDLERS
+        domain=[factory.read(factory.ROOT/f'skills/{skill}/manifest.json') for skill in HANDLERS]
+        return {"skills":[{k:v for k,v in d.items() if k!="fixture"} for d in catalog.definitions().values()]+domain}
     if path.startswith("/api/v1/capabilities/roles/"):
         return factory.load_pack(path.rsplit("/",1)[1])
     if path.startswith("/api/v1/capabilities/fixture/"):

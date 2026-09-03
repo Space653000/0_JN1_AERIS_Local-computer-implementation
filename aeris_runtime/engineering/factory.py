@@ -67,7 +67,9 @@ def artifact_digest(pack, cache=None):
     cache={} if cache is None else cache
     paths=[]
     for skill in pack["required_skills"]:
-        paths.extend(f"skills/{skill}/{name}" for name in ("SKILL.md","manifest.json","implementation.py","input.schema.json","output.schema.json"))
+        paths.extend(f"skills/{skill}/{name}" for name in ("SKILL.md","manifest.json","input.schema.json","output.schema.json"))
+        paths.append(read(ROOT/f'skills/{skill}/manifest.json')['implementation'])
+    if pack.get('domain_execution_contract'): paths.append(pack['domain_execution_contract']['suite'])
     for key in ("required_methods","required_knowledge","golden_cases","negative_cases","regression_cases","report_templates"):
         paths.extend(pack[key])
     hashes={}
@@ -85,6 +87,14 @@ def load_pack(role_id: str):
 
 
 def fixture_for(role_id: str, skill_id: str):
+    domain=load_pack(role_id).get('domain_execution_contract')
+    if domain and skill_id==domain['skill_id']:
+        from .role_acceptance import load_contract
+        _,suite=load_contract(role_id)
+        case=next(c for c in suite['cases'] if c['kind']=='positive')
+        return {'skill_id':skill_id,'input':{**copy.deepcopy(suite['base_input']),**copy.deepcopy(case['input_overrides'])},
+                'checks':copy.deepcopy(case['checks']),'reason':case['question'],
+                'source_kind':suite['source_kind'],'scope':suite['scope']}
     fixture=copy.deepcopy(catalog.definitions()[skill_id]["fixture"])
     index=int(role_id[1:])
     if skill_id=="product-system-plan":
@@ -208,12 +218,26 @@ def contract_errors(pack):
         for key in ('required_skills','mission','common_failure_modes','counter_hypotheses',
                     'standards_metadata_references','professional_decision_contract','neighbor_distinctions'):
             if pack.get(key)!=profile[key]: errors.append('professional contract mismatch: '+key)
+        if pack.get('required_methods')!=profile['professional_decision_contract']['required_methods']:
+            errors.append('professional contract mismatch: required_methods')
+        if pack.get('domain_execution_contract')!=profile['domain_execution_contract']:
+            errors.append('professional contract mismatch: domain_execution_contract')
     definitions=catalog.definitions()
+    from .domain_methods import HANDLERS
     for skill in pack.get("required_skills",[]):
-        if skill not in definitions: errors.append("unknown skill "+skill); continue
+        if skill not in definitions and skill not in HANDLERS: errors.append("unknown skill "+skill); continue
         directory=ROOT/"skills"/skill
-        for name in ("SKILL.md","manifest.json","implementation.py","input.schema.json","output.schema.json"):
+        for name in ("SKILL.md","manifest.json","input.schema.json","output.schema.json"):
             if not (directory/name).is_file(): errors.append("missing skill asset "+skill+"/"+name)
+        if (directory/'manifest.json').is_file():
+            manifest=read(directory/'manifest.json'); method=manifest.get('method')
+            expected_method=(profile or {}).get('domain_execution_contract') or {}
+            expected_method=expected_method.get('method') if skill in HANDLERS else f'methods/engineering/{skill}.json'
+            if method!=expected_method or method not in pack.get('required_methods',[]):
+                errors.append('Skill/Method contract mismatch: '+skill)
+            implementation='aeris_runtime/engineering/domain_methods.py' if skill in HANDLERS else f'skills/{skill}/implementation.py'
+            if manifest.get('implementation')!=implementation or not (ROOT/implementation).is_file():
+                errors.append('missing/mismatched Skill implementation: '+skill)
     for key in ("required_methods","required_knowledge","golden_cases","negative_cases","regression_cases","report_templates"):
         for path in pack.get(key,[]):
             candidate=(ROOT/path).resolve()
@@ -221,11 +245,16 @@ def contract_errors(pack):
     return errors
 
 
+def shared_skill_maturity(pack):
+    """Shared fixtures do not prove profession-specific boundary decisions."""
+    return 'L0' if contract_errors(pack) else 'L1'
+
+
 def evaluate_role(role_id: str) -> dict:
     pack=load_pack(role_id); errors=contract_errors(pack)
     if errors: raise ValueError(errors)
     runs=[]
-    for skill in pack["required_skills"]:
+    for skill in shared_skills(pack):
         fixture=fixture_for(role_id,skill)
         output=catalog.execute(skill,fixture["input"])
         checks=catalog.verify_checks(output["values"],fixture["checks"])
@@ -242,7 +271,8 @@ def evaluate_role(role_id: str) -> dict:
     write(folder/"validation.json",{"role_id":role_id,"all_evaluated":record["all_evaluated"],"physical_measurement_verified":False})
     seal_bundle(run_id,"AERIS Capability Factory")
     record_ref={k:v for k,v in record.items() if k!="runs"}
-    record_ref.update({"run_id":run_id,"sealed_evidence_ref":str(folder.relative_to(ROOT)),"level":"L2" if runs and record["all_evaluated"] else "L1"})
+    record_ref.update({"run_id":run_id,"sealed_evidence_ref":str(folder.relative_to(ROOT)),
+                       "level":shared_skill_maturity(pack),"shared_skill_baseline_pass":bool(runs) and record["all_evaluated"]})
     write(STATE/"evaluations"/(role_id+".json"),record_ref)
     pack["current_maturity_level"]=record_ref["level"]; pack["maturity_evidence"]=[record_ref["sealed_evidence_ref"]]
     write(PACKS/role_id/"capability.json",pack)
@@ -252,10 +282,15 @@ def evaluate_role(role_id: str) -> dict:
 
 
 def matrix() -> dict:
+    from .role_acceptance import RoleAcceptanceFactory
+    from .domain_methods import HANDLERS
+    role_factory=RoleAcceptanceFactory()
     roles=canonical_roles(); rows=[]; counts={f"L{i}":0 for i in range(5)}; groups={}
     implementation=catalog.implementation_digest(); artifact_cache={}
     for role in roles:
-        level="L0"; weaknesses=[]; skills=[]; refs=[]
+        level="L0"; weaknesses=[]; skills=[]; refs=[]; shared_evaluated=False; executable=[]
+        domain_status={'execution_passed':False,'case_count':0,'role_l3_accepted':False}
+        pack={}
         try:
             pack=load_pack(role["id"]); errors=contract_errors(pack); skills=pack["required_skills"]
             if not errors: level="L1"
@@ -272,22 +307,36 @@ def matrix() -> dict:
                               "implementation_sha256":implementation,"acceptance_engine_sha256":acceptance_engine_digest(),
                               "evidence_kind":"SHARED_SKILL_EXECUTION"}
                     if all(sealed.get(k)==v for k,v in expected.items()) and valid_skill_runs(sealed.get("runs",[]),pack):
-                        level="L2"
+                        shared_evaluated=True
+                        executable=shared_skills(pack)
                         refs=[str(sealed_path.parent.parent.relative_to(ROOT))]
                     else: weaknesses.append("sealed role/source/contract/predicate mismatch or incomplete Skill/negative evidence")
                 else: weaknesses.append("missing or tampered executable evaluation evidence")
-            if level in {"L1","L2"}: weaknesses.append("independent role-specific domain acceptance not established; shared Skill Golden is not role L3")
+            if level=='L1' and pack.get('domain_execution_contract'):
+                domain_status=role_factory.status(role['id'])
+                if domain_status['execution_passed']:
+                    level=domain_status['level']
+                    executable.append(pack['domain_execution_contract']['skill_id'])
+                    refs.append(domain_status['evidence_ref'])
+                weaknesses.append(domain_status['reason'])
+            if level=='L1': weaknesses.append("professional positive/negative/boundary execution not established; shared Skill Golden alone is not role L2 or L3")
+            if level in {'L1','L2'}: weaknesses.append('independent role-specific domain acceptance not established')
         except (OSError,ValueError,KeyError,TypeError) as exc: weaknesses.append(str(exc))
         counts[level]+=1
         group=groups.setdefault(role["group"],{"total":0,"L2_or_higher":0,"L3":0})
         group["total"]+=1; group["L2_or_higher"]+=int(level in {"L2","L3","L4"}); group["L3"]+=int(level=="L3")
-        rows.append({**role,"level":level,"skills":skills,"evidence":refs,
-                     "coverage":{"skills":len(skills),"methods":len(skills),"knowledge":len(skills),"golden":len(skills),"evaluated":len(skills) if level in {"L2","L3"} else 0,"role_acceptance":0},
+        rows.append({**role,"level":level,"skills":skills,"executable_skills":sorted(set(executable)),
+                     "evidence":refs,"shared_skill_execution_evidenced":shared_evaluated,'domain_execution':domain_status,
+                     "coverage":{"skills":len(skills),"methods":len(pack.get('required_methods',[])),
+                                 "knowledge":len(pack.get('required_knowledge',[])),"golden":len(pack.get('golden_cases',[])),
+                                 "evaluated":len(shared_skills(pack)) if shared_evaluated else 0,
+                                 "role_domain_cases":domain_status['case_count'],"role_acceptance":0},
                      "known_weaknesses":weaknesses+["no physical/calibrated expert-accepted L4 evidence"]})
     definitions=catalog.definitions(); unresolved=[r["id"] for r in rows if r["level"] in {"L0","L1"}]
+    role_suites=[read(path) for path in (ROOT/'golden/roles').glob('R*/golden.json')]
     return {"assessed_at_utc":now(),"total_roles":100,"maturity_counts":counts,"100_role_L2":100-len(unresolved),
-            "total_executable_skills":len(definitions),"total_methods":len(definitions),"total_golden_cases":len(definitions),
-            "total_role_golden_cases":len(list((ROOT/"golden"/"roles").glob("R*/golden.json"))),
+            "total_executable_skills":len(definitions)+len(HANDLERS),"total_methods":len(definitions)+len(HANDLERS),"total_golden_cases":len(definitions),
+            "total_role_golden_cases":sum(len(s['cases']) for s in role_suites),'total_role_golden_suites':len(role_suites),
             "total_negative_cases":len(definitions),"total_regression_cases":len(definitions),"coverage_by_group":groups,
             "unresolved_capability_gaps":unresolved,"ROLE_CAN_BE_MADE_L2_WITH_FREE_LOCAL_SOFTWARE":bool(unresolved),
             "roles":rows,"physical_verification_claimed":False,"legacy_registered_skills_not_counted":5,
@@ -295,9 +344,13 @@ def matrix() -> dict:
             "scope":f"{len(definitions)} shared Skill baselines; independent role-domain acceptance required for L3; no physical/professional verification"}
 
 
+def shared_skills(pack):
+    return [skill for skill in pack['required_skills'] if skill in catalog.definitions()]
+
+
 def valid_skill_runs(runs, pack):
     """Validate sealed coverage against current fixtures, including negatives."""
-    skills=pack["required_skills"]
+    skills=shared_skills(pack)
     if not runs or len(runs)!=len(skills) or {r["skill_id"] for r in runs}!=set(skills): return False
     for run in runs:
         skill=run["skill_id"]; fixture=fixture_for(pack["identity"]["id"],skill)

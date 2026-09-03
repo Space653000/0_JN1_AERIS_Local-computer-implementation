@@ -20,6 +20,12 @@ class MaturityBoundaryTests(unittest.TestCase):
         self.assertEqual(result['maturity_counts']['L3'], 0)
         self.assertEqual(result['maturity_counts']['L4'], 0)
 
+    def test_shared_skill_evaluation_without_professional_boundary_cannot_grant_l2(self):
+        # Shared synthetic fixtures alone are not the missing professional
+        # boundary evidence. This invariant survives future Role Suite support.
+        pack=factory.load_pack('R009')
+        self.assertEqual(factory.shared_skill_maturity(pack),'L1')
+
     def test_real_sealed_skill_run_capped_and_cross_role_bundle_rejected(self):
         temp_root=factory.ROOT/'.aeris/test-temp'; temp_root.mkdir(parents=True,exist_ok=True)
         with tempfile.TemporaryDirectory(dir=temp_root) as directory, ExitStack() as stack:
@@ -32,14 +38,15 @@ class MaturityBoundaryTests(unittest.TestCase):
                     (audit,'LOCK_FILE',root/'audit/.lock')):
                 stack.enter_context(patch.object(module,name,value))
             first=factory.evaluate_role('R009'); second=factory.evaluate_role('R010')
-            self.assertEqual(first['level'],'L2')
+            self.assertEqual(first['level'],'L1')
             matrix={r['id']:r for r in factory.matrix()['roles']}
-            self.assertEqual(matrix['R009']['level'],'L2')
-            self.assertEqual(matrix['R010']['level'],'L2')
+            self.assertEqual(matrix['R009']['level'],'L1')
+            self.assertEqual(matrix['R010']['level'],'L1')
+            self.assertEqual(matrix['R009']['coverage']['evaluated'],len(factory.load_pack('R009')['required_skills']))
             # A valid but different role's seal must not satisfy the target.
             index=state/'evaluations/R009.json'
             factory.write(index,{**first,'run_id':second['run_id'],'level':'L4'})
-            self.assertEqual({r['id']:r for r in factory.matrix()['roles']}['R009']['level'],'L1')
+            self.assertEqual({r['id']:r for r in factory.matrix()['roles']}['R009']['coverage']['evaluated'],0)
             factory.write(index,first)
             # Existing valid evidence produced by a different predicate is stale.
             sealed_path=evidence.bundle_dir(first['run_id'])/'processed/capability-evaluation.json'
@@ -50,7 +57,7 @@ class MaturityBoundaryTests(unittest.TestCase):
             factory.write(folder/'processed/capability-evaluation.json',record)
             evidence.seal_bundle(replacement['run_id'],'test')
             factory.write(index,{**first,'run_id':replacement['run_id']})
-            self.assertEqual({r['id']:r for r in factory.matrix()['roles']}['R009']['level'],'L1')
+            self.assertEqual({r['id']:r for r in factory.matrix()['roles']}['R009']['coverage']['evaluated'],0)
 
     def test_no_empty_checks_or_missing_negative_evidence_can_grant_execution(self):
         pack=factory.load_pack('R009'); runs=[]
