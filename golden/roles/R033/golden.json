@@ -1,0 +1,212 @@
+{
+  "suite_id": "R033-REFERENCE-NOISE-HEADROOM-V1",
+  "role_id": "R033",
+  "skill_id": "microphone-reference-noise-headroom-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Manually worked 1 Pa / 0.1 V / gain 10 reference; 6-8-10 microvolt noise triangle; 100 dB SPL = 2 Pa; independent boundary and causal-discrimination scenarios. No claimed acquired measurement.",
+  "scope": "Supplied-reference microphone sensitivity, identifiable noise and electrical headroom decisions; not acoustic overload, physical measurement or full profession acceptance.",
+  "base_input": {
+    "calibrator_pressure_rms_pa": 1,
+    "calibrator_output_rms_v": 0.1,
+    "calibration_gain_linear": 10,
+    "analysis_gain_linear": 10,
+    "total_noise_rms_v": 0.00001,
+    "frontend_noise_rms_v": 0.000006,
+    "ambient_noise_rms_pa": 0,
+    "adc_peak_v": 1,
+    "required_spl_db": 100,
+    "signal_crest_factor": 2,
+    "minimum_sensitivity_dbv_per_pa": -42,
+    "maximum_sensitivity_dbv_per_pa": -38,
+    "maximum_self_noise_spl_db": 20,
+    "minimum_electrical_headroom_db": 3,
+    "pressure_relative_bound": 0,
+    "gain_relative_bound": 0,
+    "noise_relative_bound": 0
+  },
+  "cases": [
+    {
+      "id": "R033-REFERENCE",
+      "kind": "positive",
+      "question": "Are supplied pressure and voltage references normalized through the calibration gain, independent of ADC headroom?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "sensitivity_dbv_per_pa",
+          "expected": -40,
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "self_noise_spl_db",
+          "expected": 12.041199826559248,
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "electrical_headroom_db",
+          "expected": 7.958800173440752,
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R033-DEPLOYMENT-GAIN",
+      "kind": "positive",
+      "question": "Does increased deployment gain change ADC headroom without changing capsule sensitivity?",
+      "input_overrides": {
+        "analysis_gain_linear": 100
+      },
+      "checks": [
+        {
+          "path": "sensitivity_dbv_per_pa",
+          "expected": -40,
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "electrical_headroom_db",
+          "expected": -12.041199826559248,
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "checks.3.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "capsule_overload_verified",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R033-FRONTEND-FLOOR",
+      "kind": "counter_hypothesis",
+      "question": "When the full observed floor can be explained by electronics, must capsule noise remain unresolved?",
+      "input_overrides": {
+        "frontend_noise_rms_v": 0.00001
+      },
+      "checks": [
+        {
+          "path": "noise_resolved",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "next_discriminating_experiment",
+          "expected": "LOWER_NOISE_FRONTEND_AT_MATCHED_GAIN",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R033-ROOM-FLOOR",
+      "kind": "counter_hypothesis",
+      "question": "At the same total output noise, does an acoustic floor require a quieter fixture instead of replacing the frontend?",
+      "input_overrides": {
+        "frontend_noise_rms_v": 0,
+        "ambient_noise_rms_pa": 0.0001
+      },
+      "checks": [
+        {
+          "path": "noise_resolved",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "next_discriminating_experiment",
+          "expected": "QUIETER_ROOM_OR_CALIBRATOR_COUPLING",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R033-SUBTRACTION-UNCERTAINTY",
+      "kind": "boundary",
+      "question": "Can nominal positive residual noise still be unidentifiable within the declared uncertainty interval?",
+      "input_overrides": {
+        "noise_relative_bound": 0.3
+      },
+      "checks": [
+        {
+          "path": "noise_resolved",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.1.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R033-PRESSURE-UNCERTAINTY",
+      "kind": "boundary",
+      "question": "Must a nominal sensitivity exactly at the lower limit fail if its uncertainty interval crosses that limit?",
+      "input_overrides": {
+        "pressure_relative_bound": 0.1,
+        "minimum_sensitivity_dbv_per_pa": -40
+      },
+      "checks": [
+        {
+          "path": "sensitivity_dbv_per_pa",
+          "expected": -40,
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "checks.0.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R033-INCLUSIVE-SENSITIVITY",
+      "kind": "boundary",
+      "question": "With zero declared uncertainty, are exact lower/upper sensitivity limits inclusive?",
+      "input_overrides": {
+        "minimum_sensitivity_dbv_per_pa": -40,
+        "maximum_sensitivity_dbv_per_pa": -40
+      },
+      "checks": [
+        {
+          "path": "checks.0.passed",
+          "expected": true,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R033-WRONG-REFERENCE",
+      "kind": "negative",
+      "question": "Must undeclared dBFS voltage be rejected without an explicit full-scale reference?",
+      "input_overrides": {
+        "calibrator_output_dbfs": -20
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R033-CLIPPED-CALIBRATOR",
+      "kind": "negative",
+      "question": "Must clipping invalidate the calibration-derived sensitivity rather than imply a low-sensitivity capsule?",
+      "input_overrides": {
+        "calibrator_output_rms_v": 1
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R033-INCONSISTENT-NOISE",
+      "kind": "negative",
+      "question": "Must frontend noise greater than total noise in the same frame be rejected?",
+      "input_overrides": {
+        "frontend_noise_rms_v": 0.001
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

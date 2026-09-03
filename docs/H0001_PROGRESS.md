@@ -232,3 +232,26 @@ scoped local tests, not deployed new-runtime or clean Windows/Ubuntu acceptance.
 
 After all reviewer corrections and 50 role cases, full local unit rerun passed
 263 tests in 53.222 s. No remote push or live supervisor restart was performed.
+
+## Sixth construction checkpoint — microphone reference/noise/headroom
+
+R033 owns a separate supplied-reference Method with ten authored domain cases.
+It separates calibration gain from deployment gain, RMS pressure from dBV/dBFS,
+frontend versus ambient noise, and ADC electrical headroom from capsule acoustic
+overload. Conservative pressure/gain/noise intervals can reject a nominally
+passing result. Unidentifiable noise returns null intrinsic-noise values rather
+than a fabricated low floor. Counter-hypotheses require different quieter-room
+versus lower-noise-frontend experiments. Clipped calibration, inconsistent noise,
+wrong units, nonfinite and inverted limits fail closed.
+
+R033 suite evaluation and real temporary SQLite/workflow/Evidence/reproduction
+pass at scoped L2. Its independent reviewer is not yet implemented; review stays
+REVIEW_BLOCKED. This does not acquire physical microphone measurements or award
+L3/L4. Source role suites now number seven with sixty actual cases; shared Skill
+coverage remains a different metric.
+
+Full local suite: 268 tests passed in 56.866 s. Live six-route spot check 6/6
+HTTP 200, still the earlier loaded supervisor, not new deployment acceptance.
+The previous reviewer correction was independently rechecked: original P1/P2
+resolved, all 34 reviewer qualification cases matched the authored expectations.
+No Core edits, remote push, PR #32 edits, H0001 PR creation or merge occurred.

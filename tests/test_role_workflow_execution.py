@@ -11,6 +11,7 @@ from aeris_runtime.engineering import factory,harness,role_acceptance,domain_rev
 from aeris_runtime.engineering.orchestration import run_role
 from tests.test_speaker_power_domain import BASE
 from tests.test_tws_domain_method import BASE as TWS_BASE
+from tests.test_microphone_measurement_domain import BASE as MIC_BASE,SKILL as MIC_SKILL
 
 
 class RoleWorkflowExecutionTests(unittest.TestCase):
@@ -106,6 +107,12 @@ class RoleWorkflowExecutionTests(unittest.TestCase):
             (evidence.bundle_dir(tws['evidence_run_id'])/'raw/engineering-context.json').write_text('{}',encoding='utf-8')
             evidence.seal_bundle(tws['evidence_run_id'],'test fixture reseal')
             self.assertEqual(domain_review.review_bundle(tws['evidence_run_id'])['decision'],'REVIEW_BLOCKED')
+            self.assertTrue(role_acceptance.RoleAcceptanceFactory().evaluate('R033')['execution_passed'])
+            mic=run_role('R033',MIC_SKILL,MIC_BASE,objective='Supplied microphone reference investigation',source_kind='SYNTHETIC')
+            self.assertEqual(mic['state'],'EVIDENCED')
+            self.assertEqual(mic['review']['decision'],'REVIEW_BLOCKED')
+            self.assertEqual(reproduction.reproduce_run(mic['evidence_run_id'])['result'],'PASS')
+            self.assertFalse(mic['numerical_result']['values']['capsule_overload_verified'])
 
 
 if __name__=='__main__': unittest.main()

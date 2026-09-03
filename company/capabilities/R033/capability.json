@@ -21,22 +21,26 @@
   "inputs": {
     "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
     "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json",
-    "level-statistics": "skills/level-statistics/input.schema.json"
+    "level-statistics": "skills/level-statistics/input.schema.json",
+    "microphone-reference-noise-headroom-baseline": "skills/microphone-reference-noise-headroom-baseline/input.schema.json"
   },
   "outputs": {
     "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
     "harmonic-noise-analysis": "skills/harmonic-noise-analysis/output.schema.json",
-    "level-statistics": "skills/level-statistics/output.schema.json"
+    "level-statistics": "skills/level-statistics/output.schema.json",
+    "microphone-reference-noise-headroom-baseline": "skills/microphone-reference-noise-headroom-baseline/output.schema.json"
   },
   "required_skills": [
     "microphone-sensitivity",
     "harmonic-noise-analysis",
-    "level-statistics"
+    "level-statistics",
+    "microphone-reference-noise-headroom-baseline"
   ],
   "required_methods": [
     "methods/engineering/microphone-sensitivity.json",
     "methods/engineering/harmonic-noise-analysis.json",
-    "methods/engineering/level-statistics.json"
+    "methods/engineering/level-statistics.json",
+    "methods/roles/microphone-reference-noise-headroom-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/microphone-sensitivity.json",
@@ -177,12 +181,14 @@
     "required_methods": [
       "methods/engineering/microphone-sensitivity.json",
       "methods/engineering/harmonic-noise-analysis.json",
-      "methods/engineering/level-statistics.json"
+      "methods/engineering/level-statistics.json",
+      "methods/roles/microphone-reference-noise-headroom-baseline.json"
     ],
     "required_skills": [
       "microphone-sensitivity",
       "harmonic-noise-analysis",
-      "level-statistics"
+      "level-statistics",
+      "microphone-reference-noise-headroom-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -215,7 +221,8 @@
     "calculation_schemas": {
       "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
       "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json",
-      "level-statistics": "skills/level-statistics/input.schema.json"
+      "level-statistics": "skills/level-statistics/input.schema.json",
+      "microphone-reference-noise-headroom-baseline": "skills/microphone-reference-noise-headroom-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -230,7 +237,8 @@
     "calculation_schemas": {
       "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
       "harmonic-noise-analysis": "skills/harmonic-noise-analysis/output.schema.json",
-      "level-statistics": "skills/level-statistics/output.schema.json"
+      "level-statistics": "skills/level-statistics/output.schema.json",
+      "microphone-reference-noise-headroom-baseline": "skills/microphone-reference-noise-headroom-baseline/output.schema.json"
     }
   },
   "report_sections": [
@@ -240,5 +248,11 @@
     "calibrator seal leak rather than low sensitivity",
     "preamp noise rather than capsule noise",
     "pressure calibration, noise subtraction and gain uncertainty"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "microphone-reference-noise-headroom-baseline",
+    "method": "methods/roles/microphone-reference-noise-headroom-baseline.json",
+    "suite": "golden/roles/R033/golden.json",
+    "scope": "Supplied-reference sensitivity, identifiable noise and electrical headroom; not acquired physical measurement."
+  }
 }

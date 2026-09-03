@@ -56,6 +56,14 @@ class RoleAcceptanceTests(unittest.TestCase):
                 self.assertGreaterEqual(result['case_count'],6)
                 self.assertFalse(result['role_l3_accepted'])
 
+    def test_microphone_reference_suite_proves_only_bounded_execution(self):
+        from aeris_runtime.engineering.role_acceptance import RoleAcceptanceFactory
+        result=RoleAcceptanceFactory(self.root/'acceptance').evaluate('R033')
+        self.assertTrue(result['execution_passed'])
+        self.assertEqual(result['case_count'],10)
+        self.assertEqual(result['level'],'L2')
+        self.assertFalse(result['role_l3_accepted'])
+
     def test_resealed_wrong_bindings_or_decision_results_cannot_grant_maturity(self):
         from aeris_runtime.engineering.role_acceptance import RoleAcceptanceFactory
         factory=RoleAcceptanceFactory(self.root/'acceptance')
@@ -96,8 +104,8 @@ class RoleAcceptanceTests(unittest.TestCase):
             self.assertEqual(row['executable_skills'],['tws-fit-anc-call-baseline'])
             self.assertEqual(row['coverage']['role_domain_cases'],8)
             self.assertEqual(row['coverage']['role_acceptance'],0)
-            self.assertEqual(matrix['total_role_golden_cases'],50)
-            self.assertEqual(matrix['total_role_golden_suites'],6)
+            self.assertEqual(matrix['total_role_golden_cases'],60)
+            self.assertEqual(matrix['total_role_golden_suites'],7)
             fixture=api.get('/api/v1/capabilities/fixture/R048?skill=tws-fit-anc-call-baseline')
             self.assertEqual(fixture['source_kind'],'SYNTHETIC')
             self.assertEqual(fixture['fixture']['input']['feedback_delay_ms'],0.5)

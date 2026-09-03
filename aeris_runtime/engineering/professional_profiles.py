@@ -116,6 +116,8 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R033':{'skill_id':'microphone-reference-noise-headroom-baseline','method':'methods/roles/microphone-reference-noise-headroom-baseline.json',
+            'suite':'golden/roles/R033/golden.json','scope':'Supplied-reference sensitivity, identifiable noise and electrical headroom; not acquired physical measurement.'},
     'R010':{'skill_id':'speaker-nonlinear-domain-review','method':'methods/roles/speaker-nonlinear-domain-review.json',
             'suite':'golden/roles/R010/golden.json','scope':'Bounded RMS distortion and unsupported mechanism attribution review; not whole-role acceptance.'},
     'R075':{'skill_id':'speaker-thermal-domain-review','method':'methods/roles/speaker-thermal-domain-review.json',

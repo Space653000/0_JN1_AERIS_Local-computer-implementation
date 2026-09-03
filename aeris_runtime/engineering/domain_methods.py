@@ -23,7 +23,7 @@ def _canonical(value):
 
 
 def _fingerprint():
-    paths=[Path(__file__),ROOT/'aeris_runtime/engineering/domain_review.py']
+    paths=[Path(__file__),ROOT/'aeris_runtime/engineering/domain_review.py',ROOT/'aeris_runtime/engineering/microphone_domain.py']
     for skill in HANDLERS:
         paths.append(ROOT/f'methods/roles/{skill}.json')
         paths.extend(ROOT/f'skills/{skill}/{name}' for name in ('manifest.json','input.schema.json','output.schema.json','SKILL.md'))
@@ -124,7 +124,10 @@ def speaker_power_distortion(params):
                           'physical reliability, lifetime and qualified Human acceptance']}
 
 
-HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion}
+from .microphone_domain import analyze as microphone_measurement
+
+HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
+          'microphone-reference-noise-headroom-baseline':microphone_measurement}
 
 
 def _review_handler(domain):

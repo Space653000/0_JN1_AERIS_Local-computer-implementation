@@ -1,0 +1,28 @@
+{
+  "method_id": "microphone-reference-noise-headroom-baseline",
+  "version": "1.0.0",
+  "role": "R033",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.microphone_domain:analyze",
+  "applicability": "Supplied sinusoidal acoustic/electrical calibration reference, separated deployment gain, uncorrelated same-band RMS noise sources and electrical peak headroom",
+  "equations": {
+    "sensitivity": "calibrator_output / calibration_gain / calibrator_pressure",
+    "noise": "sqrt((total_noise^2 - frontend_noise^2)/(analysis_gain*sensitivity)^2 - ambient_noise_pa^2)",
+    "headroom": "20 log10(adc_peak / (analysis_gain*sensitivity*20e-6*10^(required_spl/20)*crest_factor))"
+  },
+  "assumptions": [
+    "common integration bandwidth and weighting for every noise source",
+    "independent noise sources, no correlated cancellation",
+    "sinusoidal calibrator, output RMS below ADC clipping",
+    "separate calibration and analysis gains",
+    "relative bounds are conservative intervals, not statistical confidence"
+  ],
+  "excluded": [
+    "acquiring calibrated pressure",
+    "capsule acoustic overload from small-signal gain",
+    "correlated noise separation",
+    "instrument or paid-standard conformance"
+  ],
+  "golden_tests": "golden/roles/R033/golden.json"
+}
