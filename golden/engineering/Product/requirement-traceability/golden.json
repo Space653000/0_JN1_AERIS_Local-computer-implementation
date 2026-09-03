@@ -1,0 +1,44 @@
+{
+  "id": "requirement-traceability-analytic-v1",
+  "skill_id": "requirement-traceability",
+  "suite": "Product",
+  "input": {
+    "requirement_ids": [
+      "R1",
+      "R2"
+    ],
+    "test_ids": [
+      "T1"
+    ],
+    "links": [
+      {
+        "requirement_id": "R1",
+        "test_id": "T1",
+        "evidence_ref": "E1"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "path": "coverage",
+      "expected": 0.5,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "links": [
+      {
+        "requirement_id": "UNKNOWN",
+        "test_id": "T1"
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "One of two requirements has a test/evidence link; missing coverage remains visible.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "543bde64a5a94f0956a371b3799835617084a41354b822dbf35c4e0dbe72d7af"
+}

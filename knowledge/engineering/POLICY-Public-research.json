@@ -1,0 +1,11 @@
+{
+  "id": "POLICY-Public-research",
+  "category": "Public research",
+  "title": "POLICY-Public-research",
+  "text": "provenance-research searches supplied rights-cleared local documents. No patent novelty or freedom-to-operate opinion is produced.",
+  "source": "docs/PROFESSIONAL_COMPANY_BUILD.md",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "4edc699b0b82e9da506e8b0ad91a66c4e610f89aa56539981bececd6b363c6dc",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

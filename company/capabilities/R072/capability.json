@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R072",
+    "name": "Room Acoustics",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Room Acoustics: execute and challenge the bounded methods listed in scope.",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Exponential amplitude decay of 60 dB in 0.6 s yields the same extrapolated RT.",
+    "Nonoverlapping band power contains the coherent tone energy once."
+  ],
+  "non_scope": [
+    "complete human-equivalent specialty competence",
+    "real instrumentation/calibration unless separately evidenced",
+    "licensed FEM/BEM/CAE or clinical/production approval"
+  ],
+  "inputs": {
+    "room-ir-decay": "skills/room-ir-decay/input.schema.json",
+    "fractional-octave": "skills/fractional-octave/input.schema.json"
+  },
+  "outputs": {
+    "room-ir-decay": "skills/room-ir-decay/output.schema.json",
+    "fractional-octave": "skills/fractional-octave/output.schema.json"
+  },
+  "required_skills": [
+    "room-ir-decay",
+    "fractional-octave"
+  ],
+  "required_methods": [
+    "methods/engineering/room-ir-decay.json",
+    "methods/engineering/fractional-octave.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/room-ir-decay.json",
+    "knowledge/engineering/fractional-octave.json"
+  ],
+  "standards_metadata_references": [
+    "IEC 60268-5",
+    "IEC 60268-4"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "all mapped analytical/negative/regression cases pass",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "declare model applicability",
+    "separate numerical result from calibration uncertainty",
+    "state unavailable uncertainty instead of inventing confidence"
+  ],
+  "common_failure_modes": [
+    "wrong transducer geometry",
+    "unexcited or aliased input",
+    "units/reference mismatch",
+    "model validity exceeded"
+  ],
+  "counter_hypotheses": [
+    "fixture or assembly error rather than product defect",
+    "measurement-chain error rather than signal-processing failure",
+    "insufficient data rather than a confirmed pass"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/room-ir-decay/golden.json",
+    "golden/engineering/DSP/fractional-octave/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/room-ir-decay/negative.json",
+    "golden/engineering/DSP/fractional-octave/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/room-ir-decay/regression.json",
+    "golden/engineering/DSP/fractional-octave/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R072",
+      "skill_id": "room-ir-decay",
+      "inputs": "skills/room-ir-decay/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    },
+    {
+      "role_id": "R072",
+      "skill_id": "fractional-octave",
+      "inputs": "skills/fractional-octave/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R072/report-template.md"
+  ],
+  "current_maturity_level": "L3",
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260903T070722Z-85251acf"
+  ],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+}

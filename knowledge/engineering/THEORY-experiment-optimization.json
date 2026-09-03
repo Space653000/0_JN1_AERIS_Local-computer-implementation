@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-experiment-optimization",
+  "category": "Theory",
+  "title": "THEORY-experiment-optimization",
+  "text": "Maximin exploration selects the farthest allowed unexplored point without hardware actions.",
+  "source": "methods/engineering/experiment-optimization.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "ea2dfc3e1628ec0ff4a74843890f5712df00bce6d18ce7ebcc81dc9d8326016c",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

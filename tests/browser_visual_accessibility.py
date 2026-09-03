@@ -16,6 +16,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import urllib.request
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
@@ -100,11 +101,25 @@ def run() -> int:
         "limits": ["CI_BROWSER_VISUAL_FIXTURE_NOT_REAL_MACHINE_OPENING"],
     }
     with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None):
-        server = ThreadingHTTPServer(("127.0.0.1", 0), operations._Handler)
+        snapshots = {}
+        class SnapshotHandler(operations._Handler):
+            def do_GET(self):
+                if self.path in snapshots:
+                    self._json(200, snapshots[self.path])
+                else:
+                    super().do_GET()
+        server = ThreadingHTTPServer(("127.0.0.1", 0), SnapshotHandler)
         server.shutdown_token = "ci-browser-visual-only"
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         try:
+            # Snapshot actual GET responses once: otherwise new workflow runs and
+            # telemetry between captures make pixel equality an invalid assertion.
+            for endpoint in ('status','services','machine','roles','workflows','audit?limit=12',
+                             'maturity','standards?q=','projects','tasks','capabilities','capabilities/roles/R001'):
+                path='/api/v1/'+endpoint
+                with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path, timeout=30) as response:
+                    snapshots[path]=json.load(response)
             browser = find_browser()
             route_results: list[dict[str, object]] = []
             route_hashes: set[str] = set()
@@ -136,7 +151,8 @@ def run() -> int:
                 "viewport": {"width": VIEWPORT[0], "height": VIEWPORT[1]},
                 "routes": route_results,
                 "accessibility_markers_checked": len(accessibility),
-                "scope": "fixed-viewport screenshot creation + same-environment bit-exact repeatability + basic accessibility semantics; NOT cross-version pixel-golden regression",
+                "api_snapshot_sha256": hashlib.sha256(json.dumps(snapshots, sort_keys=True).encode()).hexdigest(),
+                "scope": "fixed-viewport screenshot creation + same-environment bit-exact repeatability using one frozen actual API snapshot + basic accessibility semantics; NOT cross-version pixel-golden regression or live-state acceptance",
             }
             (ARTIFACT_ROOT/"report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
             print(json.dumps(report, ensure_ascii=False, indent=2))

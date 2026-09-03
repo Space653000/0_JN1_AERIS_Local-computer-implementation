@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-enhancement-aec-metrics",
+  "category": "Theory",
+  "title": "THEORY-enhancement-aec-metrics",
+  "text": "Orthogonal 10% error gives SI-SDR 20 dB; 10x echo attenuation gives ERLE 20 dB.",
+  "source": "methods/engineering/enhancement-aec-metrics.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "9e73cf68977514055635125576d5723acc9b70bc2b4597662af502f1db57955e",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

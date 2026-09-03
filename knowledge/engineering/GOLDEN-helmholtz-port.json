@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-helmholtz-port",
+  "category": "Golden cases",
+  "title": "GOLDEN-helmholtz-port",
+  "text": "[{\"path\": \"helmholtz_hz\", \"expected\": 54.5901454805201, \"absolute_tolerance\": 1e-08, \"unit\": \"Hz\", \"reduction\": null}]",
+  "source": "golden/engineering/Speaker/helmholtz-port/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "2950f54fbcaf16437d1e5395d5576f90bcc33b39b71e56cdf4c08c9cd9531128",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

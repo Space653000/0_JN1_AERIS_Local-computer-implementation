@@ -1,0 +1,89 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "angles_deg": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "normalized_power": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "directivity_index_db": {
+          "type": "number"
+        },
+        "alias_free_spacing": {
+          "type": "boolean"
+        },
+        "aperture_m": {
+          "type": "number"
+        },
+        "model": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "angles_deg",
+        "normalized_power",
+        "directivity_index_db",
+        "alias_free_spacing",
+        "aperture_m",
+        "model"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

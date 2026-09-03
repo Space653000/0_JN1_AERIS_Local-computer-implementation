@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-fractional-octave",
+  "category": "Methods",
+  "title": "fractional-octave",
+  "text": "Nonoverlapping band power contains the coherent tone energy once. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/fractional-octave.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "7ae20bf27816fb60454a475d457a91780701ac605c505e0e169e7d7c9ad6a83a"
+}

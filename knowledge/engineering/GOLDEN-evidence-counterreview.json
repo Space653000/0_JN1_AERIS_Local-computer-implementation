@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-evidence-counterreview",
+  "category": "Golden cases",
+  "title": "GOLDEN-evidence-counterreview",
+  "text": "[{\"path\": \"findings\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": \"length\"}]",
+  "source": "golden/engineering/Failure/evidence-counterreview/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "decd86883176da816eb002b093da3907da4bf769af00af331d129ba5d372e5ec",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-leakage-tolerance",
+  "category": "Methods",
+  "title": "leakage-tolerance",
+  "text": "Poiseuille resistance scales inversely with radius to the fourth power. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/leakage-tolerance.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "a3a84912e11aba4e4c2a77d104e4739e3d041465d4206d02985d436b8f0a1f44"
+}

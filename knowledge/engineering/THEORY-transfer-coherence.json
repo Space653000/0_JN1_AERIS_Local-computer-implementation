@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-transfer-coherence",
+  "category": "Theory",
+  "title": "THEORY-transfer-coherence",
+  "text": "A noiseless gain-of-two system has H=2 and unit coherence in excited bins.",
+  "source": "methods/engineering/transfer-coherence.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "2705448b2debf3f22756c729674fabc838b761a30368c886709c3096b0199c08",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

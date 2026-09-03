@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-delay-sum-beamforming",
+  "category": "Methods",
+  "title": "delay-sum-beamforming",
+  "text": "Averaging identical broadside channels preserves the source. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/delay-sum-beamforming.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "586c57271bbe615a4a907da981960fdc3a482707c40bb1c8837fc3b69cbec255"
+}

@@ -315,6 +315,18 @@ def _save_import(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
+    from urllib.parse import urlsplit as _split
+    if _split(handler.path).path.startswith("/api/v1/capabilities"):
+        if urlsplit("http://"+handler.headers.get("Host","")).hostname not in {"localhost","127.0.0.1","::1"}:
+            _write_json(handler,403,{"error":"loopback_host_required"}); return True
+        from .engineering.api import get
+        try:
+            _write_json(handler,200,get(handler.path))
+        except (ValueError,KeyError) as exc:
+            _write_json(handler,400,{"error":str(exc)})
+        except RuntimeError as exc:
+            _write_json(handler,503,{"error":str(exc)})
+        return True
     parsed, path = urlsplit(handler.path), urlsplit(handler.path).path
     if _serve_ui(handler, path):
         return True
@@ -370,6 +382,10 @@ def handle_post(handler: Any) -> bool:
     path = urlsplit(handler.path).path
     if not path.startswith("/api/v1/"):
         return False
+    if path.startswith("/api/v1/capabilities/"):
+        host=handler.headers.get("Host",""); origin=handler.headers.get("Origin")
+        if urlsplit("http://"+host).hostname not in {"localhost","127.0.0.1","::1"} or origin and origin!="http://"+host or not handler.headers.get("Content-Type","").lower().startswith("application/json"):
+            _write_json(handler,403,{"error":"same_origin_json_required"}); return True
     try:
         payload = _body(handler)
         if path == "/api/v1/projects":
@@ -395,7 +411,14 @@ def handle_post(handler: Any) -> bool:
             )
             _write_json(handler, 201, {"task": task, "workflow": workflow} if workflow else task)
         elif path == "/api/v1/pods/plan":
-            _write_json(handler, 200, plan_pod(str(payload.get("query", "")), int(payload.get("max_roles", 8))))
+            if payload.get("needed_skills"):
+                from .engineering.orchestration import route_pod
+                _write_json(handler,200,route_pod(payload))
+            else:
+                _write_json(handler, 200, plan_pod(str(payload.get("query", "")), int(payload.get("max_roles", 8))))
+        elif path.startswith("/api/v1/capabilities/"):
+            from .engineering.api import post
+            _write_json(handler,200,post(path,payload))
         elif path.startswith("/api/v1/roles/") and path.endswith("/invoke"):
             refs = payload.get("evidence_refs", [])
             if not isinstance(refs, list) or any(not isinstance(x, str) for x in refs):

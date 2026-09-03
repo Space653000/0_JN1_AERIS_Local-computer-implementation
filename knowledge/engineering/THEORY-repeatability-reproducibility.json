@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-repeatability-reproducibility",
+  "category": "Theory",
+  "title": "THEORY-repeatability-reproducibility",
+  "text": "Balanced random-effects calculation separates within-group variance from group means.",
+  "source": "methods/engineering/repeatability-reproducibility.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "6db2887269e0afaabd1e8fe5eb95190f2b4c01c93eb80f5a472742b519338ba2",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

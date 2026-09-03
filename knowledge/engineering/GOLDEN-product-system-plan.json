@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-product-system-plan",
+  "category": "Golden cases",
+  "title": "GOLDEN-product-system-plan",
+  "text": "[{\"path\": \"requirement_coverage\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"needed_skills\", \"expected\": 6, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": \"length\"}]",
+  "source": "golden/engineering/Product/product-system-plan/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "8368de0858866bbf35588e3f18a97ffb8c0d2859b9eba668abc61cc915f796d0",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

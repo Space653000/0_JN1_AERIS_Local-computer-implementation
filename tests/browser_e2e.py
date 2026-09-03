@@ -209,6 +209,9 @@ def run_live(base_url: str) -> int:
     }
     results = []
     for route, required in routes.items():
+        required = (*required, 'id="capability-factory"', 'L2 以上 100/100', 'Skills 42', 'Methods 42')
+        if '/workspace' in route:
+            required = (*required, 'id="capRun"', 'id="capRole"', 'R100')
         dom = _dump_dom_with_bounded_timeout_retry(browser, base_url.rstrip("/") + route, route)
         missing = [marker for marker in required if marker not in dom]
         if missing:

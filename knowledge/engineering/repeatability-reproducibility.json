@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-repeatability-reproducibility",
+  "category": "Methods",
+  "title": "repeatability-reproducibility",
+  "text": "Balanced random-effects calculation separates within-group variance from group means. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/repeatability-reproducibility.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "176a5b37e16ac2408b652b2f3e7e77df120113e3ec16cc9eeb40b40888254d7f"
+}

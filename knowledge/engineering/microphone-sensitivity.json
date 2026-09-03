@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-microphone-sensitivity",
+  "category": "Methods",
+  "title": "microphone-sensitivity",
+  "text": "10 mV at 10 mV/Pa corresponds to 1 Pa RMS. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/microphone-sensitivity.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "9c130ebe976f3368676eba104e65caa87af5131cad6ef293f0387278aab82427"
+}

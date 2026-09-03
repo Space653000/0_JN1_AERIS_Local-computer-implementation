@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R059",
+  "category": "Products",
+  "title": "PRODUCT-R059",
+  "text": "{\"speaker_topology_considerations\": \"weather-protected small loudspeaker\", \"microphone_topology_considerations\": \"weather mesh-protected microphone\", \"usage_scenarios\": [\"outdoor two-way door communication\"], \"common_acoustic_failure_modes\": [\"wind\", \"water ingress\", \"feedback\", \"vandal exposure\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [\"IEC 60268-5\", \"IEC 60268-4\"], \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R059/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "8a1a95e13eea445870b9a187e8b6b827219ed1bf1e9bd1ddc618aa4d5c5a21c9",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,31 @@
+{
+  "input": {
+    "resistance_ohm": 1000,
+    "temperature_k": 300,
+    "bandwidth_hz": 20000,
+    "amplifier_noise_v_per_sqrt_hz": 1e-09,
+    "adc_fullscale_v": 2,
+    "adc_bits": 16,
+    "signal_frequency_hz": 1000,
+    "jitter_rms_s": 1e-09
+  },
+  "expected_checks": [
+    {
+      "path": "quantization_rms_v",
+      "expected": 8.809665972742094e-06,
+      "absolute_tolerance": 1e-08,
+      "unit": "V",
+      "reduction": null
+    },
+    {
+      "path": "jitter_snr_limit_db",
+      "expected": 104.0364026328377,
+      "absolute_tolerance": 1e-07,
+      "unit": "dB",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "227f55d52e7c5a13346a2123dca5435b6ff953b9a91bcad85c4b91365e11c3aa"
+}

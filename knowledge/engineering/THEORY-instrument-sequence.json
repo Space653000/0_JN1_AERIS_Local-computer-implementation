@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-instrument-sequence",
+  "category": "Theory",
+  "title": "THEORY-instrument-sequence",
+  "text": "Safe dry-run schedules the exact stimulus length and rejects excessive voltage without hardware IO.",
+  "source": "methods/engineering/instrument-sequence.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "f4408ba046d95a2def73f6b075020e2f2f2105c7a3b7acf7f8c71392b29d491f",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

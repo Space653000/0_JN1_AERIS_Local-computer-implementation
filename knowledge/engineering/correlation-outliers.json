@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-correlation-outliers",
+  "category": "Methods",
+  "title": "correlation-outliers",
+  "text": "Exact affine relation y=2x+1. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/correlation-outliers.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "c662da52c9c510c27e5ff0f9050aed664835c14da464fe4ad90f935d873b4c14"
+}

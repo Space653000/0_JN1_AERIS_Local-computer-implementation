@@ -1,0 +1,33 @@
+{
+  "input": {
+    "sensitivity_mv_per_pa": 10,
+    "noise_rms_v": 1e-05,
+    "signal_rms_v": 0.01
+  },
+  "expected_checks": [
+    {
+      "path": "signal_spl_db",
+      "expected": 93.97940008672037,
+      "absolute_tolerance": 1e-08,
+      "unit": "dB re 20 uPa",
+      "reduction": null
+    },
+    {
+      "path": "snr_db",
+      "expected": 60,
+      "absolute_tolerance": 1e-08,
+      "unit": "dB",
+      "reduction": null
+    },
+    {
+      "path": "sensitivity_dbv_per_pa",
+      "expected": -40,
+      "absolute_tolerance": 1e-08,
+      "unit": "dBV/Pa",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "083496406e30fc3de3bde6113773f477b1ba3da8acd30469f3095a9cdb511e3f"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-thermal-rc",
+  "category": "Methods",
+  "title": "thermal-rc",
+  "text": "At one thermal time constant the rise is 1-exp(-1) of steady state. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/thermal-rc.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "96be3dd928d10309369d66814aa27629eb465db5dc78726723c06091752fe16a"
+}

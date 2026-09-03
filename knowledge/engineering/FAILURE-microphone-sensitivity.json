@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-microphone-sensitivity",
+  "category": "Failures",
+  "title": "FAILURE-microphone-sensitivity",
+  "text": "{\"invalid_variant\": {\"sensitivity_mv_per_pa\": 0}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Microphone/microphone-sensitivity/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "921d06f3c8872bb0771e9be5169f45fc9b9238cc3a491b69972eb73ce192eb25",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-nvh-integration",
+  "category": "Golden cases",
+  "title": "GOLDEN-nvh-integration",
+  "text": "[{\"path\": \"velocity_rms_m_s\", \"expected\": 0.00021980378812429347, \"absolute_tolerance\": 1e-08, \"unit\": \"m/s\", \"reduction\": null}, {\"path\": \"displacement_rms_m\", \"expected\": 6.832589724668936e-08, \"absolute_tolerance\": 1e-08, \"unit\": \"m\", \"reduction\": null}]",
+  "source": "golden/engineering/Speaker/nvh-integration/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "9dae607bb1b2e964c8e8ab6bc7de22244a4a8e189a365753f1e54309fbe878ec",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

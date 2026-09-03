@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-linear-array-pattern",
+  "category": "Methods",
+  "title": "linear-array-pattern",
+  "text": "Broadside in-phase sensors have normalized unit power. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/linear-array-pattern.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "ba7c297fc053e1a41eb8b67ebcb3a658433940bd7208ae9d8c9901f06f9db0fd"
+}

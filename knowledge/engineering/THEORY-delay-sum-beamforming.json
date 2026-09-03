@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-delay-sum-beamforming",
+  "category": "Theory",
+  "title": "THEORY-delay-sum-beamforming",
+  "text": "Averaging identical broadside channels preserves the source.",
+  "source": "methods/engineering/delay-sum-beamforming.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "ac31761f4642c1c5136bea3897c4cb60274abb0253179cb5edd369898d449eb0",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

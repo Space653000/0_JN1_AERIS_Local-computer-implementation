@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-provenance-research",
+  "category": "Methods",
+  "title": "provenance-research",
+  "text": "Local retrieval preserves document hash and rights classification. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/provenance-research.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "c430641e6faa93bc480daacc5bba9924ddfe8d3e508ca35895c3bb665a4dacc5"
+}

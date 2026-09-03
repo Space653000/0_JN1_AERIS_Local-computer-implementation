@@ -1,0 +1,53 @@
+{
+  "id": "lumped-speaker-analytic-v1",
+  "skill_id": "lumped-speaker",
+  "suite": "Speaker",
+  "input": {
+    "moving_mass_kg": 0.01,
+    "compliance_m_per_n": 0.0002533029591058444,
+    "mechanical_resistance_ns_per_m": 1,
+    "force_factor_n_per_a": 5,
+    "dc_resistance_ohm": 4,
+    "diaphragm_area_m2": 0.005,
+    "frequency_hz": [
+      50,
+      100,
+      200
+    ],
+    "box_volume_m3": 0.001,
+    "voltage_rms_v": 1,
+    "xmax_m": 0.01
+  },
+  "checks": [
+    {
+      "path": "fs_hz",
+      "expected": 100,
+      "absolute_tolerance": 1e-08,
+      "unit": "Hz",
+      "reduction": null
+    },
+    {
+      "path": "impedance_real_ohm.1",
+      "expected": 29,
+      "absolute_tolerance": 1e-08,
+      "unit": "ohm",
+      "reduction": null
+    },
+    {
+      "path": "impedance_imag_ohm.1",
+      "expected": 0,
+      "absolute_tolerance": 1e-08,
+      "unit": "ohm",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "moving_mass_kg": 0
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "fcfa409f01751ebe1405fbd3b906ebd3dfbfc5ed15a3d8faf0b6b06e7201e0cf"
+}

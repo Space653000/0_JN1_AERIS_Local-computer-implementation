@@ -43,6 +43,22 @@ def reproduce_run(run_id: str) -> dict[str, Any]:
     if not skill_id:
         return {"result": "BLOCKED", "run_id": run_id, "reason": "NO_DETERMINISTIC_SKILL_ID"}
     inputs = input_manifest.get("inputs", [])
+    if expected.get("capability_maturity") == "FREE_LOCAL_BASELINE":
+        from .engineering.catalog import digest
+        raw=root/"raw"/"engineering-input.json"
+        if not raw.is_file():
+            return {"result":"FAIL","run_id":run_id,"reason":"MISSING_SEALED_ENGINEERING_INPUT"}
+        params=json.loads(raw.read_text(encoding="utf-8"))
+        if digest(params)!=expected.get("input_sha256"):
+            return {"result":"FAIL","run_id":run_id,"reason":"ENGINEERING_INPUT_HASH_MISMATCH"}
+        actual=run_skill(str(skill_id),params)
+        matches=actual==expected
+        report={"schema_version":3,"run_id":run_id,"skill_id":skill_id,"result":"PASS" if matches else "FAIL",
+                "deterministic_result_match":matches,"expected_sha256":digest(expected),"actual_sha256":digest(actual),
+                "scope":"sealed inline-JSON engineering input replay with exact implementation and output hashes"}
+        target_dir=REPRO_ROOT/run_id; target_dir.mkdir(parents=True,exist_ok=True)
+        (target_dir/"REPRODUCTION_REPORT.json").write_text(json.dumps(report,indent=2)+"\n",encoding="utf-8")
+        return report
     if len(inputs) != 1:
         return {"result": "BLOCKED", "run_id": run_id, "reason": "BASELINE_SUPPORTS_EXACTLY_ONE_FILE_INPUT"}
     source = root / str(inputs[0]["stored"])

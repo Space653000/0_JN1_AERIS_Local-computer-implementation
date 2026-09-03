@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R044",
+    "name": "NR / AGC / Dereverb / Speech Enhancement Engineer",
+    "group": "Microphone CoE"
+  },
+  "mission": "NR / AGC / Dereverb / Speech Enhancement Engineer: execute and challenge the bounded methods listed in scope.",
+  "domain": "Microphone CoE",
+  "scope": [
+    "Orthogonal 10% error gives SI-SDR 20 dB; 10x echo attenuation gives ERLE 20 dB.",
+    "Held-out affine regression without train/validation ID leakage.",
+    "Stable unit-DC-gain lowpass impulse response sums to one."
+  ],
+  "non_scope": [
+    "complete human-equivalent specialty competence",
+    "real instrumentation/calibration unless separately evidenced",
+    "licensed FEM/BEM/CAE or clinical/production approval"
+  ],
+  "inputs": {
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+    "local-audio-regression": "skills/local-audio-regression/input.schema.json",
+    "butterworth-filter": "skills/butterworth-filter/input.schema.json"
+  },
+  "outputs": {
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+    "local-audio-regression": "skills/local-audio-regression/output.schema.json",
+    "butterworth-filter": "skills/butterworth-filter/output.schema.json"
+  },
+  "required_skills": [
+    "enhancement-aec-metrics",
+    "local-audio-regression",
+    "butterworth-filter"
+  ],
+  "required_methods": [
+    "methods/engineering/enhancement-aec-metrics.json",
+    "methods/engineering/local-audio-regression.json",
+    "methods/engineering/butterworth-filter.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/enhancement-aec-metrics.json",
+    "knowledge/engineering/local-audio-regression.json",
+    "knowledge/engineering/butterworth-filter.json"
+  ],
+  "standards_metadata_references": [
+    "IEC 60268-5",
+    "IEC 60268-4"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "all mapped analytical/negative/regression cases pass",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "declare model applicability",
+    "separate numerical result from calibration uncertainty",
+    "state unavailable uncertainty instead of inventing confidence"
+  ],
+  "common_failure_modes": [
+    "wrong transducer geometry",
+    "unexcited or aliased input",
+    "units/reference mismatch",
+    "model validity exceeded"
+  ],
+  "counter_hypotheses": [
+    "fixture or assembly error rather than product defect",
+    "measurement-chain error rather than signal-processing failure",
+    "insufficient data rather than a confirmed pass"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/enhancement-aec-metrics/golden.json",
+    "golden/engineering/Microphone/local-audio-regression/golden.json",
+    "golden/engineering/DSP/butterworth-filter/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/enhancement-aec-metrics/negative.json",
+    "golden/engineering/Microphone/local-audio-regression/negative.json",
+    "golden/engineering/DSP/butterworth-filter/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/enhancement-aec-metrics/regression.json",
+    "golden/engineering/Microphone/local-audio-regression/regression.json",
+    "golden/engineering/DSP/butterworth-filter/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R044",
+      "skill_id": "enhancement-aec-metrics",
+      "inputs": "skills/enhancement-aec-metrics/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    },
+    {
+      "role_id": "R044",
+      "skill_id": "local-audio-regression",
+      "inputs": "skills/local-audio-regression/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    },
+    {
+      "role_id": "R044",
+      "skill_id": "butterworth-filter",
+      "inputs": "skills/butterworth-filter/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R044/report-template.md"
+  ],
+  "current_maturity_level": "L3",
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260903T070716Z-426c4c95"
+  ],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+}

@@ -38,6 +38,21 @@
     "commercial_release_readiness": {"state": "TESTED", "evidence": "local PRE_ALPHA fail-closed authority/Claim Guard/release tests; Human R4/legal/physical acceptance remains separate"}
   },
   "capabilities": {
+    "professional_100_seat_capability_factory": {
+      "state": "TESTED",
+      "evidence": "company/capabilities + .aeris/capability-factory/PROFESSIONAL_ACCEPTANCE.json + tests/test_capability_factory.py",
+      "note": "100/100 scoped L3 analytical baselines across 42 distinct executable methods; no L4 physical/calibrated/human-equivalent claim. Runtime matrix revalidates source, assets, contracts and sealed evidence."
+    },
+    "professional_engineering_workflow_harness": {
+      "state": "TESTED",
+      "evidence": "42 skill workflows reproduced + 24 Product Chief workflows; .aeris/capability-factory/harness.sqlite3; tests/test_engineering_api.py",
+      "note": "SQLite Task to EVIDENCED, input/output hashes, deterministic SVG/report, distinct-seat rule counterreview, append-only Memory and retrospective. Memory is not Evidence and automated review is not Human approval."
+    },
+    "professional_local_ai_intake": {
+      "state": "TESTED",
+      "evidence": ".aeris/capability-factory/LOCAL_AI_INTAKE.json + tests/test_engineering_intake.py",
+      "note": "Actual loopback qwen3:4b-instruct proposal; strict method whitelist; missing numerical input requested instead of invented. No cloud/Claude or measured-data claim."
+    },
     "architecture_and_governance_baseline": {
       "state": "TESTED",
       "evidence": "Core governance contract + tests/test_core_alignment.py + dual-platform CI",

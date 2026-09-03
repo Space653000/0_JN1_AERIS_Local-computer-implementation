@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "samples": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "sample_rate_hz": {
+      "type": "number"
+    },
+    "cutoff_hz": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "order": {
+      "type": "integer"
+    },
+    "kind": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "samples",
+    "sample_rate_hz",
+    "cutoff_hz",
+    "order",
+    "kind"
+  ],
+  "additionalProperties": false
+}

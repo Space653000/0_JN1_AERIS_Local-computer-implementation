@@ -1,0 +1,20 @@
+{
+  "input": {
+    "radius_m": 0.001,
+    "length_m": 0.01,
+    "viscosity_pa_s": 1.8e-05,
+    "radius_standard_uncertainty_m": 1e-05
+  },
+  "expected_checks": [
+    {
+      "path": "flow_resistance_pa_s_m3",
+      "expected": 458366.2361046586,
+      "absolute_tolerance": 1e-06,
+      "unit": "Pa s/m3",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "b6f5bcce82e7919edf95f82e41edaa54d238930cf72340cef48d5af9ad78b860"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-linear-array-pattern",
+  "category": "Failures",
+  "title": "FAILURE-linear-array-pattern",
+  "text": "{\"invalid_variant\": {\"positions_m\": [0, 0, 0.04, 0.06]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Array/linear-array-pattern/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "64db2e565842568b4824a63c7095403910ae2a60892847de540c7bc79ee9a78a",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

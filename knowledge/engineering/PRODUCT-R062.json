@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R062",
+  "category": "Products",
+  "title": "PRODUCT-R062",
+  "text": "{\"speaker_topology_considerations\": \"near-ear/open-ear stereo\", \"microphone_topology_considerations\": \"headset distributed capture microphones\", \"usage_scenarios\": [\"immersive head-tracked interaction\"], \"common_acoustic_failure_modes\": [\"motion-to-sound latency\", \"occlusion\", \"mechanical rubbing\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [\"IEC 60268-5\", \"IEC 60268-4\"], \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R062/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "ad0d1135b81d0b3c7d4d4e106a1ad87058b8dade2b918405c2e184930bb8b87c",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

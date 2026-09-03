@@ -1,0 +1,26 @@
+{
+  "method_id": "spectral-analysis",
+  "version": "1.0.0",
+  "implementation": "aeris_runtime.engineering.numerics:spectral",
+  "applicability": "Coherent bin-64 sinusoid has unit peak amplitude and 1/sqrt(2) RMS.",
+  "input_schema": "skills/spectral-analysis/input.schema.json",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "source_kind": "AERIS_AUTHORED_METHOD_AND_ANALYTICAL_DERIVATION",
+  "reference_urls": [
+    "https://docs.scipy.org/doc/scipy-1.15.3/reference/",
+    "https://numpy.org/doc/2.2/"
+  ],
+  "reference_status": "bibliographic API references; no licensed standard text imported"
+}

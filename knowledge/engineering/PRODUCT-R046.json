@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R046",
+  "category": "Products",
+  "title": "PRODUCT-R046",
+  "text": "{\"speaker_topology_considerations\": \"receiver with user-adjustable gain\", \"microphone_topology_considerations\": \"dual external microphones\", \"usage_scenarios\": [\"consumer self-fit listening\"], \"common_acoustic_failure_modes\": [\"output exposure\", \"fit variability\", \"misuse as clinical device\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [\"IEC 60268-5\", \"IEC 60268-4\"], \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R046/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "68f4a85bad6f707c5d4a74a2db2b967ad01b517beee50e64db497fc7165336f5",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

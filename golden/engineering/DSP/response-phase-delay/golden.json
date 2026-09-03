@@ -1,0 +1,45 @@
+{
+  "id": "response-phase-delay-analytic-v1",
+  "skill_id": "response-phase-delay",
+  "suite": "DSP",
+  "input": {
+    "frequency_hz": [
+      100,
+      200,
+      300
+    ],
+    "magnitude_db": [
+      0,
+      0,
+      0
+    ],
+    "phase_rad": [
+      -0.6283185307179586,
+      -1.2566370614359172,
+      -1.8849555921538759
+    ],
+    "smoothing_octaves": 0
+  },
+  "checks": [
+    {
+      "path": "group_delay_s",
+      "expected": 0.001,
+      "absolute_tolerance": 1e-08,
+      "unit": "s",
+      "reduction": "all"
+    }
+  ],
+  "negative_patch": {
+    "frequency_hz": [
+      100,
+      100,
+      300
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Linear phase of a 1 ms delay has constant group delay.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "62562a5f00b3bcd7e535b0ba9fa047ef45c6802c7512314103a91ec448759243"
+}

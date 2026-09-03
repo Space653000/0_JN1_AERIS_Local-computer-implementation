@@ -1,0 +1,29 @@
+{
+  "input": {
+    "executor_role": "R015",
+    "reviewer_role": "R098",
+    "approved_evidence_refs": [],
+    "claims": [
+      {
+        "classification": "EVIDENCE",
+        "evidence_refs": [
+          "invented"
+        ],
+        "uncertainty": "not quantified",
+        "counter_hypothesis": "fixture error"
+      }
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "findings",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": "length"
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "444635b6ef30259c3f8bb712facf506de644ecb1f978c15927ea71e79a3e1897"
+}

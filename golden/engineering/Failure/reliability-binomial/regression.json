@@ -1,0 +1,19 @@
+{
+  "input": {
+    "trials": 100,
+    "failures": 0,
+    "confidence": 0.95
+  },
+  "expected_checks": [
+    {
+      "path": "one_sided_upper_failure_probability",
+      "expected": 0.029513049607039932,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "b255cc064d315edb3ac07f0d604865ab85a5ff8fe818312ff3cb9052dc34df10"
+}

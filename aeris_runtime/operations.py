@@ -250,6 +250,8 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
     except OSError:
         pass
     server = ThreadingHTTPServer((DEFAULT_HOST, int(port)), _Handler)
+    # Drain accepted requests during controlled capability-runtime replacement.
+    server.daemon_threads = False
     server.shutdown_token = token  # type: ignore[attr-defined]
     supervisor_state = {
         "schema_version": 2,
@@ -283,7 +285,8 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
         server.server_close()
         append_event("SUPERVISOR_STOPPED", "AERIS Supervisor", {"pid": os.getpid(), "port": int(port)})
         try:
-            SUPERVISOR_TOKEN_FILE.unlink()
+            if SUPERVISOR_TOKEN_FILE.read_text(encoding="utf-8-sig").strip() == token:
+                SUPERVISOR_TOKEN_FILE.unlink()
         except FileNotFoundError:
             pass
     return 0
@@ -297,6 +300,12 @@ def supervisor_status(port: int = DEFAULT_PORT, timeout: float = 1.0) -> dict[st
         return {"reachable": False, "error": str(exc), "host": DEFAULT_HOST, "port": int(port)}
 
 
+def supervisor_python() -> str:
+    """Use the root-contained engineering environment for supervised workers."""
+    candidate = ROOT / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    return str(candidate) if candidate.is_file() else sys.executable
+
+
 def start_supervisor_background(port: int = DEFAULT_PORT) -> dict[str, Any]:
     existing = supervisor_status(port)
     if existing.get("reachable"):
@@ -304,7 +313,7 @@ def start_supervisor_background(port: int = DEFAULT_PORT) -> dict[str, Any]:
     log_dir = ROOT / ".aeris" / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / "supervisor.log"
-    cmd = [sys.executable, "-m", "aeris_runtime", "company", "serve", "--port", str(int(port))]
+    cmd = [supervisor_python(), "-B", "-m", "aeris_runtime", "company", "serve", "--port", str(int(port))]
     kwargs: dict[str, Any] = {"cwd": str(ROOT), "stdin": subprocess.DEVNULL}
     if os.name == "nt":
         kwargs["creationflags"] = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(subprocess, "CREATE_NO_WINDOW", 0)

@@ -1,0 +1,44 @@
+{
+  "input": {
+    "x": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "y": [
+      3,
+      5,
+      7,
+      9,
+      11
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "slope",
+      "expected": 2,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "intercept",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "pearson_r",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "24fe26078f008596265b93aa319460a941362ad1134e87f4065ddd642650e284"
+}

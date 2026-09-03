@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-porous-absorption",
+  "category": "Methods",
+  "title": "porous-absorption",
+  "text": "Passive rigid-backed fibrous layer; 1 kHz reference computed independently using scalar complex arithmetic and the stated Delany-Bazley equations. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/porous-absorption.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "a048e04b5b3398538afdf38b58bdd95bb95380b17532c940a9010df9d32fefc6"
+}

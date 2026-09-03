@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-factorial-doe",
+  "category": "Golden cases",
+  "title": "GOLDEN-factorial-doe",
+  "text": "[{\"path\": \"main_effects.gain\", \"expected\": 4, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Product/factorial-doe/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "54a1822aa45a25e93a9da36b0eaa315e37c99d355f22dd077181afc50d66f0e2",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

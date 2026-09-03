@@ -1,0 +1,14 @@
+{
+  "input": {
+    "groups": [
+      [
+        1
+      ],
+      [
+        2
+      ]
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "b361f4ed89de8590be238b587a8b53acbc58cf3b2de81e5bad19c1cab0052666"
+}
