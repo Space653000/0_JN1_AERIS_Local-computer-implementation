@@ -1,0 +1,16 @@
+{
+  "method_id":"speaker-power-distortion-baseline", "version":"1.0.0", "role":"R016",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:speaker_power_distortion",
+  "applicability":"Same-frequency/fixture RMS harmonic and level-compression assessment, constant-power single-node thermal estimate",
+  "equations":{
+    "thd_percent":"100 * sqrt(sum(harmonic_rms_pa^2)) / fundamental_rms_pa",
+    "compression_db":"20 log10(V / V_reference) - 20 log10(p / p_reference)",
+    "coil_temperature_c":"ambient + P * Rth * (1 - exp(-duration / (Rth * Cth)))"
+  },
+  "assumptions":["same measurement frequency, fixture and acquisition bandwidth","harmonics exclude the fundamental","constant real electrical power","constant thermal R and C; initial coil temperature equals ambient"],
+  "excluded":["thermal coefficient feedback","multiple thermal nodes","instrument calibration","nonlinear parameter identification","accelerated-life extrapolation","physical/Human safety approval"],
+  "uncertainty":"No input uncertainties are supplied; bounds are not confidence intervals. Temperature is a model estimate.",
+  "limits_policy":"Explicit caller limits, not presumed standards clauses.",
+  "golden_tests":"tests/test_speaker_power_domain.py"
+}

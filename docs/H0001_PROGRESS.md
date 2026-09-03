@@ -138,3 +138,47 @@ Remaining software work still includes qualified reviewer bootstrap and routing,
 all other role suites, Speaker/Microphone depth, full 24-product cases, external
 Knowledge provenance, eight company challenges, live deployment and final clean
 Windows/Ubuntu CI. Passing this checkpoint does not complete H0001 or P02.
+
+## Fourth construction checkpoint — speaker power and telemetry responsiveness
+
+- R016 now owns an executable nonlinear/power Method beyond its three shared
+  Skills. Eight authored cases separate harmonic distortion, pressure/voltage
+  compression and single-node thermal limits. Equal compression with hot/cold
+  models requires different discriminating experiments, not an invented cause.
+  Wrong units, absent fundamental, nonfinite and numerical-underflow inputs fail.
+  Source hashes cover the new Skill/Method assets with portable relative keys.
+- Two role suites now contain 16 cases (R016 and R048). Both retain a bounded
+  execution scope and `REVIEW_BLOCKED`; neither establishes role L3 or physical
+  acceptance. The remaining 98 roles still lack separate domain suites.
+- Services no longer calls 100 registered contracts 100 executable capabilities.
+  Contract, domain execution and domain acceptance counts have separate meanings.
+- The added synchronous role/Evidence checks reproduced a Services API timeout
+  under the existing 3-second HTTP limit. Profiling found the full matrix and
+  bundle hashing on the response path. Full verification now runs in a coalesced
+  single-flight background projection. Pending/stale results show CHECKING;
+  failures show FAILED. Snapshot age is measured from assessment start and capped
+  at 10 seconds. Current requests cannot reuse another task-count snapshot.
+- The first async revision exposed a second regression: an in-flight collection
+  could miss a newer request context. An event-barrier test reproduced it, and
+  the worker now processes the latest queued context. No HTTP timeout was raised.
+- Completion telemetry reads actual read-only SQLite counts and requires a
+  completed assessment, rather than accepting placeholder rows with fake zeros.
+- Visual capture waits for completed telemetry rather than freezing CHECKING.
+  The six-theme screenshot repeatability/basic accessibility baseline passed
+  during this batch; it remains a fixed-environment baseline, not full WCAG or
+  cross-browser pixel equivalence.
+
+Latest full local unit run: **254 passed**, 39.157 s,
+`.aeris/evidence/H0001-batch9-tests.log`. Six-page isolated semantic E2E passed
+(`H0001-batch9-browser.log`). Original timeout, async-context failure, profiler
+and red/green logs are retained locally; failing runs were not overwritten.
+
+Runtime distinction: live port 8765 still loads `0752121` and remains HTTP 200 on
+all six routes. Its old registry cannot understand the two added domain Skills,
+so its last observed matrix is L0=2/L1=98/L2=0/L3=0/L4=0. This is an old-runtime
+compatibility observation, not acceptance of the new source. Updated-runtime
+integration remains required. No new uninterrupted-soak claim is made.
+
+Implementation remote main remains `32ca69baa778959d01c10a72bba1a8f0c0ac7eb5`.
+Read-only Core remains `82f4554623b2d87185dac39a3b93194af7dd5275`, clean.
+No push, main merge, PR #32 modification or H0001 handoff completion occurred.

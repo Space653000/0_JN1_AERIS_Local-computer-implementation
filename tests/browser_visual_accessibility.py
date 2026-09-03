@@ -119,7 +119,16 @@ def run() -> int:
                              'maturity','standards?q=','projects','tasks','capabilities','capabilities/roles/R001'):
                 path='/api/v1/'+endpoint
                 with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path, timeout=30) as response:
-                    snapshots[path]=json.load(response)
+                    value=json.load(response)
+                if endpoint=='services' and not value.get('assessment_complete',True):
+                    from aeris_runtime.telemetry import wait_for_service_telemetry
+                    if not wait_for_service_telemetry(15):
+                        raise AssertionError('service assessment did not complete for visual baseline')
+                    with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path,timeout=3) as response:
+                        value=json.load(response)
+                    if not value.get('assessment_complete'):
+                        raise AssertionError('visual baseline cannot freeze pending/stale service truth')
+                snapshots[path]=value
             browser = find_browser()
             route_results: list[dict[str, object]] = []
             route_hashes: set[str] = set()

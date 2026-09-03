@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R016':{'skill_id':'speaker-power-distortion-baseline',
+            'method':'methods/roles/speaker-power-distortion-baseline.json',
+            'suite':'golden/roles/R016/golden.json',
+            'scope':'Bounded distortion, power compression and thermal-limit discrimination; not physical reliability qualification.'},
     'R048':{'skill_id':'tws-fit-anc-call-baseline',
             'method':'methods/roles/tws-fit-anc-call-baseline.json',
             'suite':'golden/roles/R048/golden.json',

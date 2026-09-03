@@ -65,10 +65,15 @@ def _workspace() -> tuple[bool, str]:
 def _telemetry() -> tuple[bool, str]:
     try:
         from .telemetry import service_telemetry
-        payload = service_telemetry({"projects": 0, "tasks": 0})
+        db=ROOT/'.aeris/control/control.sqlite3'
+        if not db.is_file(): return False,'control SQLite absent; no runtime telemetry acceptance'
+        with sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True) as conn:
+            counts={name:conn.execute('SELECT COUNT(*) FROM '+name).fetchone()[0] for name in ('projects','tasks')}
+            counts['active_tasks']=conn.execute("SELECT COUNT(*) FROM tasks WHERE state NOT IN ('RELEASED','CANCELLED')").fetchone()[0]
+        payload = service_telemetry(counts)
         services = payload.get("services", [])
         required = {"state", "reason", "evidence_ref", "last_update_utc", "capability_maturity"}
-        valid = len(services) >= 20 and set(payload.get("planes", [])) == {"CONTROL", "KNOWLEDGE", "EXECUTION", "TRUST", "OPERATIONS"} and all(required <= set(item) for item in services)
+        valid = payload.get('assessment_complete') is True and len(services) >= 20 and set(payload.get("planes", [])) == {"CONTROL", "KNOWLEDGE", "EXECUTION", "TRUST", "OPERATIONS"} and all(required <= set(item) for item in services)
         return valid, f"five-plane service records={len(services)}"
     except Exception as exc:
         return False, f"telemetry assessment failed: {exc}"

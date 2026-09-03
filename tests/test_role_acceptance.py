@@ -63,6 +63,19 @@ class RoleAcceptanceTests(unittest.TestCase):
         record=copy.deepcopy(original); record['cases'][2]['passed']=False
         self.assert_resealed_rejected(factory,record)
 
+    def test_speaker_suite_is_profession_specific_and_cross_seat_seal_is_rejected(self):
+        from aeris_runtime.engineering.role_acceptance import RoleAcceptanceFactory
+        factory=RoleAcceptanceFactory(self.root/'acceptance')
+        speaker=factory.evaluate('R016'); tws=factory.evaluate('R048')
+        self.assertEqual(speaker['level'],'L2')
+        self.assertEqual(speaker['case_count'],8)
+        self.assertEqual(speaker['review_state'],'REVIEW_BLOCKED')
+        self.assertIn('Nonlinear/power',speaker['scope'])
+        (self.root/'acceptance/R016.json').write_text(json.dumps({'run_id':tws['run_id']}),encoding='utf-8')
+        rejected=factory.status('R016')
+        self.assertEqual(rejected['level'],'L1')
+        self.assertIn('mismatch',rejected['reason'])
+
     def test_matrix_exposes_only_evidenced_domain_skills_and_actual_case_count(self):
         from aeris_runtime.engineering import factory,role_acceptance,api
         with patch.object(role_acceptance,'STATE',self.root/'acceptance',create=True):
@@ -72,8 +85,8 @@ class RoleAcceptanceTests(unittest.TestCase):
             self.assertEqual(row['executable_skills'],['tws-fit-anc-call-baseline'])
             self.assertEqual(row['coverage']['role_domain_cases'],8)
             self.assertEqual(row['coverage']['role_acceptance'],0)
-            self.assertEqual(matrix['total_role_golden_cases'],8)
-            self.assertEqual(matrix['total_role_golden_suites'],1)
+            self.assertEqual(matrix['total_role_golden_cases'],16)
+            self.assertEqual(matrix['total_role_golden_suites'],2)
             fixture=api.get('/api/v1/capabilities/fixture/R048?skill=tws-fit-anc-call-baseline')
             self.assertEqual(fixture['source_kind'],'SYNTHETIC')
             self.assertEqual(fixture['fixture']['input']['feedback_delay_ms'],0.5)

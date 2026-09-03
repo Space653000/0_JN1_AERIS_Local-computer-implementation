@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import json
+import copy
+import threading
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -12,7 +15,6 @@ from .evidence import validate_bundle
 from .expected_runs import assess_all
 from .knowledge import stats as knowledge_stats
 from .machine import detect as machine_detect
-from .roles import list_roles
 from .router import ModelRouter
 from .skills_runtime import list_skills
 from .standards_registry import search_standards
@@ -21,6 +23,12 @@ from .workflow import list_workflow_templates, list_workflows
 STATE = ROOT / ".aeris" / "state"
 EVIDENCE = ROOT / ".aeris" / "evidence"
 MATURITY = ROOT / "config" / "maturity.json"
+SERVICE_PLANES={
+    'CONTROL':('AERIS Orchestrator','Requirement / Task Store','Role / Pod Router','Workflow State Machine'),
+    'KNOWLEDGE':('Constitution / Rules','Skill + Method Registry','Standards Registry','Memory + Knowledge'),
+    'EXECUTION':('Local Model Router','Free Local Acoustic Baseline','Licensed Professional Tool Bus'),
+    'TRUST':('Evidence Store','Verification Engine','Audit Ledger','Reproduction Runner'),
+    'OPERATIONS':('Expected-run Health','Watchdog Recovery','Machine / GPU Qualification','Offline Continuity','Capability Maturity')}
 
 
 def _read(path: Path) -> dict[str, Any]:
@@ -45,11 +53,32 @@ def _service(name: str, plane: str, state: str, reason: str, evidence_ref: str |
     }
 
 
-def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
+def role_router_status(snapshot: dict[str, Any]) -> dict[str, Any]:
+    """Role counts report scope; they cannot certify qualified Pod routing."""
+    total=snapshot.get('total_roles'); counts=snapshot.get('maturity_counts',{})
+    values=[counts.get('L'+str(i)) for i in range(5)]
+    if (type(total) is not int or total<0 or any(type(v) is not int or v<0 for v in values)
+            or sum(values)!=total):
+        raise ValueError('invalid or inconsistent role maturity telemetry')
+    contracted=total-counts['L0']; executed=sum(counts[k] for k in ('L2','L3','L4'))
+    accepted=counts['L3']+counts['L4']
+    return _service('Role / Pod Router','CONTROL','FAILED' if counts['L0'] else 'DEGRADED',
+        f'contracted_roles={contracted}; domain_execution_roles={executed}; role_domain_accepted={accepted}; '
+        'registration/counts do not prove qualified independent routing acceptance',
+        '/api/v1/capabilities','PARTIAL_DOMAIN_EXECUTION' if executed else 'CONTRACT_ONLY',snapshot.get('assessed_at_utc'))
+
+
+def _collect_service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
     """Assess capability evidence; process liveness alone never yields HEALTHY."""
     now = datetime.now(timezone.utc).isoformat()
     maturity = _read(MATURITY)
-    roles, skills = list_roles(), list_skills()
+    skills = list_skills()
+    try:
+        from .engineering.api import live_matrix
+        role_router=role_router_status(live_matrix())
+    except (OSError,ValueError,RuntimeError,KeyError,TypeError) as exc:
+        role_router=_service('Role / Pod Router','CONTROL','FAILED',
+            'Current role maturity unavailable: '+str(exc),'/api/v1/capabilities','UNKNOWN',now)
     templates, workflows = list_workflow_templates(), list_workflows()
     knowledge = knowledge_stats()
     expected = assess_all()
@@ -80,7 +109,7 @@ def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
     services = [
         _service("AERIS Orchestrator", "CONTROL", "HEALTHY" if opening.get("operational_state") == "OPEN_VERIFIED_SCOPE" else "DEGRADED", f"opening={opening.get('operational_state','UNKNOWN')}; projects={control_summary['projects']}; tasks={control_summary['tasks']}", str(opening_path.relative_to(ROOT)), "TESTED", _mtime(opening_path)),
         _service("Requirement / Task Store", "CONTROL", "HEALTHY" if store_ok else "FAILED", f"SQLite query succeeded={store_ok}; task_records={control_summary.get('tasks',0)}", str(store_path.relative_to(ROOT)), "TESTED", _mtime(store_path)),
-        _service("Role / Pod Router", "CONTROL", "HEALTHY" if len(roles) == 100 else "FAILED", f"{len(roles)} executable capability contracts available", "company/organization/roles.v1.json", "TESTED", now),
+        role_router,
         _service("Workflow State Machine", "CONTROL", "HEALTHY" if templates and evidenced_workflows else "DEGRADED" if templates else "NOT_CONFIGURED", f"templates={len(templates)}; instantiated_runs={len(workflows)}; evidenced_runs={len(evidenced_workflows)}", ".aeris/workflows", "TESTED", _mtime(ROOT/'.aeris/workflows')),
         _service("Constitution / Rules", "KNOWLEDGE", "HEALTHY" if rules_ok else "FAILED", f"versioned Core alignment parse valid={rules_ok}", "config/core_alignment.json", "TESTED", _mtime(rules_path)),
         _service("Skill + Method Registry", "KNOWLEDGE", "HEALTHY" if registry_ok else "DEGRADED" if skills else "NOT_CONFIGURED", f"skills={len(skills)}; required_local_registry_complete={registry_ok}", "skills", "IMPLEMENTED_NOT_PROFESSIONALLY_VERIFIED", now),
@@ -103,3 +132,80 @@ def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
     for item in services:
         counts[item["state"]] = counts.get(item["state"], 0) + 1
     return {"generated_at_utc": now, "planes": ["CONTROL", "KNOWLEDGE", "EXECUTION", "TRUST", "OPERATIONS"], "services": services, "state_counts": counts, "truth": "HEALTHY requires capability evidence; process-alive alone is insufficient."}
+
+
+class TelemetryProjection:
+    """Single-flight full verification outside the HTTP response path.
+
+    A collected snapshot is bounded by assessment *start* time, not completion:
+    a slow probe cannot extend stale HEALTHY states by finishing much later.
+    Pending, expired, changed-context and failed assessments remain explicit.
+    """
+    def __init__(self,collector,*,clock=time.monotonic):
+        self.collector=collector; self.clock=clock
+        self.lock=threading.Lock(); self.worker=None; self.snapshot=None
+        self.running=False; self.requested=None
+        self.snapshot_at=None; self.snapshot_key=None; self.error=None
+        self.refresh_after_s=2.0; self.max_age_s=10.0
+
+    def _refresh(self,summary,key,started):
+        while True:
+            try:
+                result=self.collector(summary); error=None
+            except Exception as exc:
+                result=None; error=type(exc).__name__
+            with self.lock:
+                self.snapshot=result; self.snapshot_at=started
+                self.snapshot_key=key; self.error=error
+                if self.requested is not None and self.requested[1]!=key:
+                    summary,key=self.requested; started=self.clock()
+                else:
+                    self.running=False
+                    return
+
+    def get(self,summary):
+        key=tuple(sorted(summary.items()))
+        with self.lock:
+            now=self.clock(); age=None if self.snapshot_at is None else max(0.0,now-self.snapshot_at)
+            matching=self.snapshot_key==key
+            self.requested=(dict(summary),key)
+            busy=self.running
+            if not busy and (not matching or age is None or age>=self.refresh_after_s):
+                self.running=True
+                self.worker=threading.Thread(target=self._refresh,args=(dict(summary),key,now),daemon=True,
+                                             name='aeris-service-telemetry')
+                self.worker.start(); busy=True
+            fresh=matching and age is not None and age<=self.max_age_s
+            if fresh and self.snapshot is not None:
+                result=copy.deepcopy(self.snapshot)
+            else:
+                state='FAILED' if fresh and self.error else 'CHECKING'
+                reason=('Telemetry assessment failed: '+self.error if state=='FAILED' else
+                        'Full evidence/runtime assessment pending or expired; no current health claim')
+                rows=[_service(name,plane,state,reason,None,'UNKNOWN',None)
+                      for plane,names in SERVICE_PLANES.items() for name in names]
+                result={'generated_at_utc':datetime.now(timezone.utc).isoformat(),'planes':list(SERVICE_PLANES),
+                        'services':rows,'state_counts':{state:len(rows)},
+                        'truth':'HEALTHY requires capability evidence; process-alive alone is insufficient.'}
+            result.update(snapshot_age_s=age if matching else None,snapshot_max_age_s=self.max_age_s,
+                          refresh_in_progress=busy,assessment_complete=fresh and self.snapshot is not None)
+            return result
+
+    def wait_for_refresh(self,timeout):
+        """Bounded synchronization for CLI acceptance/tests; HTTP never waits."""
+        with self.lock: worker=self.worker
+        if worker is None: return True
+        worker.join(timeout)
+        return not worker.is_alive()
+
+
+_SERVICE_PROJECTION=TelemetryProjection(_collect_service_telemetry)
+
+
+def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
+    return _SERVICE_PROJECTION.get(control_summary)
+
+
+def wait_for_service_telemetry(timeout=15):
+    """CLI/test synchronization; the HTTP response never uses this wait."""
+    return _SERVICE_PROJECTION.wait_for_refresh(timeout)

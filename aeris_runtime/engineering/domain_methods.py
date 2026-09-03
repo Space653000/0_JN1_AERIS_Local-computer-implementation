@@ -23,12 +23,11 @@ def _canonical(value):
 
 
 def _fingerprint():
-    paths=(Path(__file__),ROOT/'methods/roles/tws-fit-anc-call-baseline.json',
-           ROOT/'skills/tws-fit-anc-call-baseline/manifest.json',
-           ROOT/'skills/tws-fit-anc-call-baseline/input.schema.json',
-           ROOT/'skills/tws-fit-anc-call-baseline/output.schema.json',
-           ROOT/'skills/tws-fit-anc-call-baseline/SKILL.md')
-    return hashlib.sha256(_canonical({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in paths})).hexdigest()
+    paths=[Path(__file__)]
+    for skill in ('tws-fit-anc-call-baseline','speaker-power-distortion-baseline'):
+        paths.append(ROOT/f'methods/roles/{skill}.json')
+        paths.extend(ROOT/f'skills/{skill}/{name}' for name in ('manifest.json','input.schema.json','output.schema.json','SKILL.md'))
+    return hashlib.sha256(_canonical({p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in paths})).hexdigest()
 
 
 def tws_fit_anc_call(params):
@@ -78,13 +77,61 @@ temperature or perceptual quality. These limitations are preserved in outputs.
                 'excursion and occlusion are supplied estimates, not newly measured values']}
 
 
-HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call}
+def speaker_power_distortion(params):
+    schema=json.loads((ROOT/'skills/speaker-power-distortion-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact speaker power SI-unit field contract required')
+    for key,rules in schema['properties'].items():
+        value=params[key]
+        if rules['type']=='array':
+            if not isinstance(value,list) or not rules['minItems']<=len(value)<=rules['maxItems']:
+                raise ValueError('bounded harmonic RMS vector required')
+            values=value; rules=rules['items']
+        else: values=[value]
+        for number in values:
+            if (isinstance(number,bool) or not isinstance(number,(float,int)) or not math.isfinite(number)
+                    or number<rules.get('minimum',-math.inf) or number>rules.get('maximum',math.inf)
+                    or number<=rules.get('exclusiveMinimum',-math.inf)):
+                raise ValueError('invalid declared-unit value: '+key)
+    p=params
+    if p['drive_voltage_rms_v']<p['reference_voltage_rms_v']:
+        raise ValueError('power validation requires drive at or above the reference voltage')
+    if p['max_coil_temperature_c']<p['ambient_temperature_c']:
+        raise ValueError('coil limit is below initial ambient temperature')
+    thd=100*math.hypot(*p['harmonic_rms_pa'])/p['fundamental_rms_pa']
+    compression=20*math.log10(p['drive_voltage_rms_v']/p['reference_voltage_rms_v'])-20*math.log10(p['fundamental_rms_pa']/p['reference_fundamental_rms_pa'])
+    temperature=p['ambient_temperature_c']-p['input_power_w']*p['thermal_resistance_k_per_w']*math.expm1(-p['duration_s']/(p['thermal_resistance_k_per_w']*p['thermal_capacity_j_per_k']))
+    checks=[]
+    for identifier,actual,limit,revision in (
+        ('THD_PERCENT',thd,p['max_thd_percent'],'LOWER_DRIVE_AND_DISCRIMINATE_TRANSDUCER_FROM_AMPLIFIER_NONLINEARITY'),
+        ('COMPRESSION_DB',compression,p['max_compression_db'],'SEPARATE_THERMAL_COMPRESSION_FROM_LIMITER_GAIN'),
+        ('COIL_TEMPERATURE_C',temperature,p['max_coil_temperature_c'],'REDUCE_DUTY_AND_RECHECK_COIL_TEMPERATURE')):
+        checks.append({'id':identifier,'actual':actual,'limit':limit,'margin':limit-actual,'operator':'<=',
+                       'passed':actual<=limit,'on_failure':revision})
+    compressed=not checks[1]['passed']; hot=not checks[2]['passed']
+    experiment=('Measure resistance-derived coil temperature and repeat the level sweep after cooling at identical gain' if compressed and hot else
+                'Record amplifier output and limiter gain at matched cold-coil conditions before attributing loss to heat' if compressed else
+                'Measure harmonic order trends with verified amplifier headroom and matched acoustic fixture')
+    return {'thd_percent':thd,'compression_db':compression,'predicted_coil_temperature_c':temperature,
+            'checks':checks,'disposition':'BOUNDED_BASELINE_ACCEPT' if all(c['passed'] for c in checks) else 'DESIGN_REVISION_REQUIRED',
+            'required_revisions':[c['on_failure'] for c in checks if not c['passed']],
+            'counter_hypotheses':['amplifier clipping rather than transducer nonlinearity',
+                'limiter gain reduction rather than thermal compression','fixture response change rather than power compression'],
+            'next_discriminating_experiment':experiment,
+            'model_assumptions':['same frequency, fixture and harmonic bandwidth','constant real electrical power',
+                'single thermal RC starting at ambient; no resistance/temperature feedback'],
+            'unresolved':['actual coil temperature and calibration','excursion and nonlinear parameter measurements',
+                          'physical reliability, lifetime and qualified Human acceptance']}
+
+
+HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion}
 
 
 def execute(skill_id,params):
     if _fingerprint()!=LOADED_SHA256: raise RuntimeError('Role method source changed after load; restart required')
     if skill_id not in HANDLERS: raise KeyError(skill_id)
     values=HANDLERS[skill_id](params)
+    _canonical(values)  # Nonfinite calculation results must never leave as PASS.
     return {'skill_id':skill_id,'version':'1.0.0','result':'PASS','values':values,
             'input_sha256':hashlib.sha256(_canonical(params)).hexdigest(),'implementation_sha256':LOADED_SHA256,
             'capability_maturity':'FREE_LOCAL_BASELINE','evidence_class':'DETERMINISTIC_ROLE_DOMAIN_CALCULATION',

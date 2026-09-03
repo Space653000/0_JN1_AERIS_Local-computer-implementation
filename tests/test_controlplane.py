@@ -85,6 +85,13 @@ class ControlPlaneTests(unittest.TestCase):
     def test_five_plane_service_api_has_truth_fields(self):
         server = self._server()
         data = self._get_json(server, "/api/v1/services")
+        from aeris_runtime.telemetry import wait_for_service_telemetry
+        self.assertTrue(wait_for_service_telemetry(15))
+        data = self._get_json(server, "/api/v1/services")
+        self.assertTrue(data['assessment_complete'],
+                        {k:data.get(k) for k in ('state_counts','snapshot_age_s','refresh_in_progress')})
+        # Quiesce any follow-up refresh before fixture filesystem patches end.
+        self.assertTrue(wait_for_service_telemetry(15))
         self.assertEqual(data["planes"], ["CONTROL", "KNOWLEDGE", "EXECUTION", "TRUST", "OPERATIONS"])
         self.assertGreaterEqual(len(data["services"]), 15)
         for service in data["services"]:
