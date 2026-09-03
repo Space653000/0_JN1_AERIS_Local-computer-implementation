@@ -8,6 +8,7 @@ $ErrorActionPreference='Stop'
 $Root=Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'windows-python-resolution.ps1')
 . (Join-Path $PSScriptRoot 'windows-zero-cost-bootstrap.ps1')
+. (Join-Path $PSScriptRoot 'windows-ollama-api.ps1')
 Write-Host '=== AERIS One-Click Company Installer ==='
 Write-Host 'Default profile: zero paid professional software; no Claude/Claude token required.'
 Write-Host 'Privacy: AERIS private engineering is application-routed to local AI; OS/network isolation still requires local verification.'
@@ -37,9 +38,7 @@ function Set-DotEnvValue($Path,$Key,$Value) {
   $out | Set-Content -Path $Path -Encoding utf8
 }
 function Test-OllamaModel($Model) {
-  if(-not (Have 'ollama')){ return $false }
-  & ollama show $Model *> $null
-  return ($LASTEXITCODE -eq 0)
+  return (Test-AerisOllamaModel -BaseUrl (Get-AerisOllamaBaseUrl $Root) -Model $Model)
 }
 function Install-StagedModel($Model) {
   $ModelsRoot=Join-Path $Root 'portable_assets\models'
@@ -128,10 +127,13 @@ try {
   }
 
   if (-not $SkipLocalModelInstall -and (Have 'ollama')) {
-    try { ollama list | Out-Null } catch {
+    $OllamaBase=Get-AerisOllamaBaseUrl $Root
+    if(-not (Test-AerisOllamaApi $OllamaBase)) {
       Write-Host 'Starting local Ollama service...'
-      Start-Process -FilePath (Get-Command ollama).Source -ArgumentList 'serve' -WindowStyle Hidden
+      & $Py -m aeris_runtime.ollama_service --executable (Get-Command ollama).Source --base-url $OllamaBase
+      if($LASTEXITCODE -ne 0){ throw 'Could not start the root-scoped Ollama server.' }
       Start-Sleep -Seconds 4
+      if(-not (Test-AerisOllamaApi $OllamaBase)){ throw 'Explicit Ollama serve did not provide a reachable API; desktop-app autostart was not attempted.' }
     }
     if(-not (Test-OllamaModel $LocalModel)){
       $Imported=Install-StagedModel $LocalModel

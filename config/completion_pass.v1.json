@@ -1,8 +1,9 @@
 {
   "schema_version": 2,
   "pass_name": "AERIS LOCAL SOFTWARE COMPLETION PASS",
-  "software_local_gaps_before": 10,
+  "software_local_gaps_before": 11,
   "items": [
+    {"id": "ollama_api_no_desktop_autostart", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "HTTP model probes, direct root-scoped server startup and Windows negative regression; discovered during final real-machine Autopilot"},
     {"id": "core_ui_ssot_six_pages", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "Core asset files and three live page shells must exist"},
     {"id": "workspace_fields_sqlite_workflow", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "control SQLite must contain a task linked to a real workflow"},
     {"id": "five_plane_runtime_telemetry", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "runtime assessment must emit five planes and at least 20 fully attributed service records"},

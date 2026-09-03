@@ -137,6 +137,7 @@ def _acceptance() -> tuple[bool, str]:
 
 
 CHECKS: dict[str, Callable[[], tuple[bool, str]]] = {
+    "ollama_api_no_desktop_autostart": lambda: _files("scripts/windows-ollama-api.ps1", "aeris_runtime/ollama_service.py", "tests/windows/test-ollama-api.ps1", "tests/test_ollama_service.py"),
     "core_ui_ssot_six_pages": lambda: _files("ui/web/dashboard.html", "ui/web/workspace.html", "ui/web/services.html", ".aeris/core-reference/aeris.css", ".aeris/core-reference/aeris-theme.js"),
     "workspace_fields_sqlite_workflow": _workspace,
     "five_plane_runtime_telemetry": _telemetry,
