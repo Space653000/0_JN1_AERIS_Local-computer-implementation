@@ -23,7 +23,8 @@ def _canonical(value):
 
 
 def _fingerprint():
-    paths=[Path(__file__),ROOT/'aeris_runtime/engineering/domain_review.py',ROOT/'aeris_runtime/engineering/microphone_domain.py']
+    paths=[Path(__file__),ROOT/'aeris_runtime/engineering/domain_review.py',ROOT/'aeris_runtime/engineering/microphone_domain.py',
+           ROOT/'aeris_runtime/engineering/numerical_policy.py']
     for skill in HANDLERS:
         paths.append(ROOT/f'methods/roles/{skill}.json')
         paths.extend(ROOT/f'skills/{skill}/{name}' for name in ('manifest.json','input.schema.json','output.schema.json','SKILL.md'))

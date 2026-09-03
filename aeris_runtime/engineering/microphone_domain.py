@@ -5,6 +5,7 @@ import json
 import math
 
 from ..config import ROOT
+from .numerical_policy import db_at_least,db_at_most,MIN_IDENTIFIABLE_VARIANCE_FRACTION
 
 
 def analyze(params):
@@ -33,10 +34,11 @@ def analyze(params):
     low_variance=((total*(1-noise_bound))**2-(frontend*(1+noise_bound))**2)/(chain_high**2)-(ambient*(1+noise_bound))**2
     high_variance=((total*(1+noise_bound))**2-(frontend*(1-noise_bound))**2)/(chain_low**2)-(ambient*(1-noise_bound))**2
     # Subtraction near a dominant floor is not an intrinsic-noise measurement.
-    resolved=variance>max(1e-30,(total/chain)**2*1e-12) and low_variance>0
+    resolved=variance>max(1e-30,(total/chain)**2*MIN_IDENTIFIABLE_VARIANCE_FRACTION) and low_variance>0
     noise_pa=math.sqrt(variance) if resolved else None
     noise_db=20*math.log10(noise_pa/20e-6) if resolved else None
-    noise_upper=20*math.log10(math.sqrt(high_variance)/20e-6) if high_variance>0 else None
+    upper_pa=math.sqrt(high_variance) if resolved else total*(1+noise_bound)/chain_low
+    noise_upper=20*math.log10(upper_pa/20e-6)
     required_pressure=20e-6*10**(p['required_spl_db']/20)
     peak=chain*required_pressure*p['signal_crest_factor']
     peak_upper=chain_high*required_pressure*p['signal_crest_factor']
@@ -44,15 +46,16 @@ def analyze(params):
     headroom_low=20*math.log10(p['adc_peak_v']/peak_upper)
     sensitivity_interval=[20*math.log10(sensitivity_low),20*math.log10(sensitivity_high)]
     checks=[
-        {'id':'SENSITIVITY_INTERVAL','passed':sensitivity_interval[0]>=p['minimum_sensitivity_dbv_per_pa'] and sensitivity_interval[1]<=p['maximum_sensitivity_dbv_per_pa'],
+        {'id':'SENSITIVITY_INTERVAL','passed':db_at_least(sensitivity_interval[0],p['minimum_sensitivity_dbv_per_pa']) and db_at_most(sensitivity_interval[1],p['maximum_sensitivity_dbv_per_pa']),
          'on_failure':'RECHECK_PRESSURE_GAIN_AND_REFERENCE_COUPLING'},
         {'id':'IDENTIFIABLE_SELF_NOISE','passed':resolved,'on_failure':'SEPARATE_ROOM_AND_FRONTEND_NOISE_BEFORE_CAPSULE_ATTRIBUTION'},
-        {'id':'SELF_NOISE_UPPER_BOUND','passed':resolved and noise_upper<=p['maximum_self_noise_spl_db'],'on_failure':'REDUCE_INPUT_NOISE_AND_REPEAT_COMMON_BANDWIDTH_RUN'},
-        {'id':'ELECTRICAL_HEADROOM','passed':headroom_low>=p['minimum_electrical_headroom_db'],'on_failure':'REDUCE_DEPLOYMENT_GAIN_OR_REVISE_ADC_RANGE'},
+        {'id':'SELF_NOISE_UPPER_BOUND','passed':resolved and db_at_most(noise_upper,p['maximum_self_noise_spl_db']),'on_failure':'REDUCE_INPUT_NOISE_AND_REPEAT_COMMON_BANDWIDTH_RUN'},
+        {'id':'ELECTRICAL_HEADROOM','passed':db_at_least(headroom_low,p['minimum_electrical_headroom_db']),'on_failure':'REDUCE_DEPLOYMENT_GAIN_OR_REVISE_ADC_RANGE'},
     ]
     experiment=('QUIETER_ROOM_OR_CALIBRATOR_COUPLING' if ambient>=frontend/chain else 'LOWER_NOISE_FRONTEND_AT_MATCHED_GAIN') if not resolved else 'LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM'
     return {'sensitivity_dbv_per_pa':sensitivity_db,'sensitivity_interval_dbv_per_pa':sensitivity_interval,
             'self_noise_rms_pa':noise_pa,'self_noise_spl_db':noise_db,'self_noise_upper_spl_db':noise_upper,
+            'noise_upper_scope':'INTRINSIC_RESIDUAL_BOUND' if resolved else 'TOTAL_INPUT_EQUIVALENT_BOUND',
             'noise_resolved':resolved,'electrical_headroom_db':headroom,'electrical_headroom_lower_db':headroom_low,
             'predicted_output_peak_v':peak,'headroom_scope':'SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED','checks':checks,
             'disposition':'BOUNDED_BASELINE_ACCEPT' if all(c['passed'] for c in checks) else 'DESIGN_REVISION_REQUIRED',

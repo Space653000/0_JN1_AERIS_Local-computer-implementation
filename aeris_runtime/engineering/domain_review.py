@@ -6,6 +6,7 @@ import json
 import math
 
 from ..config import ROOT
+from .numerical_policy import db_at_least,db_at_most,MIN_IDENTIFIABLE_VARIANCE_FRACTION
 
 REQUIRED_DOMAINS={
     'speaker-power-distortion-baseline':['speaker-nonlinear','speaker-thermal'],
@@ -158,7 +159,7 @@ def review(domain,request):
         interval=[sensitivity_db-20*math.log10((1+p['pressure_relative_bound'])*(1+p['gain_relative_bound'])),
                   sensitivity_db-20*math.log10((1-p['pressure_relative_bound'])*(1-p['gain_relative_bound']))]
         expected={'sensitivity_dbv_per_pa':sensitivity_db,'sensitivity_interval_dbv_per_pa':interval,
-                  'sensitivity_passed':interval[0]>=p['minimum_sensitivity_dbv_per_pa'] and interval[1]<=p['maximum_sensitivity_dbv_per_pa'],
+                  'sensitivity_passed':db_at_least(interval[0],p['minimum_sensitivity_dbv_per_pa']) and db_at_most(interval[1],p['maximum_sensitivity_dbv_per_pa']),
                   'capsule_overload_verified':False}
         observations={'counter_hypothesis':'calibration gain or pressure coupling rather than changed capsule sensitivity',
                       'next_experiment':'repeat an unclipped common reference and independently establish calibration gain',
@@ -175,17 +176,19 @@ def review(domain,request):
         residual=(total*ratio)**2-(frontend*ratio)**2-ambient**2
         low=((total*(1-nu))**2-(frontend*(1+nu))**2)*ratio_low**2-(ambient*(1+nu))**2
         high=((total*(1+nu))**2-(frontend*(1-nu))**2)*ratio_high**2-(ambient*(1-nu))**2
-        resolved=residual>max(1e-30,(total*ratio)**2*1e-12) and low>0
+        resolved=residual>max(1e-30,(total*ratio)**2*MIN_IDENTIFIABLE_VARIANCE_FRACTION) and low>0
         noise=math.sqrt(residual) if resolved else None
         noise_db=20*math.log10(noise/20e-6) if resolved else None
-        upper=20*math.log10(math.sqrt(high)/20e-6) if high>0 else None
+        upper_pa=math.sqrt(high) if resolved else total*(1+nu)*ratio_high
+        upper=20*math.log10(upper_pa/20e-6)
         headroom=20*math.log10(p['adc_peak_v']*ratio/20e-6/p['signal_crest_factor'])-p['required_spl_db']
         headroom_low=20*math.log10(p['adc_peak_v']*ratio_low/20e-6/p['signal_crest_factor'])-p['required_spl_db']
         experiment=('QUIETER_ROOM_OR_CALIBRATOR_COUPLING' if ambient>=frontend*ratio else 'LOWER_NOISE_FRONTEND_AT_MATCHED_GAIN') if not resolved else 'LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM'
         expected={'noise_resolved':resolved,'self_noise_rms_pa':noise,'self_noise_spl_db':noise_db,
                   'self_noise_upper_spl_db':upper,'electrical_headroom_db':headroom,'electrical_headroom_lower_db':headroom_low,
-                  'noise_passed':resolved and upper<=p['maximum_self_noise_spl_db'],
-                  'headroom_passed':headroom_low>=p['minimum_electrical_headroom_db'],
+                  'noise_upper_scope':'INTRINSIC_RESIDUAL_BOUND' if resolved else 'TOTAL_INPUT_EQUIVALENT_BOUND',
+                  'noise_passed':resolved and db_at_most(upper,p['maximum_self_noise_spl_db']),
+                  'headroom_passed':db_at_least(headroom_low,p['minimum_electrical_headroom_db']),
                   'next_experiment':experiment,'headroom_scope':'SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED','capsule_overload_verified':False}
         observations={'counter_hypothesis':'frontend or ambient floor instead of intrinsic capsule noise',
                       'limitation':'common-bandwidth uncorrelated subtraction; signal-only headroom is not capsule AOP or total peak immunity'}
@@ -271,7 +274,7 @@ def _candidate(domain,output):
                 'capsule_overload_verified':v['capsule_overload_verified']}
     if domain=='microphone-noise-headroom':
         return {**truth,**{key:v[key] for key in ('noise_resolved','self_noise_rms_pa','self_noise_spl_db',
-                    'self_noise_upper_spl_db','electrical_headroom_db','electrical_headroom_lower_db','headroom_scope','capsule_overload_verified')},
+                    'self_noise_upper_spl_db','noise_upper_scope','electrical_headroom_db','electrical_headroom_lower_db','headroom_scope','capsule_overload_verified')},
                 'noise_passed':checks['SELF_NOISE_UPPER_BOUND']['passed'],'headroom_passed':checks['ELECTRICAL_HEADROOM']['passed'],
                 'next_experiment':v['next_discriminating_experiment']}
     raise ValueError('unknown domain')
@@ -346,12 +349,12 @@ def _checks_coherent(skill,params,values):
     elif skill=='microphone-reference-noise-headroom-baseline':
         interval=values['sensitivity_interval_dbv_per_pa']; resolved=values['noise_resolved']
         expected=[
-            {'id':'SENSITIVITY_INTERVAL','passed':interval[0]>=params['minimum_sensitivity_dbv_per_pa'] and interval[1]<=params['maximum_sensitivity_dbv_per_pa'],
+            {'id':'SENSITIVITY_INTERVAL','passed':db_at_least(interval[0],params['minimum_sensitivity_dbv_per_pa']) and db_at_most(interval[1],params['maximum_sensitivity_dbv_per_pa']),
              'on_failure':'RECHECK_PRESSURE_GAIN_AND_REFERENCE_COUPLING'},
             {'id':'IDENTIFIABLE_SELF_NOISE','passed':resolved,'on_failure':'SEPARATE_ROOM_AND_FRONTEND_NOISE_BEFORE_CAPSULE_ATTRIBUTION'},
-            {'id':'SELF_NOISE_UPPER_BOUND','passed':resolved and values['self_noise_upper_spl_db']<=params['maximum_self_noise_spl_db'],
+            {'id':'SELF_NOISE_UPPER_BOUND','passed':resolved and db_at_most(values['self_noise_upper_spl_db'],params['maximum_self_noise_spl_db']),
              'on_failure':'REDUCE_INPUT_NOISE_AND_REPEAT_COMMON_BANDWIDTH_RUN'},
-            {'id':'ELECTRICAL_HEADROOM','passed':values['electrical_headroom_lower_db']>=params['minimum_electrical_headroom_db'],
+            {'id':'ELECTRICAL_HEADROOM','passed':db_at_least(values['electrical_headroom_lower_db'],params['minimum_electrical_headroom_db']),
              'on_failure':'REDUCE_DEPLOYMENT_GAIN_OR_REVISE_ADC_RANGE'}]
         return digest(expected)==digest(values['checks'])
     else: return False

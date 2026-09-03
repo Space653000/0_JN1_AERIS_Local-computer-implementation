@@ -278,3 +278,25 @@ Whole-role L3, physical acceptance, deployment and final clean CI remain open.
 Full local unit rerun after the microphone review integration: 271 passed in
 60.845 s. This result includes the ADC range regression, six reviewer suites,
 three execution suites and real reviewed/rejected/reproduced workflows.
+
+### Independent microphone review follow-up
+
+Standards found a numeric boundary mismatch (1.776e-15 dB) and catastrophic
+near-floor cancellation (condition estimate about 1e10). Spec found all original
+R028/R030 qualification cases used zero uncertainty. All findings accepted.
+Permanent interoperability tests reproduced both numerical failures before
+correction. The Method now declares 1e-12 dB inclusive comparison resolution;
+ill-conditioned residuals are unresolved below a 1e-8 variance fraction and use
+a conservative total-noise upper bound. Physical uncertainty remains separate.
+
+R028/R030 now explicitly challenge nonzero pressure, gain and noise uncertainty,
+with independently worked incorrect and corrected candidate reports. Numerical
+boundary/conditioning cases are also in the role suites. Current tracked role
+cases: 91 across nine suites. No L3/L4 promotion follows from these additions.
+
+Follow-up Standards and Spec reviewers confirmed their original findings are
+resolved with no new blocker in the reviewed delta. Full local suite then passed
+272 tests in 61.196 s; raw console output is retained locally at
+`.aeris/evidence/H0001-microphone-numeric-full-tests.log`. Live runtime remains
+0752121; its last observed L0=9/L1=91 reflects unrecognized new Skills, not the
+new source's acceptance status. Updated-runtime integration is still required.

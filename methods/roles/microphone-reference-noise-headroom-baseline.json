@@ -4,6 +4,13 @@
   "role": "R033",
   "source_kind": "AERIS_AUTHORED",
   "is_evidence": false,
+  "numerical_policy": {
+    "db_comparison_resolution": 1e-12,
+    "inclusive_limits": true,
+    "minimum_identifiable_residual_variance_fraction": 1e-8,
+    "unresolved_noise_upper_bound": "conservative total input-equivalent noise; not an intrinsic residual",
+    "truth": "Numerical representation policy is separate from declared physical uncertainty; no physical tolerance or L3 acceptance is granted."
+  },
   "implementation": "aeris_runtime.engineering.microphone_domain:analyze",
   "applicability": "Supplied sinusoidal acoustic/electrical calibration reference, separated deployment gain, uncorrelated same-band RMS noise sources and electrical peak headroom",
   "equations": {

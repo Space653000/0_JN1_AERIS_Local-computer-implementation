@@ -6,6 +6,7 @@ from aeris_runtime.engineering import domain_review
 from tests.test_speaker_power_domain import BASE
 from tests.test_tws_domain_method import BASE as TWS_BASE
 from tests.test_microphone_measurement_domain import BASE as MIC_BASE
+from aeris_runtime.skills_runtime import run_skill
 
 SPEAKER_COUNTERS=['amplifier clipping rather than transducer nonlinearity',
                   'limiter gain reduction rather than thermal compression','fixture response change rather than power compression']
@@ -108,7 +109,7 @@ class DomainReviewTests(unittest.TestCase):
 
     def test_microphone_noise_review_challenges_false_resolution_and_capsule_overload(self):
         candidate={'noise_resolved':True,'self_noise_rms_pa':0.00008,'self_noise_spl_db':12.041199826559248,
-                   'self_noise_upper_spl_db':12.041199826559248,'electrical_headroom_db':7.958800173440752,
+                   'self_noise_upper_spl_db':12.041199826559248,'noise_upper_scope':'INTRINSIC_RESIDUAL_BOUND','electrical_headroom_db':7.958800173440752,
                    'electrical_headroom_lower_db':7.958800173440752,'noise_passed':True,'headroom_passed':True,
                    'next_experiment':'LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM',
                    'headroom_scope':'SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED','capsule_overload_verified':False,
@@ -123,6 +124,23 @@ class DomainReviewTests(unittest.TestCase):
         candidate['capsule_overload_verified']=False
         request['parameters']={**MIC_BASE,'noise_relative_bound':0.3}
         self.assertEqual(domain_review.review('microphone-noise-headroom',request)['decision'],'CHANGES_REQUIRED')
+
+    def test_independent_microphone_review_agrees_at_numerical_boundary_and_unresolvable_subtraction(self):
+        for change in ({'minimum_electrical_headroom_db':7.958800173440752},
+                       {'calibration_gain_linear':7.3,'analysis_gain_linear':13.7,
+                        'frontend_noise_rms_v':0.00001*(1-1e-10)}):
+            params={**MIC_BASE,**change}
+            out=run_skill('microphone-reference-noise-headroom-baseline',params); v=out['values']
+            candidate={key:v[key] for key in ('noise_resolved','self_noise_rms_pa','self_noise_spl_db','self_noise_upper_spl_db',
+                'noise_upper_scope','electrical_headroom_db','electrical_headroom_lower_db','headroom_scope','capsule_overload_verified','counter_hypotheses')}
+            candidate.update(physical_measurement_verified=False,lifetime_verified=False,
+                             noise_passed=v['checks'][2]['passed'],headroom_passed=v['checks'][3]['passed'],
+                             next_experiment=v['next_discriminating_experiment'])
+            request={'parameters':params,'candidate':candidate,
+                     'context':{'product':'','transducer':'Microphone','lifecycle':'EVT','risk':'R1','source_kind':'SYNTHETIC'}}
+            with self.subTest(change=change):
+                result=domain_review.review('microphone-noise-headroom',request)
+                self.assertEqual(result['decision'],'BOUNDED_REVIEW_ACCEPT',result['disagreements'])
 
 
 if __name__=='__main__': unittest.main()

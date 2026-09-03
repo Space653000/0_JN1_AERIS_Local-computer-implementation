@@ -19,4 +19,7 @@ If subtraction is unidentifiable within uncertainty, retain a null intrinsic
 noise estimate and request a quieter fixture or lower-noise frontend. Electrical
 headroom is a signal-only ADC-chain estimate; noise crest factor and combined
 signal/noise peak clipping remain unverified. It is not capsule AOP or physical SPL safety.
+The Method declares 1e-12 dB comparison resolution. Near-total noise subtraction
+is unresolved below the numerical conditioning floor; its upper bound then
+uses total input-equivalent noise instead of a spuriously precise residual.
 FREE_LOCAL_BASELINE never grants calibration, L4, Human approval or conformance.

@@ -227,6 +227,26 @@
         "noise_relative_bound": 0.3
       },
       "expected_error": "ValueError"
+    },
+    {
+      "id": "R033-NUMERICAL-IDENTIFIABILITY",
+      "kind": "boundary",
+      "question": "Does numerically ill-conditioned floor subtraction retain unresolved noise rather than a fictitiously precise intrinsic value?",
+      "input_overrides": {
+        "frontend_noise_rms_v": 0.000009999999999
+      },
+      "checks": [
+        {
+          "path": "noise_resolved",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "noise_upper_scope",
+          "expected": "TOTAL_INPUT_EQUIVALENT_BOUND",
+          "absolute_tolerance": 0
+        }
+      ]
     }
   ]
 }
