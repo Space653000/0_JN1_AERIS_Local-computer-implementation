@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-lumped-speaker",
+  "category": "Golden cases",
+  "title": "GOLDEN-lumped-speaker",
+  "text": "[{\"path\": \"fs_hz\", \"expected\": 100, \"absolute_tolerance\": 1e-08, \"unit\": \"Hz\", \"reduction\": null}, {\"path\": \"impedance_real_ohm.1\", \"expected\": 29, \"absolute_tolerance\": 1e-08, \"unit\": \"ohm\", \"reduction\": null}, {\"path\": \"impedance_imag_ohm.1\", \"expected\": 0, \"absolute_tolerance\": 1e-08, \"unit\": \"ohm\", \"reduction\": null}]",
+  "source": "golden/engineering/Speaker/lumped-speaker/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "540bfe1f657bb07900b16f973ba9e30c0c1839686d0420c9f87cfd2efa1116f9",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

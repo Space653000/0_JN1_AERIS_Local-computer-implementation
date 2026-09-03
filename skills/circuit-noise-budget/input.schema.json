@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "resistance_ohm": {
+      "type": "number"
+    },
+    "temperature_k": {
+      "type": "number"
+    },
+    "bandwidth_hz": {
+      "type": "number"
+    },
+    "amplifier_noise_v_per_sqrt_hz": {
+      "type": "number"
+    },
+    "adc_fullscale_v": {
+      "type": "number"
+    },
+    "adc_bits": {
+      "type": "integer"
+    },
+    "signal_frequency_hz": {
+      "type": "number"
+    },
+    "jitter_rms_s": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "resistance_ohm",
+    "temperature_k",
+    "bandwidth_hz",
+    "amplifier_noise_v_per_sqrt_hz",
+    "adc_fullscale_v",
+    "adc_bits",
+    "signal_frequency_hz",
+    "jitter_rms_s"
+  ],
+  "additionalProperties": false
+}

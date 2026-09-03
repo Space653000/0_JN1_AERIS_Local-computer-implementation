@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R091",
+    "name": "Test Automation Engineer",
+    "group": "Engineering Ops"
+  },
+  "mission": "Test Automation Engineer: execute and challenge the bounded methods listed in scope.",
+  "domain": "Engineering Ops",
+  "scope": [
+    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
+    "Maximin exploration selects the farthest allowed unexplored point without hardware actions."
+  ],
+  "non_scope": [
+    "complete human-equivalent specialty competence",
+    "real instrumentation/calibration unless separately evidenced",
+    "licensed FEM/BEM/CAE or clinical/production approval"
+  ],
+  "inputs": {
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "experiment-optimization": "skills/experiment-optimization/input.schema.json"
+  },
+  "outputs": {
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "experiment-optimization": "skills/experiment-optimization/output.schema.json"
+  },
+  "required_skills": [
+    "engineering-requirements",
+    "experiment-optimization"
+  ],
+  "required_methods": [
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/experiment-optimization.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/experiment-optimization.json"
+  ],
+  "standards_metadata_references": [
+    "IEC 60268-5",
+    "IEC 60268-4"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "all mapped analytical/negative/regression cases pass",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "declare model applicability",
+    "separate numerical result from calibration uncertainty",
+    "state unavailable uncertainty instead of inventing confidence"
+  ],
+  "common_failure_modes": [
+    "wrong transducer geometry",
+    "unexcited or aliased input",
+    "units/reference mismatch",
+    "model validity exceeded"
+  ],
+  "counter_hypotheses": [
+    "fixture or assembly error rather than product defect",
+    "measurement-chain error rather than signal-processing failure",
+    "insufficient data rather than a confirmed pass"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false
+  },
+  "golden_cases": [
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/experiment-optimization/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/experiment-optimization/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/experiment-optimization/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R091",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    },
+    {
+      "role_id": "R091",
+      "skill_id": "experiment-optimization",
+      "inputs": "skills/experiment-optimization/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R091/report-template.md"
+  ],
+  "current_maturity_level": "L3",
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260903T070726Z-b64881b2"
+  ],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+}

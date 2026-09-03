@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-butterworth-filter",
+  "category": "Golden cases",
+  "title": "GOLDEN-butterworth-filter",
+  "text": "[{\"path\": \"filtered_samples\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": \"sum\"}]",
+  "source": "golden/engineering/DSP/butterworth-filter/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "8f4228c6278213bc2b66337ac9143aa4d19e1bb08c11580f66f3a1d3371af73f",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

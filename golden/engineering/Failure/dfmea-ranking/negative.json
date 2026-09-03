@@ -1,0 +1,14 @@
+{
+  "input": {
+    "failure_modes": [
+      {
+        "id": "F1",
+        "severity": 11,
+        "occurrence": 2,
+        "detection": 5
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "b4b33f6f669c1a567a8c7b93ba648331f4905a0bba12b4eeecfced14bb69f1d5"
+}

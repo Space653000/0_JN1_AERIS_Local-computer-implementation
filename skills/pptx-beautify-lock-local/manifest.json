@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "skill_id": "pptx-beautify-lock-local",
+  "name": "PPTX Beautify Lock — Local Provenance-Gated Capability",
+  "domain": ["presentation", "pptx", "content-lock", "visual-qa"],
+  "executor": "aeris_runtime.pptx_provenance:verify",
+  "inputs": {"mode": "provenance verification only until a real input PPTX is supplied"},
+  "outputs": ["source_sha256_checks", "executable_sha256_check", "authenticode_truth", "production_acceptance_state"],
+  "evidence_class": "LOCAL_SOURCE_AND_EXECUTABLE_PROVENANCE",
+  "maturity": "PACKAGE_PROVENANCE_VERIFIED_NOT_DECK_PRODUCTION_ACCEPTED",
+  "cloud_allowed": false
+}

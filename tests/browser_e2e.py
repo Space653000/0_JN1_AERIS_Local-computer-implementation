@@ -1,11 +1,12 @@
-"""Real-browser semantic E2E for the dependency-free AERIS local UI.
+"""Real-browser semantic E2E for the Core-SSOT AERIS local UI.
 
-This test deliberately verifies rendered browser behavior and SPA route activation.
-It is not pixel-level visual regression and must never be reported as such.
+Scope boundary: real headless browser SPA route/render semantic E2E; NOT pixel visual regression.
+The separate visual baseline provides fixed-environment screenshot repeatability only.
 """
 from __future__ import annotations
 
 import json
+import argparse
 import os
 import shutil
 import signal
@@ -25,6 +26,12 @@ import aeris_runtime.operations as operations
 
 BROWSER_TIMEOUT_SEC = 35
 BROWSER_TIMEOUT_ATTEMPTS = 2
+TEST_TEMP = ROOT / ".aeris" / "test-temp"
+SEMANTIC_REPORT = ROOT / ".aeris" / "evidence" / "browser-semantic-live.json"
+
+
+def _implementation_sha() -> str:
+    return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip()
 
 
 def find_browser() -> str:
@@ -108,7 +115,8 @@ def _dump_dom_with_bounded_timeout_retry(browser: str, url: str, route: str) -> 
     for attempt in range(1, BROWSER_TIMEOUT_ATTEMPTS + 1):
         # A new profile for every attempt prevents a timed-out Chrome process/profile lock
         # from contaminating the retry.
-        with tempfile.TemporaryDirectory(prefix=f"aeris-browser-e2e-{attempt}-") as profile:
+        TEST_TEMP.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix=f"aeris-browser-e2e-{attempt}-", dir=TEST_TEMP) as profile:
             cmd = [
                 browser,
                 "--headless=new",
@@ -126,6 +134,8 @@ def _dump_dom_with_bounded_timeout_retry(browser: str, url: str, route: str) -> 
             ]
             if os.name != "nt":
                 cmd.insert(2, "--no-sandbox")
+            if os.environ.get("AERIS_BROWSER_LOW_RESOURCE") == "1":
+                cmd[1:1] = ["--renderer-process-limit=1", "--disable-extensions", "--disable-software-rasterizer", "--no-proxy-server"]
             try:
                 returncode, stdout, stderr = _run_browser_process(cmd)
             except subprocess.TimeoutExpired:
@@ -155,9 +165,12 @@ def run() -> int:
         try:
             browser = find_browser()
             routes = {
-                "/": ('id="dashboard" class="view active-view"', "本機聲學工程公司"),
-                "/workspace": ('id="workspace" class="view active-view"', "Dynamic Pod"),
-                "/services": ('id="services" class="view active-view"', "Engineering Workflows"),
+                "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "Dashboard is a projection, not truth."),
+                "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "Suggested Temporary Engineering Pod"),
+                "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "Five-Plane Architecture"),
+                "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', "Dashboard is a projection, not truth."),
+                "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "Suggested Temporary Engineering Pod"),
+                "/services?theme=light": ('data-page="services"', 'data-theme="light"', "Five-Plane Architecture"),
             }
             results = []
             for route, required in routes.items():
@@ -166,7 +179,7 @@ def run() -> int:
                 missing = [marker for marker in required if marker not in dom]
                 if missing:
                     raise AssertionError(f"browser route {route} missing rendered markers: {missing}")
-                if "/assets/app.js" not in dom:
+                if "/assets/aeris-live.js" not in dom:
                     raise AssertionError(f"browser route {route} did not render the AERIS application shell")
                 results.append({"route": route, "http_render": "PASS", "active_view": required[0]})
             print(json.dumps({
@@ -174,7 +187,7 @@ def run() -> int:
                 "browser": browser,
                 "routes": results,
                 "timeout_recovery": f"bounded {BROWSER_TIMEOUT_ATTEMPTS}-attempt isolated-profile retry; repeated timeout fails closed",
-                "scope": "real headless browser SPA route/render semantic E2E; NOT pixel visual regression",
+                "scope": "real headless browser Core-SSOT route/render/live-API semantic E2E",
             }, ensure_ascii=False, indent=2))
             return 0
         finally:
@@ -183,5 +196,36 @@ def run() -> int:
             thread.join(timeout=3)
 
 
+def run_live(base_url: str) -> int:
+    """Render the deployed service and require values produced by its real APIs."""
+    browser = find_browser()
+    routes = {
+        "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", "100 roles"),
+        "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", " · workflow WF-"),
+        "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", "20 observed services"),
+        "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", "100 roles"),
+        "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", " · workflow WF-"),
+        "/services?theme=light": ('data-page="services"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", "20 observed services"),
+    }
+    results = []
+    for route, required in routes.items():
+        required = (*required, 'id="capability-factory"', 'L2 以上 100/100', 'Skills 42', 'Methods 42')
+        if '/workspace' in route:
+            required = (*required, 'id="capRun"', 'id="capRole"', 'R100')
+        dom = _dump_dom_with_bounded_timeout_retry(browser, base_url.rstrip("/") + route, route)
+        missing = [marker for marker in required if marker not in dom]
+        if missing:
+            raise AssertionError(f"live browser route {route} missing real-API markers: {missing}")
+        results.append({"route": route, "render": "PASS", "required_markers": list(required)})
+    report = {"AERIS_BROWSER_LIVE_SEMANTIC_E2E": "PASS", "implementation_sha": _implementation_sha(), "browser": browser, "base_url": base_url, "routes": results, "scope": "deployed six-page browser render with real status/roles/services API values; task mutation is covered by API integration tests"}
+    SEMANTIC_REPORT.parent.mkdir(parents=True, exist_ok=True)
+    SEMANTIC_REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0
+
+
 if __name__ == "__main__":
-    raise SystemExit(run())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--live-base-url")
+    args = parser.parse_args()
+    raise SystemExit(run_live(args.live_base_url) if args.live_base_url else run())

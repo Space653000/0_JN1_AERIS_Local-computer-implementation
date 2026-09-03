@@ -1,0 +1,11 @@
+{
+  "id": "STANDARD-IEC-60268-4",
+  "category": "Standards metadata",
+  "title": "STANDARD-IEC-60268-4",
+  "text": "{\"standard_id\": \"IEC 60268-4\", \"title\": \"Sound system equipment — Part 4: Microphones\", \"keywords\": [\"microphone\", \"mic\", \"electroacoustic measurement\"], \"edition\": null, \"status\": \"UNKNOWN_UNTIL_LIVE_VERIFIED\", \"verification_state\": \"NEEDS_LIVE_VERIFICATION\", \"verified_at_utc\": null, \"source_url\": null, \"note\": \"Formal use requires live source verification.\"}",
+  "source": "standards/registry.v1.json",
+  "rights": "PUBLIC_METADATA",
+  "sha256": "eb4ee66d590d3dd608ba782804afda2c0c764d4b6cebe30e0bc985aacd6fcd3c",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

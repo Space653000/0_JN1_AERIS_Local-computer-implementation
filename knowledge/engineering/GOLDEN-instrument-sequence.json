@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-instrument-sequence",
+  "category": "Golden cases",
+  "title": "GOLDEN-instrument-sequence",
+  "text": "[{\"path\": \"sample_count\", \"expected\": 48000, \"absolute_tolerance\": 1e-08, \"unit\": \"samples\", \"reduction\": null}, {\"path\": \"physical_io_performed\", \"expected\": false, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Product/instrument-sequence/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "c34870f3e439aadaa92c6299598f1551927457179e3e1d283cb223cf0397c203",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

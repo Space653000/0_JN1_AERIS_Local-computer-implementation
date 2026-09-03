@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R064",
+  "category": "Products",
+  "title": "PRODUCT-R064",
+  "text": "{\"speaker_topology_considerations\": \"warning/interaction speaker\", \"microphone_topology_considerations\": \"chassis-mounted distributed microphones\", \"usage_scenarios\": [\"mobile autonomous vehicle interaction\"], \"common_acoustic_failure_modes\": [\"motor vibration\", \"Doppler\", \"warning audibility\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [\"IEC 60268-5\", \"IEC 60268-4\"], \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R064/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "7cc2b819d7442c2196eee011d3c6e335fc145d9323619ef053179c22d5cb6537",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

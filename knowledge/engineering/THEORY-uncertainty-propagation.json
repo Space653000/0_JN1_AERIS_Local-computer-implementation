@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-uncertainty-propagation",
+  "category": "Theory",
+  "title": "THEORY-uncertainty-propagation",
+  "text": "Independent variance terms are 0.01 and 0.16.",
+  "source": "methods/engineering/uncertainty-propagation.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "6d082fde6d82d36cc9666e2d829be71293e5b01a03911ddeca64ddba3bc1ba48",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

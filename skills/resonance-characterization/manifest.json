@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "skill_id": "resonance-characterization",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/resonance-characterization/implementation.py",
+  "input_schema": "skills/resonance-characterization/input.schema.json",
+  "output_schema": "skills/resonance-characterization/output.schema.json",
+  "method": "methods/engineering/resonance-characterization.json",
+  "applicability": "100 Hz resonance with half-power crossings at 90/110 Hz has Q=5.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/Speaker/resonance-characterization/golden.json",
+  "negative_tests": "golden/engineering/Speaker/resonance-characterization/negative.json",
+  "regression_tests": "golden/engineering/Speaker/resonance-characterization/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R010",
+    "R015",
+    "R073"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

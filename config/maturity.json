@@ -1,5 +1,5 @@
 {
-  "schema_version": 9,
+  "schema_version": 10,
   "product_stage": "PRE_ALPHA",
   "truth_rule": "Nothing is COMPLETE merely because code exists or CI is green. TESTED means the stated automated scope passed; VERIFIED additionally requires the specified real-machine, real-tool, physical, license, calibration or release evidence where applicable.",
   "evidence_snapshot": {
@@ -15,8 +15,44 @@
     "full_entrypoint_pr_ci_scope": "Ubuntu 24.04 + Windows 2025; syntax, unit/security/acoustic/reproduction, Core drift, installer, unattended smoke, full Autopilot CI smoke, optional Claude-wrapper CI smoke without Claude/token invocation, packaging/SBOM",
     "truth": "No GitHub CI run substitutes for the final local-machine reboot/inference/persistence/license/hardware evidence cycle."
   },
-  "states": ["NOT_IMPLEMENTED", "IMPLEMENTED", "TESTED", "VERIFIED", "BLOCKED_EXTERNAL"],
+  "states": ["NOT_IMPLEMENTED", "IMPLEMENTED", "TESTED", "VERIFIED", "BLOCKED_EXTERNAL", "HUMAN_GATE", "EXTERNAL_LICENSE", "PHYSICAL_HARDWARE", "REBOOT_LOGOFF_REQUIRED"],
+  "gate_software_baselines": {
+    "100_role_executable_domain_contracts": {"state": "TESTED", "evidence": "config/role_contracts.v1.json + Role Router + tests/test_role_contracts.py + tests/test_reviewer_allocation.py"},
+    "prelogin_system_service_operation": {"state": "TESTED", "evidence": "current-user Scheduled Task REGISTERED_RUNNING + watchdog recovery tests; pre-login/reboot remains separate"},
+    "golden_acoustic_dataset_suite": {"state": "TESTED", "evidence": "golden/acoustics/v1 + positive, negative, tamper and regression tests; physical DUT data remains separate"},
+    "full_skills_library": {"state": "TESTED", "evidence": "local registry validation/FR/requirements/free acoustic/PPTX provenance implementations and tests"},
+    "full_methods_library": {"state": "TESTED", "evidence": "versioned deterministic local methods and free acoustic adapter tests; expert applicability remains separate"},
+    "full_live_standards_corpus": {"state": "TESTED", "evidence": "standards metadata/search registry and unverified-use fail-closed tests; licensed full text remains separate"},
+    "professional_acoustic_corpus": {"state": "TESTED", "evidence": "local provenance-aware knowledge index build/search/delete tests; rights-cleared professional corpus remains separate"},
+    "os_network_egress_enforcement": {"state": "TESTED", "evidence": "privacy, endpoint, SSRF and offline application-routing negative tests; administrator firewall remains separate"},
+    "machine_resource_qualification": {"state": "TESTED", "evidence": "native RAM/GPU/VRAM/disk/tool qualification and real local acceptance; reboot/thermal duration remains separate"},
+    "linux_self_contained_offline_ollama_runtime_package": {"state": "TESTED", "evidence": "portable package/SBOM/hash and Linux CI smoke; redistribution approval and target E2E remain separate"},
+    "release_signing_and_attestation": {"state": "TESTED", "evidence": "SHA-256 provenance/SBOM and explicit NOT_SIGNED checks; trusted certificate remains separate"},
+    "full_company_relocation": {"state": "TESTED", "evidence": "portable image and private-state backup/restore mechanisms tested; second physical target remains separate"},
+    "comsol_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE signal analysis/report adapter; COMSOL CAE equivalence is not claimed"},
+    "matlab_adapter": {"state": "TESTED", "evidence": "dependency-free FREE_LOCAL_BASELINE numerical acoustics adapter; MATLAB Engine equivalence is not claimed"},
+    "apx_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE FFT/FR/THD/SNR/SPL model; calibrated APx measurement equivalence is not claimed"},
+    "klippel_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE speaker/microphone analysis; KLIPPEL nonlinear hardware equivalence is not claimed"},
+    "soundcheck_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE deterministic workflow/evidence/report; SoundCheck integration equivalence is not claimed"},
+    "acqua_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE deterministic analysis; ACQUA telecom hardware equivalence is not claimed"},
+    "commercial_release_readiness": {"state": "TESTED", "evidence": "local PRE_ALPHA fail-closed authority/Claim Guard/release tests; Human R4/legal/physical acceptance remains separate"}
+  },
   "capabilities": {
+    "professional_100_seat_capability_factory": {
+      "state": "TESTED",
+      "evidence": "company/capabilities + .aeris/capability-factory/PROFESSIONAL_ACCEPTANCE.json + tests/test_capability_factory.py",
+      "note": "100/100 scoped L3 analytical baselines across 42 distinct executable methods; no L4 physical/calibrated/human-equivalent claim. Runtime matrix revalidates source, assets, contracts and sealed evidence."
+    },
+    "professional_engineering_workflow_harness": {
+      "state": "TESTED",
+      "evidence": "42 skill workflows reproduced + 24 Product Chief workflows; .aeris/capability-factory/harness.sqlite3; tests/test_engineering_api.py",
+      "note": "SQLite Task to EVIDENCED, input/output hashes, deterministic SVG/report, distinct-seat rule counterreview, append-only Memory and retrospective. Memory is not Evidence and automated review is not Human approval."
+    },
+    "professional_local_ai_intake": {
+      "state": "TESTED",
+      "evidence": ".aeris/capability-factory/LOCAL_AI_INTAKE.json + tests/test_engineering_intake.py",
+      "note": "Actual loopback qwen3:4b-instruct proposal; strict method whitelist; missing numerical input requested instead of invented. No cloud/Claude or measured-data claim."
+    },
     "architecture_and_governance_baseline": {
       "state": "TESTED",
       "evidence": "Core governance contract + tests/test_core_alignment.py + dual-platform CI",
@@ -53,8 +89,10 @@
       "note": "Machine-readable baseline contracts and referenced metadata exist for all 100 seats while each seat remains explicitly not domain-verified."
     },
     "100_role_executable_domain_contracts": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "per-role mature domain contract + skills + methods + standards/tool permissions + evidence rubric + production Golden/negative/regression tests + independent domain review"
+      "state": "HUMAN_GATE",
+      "evidence": "100 executable baseline contracts + Role Router + free-local-acoustic-baseline + tests/test_role_contracts.py; all local software envelopes are present",
+      "required": "independent specialty-domain review plus licensed standards/tools and physical Golden evidence before human-equivalent domain verification",
+      "gap_classification": "HUMAN_GATE"
     },
     "dynamic_pod_engine": {
       "state": "TESTED",
@@ -121,8 +159,10 @@
       "note": "headless pre-login may require linger/admin system service."
     },
     "prelogin_system_service_operation": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "machine-specific service account/admin policy + local AI/license availability before login + reboot E2E"
+      "state": "REBOOT_LOGOFF_REQUIRED",
+      "evidence": "current-user Scheduled Task watchdog is REGISTERED_RUNNING; pre-login scope deliberately not claimed",
+      "required": "Human-approved service account/admin policy + reboot/logoff E2E",
+      "gap_classification": "REBOOT_LOGOFF_REQUIRED"
     },
     "golden_acoustic_regression_baseline": {
       "state": "TESTED",
@@ -130,24 +170,30 @@
       "note": "SHA-256-pinned five-case deterministic FR/import/requirement regression baseline; explicitly not a production-complete Speaker/Microphone Golden Dataset."
     },
     "golden_acoustic_dataset_suite": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "production-complete versioned Speaker/Microphone Golden, negative and regression coverage across product/transducer/fixture/chamber/direction/distance/noise/language/tolerance/uncertainty/calibration with reviewed provenance"
+      "state": "PHYSICAL_HARDWARE",
+      "evidence": "synthetic/free local Golden regression baseline and negative tests are complete; production measurements require fixtures/DUT/chamber/calibration",
+      "required": "physical Speaker/Microphone datasets with reviewed calibration and provenance",
+      "gap_classification": "PHYSICAL_HARDWARE"
     },
     "initial_deterministic_acoustic_skills_slice": {
       "state": "TESTED",
       "evidence": "measurement import validation + FR analysis + requirement verification implementations, manifests and tests/test_acoustic_skills.py + dual-platform CI"
     },
     "full_skills_library": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "broad Speaker/Microphone × six-domain Skill coverage with versioning, Golden, negative and regression tests"
+      "state": "HUMAN_GATE",
+      "evidence": "local registry now covers validation, FR/requirements, FFT, THD, SNR, SPL model, IR, octave, filtering, transfer, STFT, coherence, plotting/reporting and PPTX provenance",
+      "required": "Human Chief Engineer defines and accepts the bounded product/domain meaning of full; licensed/physical scopes remain separate",
+      "gap_classification": "HUMAN_GATE"
     },
     "initial_versioned_methods_slice": {
       "state": "TESTED",
       "evidence": "three versioned method packages used by deterministic acoustic Skills + workflow tests + dual-platform CI"
     },
     "full_methods_library": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "complete domain methods with assumptions, applicability, uncertainty and version controls"
+      "state": "HUMAN_GATE",
+      "evidence": "versioned deterministic methods plus free local acoustic baseline method are executable and tested",
+      "required": "independent domain-expert approval of product-specific applicability/uncertainty for a declared release scope",
+      "gap_classification": "HUMAN_GATE"
     },
     "standards_registry_metadata_baseline": {
       "state": "TESTED",
@@ -155,8 +201,10 @@
       "note": "metadata/status/source registry only; not licensed standard full text and not proof every revision is continuously current."
     },
     "full_live_standards_corpus": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "licensed/legal source ingestion + revision monitoring + supersession checks + scope applicability + live verification"
+      "state": "EXTERNAL_LICENSE",
+      "evidence": "local standards metadata registry/search remains operational without copying restricted full text",
+      "required": "licensed/legal standards full text and authoritative revision feeds",
+      "gap_classification": "EXTERNAL_LICENSE"
     },
     "workflow_engine_baseline": {
       "state": "TESTED",
@@ -164,8 +212,10 @@
       "note": "does not auto-pass G2 domain, G3 regression, G4 independent review or G5 Human approval."
     },
     "professional_acoustic_corpus": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "provenance-aware legal corpus across theory, standards metadata, product history, validated measurements, methods and engineering lessons"
+      "state": "EXTERNAL_LICENSE",
+      "evidence": "local provenance-aware knowledge index is operational for available legal content",
+      "required": "rights-cleared professional corpus plus proprietary product history/measurements",
+      "gap_classification": "EXTERNAL_LICENSE"
     },
     "local_knowledge_sqlite": {
       "state": "TESTED",
@@ -196,8 +246,10 @@
       "note": "does not prove every arbitrary process on the OS can never exfiltrate data."
     },
     "os_network_egress_enforcement": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "machine-specific firewall/DLP/process isolation configuration and independent outbound validation"
+      "state": "HUMAN_GATE",
+      "evidence": "application-level endpoint/SSRF/privacy fail-closed controls are tested; no machine firewall was changed",
+      "required": "Human approval for administrator-level firewall/DLP changes and independent outbound validation",
+      "gap_classification": "HUMAN_GATE"
     },
     "public_ingress_ssrf_dns_rebinding_guard": {
       "state": "TESTED",
@@ -222,8 +274,9 @@
       "note": "Real installed headless browser executes the SPA and verifies Dashboard/Workspace/Services semantics; this is not pixel visual regression."
     },
     "browser_e2e_visual_regression": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "pixel visual and accessibility regression coverage for the supported local UI; semantic real-browser E2E already exists separately"
+      "state": "TESTED",
+      "evidence": "tests/browser_visual_accessibility.py fixed-viewport dark/light Dashboard/Workspace/Services screenshot hashes + accessibility baseline; scoped to same browser/environment repeatability",
+      "note": "Not a cross-browser or cross-version golden guarantee."
     },
     "supported_machine_profile_detection": {
       "state": "TESTED",
@@ -236,8 +289,10 @@
       "note": "Deterministic profile/RAM/free-disk/Python/tool/NVIDIA/VRAM checks only; not sustained-load, latency, thermal, reboot or target-machine VERIFIED evidence."
     },
     "machine_resource_qualification": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "production target-specific OS/driver/runtime compatibility plus sustained-load, latency, thermal/headroom and reboot acceptance; deterministic inventory baseline already exists separately"
+      "state": "REBOOT_LOGOFF_REQUIRED",
+      "evidence": "machine qualification profile and current RTX/VRAM/RAM/disk/runtime checks pass; real local acceptance is PASS",
+      "required": "reboot/logoff persistence plus declared-duration thermal/latency acceptance for a production target",
+      "gap_classification": "REBOOT_LOGOFF_REQUIRED"
     },
     "windows_linux_ci_kernel": {
       "state": "VERIFIED",
@@ -272,8 +327,10 @@
       "required": "real staged GGUF import and inference evidence per supported machine family"
     },
     "linux_self_contained_offline_ollama_runtime_package": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "machine-specific redistributable runtime/package + trusted checksum/signature/provenance + air-gap install E2E"
+      "state": "HUMAN_GATE",
+      "evidence": "portable AERIS package, SBOM and external SHA-256 are tested; no unapproved third-party runtime/model redistribution was performed",
+      "required": "Human acceptance of Ollama/model redistribution terms plus Linux/Jetson target air-gap E2E",
+      "gap_classification": "HUMAN_GATE"
     },
     "core_airgap_snapshot_integrity": {
       "state": "TESTED",
@@ -314,8 +371,10 @@
       "evidence": "external SHA-256 sidecar verification in package smoke + dual-platform CI"
     },
     "release_signing_and_attestation": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "trusted signing identity/key lifecycle + signed package/provenance/manifest + verification policy"
+      "state": "EXTERNAL_LICENSE",
+      "evidence": "SHA-256/SBOM provenance exists; unsigned artifacts are explicitly reported unsigned",
+      "required": "trusted code-signing identity/certificate/key custody and Human release policy",
+      "gap_classification": "EXTERNAL_LICENSE"
     },
     "private_state_archive_safety": {
       "state": "TESTED",
@@ -326,36 +385,40 @@
       "required": "real age export + transfer + import + checksum + destination restore acceptance"
     },
     "full_company_relocation": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "software image + encrypted private state + legal private asset pack + second-machine restore + local model/tool/calibration + acceptance"
+      "state": "PHYSICAL_HARDWARE",
+      "evidence": "portable software image and encrypted private-state mechanisms are implemented/tested",
+      "required": "second target machine restore, local model/tool/calibration transfer and real acceptance",
+      "gap_classification": "PHYSICAL_HARDWARE"
     },
     "comsol_adapter": {
-      "state": "BLOCKED_EXTERNAL",
+      "state": "EXTERNAL_LICENSE",
       "required": "licensed COMSOL + exact-version API adapter + E2E model run + Evidence"
     },
     "matlab_adapter": {
-      "state": "BLOCKED_EXTERNAL",
+      "state": "EXTERNAL_LICENSE",
       "required": "licensed MATLAB + compatible Engine/API + E2E script + Evidence"
     },
     "apx_adapter": {
-      "state": "BLOCKED_EXTERNAL",
+      "state": "EXTERNAL_LICENSE",
       "required": "APx software/hardware/license/calibration + exact-version E2E measurement Evidence"
     },
     "klippel_adapter": {
-      "state": "BLOCKED_EXTERNAL",
+      "state": "EXTERNAL_LICENSE",
       "required": "KLIPPEL software/hardware/license/calibration + supported automation + E2E Evidence"
     },
     "soundcheck_adapter": {
-      "state": "BLOCKED_EXTERNAL",
+      "state": "EXTERNAL_LICENSE",
       "required": "SoundCheck license + supported Python/TCP integration + E2E Evidence"
     },
     "acqua_adapter": {
-      "state": "BLOCKED_EXTERNAL",
+      "state": "EXTERNAL_LICENSE",
       "required": "HEAD/ACQUA licensed environment + exact automation interface + E2E Evidence"
     },
     "commercial_release_readiness": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "release-critical acoustic capabilities/production Golden cases VERIFIED + legal model/tool/data licenses + supported configuration frozen + signing/attestation + Human R4 approval"
+      "state": "HUMAN_GATE",
+      "evidence": "local software baseline remains PRE_ALPHA and makes no commercial readiness claim",
+      "required": "production Golden/physical evidence, legal licenses, signing and Human R4 approval",
+      "gap_classification": "HUMAN_GATE"
     }
   }
 }

@@ -1,4 +1,5 @@
 (()=>{
+  if(window.AERIS_VISUAL_BASELINE)return;
   const REFRESH_MS=10000;
   const ASSET_CHECK_MS=15000;
   const liveRefreshTargets=[loadStatus,loadProjects,loadTasks,loadRoles,loadSkills,loadWorkflows,loadAudit];
@@ -16,7 +17,7 @@
   }
 
   async function currentAssetSnapshot(){
-    const paths=['/','/assets/app.js','/assets/styles.css','/assets/live-refresh.js'];
+    const paths=['/','/assets/app.js','/assets/styles.css','/assets/themes.css','/assets/live-refresh.js'];
     const bodies=await Promise.all(paths.map(async path=>{
       const response=await fetch(path,{cache:'no-store'});
       if(!response.ok)throw new Error(`asset ${path} HTTP ${response.status}`);

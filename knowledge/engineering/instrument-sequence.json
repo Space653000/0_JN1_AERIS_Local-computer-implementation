@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-instrument-sequence",
+  "category": "Methods",
+  "title": "instrument-sequence",
+  "text": "Safe dry-run schedules the exact stimulus length and rejects excessive voltage without hardware IO. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/instrument-sequence.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "620f0f56ecc59e9a9d6e6c105751453a68539bea8912f17fbffb056176bd8aad"
+}

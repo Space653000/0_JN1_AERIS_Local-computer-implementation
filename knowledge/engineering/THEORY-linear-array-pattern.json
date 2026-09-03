@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-linear-array-pattern",
+  "category": "Theory",
+  "title": "THEORY-linear-array-pattern",
+  "text": "Broadside in-phase sensors have normalized unit power.",
+  "source": "methods/engineering/linear-array-pattern.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "9122692392d909710c5b60cdb60bb4d1668d309cdaeb8c946a3f64fe0429e5ac",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

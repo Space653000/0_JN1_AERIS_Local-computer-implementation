@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-porous-absorption",
+  "category": "Theory",
+  "title": "THEORY-porous-absorption",
+  "text": "Passive rigid-backed fibrous layer; 1 kHz reference computed independently using scalar complex arithmetic and the stated Delany-Bazley equations.",
+  "source": "methods/engineering/porous-absorption.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "4d03b32866107301738613e2b00982c339860dbd2c9522fde677499948425d12",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

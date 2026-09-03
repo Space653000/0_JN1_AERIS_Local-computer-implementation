@@ -21,6 +21,8 @@ from .roles import get_role, invoke_role, list_roles, plan_pod
 from .router import ModelRouter
 from .skills_runtime import list_skills, run_skill
 from .standards_registry import search_standards
+from .telemetry import service_telemetry
+from .machine import detect as machine_detect
 from .workflow import (
     create_engineering_workflow,
     create_workflow_from_template,
@@ -89,6 +91,8 @@ class ControlStore:
                     risk_level TEXT NOT NULL,
                     pod_json TEXT,
                     evidence_ref TEXT,
+                    workflow_id TEXT,
+                    metadata_json TEXT,
                     created_at TEXT NOT NULL,
                     updated_at TEXT NOT NULL,
                     FOREIGN KEY(project_id) REFERENCES projects(id)
@@ -97,6 +101,11 @@ class ControlStore:
                 CREATE INDEX IF NOT EXISTS idx_tasks_state ON tasks(state);
                 """
             )
+            columns = {str(row[1]) for row in db.execute("PRAGMA table_info(tasks)").fetchall()}
+            if "workflow_id" not in columns:
+                db.execute("ALTER TABLE tasks ADD COLUMN workflow_id TEXT")
+            if "metadata_json" not in columns:
+                db.execute("ALTER TABLE tasks ADD COLUMN metadata_json TEXT")
             if db.execute("SELECT id FROM projects LIMIT 1").fetchone() is None:
                 now = _now()
                 db.execute(
@@ -132,10 +141,11 @@ class ControlStore:
         for row in rows:
             item = dict(row)
             item["pod"] = json.loads(item.pop("pod_json")) if item.get("pod_json") else None
+            item["metadata"] = json.loads(item.pop("metadata_json")) if item.get("metadata_json") else {}
             result.append(item)
         return result
 
-    def create_task(self, *, project_id: str | None, title: str, description: str, risk_level: str = "R0", pod: dict[str, Any] | None = None) -> dict[str, Any]:
+    def create_task(self, *, project_id: str | None, title: str, description: str, risk_level: str = "R0", pod: dict[str, Any] | None = None, workflow_id: str | None = None, metadata: dict[str, Any] | None = None) -> dict[str, Any]:
         title, description = title.strip(), description.strip()
         if not title:
             raise ValueError("task title is required")
@@ -146,8 +156,8 @@ class ControlStore:
             if project_id and db.execute("SELECT 1 FROM projects WHERE id=?", (project_id,)).fetchone() is None:
                 raise ValueError("unknown project_id")
             db.execute(
-                "INSERT INTO tasks(id,project_id,title,description,state,risk_level,pod_json,evidence_ref,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?)",
-                (tid, project_id, title[:200], description[:20000], "DRAFT", risk_level, json.dumps(pod, ensure_ascii=False) if pod else None, None, now, now),
+                "INSERT INTO tasks(id,project_id,title,description,state,risk_level,pod_json,evidence_ref,workflow_id,metadata_json,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                (tid, project_id, title[:200], description[:20000], "DRAFT", risk_level, json.dumps(pod, ensure_ascii=False) if pod else None, None, workflow_id, json.dumps(metadata or {}, ensure_ascii=False), now, now),
             )
         return self.get_task(tid)
 
@@ -158,6 +168,7 @@ class ControlStore:
             raise KeyError(task_id)
         item = dict(row)
         item["pod"] = json.loads(item.pop("pod_json")) if item.get("pod_json") else None
+        item["metadata"] = json.loads(item.pop("metadata_json")) if item.get("metadata_json") else {}
         return item
 
     def summary(self) -> dict[str, int]:
@@ -210,13 +221,16 @@ def _body(handler: Any) -> dict[str, Any]:
 
 
 def _serve_ui(handler: Any, path: str) -> bool:
-    if path in {"/", "/dashboard", "/workspace", "/services"}:
-        target = UI_ROOT / "index.html"
+    if path in {"/", "/dashboard"}:
+        target = UI_ROOT / "dashboard.html"
+    elif path in {"/workspace", "/services"}:
+        target = UI_ROOT / (path.lstrip("/") + ".html")
     elif path.startswith("/assets/"):
         rel = path[len("/assets/"):]
         if not rel or "/" in rel or "\\" in rel or ".." in rel:
             return False
-        target = UI_ROOT / rel
+        core_assets = {"aeris.css", "aeris-theme.js"}
+        target = (ROOT / ".aeris" / "core-reference" / rel) if rel in core_assets else UI_ROOT / rel
     else:
         return False
     if not target.is_file():
@@ -301,6 +315,18 @@ def _save_import(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
+    from urllib.parse import urlsplit as _split
+    if _split(handler.path).path.startswith("/api/v1/capabilities"):
+        if urlsplit("http://"+handler.headers.get("Host","")).hostname not in {"localhost","127.0.0.1","::1"}:
+            _write_json(handler,403,{"error":"loopback_host_required"}); return True
+        from .engineering.api import get
+        try:
+            _write_json(handler,200,get(handler.path))
+        except (ValueError,KeyError) as exc:
+            _write_json(handler,400,{"error":str(exc)})
+        except RuntimeError as exc:
+            _write_json(handler,503,{"error":str(exc)})
+        return True
     parsed, path = urlsplit(handler.path), urlsplit(handler.path).path
     if _serve_ui(handler, path):
         return True
@@ -335,6 +361,10 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
             _write_json(handler, 200, {"query": query, "results": knowledge_search(query, limit)})
         elif path == "/api/v1/maturity":
             _write_json(handler, 200, _json_file(MATURITY_PATH))
+        elif path == "/api/v1/services":
+            _write_json(handler, 200, service_telemetry(ControlStore().summary()))
+        elif path == "/api/v1/machine":
+            _write_json(handler, 200, machine_detect())
         elif path == "/api/v1/audit":
             _write_json(handler, 200, {"records": _audit_recent(int((qs.get("limit") or ["50"])[0]))})
         else:
@@ -352,6 +382,10 @@ def handle_post(handler: Any) -> bool:
     path = urlsplit(handler.path).path
     if not path.startswith("/api/v1/"):
         return False
+    if path.startswith("/api/v1/capabilities/"):
+        host=handler.headers.get("Host",""); origin=handler.headers.get("Origin")
+        if urlsplit("http://"+host).hostname not in {"localhost","127.0.0.1","::1"} or origin and origin!="http://"+host or not handler.headers.get("Content-Type","").lower().startswith("application/json"):
+            _write_json(handler,403,{"error":"same_origin_json_required"}); return True
     try:
         payload = _body(handler)
         if path == "/api/v1/projects":
@@ -359,9 +393,32 @@ def handle_post(handler: Any) -> bool:
         elif path == "/api/v1/tasks":
             query = str(payload.get("description") or payload.get("title") or "")
             pod = plan_pod(query, int(payload.get("max_roles", 8))) if payload.get("auto_pod", True) else None
-            _write_json(handler, 201, ControlStore().create_task(project_id=payload.get("project_id"), title=str(payload.get("title", "")), description=str(payload.get("description", "")), risk_level=str(payload.get("risk_level", "R0")), pod=pod))
+            metadata = payload.get("metadata") or {}
+            if not isinstance(metadata, dict):
+                raise ValueError("metadata must be an object")
+            workflow = None
+            if payload.get("create_workflow"):
+                workflow = create_engineering_workflow(
+                    str(payload.get("title", "")), str(payload.get("actor", "Local UI")),
+                    description=str(payload.get("description", "")), risk=str(payload.get("risk_level", "R0")),
+                    skill_id=payload.get("skill_id"), skill_params=payload.get("skill_params") or {},
+                    max_roles=int(payload.get("max_roles", 8)),
+                )
+            task = ControlStore().create_task(
+                project_id=payload.get("project_id"), title=str(payload.get("title", "")),
+                description=str(payload.get("description", "")), risk_level=str(payload.get("risk_level", "R0")),
+                pod=pod, workflow_id=str(workflow.get("workflow_id")) if workflow else None, metadata=metadata,
+            )
+            _write_json(handler, 201, {"task": task, "workflow": workflow} if workflow else task)
         elif path == "/api/v1/pods/plan":
-            _write_json(handler, 200, plan_pod(str(payload.get("query", "")), int(payload.get("max_roles", 8))))
+            if payload.get("needed_skills"):
+                from .engineering.orchestration import route_pod
+                _write_json(handler,200,route_pod(payload))
+            else:
+                _write_json(handler, 200, plan_pod(str(payload.get("query", "")), int(payload.get("max_roles", 8))))
+        elif path.startswith("/api/v1/capabilities/"):
+            from .engineering.api import post
+            _write_json(handler,200,post(path,payload))
         elif path.startswith("/api/v1/roles/") and path.endswith("/invoke"):
             refs = payload.get("evidence_refs", [])
             if not isinstance(refs, list) or any(not isinstance(x, str) for x in refs):

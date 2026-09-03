@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R071",
+    "name": "Spatial Audio / Binaural / HRTF",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Spatial Audio / Binaural / HRTF: execute and challenge the bounded methods listed in scope.",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "A seven-sample shifted impulse establishes correlation lag sign and magnitude.",
+    "Broadside in-phase sensors have normalized unit power.",
+    "Thirty ms of buffers plus thirty ms of other serial stages."
+  ],
+  "non_scope": [
+    "complete human-equivalent specialty competence",
+    "real instrumentation/calibration unless separately evidenced",
+    "licensed FEM/BEM/CAE or clinical/production approval"
+  ],
+  "inputs": {
+    "gcc-phat-tdoa": "skills/gcc-phat-tdoa/input.schema.json",
+    "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
+    "latency-budget": "skills/latency-budget/input.schema.json"
+  },
+  "outputs": {
+    "gcc-phat-tdoa": "skills/gcc-phat-tdoa/output.schema.json",
+    "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
+    "latency-budget": "skills/latency-budget/output.schema.json"
+  },
+  "required_skills": [
+    "gcc-phat-tdoa",
+    "linear-array-pattern",
+    "latency-budget"
+  ],
+  "required_methods": [
+    "methods/engineering/gcc-phat-tdoa.json",
+    "methods/engineering/linear-array-pattern.json",
+    "methods/engineering/latency-budget.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/gcc-phat-tdoa.json",
+    "knowledge/engineering/linear-array-pattern.json",
+    "knowledge/engineering/latency-budget.json"
+  ],
+  "standards_metadata_references": [
+    "IEC 60268-5",
+    "IEC 60268-4"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "all mapped analytical/negative/regression cases pass",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "declare model applicability",
+    "separate numerical result from calibration uncertainty",
+    "state unavailable uncertainty instead of inventing confidence"
+  ],
+  "common_failure_modes": [
+    "wrong transducer geometry",
+    "unexcited or aliased input",
+    "units/reference mismatch",
+    "model validity exceeded"
+  ],
+  "counter_hypotheses": [
+    "fixture or assembly error rather than product defect",
+    "measurement-chain error rather than signal-processing failure",
+    "insufficient data rather than a confirmed pass"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false
+  },
+  "golden_cases": [
+    "golden/engineering/Array/gcc-phat-tdoa/golden.json",
+    "golden/engineering/Array/linear-array-pattern/golden.json",
+    "golden/engineering/Product/latency-budget/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Array/gcc-phat-tdoa/negative.json",
+    "golden/engineering/Array/linear-array-pattern/negative.json",
+    "golden/engineering/Product/latency-budget/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Array/gcc-phat-tdoa/regression.json",
+    "golden/engineering/Array/linear-array-pattern/regression.json",
+    "golden/engineering/Product/latency-budget/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R071",
+      "skill_id": "gcc-phat-tdoa",
+      "inputs": "skills/gcc-phat-tdoa/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    },
+    {
+      "role_id": "R071",
+      "skill_id": "linear-array-pattern",
+      "inputs": "skills/linear-array-pattern/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    },
+    {
+      "role_id": "R071",
+      "skill_id": "latency-budget",
+      "inputs": "skills/latency-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run"
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R071/report-template.md"
+  ],
+  "current_maturity_level": "L3",
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260903T070722Z-98b3d9bc"
+  ],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+}

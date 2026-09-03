@@ -68,6 +68,7 @@ if ($HardOffline) {
 
 $Payload=[ordered]@{
   result='PASS'
+  implementation_sha=((& git -C $Root rev-parse HEAD) -join '').Trim()
   scope='REAL_MACHINE_APPLICATION_ACCEPTANCE'
   hard_offline_network_state=$NetworkState
   hard_offline_claim_boundary='Probe success would fail acceptance; blocked probes are evidence of tested paths, not mathematical proof that every OS process/path can never egress.'

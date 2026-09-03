@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-time-frequency-analysis",
+  "category": "Golden cases",
+  "title": "GOLDEN-time-frequency-analysis",
+  "text": "[{\"path\": \"integrated_power\", \"expected\": 0.5, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/DSP/time-frequency-analysis/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "2f477357e80cb0dd629704a1d6c7f38108933a552aee1cff955a749d4309697a",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

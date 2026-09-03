@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-response-phase-delay",
+  "category": "Golden cases",
+  "title": "GOLDEN-response-phase-delay",
+  "text": "[{\"path\": \"group_delay_s\", \"expected\": 0.001, \"absolute_tolerance\": 1e-08, \"unit\": \"s\", \"reduction\": \"all\"}]",
+  "source": "golden/engineering/DSP/response-phase-delay/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "1c4ad894ba24bd3731d3d37c8b9e886cd8065384594295d192a2e86d37a85506",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

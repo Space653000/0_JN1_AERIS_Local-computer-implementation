@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-room-ir-decay",
+  "category": "Golden cases",
+  "title": "GOLDEN-room-ir-decay",
+  "text": "[{\"path\": \"t20_s\", \"expected\": 0.6, \"absolute_tolerance\": 0.0001, \"unit\": \"s\", \"reduction\": null}, {\"path\": \"t30_s\", \"expected\": 0.6, \"absolute_tolerance\": 0.0001, \"unit\": \"s\", \"reduction\": null}]",
+  "source": "golden/engineering/Microphone/room-ir-decay/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "db2f0d2bc226107185f0fe0127bdd7f6b62ba566f50413d0045e376f9099f679",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

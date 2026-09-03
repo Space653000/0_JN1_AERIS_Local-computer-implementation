@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "acceleration_m_s2": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "sample_rate_hz": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "acceleration_m_s2",
+    "sample_rate_hz"
+  ],
+  "additionalProperties": false
+}

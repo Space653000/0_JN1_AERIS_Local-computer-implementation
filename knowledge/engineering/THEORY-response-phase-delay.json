@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-response-phase-delay",
+  "category": "Theory",
+  "title": "THEORY-response-phase-delay",
+  "text": "Linear phase of a 1 ms delay has constant group delay.",
+  "source": "methods/engineering/response-phase-delay.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "4d313ce3ac34412d265ef3d763a33837e2955c41c95fd5b11b9994a9c42c1c10",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

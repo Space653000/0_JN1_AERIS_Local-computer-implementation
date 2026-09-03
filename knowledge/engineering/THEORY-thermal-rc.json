@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-thermal-rc",
+  "category": "Theory",
+  "title": "THEORY-thermal-rc",
+  "text": "At one thermal time constant the rise is 1-exp(-1) of steady state.",
+  "source": "methods/engineering/thermal-rc.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "3ad650f9a8c4eb2c361cc5c30ec0da885e6e487b503cfc9270cda0e032d21313",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

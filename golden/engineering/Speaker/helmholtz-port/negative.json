@@ -1,0 +1,10 @@
+{
+  "input": {
+    "area_m2": 0.001,
+    "effective_length_m": 0,
+    "volume_m3": 0.01,
+    "sound_speed_m_s": 343
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "6435a3b94165dc82d6f486d7860be54c9e884f43b6eeaa76a2d16143e1fe98af"
+}

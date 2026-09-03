@@ -67,6 +67,7 @@ def read_json(path):
     except Exception:return None
 core=read_json(root/'core.lock.json') or {}
 opening=read_json(opening_path); unattended=read_json(unattended_path)
+completion=read_json(root/'.aeris/state/SOFTWARE_COMPLETION.json') or {}
 payload={
  'schema_version':2,'run_kind':'CI_SMOKE' if ci=='1' else 'REAL_AUTOPILOT',
  'result':status,'stage':stage,'started_at_utc':started,
@@ -75,6 +76,9 @@ payload={
  'implementation_sha':git('rev-parse','HEAD'),'requested_mode':mode,'requested_local_model':model,
  'hard_offline_requested':hard=='1','company_opening_state':opening.get('operational_state') if opening else 'NOT_OPENED',
  'company_complete':False,'unattended_operations':unattended,'failure':failure or None,
+ 'unresolved_software_gaps':completion.get('unresolved_software_gaps',[{'id':'COMPLETION_ASSESSMENT_UNAVAILABLE','status':'UNKNOWN'}]),
+ 'remaining_external_blockers':completion.get('remaining_external_blockers',[]),
+ 'remote_write_performed':False,'local_only_scope':True,
  'evidence_paths':{
    'preflight':str(root/'.aeris/state/AUTOPILOT_PREFLIGHT.json'),
    'deployment':str(root/'.aeris/state/DEPLOYMENT_REPORT.json'),
@@ -83,6 +87,7 @@ payload={
    'heartbeat':str(root/'.aeris/state/HEARTBEAT.json'),
    'unattended_install':str(root/'.aeris/state/UNATTENDED_INSTALL.json'),
    'unattended_runtime':str(root/'.aeris/state/UNATTENDED_OPERATIONS.json'),
+   'software_completion':str(root/'.aeris/state/SOFTWARE_COMPLETION.json'),
    'audit':str(root/'.aeris/audit/audit.jsonl')},
  'truth':'Autopilot completion means the supported local control plane was deployed/opened for its verified scope; never every acoustic capability/tool/release gate.'}
 pathlib.Path(out).write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
@@ -132,6 +137,7 @@ if [ "$CI_SMOKE" = 1 ]; then
   "$PY" -m unittest discover -s tests -v || fail 'CI Autopilot unit/security tests failed.'
   "$PY" -m aeris_runtime company status || fail 'CI Autopilot company manifest check failed.'
   bash "$ROOT/scripts/install-unattended-linux.sh" --ci-smoke || fail 'CI unattended-operations smoke failed.'
+  "$PY" -m aeris_runtime.completion --write >/dev/null || true
   write_result 'CI_SMOKE_PASS_NOT_REAL_OPENING' "$STAGE" ''
   echo "AERIS Autopilot CI smoke PASS. No real-machine acceptance or company opening was claimed. Report: $RESULT"
   exit 0
@@ -165,6 +171,8 @@ if [ "$NO_SUPERVISOR" = 0 ]; then
   bash "$ROOT/scripts/install-unattended-linux.sh" --port 8765 --interval 20 || fail 'Persistent unattended operations could not be registered. This is a real OS-policy/session Human Gate.'
 fi
 
+STAGE='SOFTWARE_GAP_CLOSURE'
+"$PY" -m aeris_runtime.completion --write >/dev/null || fail 'Software-local completion gate failed; see SOFTWARE_COMPLETION.json'
 STAGE='EVIDENCE_HANDOFF'
 write_result 'PASS_OPEN_VERIFIED_SCOPE' "$STAGE" ''
 echo 'AERIS local company control plane is OPEN for the verified scope and unattended continuity has been registered.'

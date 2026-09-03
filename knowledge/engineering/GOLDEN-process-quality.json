@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-process-quality",
+  "category": "Golden cases",
+  "title": "GOLDEN-process-quality",
+  "text": "[{\"path\": \"mean\", \"expected\": 10, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"out_of_spec_count\", \"expected\": 0, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"ppk\", \"expected\": 1.4142135623730951, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Failure/process-quality/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "3eb18a188cabc2cdfcce0e8d7488f9cce18ba8713bb6368de61629fe53649c8b",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

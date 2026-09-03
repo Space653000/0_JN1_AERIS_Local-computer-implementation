@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-microphone-sensitivity",
+  "category": "Theory",
+  "title": "THEORY-microphone-sensitivity",
+  "text": "10 mV at 10 mV/Pa corresponds to 1 Pa RMS.",
+  "source": "methods/engineering/microphone-sensitivity.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "56409a3d2ccee3024742fa4e47ad8bf91417a17a1db46e5651dc68fff9157af5",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

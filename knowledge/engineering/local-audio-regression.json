@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-local-audio-regression",
+  "category": "Methods",
+  "title": "local-audio-regression",
+  "text": "Held-out affine regression without train/validation ID leakage. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/local-audio-regression.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "c27e96386f157c047a36da3ab86be81c6dea8a3737c2b899e08433a28f2f21b1"
+}

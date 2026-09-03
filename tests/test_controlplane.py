@@ -9,16 +9,23 @@ from unittest.mock import patch
 
 import aeris_runtime.controlplane as controlplane
 import aeris_runtime.operations as operations
+import aeris_runtime.workflow as workflow
 
 
 class ControlPlaneTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.db_patch = patch.object(controlplane, "DB_PATH", Path(self.tmp.name) / "control.sqlite3")
-        self.db_patch.start()
+        root = Path(self.tmp.name)
+        self.patches = [
+            patch.object(controlplane, "DB_PATH", root / "control.sqlite3"),
+            patch.object(workflow, "WORKFLOW_ROOT", root / "workflows"),
+        ]
+        for item in self.patches:
+            item.start()
 
     def tearDown(self):
-        self.db_patch.stop()
+        for item in reversed(self.patches):
+            item.stop()
         self.tmp.cleanup()
 
     def _server(self):
@@ -75,6 +82,16 @@ class ControlPlaneTests(unittest.TestCase):
         health = self._get_json(server, "/api/v1/expected-runs")
         self.assertIn(health["overall"], {"HEALTHY", "DEGRADED", "FAILED", "NOT_CONFIGURED"})
 
+    def test_five_plane_service_api_has_truth_fields(self):
+        server = self._server()
+        data = self._get_json(server, "/api/v1/services")
+        self.assertEqual(data["planes"], ["CONTROL", "KNOWLEDGE", "EXECUTION", "TRUST", "OPERATIONS"])
+        self.assertGreaterEqual(len(data["services"]), 15)
+        for service in data["services"]:
+            for field in ("state", "reason", "evidence_ref", "last_update_utc", "capability_maturity"):
+                self.assertIn(field, service)
+        self.assertIn("process-alive alone is insufficient", data["truth"])
+
     def test_project_and_task_sqlite_roundtrip(self):
         store = controlplane.ControlStore()
         project = store.create_project("Acoustic EVT")
@@ -82,6 +99,14 @@ class ControlPlaneTests(unittest.TestCase):
         self.assertEqual(task["project_id"], project["id"])
         self.assertEqual(task["state"], "DRAFT")
         self.assertEqual(len(store.list_tasks(project["id"])), 1)
+
+    def test_workspace_metadata_and_workflow_link_roundtrip(self):
+        store = controlplane.ControlStore()
+        project = store.create_project("Workspace Contract")
+        metadata = {"product": "Laptop", "transducer": "both", "lifecycle": "EVT", "evidence_tier": "Tier-B", "standards_strategy": "Internal", "requirement": "FR", "hypothesis": "leakage", "evidence_needed": "measurement"}
+        task = store.create_task(project_id=project["id"], title="Workspace fields", description="FR", risk_level="R1", workflow_id="WF-TEST", metadata=metadata)
+        self.assertEqual(task["workflow_id"], "WF-TEST")
+        self.assertEqual(task["metadata"], metadata)
 
 
 if __name__ == "__main__":

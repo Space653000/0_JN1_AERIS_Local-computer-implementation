@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-monte-carlo",
+  "category": "Theory",
+  "title": "THEORY-monte-carlo",
+  "text": "Sum of independent normals has mean 11 and standard deviation 5.",
+  "source": "methods/engineering/monte-carlo.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "e5df6c92d8f7c55b8bb1a52afdee8940e50b27cd715ca2b7640c2e7605a676cf",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

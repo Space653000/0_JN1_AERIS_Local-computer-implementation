@@ -1,0 +1,53 @@
+{
+  "id": "monte-carlo-analytic-v1",
+  "skill_id": "monte-carlo",
+  "suite": "Failure",
+  "input": {
+    "means": [
+      1,
+      2
+    ],
+    "standard_deviations": [
+      1,
+      1
+    ],
+    "coefficients": [
+      3,
+      4
+    ],
+    "trials": 10000,
+    "seed": 7
+  },
+  "checks": [
+    {
+      "path": "analytic_mean",
+      "expected": 11,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "analytic_sd",
+      "expected": 5,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "mean",
+      "expected": 11,
+      "absolute_tolerance": 0.2,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "trials": 10
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Sum of independent normals has mean 11 and standard deviation 5.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "6b8bb4006c6dd0da428978e062662eae2c9eb3ce2be2589fd3737884a56bac7d"
+}

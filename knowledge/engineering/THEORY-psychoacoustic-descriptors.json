@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-psychoacoustic-descriptors",
+  "category": "Theory",
+  "title": "THEORY-psychoacoustic-descriptors",
+  "text": "Equal energy at 1 and 3 kHz has a 2 kHz centroid; no MOS inference.",
+  "source": "methods/engineering/psychoacoustic-descriptors.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "f5f65c1a372b2308b0b84ca1c04a39391a915a2847bf543e76962e5bf70a8ce9",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

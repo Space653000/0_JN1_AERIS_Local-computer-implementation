@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-reliability-binomial",
+  "category": "Golden cases",
+  "title": "GOLDEN-reliability-binomial",
+  "text": "[{\"path\": \"one_sided_upper_failure_probability\", \"expected\": 0.029513049607039932, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Failure/reliability-binomial/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "1f6549c8e01d5fee3b69749c0a0c0efc7e60028c929d846b506d6631af64ba83",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

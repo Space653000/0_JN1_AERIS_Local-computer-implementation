@@ -1,0 +1,39 @@
+{
+  "input": {
+    "requirements": [
+      {
+        "id": "FR1",
+        "minimum": -3,
+        "maximum": 3,
+        "unit": "dB"
+      }
+    ],
+    "observations": [
+      {
+        "requirement_id": "FR1",
+        "value": 1,
+        "unit": "dB",
+        "evidence_ref": "synthetic-case"
+      }
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "coverage",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "checks.0.margin_to_nearest_limit",
+      "expected": 2,
+      "absolute_tolerance": 1e-08,
+      "unit": "dB",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "badf0ce7a62f91a30f229ea95e9d6356c35c3428f05b2c1531f63dcd9524a7b5"
+}

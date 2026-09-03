@@ -1,0 +1,33 @@
+{
+  "input": {
+    "failure_modes": [
+      {
+        "id": "F1",
+        "severity": 10,
+        "occurrence": 2,
+        "detection": 5,
+        "owner": "Chief",
+        "countermeasure": "limit voltage"
+      }
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "ranked_modes.0.rpn",
+      "expected": 100,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "ranked_modes.0.human_review_required",
+      "expected": true,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "7681f149c8f3aceec323351ca34efdb74e1d2887ab0c1884a9d135853da44c62"
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "skill_id": "transfer-coherence",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/transfer-coherence/implementation.py",
+  "input_schema": "skills/transfer-coherence/input.schema.json",
+  "output_schema": "skills/transfer-coherence/output.schema.json",
+  "method": "methods/engineering/transfer-coherence.json",
+  "applicability": "A noiseless gain-of-two system has H=2 and unit coherence in excited bins.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/DSP/transfer-coherence/golden.json",
+  "negative_tests": "golden/engineering/DSP/transfer-coherence/negative.json",
+  "regression_tests": "golden/engineering/DSP/transfer-coherence/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R012",
+    "R030",
+    "R032",
+    "R042",
+    "R076",
+    "R082"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

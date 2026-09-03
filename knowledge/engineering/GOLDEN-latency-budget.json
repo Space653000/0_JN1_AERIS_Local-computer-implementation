@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-latency-budget",
+  "category": "Golden cases",
+  "title": "GOLDEN-latency-budget",
+  "text": "[{\"path\": \"serial_latency_ms\", \"expected\": 60, \"absolute_tolerance\": 1e-08, \"unit\": \"ms\", \"reduction\": null}, {\"path\": \"uncompensated_drift_ms_per_hour\", \"expected\": 180, \"absolute_tolerance\": 1e-08, \"unit\": \"ms/hour\", \"reduction\": null}]",
+  "source": "golden/engineering/Product/latency-budget/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "13918972da62a04ef36157e03587b1485b54e8425259b41da677b812ba501613",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

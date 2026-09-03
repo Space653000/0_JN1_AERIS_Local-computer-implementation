@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-process-quality",
+  "category": "Failures",
+  "title": "FAILURE-process-quality",
+  "text": "{\"invalid_variant\": {\"values\": [10, 10, 10, 10, 10]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Failure/process-quality/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "a6f13b07d3c1d53be873e1f84f6a010bcb27887116728bd579eb4b1849998016",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

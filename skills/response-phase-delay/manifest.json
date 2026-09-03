@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "skill_id": "response-phase-delay",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/response-phase-delay/implementation.py",
+  "input_schema": "skills/response-phase-delay/input.schema.json",
+  "output_schema": "skills/response-phase-delay/output.schema.json",
+  "method": "methods/engineering/response-phase-delay.json",
+  "applicability": "Linear phase of a 1 ms delay has constant group delay.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/DSP/response-phase-delay/golden.json",
+  "negative_tests": "golden/engineering/DSP/response-phase-delay/negative.json",
+  "regression_tests": "golden/engineering/DSP/response-phase-delay/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R015",
+    "R017",
+    "R018",
+    "R026",
+    "R036"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

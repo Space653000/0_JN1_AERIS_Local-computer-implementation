@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-resonance-characterization",
+  "category": "Methods",
+  "title": "resonance-characterization",
+  "text": "100 Hz resonance with half-power crossings at 90/110 Hz has Q=5. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/resonance-characterization.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "d87483eee992f4f6b1a0ffdfc2a891df3b8d58f029610a6289e511905d738258"
+}

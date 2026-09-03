@@ -1,0 +1,21 @@
+{
+  "input": {
+    "requirements": [
+      {
+        "id": "FR1",
+        "minimum": -3,
+        "maximum": 3,
+        "unit": "dB"
+      }
+    ],
+    "observations": [
+      {
+        "requirement_id": "FR1",
+        "value": 1,
+        "unit": "Pa"
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "acddb2c434422911b1d1d2da4a4a297bd8c2e80b07d9e96529f928fafdf7c00b"
+}
