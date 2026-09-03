@@ -11,8 +11,9 @@ def route_pod(request: dict, capability_matrix=None):
     required=request.get("needed_skills",[])
     if not isinstance(required,list) or not required or any(s not in catalog.definitions() for s in required):
         raise ValueError("explicit known needed_skills required; keyword-only routing is not supported")
+    request={**request,"transducer":{"speaker":"Speaker","microphone":"Microphone","both":"Both"}.get(request.get("transducer"),request.get("transducer"))}
     if request.get("transducer") not in {"Speaker","Microphone","Both"}: raise ValueError("transducer must be Speaker, Microphone or Both")
-    if request.get("lifecycle") not in {"Concept","EVT","DVT","PVT","MP","Field"}: raise ValueError("canonical lifecycle required")
+    if request.get("lifecycle") not in {"Concept","Architecture","Prototype","EVT","DVT","PVT","MP","Field","Field Return"}: raise ValueError("canonical lifecycle required")
     risk=request.get("risk","R1")
     if risk not in {"R0","R1","R2","R3","R4"}: raise ValueError("unknown risk")
     if not str(request.get("requirement","")).strip() or not request.get("required_evidence"):

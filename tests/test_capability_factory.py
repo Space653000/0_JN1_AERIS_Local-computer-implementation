@@ -58,6 +58,10 @@ class CapabilityFactoryTests(unittest.TestCase):
         self.assertEqual(pod["lead"],"R048")
         self.assertEqual(pod["uncovered_skills"],[])
         self.assertNotIn(pod["reviewer"],pod["executors"])
+        for lifecycle in ('Architecture','Prototype','Field Return'):
+            core_pod=route_pod({**request,'transducer':'microphone','lifecycle':lifecycle},{'roles':roles})
+            self.assertEqual(core_pod['state'],'PLANNED')
+            self.assertEqual(core_pod['request']['transducer'],'Microphone')
         unavailable=route_pod({**request,"available_tools":[]},{"roles":roles})
         self.assertEqual(unavailable["state"],"BLOCKED")
         with self.assertRaises(ValueError): route_pod({"query":"lots of microphone keywords"},{"roles":roles})

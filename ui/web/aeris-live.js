@@ -65,7 +65,17 @@
     const selected=$('project').value;$('project').innerHTML=projects.projects.map(p=>`<option value="${esc(p.id)}">${esc(p.name)} (${p.task_count})</option>`).join('');if(selected)$('project').value=selected;
     $('taskList').innerHTML=tasks.tasks.length?tasks.tasks.map(t=>row(t.title,`${t.id} · ${t.state} · ${t.risk_level} · workflow ${t.workflow_id||'NOT_CREATED'}`,t.metadata?.product||'')).join(''):'<div class="empty">尚無 SQLite task</div>';
   }
-  async function routePod(){const p=workspacePayload();const needed=['engineering-requirements'];if(['Speaker','Both'].includes(p.metadata.transducer))needed.push('lumped-speaker');if(['Microphone','Both'].includes(p.metadata.transducer))needed.push('microphone-sensitivity');lastPod=await api('/api/v1/capabilities/pod',{method:'POST',body:JSON.stringify({product:p.metadata.product,transducer:p.metadata.transducer,lifecycle:p.metadata.lifecycle,risk:p.risk_level,requirement:p.metadata.requirement,required_evidence:[p.metadata.evidence_needed||'sealed numerical analysis'],needed_skills:needed,available_tools:['FREE_LOCAL_BASELINE']})});$('podSize').textContent=`${lastPod.pod_size} specialists`;$('podDesc').textContent=`${p.metadata.product} · ${p.metadata.transducer} · ${p.metadata.lifecycle} · ${p.risk_level} · ${lastPod.planner}`;$('podGrid').innerHTML=lastPod.roles.map((r,i)=>`<div class="person"><b>${i===0?'LEAD · ':''}${esc(r.id)} ${esc(r.name)}</b>${esc(r.group)} · ${esc(r.selection_reason)}</div>`).join('');$('requirementBoard').textContent=p.metadata.requirement;$('hypothesisBoard').textContent=p.metadata.hypothesis||'尚未提供';$('evidenceBoard').textContent=p.metadata.evidence_needed||'尚未提供'}
+  async function routePod(){
+    const p=workspacePayload(),transducer=({speaker:'Speaker',microphone:'Microphone',both:'Both'})[p.metadata.transducer]||p.metadata.transducer;
+    const needed=['engineering-requirements'];
+    if(['Speaker','Both'].includes(transducer))needed.push('lumped-speaker');
+    if(['Microphone','Both'].includes(transducer))needed.push('microphone-sensitivity');
+    lastPod=await api('/api/v1/capabilities/pod',{method:'POST',body:JSON.stringify({product:p.metadata.product,transducer,lifecycle:p.metadata.lifecycle,risk:p.risk_level,requirement:p.metadata.requirement,required_evidence:[p.metadata.evidence_needed||'sealed numerical analysis'],needed_skills:needed,available_tools:['FREE_LOCAL_BASELINE']})});
+    $('podSize').textContent=`${lastPod.pod_size} specialists`;
+    $('podDesc').textContent=`${p.metadata.product} · ${transducer} · ${p.metadata.lifecycle} · ${p.risk_level} · ${lastPod.planner}`;
+    $('podGrid').innerHTML=lastPod.roles.map((r,i)=>`<div class="person"><b>${i===0?'LEAD · ':''}${esc(r.id)} ${esc(r.name)}</b>${esc(r.group)} · ${esc(r.selection_reason)}</div>`).join('');
+    $('requirementBoard').textContent=p.metadata.requirement;$('hypothesisBoard').textContent=p.metadata.hypothesis||'尚未提供';$('evidenceBoard').textContent=p.metadata.evidence_needed||'尚未提供';
+  }
   async function createWorkspaceTask(){const p=workspacePayload();const result=await api('/api/v1/tasks',{method:'POST',body:JSON.stringify(p)});$('taskResult').textContent=`已建立 SQLite ${result.task.id} 與 Workflow ${result.workflow.workflow_id}；狀態 ${result.workflow.state}，尚未執行或驗證。`;await loadWorkspace()}
 
   async function services(){const [status,data]=await Promise.all([api('/api/v1/status'),api('/api/v1/services')]);$('openingState').textContent=status.company_opening_state;$('sidebarState').textContent=status.company_opening_state;$('generatedAt').textContent=visualBaseline?'Last API assessment · MUTABLE':`Last API assessment ${data.generated_at_utc}`;$('serviceCount').textContent=`${data.services.length} observed services`;
