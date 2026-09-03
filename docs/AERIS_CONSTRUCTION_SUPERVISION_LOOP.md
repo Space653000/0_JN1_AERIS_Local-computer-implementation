@@ -10,13 +10,14 @@ The intended loop is:
 Codex builds locally in C:\0_JN1_AERIS
 → local commit
 → explicit Human supervision-handoff request
+→ supervisor allocates next unique H####
 → privacy/secret screen
-→ push Implementation work to a non-main review branch
-→ add curated handoff snapshot
-→ open Draft PR
+→ push Implementation work to a new non-main review branch
+→ add a new numbered curated handoff snapshot
+→ open a new Draft PR
 → ChatGPT reviews actual diff + CI + snapshot
-→ Codex repairs the same review branch
-→ repeat until supervision passes or a true external/Human gate remains
+→ next Codex construction/repair prompt receives the next H####
+→ repeat as an immutable review chain until supervision passes or a true external/Human gate remains
 ```
 
 This is the permanent construction/inspection bridge for machines that can access the two canonical AERIS repositories.
@@ -34,21 +35,56 @@ The exception does **not** authorize:
 - merging the review PR;
 - publishing secrets, private engineering data, raw user/customer data or unnecessary local machine artifacts.
 
+## Monotonic supervision numbering
+
+Every new supervised Codex prompt must use a new repository-global handoff number:
+
+```text
+H0001
+H0002
+H0003
+...
+```
+
+The IDs are monotonic and are never reused, including numbers from closed, abandoned or failed PRs.
+
+Before ChatGPT issues a new Codex construction/repair prompt, the supervisor must inspect GitHub for all existing/closed `AERIS SUPERVISION HANDOFF H####` PRs and existing `handoff/construction/H####-*` records, take the largest number, add one, and put that exact ID into the Codex prompt.
+
+Codex must independently collision-check the assigned ID immediately before pushing. If that number already exists as a branch, handoff directory, open PR or closed PR, Codex increments until it finds an unused ID and reports the actual ID used.
+
+One handoff ID maps to one immutable review snapshot:
+
+```text
+branch:
+  codex/handoff/H0007-P02-0752121
+
+handoff directory:
+  handoff/construction/H0007-P02-0752121/
+
+Draft PR title:
+  AERIS SUPERVISION HANDOFF H0007 — P02 — 0752121
+
+ready signal:
+  AERIS_SUPERVISION_HANDOFF_READY H0007
+```
+
+A later ChatGPT repair/build prompt must allocate `H0008` (or the next unused ID), create a new branch and open a new Draft PR. Do not repurpose or overwrite `H0007` for the later supervision cycle. Earlier PRs remain historical construction records.
+
 ## Review surface
 
 Do not create a second copy of the whole repository under a new folder merely to show progress.
 
 The correct review surface is:
 
-1. the actual Implementation source changes on a dedicated branch;
-2. a Draft PR against `main` so the diff is inspectable;
-3. a small curated handoff directory for machine-readable status.
+1. the actual Implementation source changes on a dedicated uniquely numbered branch;
+2. a uniquely numbered Draft PR against `main` so the diff is inspectable;
+3. a small uniquely numbered curated handoff directory for machine-readable status.
 
-Recommended handoff path on the review branch:
+Required handoff path on the review branch:
 
 ```text
-handoff/construction/<handoff-id>/SUMMARY.md
-handoff/construction/<handoff-id>/SNAPSHOT.json
+handoff/construction/<H####>-<phase-id>-<local-sha7>/SUMMARY.md
+handoff/construction/<H####>-<phase-id>-<local-sha7>/SNAPSHOT.json
 ```
 
 The source changes themselves remain in their normal repository paths. Do not duplicate them into the handoff directory.
@@ -93,7 +129,7 @@ When evidence must stay local, publish only a safe manifest containing its type,
 
 A Draft PR means only:
 
-> the current local construction is available for independent review.
+> the current numbered local construction snapshot is available for independent review.
 
 It does **not** mean:
 
@@ -109,8 +145,8 @@ The supervisor should review in this order:
 
 ```text
 remote main baseline
-→ Draft PR changed files/diff
-→ handoff SNAPSHOT.json
+→ numbered Draft PR changed files/diff
+→ numbered handoff SNAPSHOT.json
 → tests/CI
 → role maturity truth
 → Skills/Methods implementations
@@ -122,9 +158,11 @@ remote main baseline
 
 The supervisor should challenge apparent mass completion, especially cases where many roles share one shallow executable path, synthetic fixtures merely exercise plumbing, or counts increase without materially different domain competence.
 
-## Repair loop
+## Repair/build continuation loop
 
-If review finds gaps, Codex repairs the **same review branch**, updates the handoff snapshot and pushes another commit. Do not start another local build from scratch unless the evidence is incompatible or invalid.
+If review finds gaps, ChatGPT issues a new Codex repair/build prompt with the next unused H####. Codex produces a new local commit/snapshot, pushes a new uniquely numbered review branch, and opens a new Draft PR. The previous Draft PR remains unchanged as historical evidence of the previous supervision cycle.
+
+A new handoff may build on the previous handoff branch or local commit as appropriate, but it must not reuse the previous H#### branch, handoff directory or PR as the new review surface.
 
 The review loop ends only when the supervisor has no remaining software-local objection for the declared scope, or the remaining items are genuine Hardware / Calibration / Licensed Tool / Human Approval / External gates.
 
