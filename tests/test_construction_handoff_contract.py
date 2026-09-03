@@ -69,6 +69,33 @@ class ConstructionHandoffContractTests(unittest.TestCase):
         self.assertIn("phase complete", truth["draft_pr_does_not_mean"])
         self.assertIn("real evidence", truth["l4_requires"])
 
+    def test_handoff_ids_are_monotonic_unique_and_never_reused(self):
+        rules = self.data["rules"]
+        numbering = self.data["numbering"]
+        self.assertTrue(rules["never_reuse_handoff_id"])
+        self.assertTrue(rules["new_supervisor_prompt_requires_new_handoff_id"])
+        self.assertTrue(rules["new_handoff_requires_new_branch_and_new_pr"])
+        self.assertTrue(rules["previous_handoff_pr_must_not_be_overwritten"])
+        self.assertEqual(numbering["handoff_id_format"], "H%04d")
+        self.assertEqual(numbering["first_handoff_id"], "H0001")
+        self.assertEqual(numbering["sequence_scope"], "repository_global")
+        self.assertTrue(numbering["sequence_is_monotonic"])
+        self.assertFalse(numbering["reuse_closed_or_abandoned_ids"])
+        self.assertIn("max+1", numbering["supervisor_allocation_rule"])
+        self.assertIn("collision", numbering["codex_collision_rule"].lower())
+        self.assertIn("{handoff_id}", numbering["branch_template"])
+        self.assertIn("{handoff_id}", numbering["directory_template"])
+        self.assertIn("{handoff_id}", numbering["pr_title_template"])
+        self.assertIn("{handoff_id}", numbering["ready_signal_template"])
+
+    def test_supervision_doc_forbids_repurposing_previous_pr(self):
+        text = DOC.read_text(encoding="utf-8")
+        self.assertIn("H0001", text)
+        self.assertIn("H0002", text)
+        self.assertIn("never reused", text)
+        self.assertIn("new Draft PR", text)
+        self.assertIn("previous Draft PR remains unchanged", text)
+
 
 if __name__ == "__main__":
     unittest.main()
