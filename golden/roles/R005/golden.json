@@ -31,7 +31,12 @@
       "anc_topology_candidate": "FB_ONLY",
       "full_loop_stability_verified": false,
       "physical_measurement_verified": false,
-      "lifetime_verified": false
+      "lifetime_verified": false,
+      "counter_hypotheses": [
+        "seal leakage rather than insufficient bass EQ",
+        "feedback delay rather than feedforward filter magnitude",
+        "outward-mic wind rather than stationary ambient noise"
+      ]
     },
     "context": {
       "product": "R048",
@@ -90,7 +95,12 @@
           "anc_topology_candidate": "PASSIVE",
           "full_loop_stability_verified": false,
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "seal leakage rather than insufficient bass EQ",
+            "feedback delay rather than feedforward filter magnitude",
+            "outward-mic wind rather than stationary ambient noise"
+          ]
         }
       },
       "checks": [
@@ -118,7 +128,12 @@
           "anc_topology_candidate": "HYBRID",
           "full_loop_stability_verified": false,
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "seal leakage rather than insufficient bass EQ",
+            "feedback delay rather than feedforward filter magnitude",
+            "outward-mic wind rather than stationary ambient noise"
+          ]
         }
       },
       "checks": [
@@ -146,7 +161,12 @@
           "anc_topology_candidate": "FB_ONLY",
           "full_loop_stability_verified": true,
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "seal leakage rather than insufficient bass EQ",
+            "feedback delay rather than feedforward filter magnitude",
+            "outward-mic wind rather than stationary ambient noise"
+          ]
         }
       },
       "checks": [
@@ -174,7 +194,12 @@
           "anc_topology_candidate": "FB_ONLY",
           "full_loop_stability_verified": false,
           "physical_measurement_verified": true,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "seal leakage rather than insufficient bass EQ",
+            "feedback delay rather than feedforward filter magnitude",
+            "outward-mic wind rather than stationary ambient noise"
+          ]
         }
       },
       "checks": [
@@ -231,6 +256,32 @@
         }
       },
       "expected_error": "ValueError"
+    },
+    {
+      "id": "R005-UNSUPPORTED-HYPOTHESIS",
+      "kind": "counter_hypothesis",
+      "question": "Must a numerically correct report reject this unsupported professional inference: One crossover proves all-loop stability?",
+      "input_overrides": {
+        "candidate": {
+          "phase_margin_deg": 45,
+          "feedback_passed": true,
+          "feedforward_passed": false,
+          "anc_topology_candidate": "FB_ONLY",
+          "full_loop_stability_verified": false,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "One crossover proves all-loop stability"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
     }
   ]
 }

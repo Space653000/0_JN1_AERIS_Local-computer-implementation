@@ -80,6 +80,28 @@ class RoleWorkflowExecutionTests(unittest.TestCase):
             self.assertEqual(tws['review']['decision'],'BOUNDED_REVIEW_ACCEPT')
             self.assertEqual({r['role_id'] for r in tws['pod']['reviewers']},{'R005','R029'})
             self.assertTrue(domain_review.review_status(tws['review']['review_run_id'])['valid'])
+            # A self-consistent forged excursion verdict must not evade review.
+            result_path=evidence.bundle_dir(tws['evidence_run_id'])/'processed/skill_result.json'
+            input_path=evidence.bundle_dir(tws['evidence_run_id'])/'raw/engineering-input.json'
+            saved_output=json.loads(result_path.read_text())
+            # Counter-hypotheses and check/action contracts are review assertions.
+            for mutation in ('counter','missing','wrong_action','fake_professional'):
+                candidate=json.loads(json.dumps(saved_output))
+                if mutation=='counter': candidate['values']['counter_hypotheses']=['Full loop stability is proven and seal leakage is impossible']
+                elif mutation=='missing': candidate['values']['checks'].pop()
+                elif mutation=='wrong_action': candidate['values']['checks'][0]['on_failure']='IGNORE_THE_LEAK'
+                else: candidate['professional_tool_verified']=True
+                result_path.write_text(json.dumps(candidate),encoding='utf-8')
+                evidence.seal_bundle(tws['evidence_run_id'],'test fixture reseal')
+                with self.subTest(mutation=mutation):
+                    self.assertNotEqual(domain_review.review_bundle(tws['evidence_run_id'])['decision'],'BOUNDED_REVIEW_ACCEPT')
+            result_path.write_text(json.dumps(saved_output),encoding='utf-8')
+            altered_inputs=json.loads(input_path.read_text()); altered_inputs['driver_peak_excursion_mm']=1.0
+            altered_output=json.loads(result_path.read_text()); altered_output['input_sha256']=factory.catalog.digest(altered_inputs)
+            input_path.write_text(json.dumps(altered_inputs),encoding='utf-8')
+            result_path.write_text(json.dumps(altered_output),encoding='utf-8')
+            evidence.seal_bundle(tws['evidence_run_id'],'test fixture reseal')
+            self.assertNotEqual(domain_review.review_bundle(tws['evidence_run_id'])['decision'],'BOUNDED_REVIEW_ACCEPT')
             # A missing sealed context cannot borrow the mutable workflow context.
             (evidence.bundle_dir(tws['evidence_run_id'])/'raw/engineering-context.json').write_text('{}',encoding='utf-8')
             evidence.seal_bundle(tws['evidence_run_id'],'test fixture reseal')

@@ -6,12 +6,17 @@ from aeris_runtime.engineering import domain_review
 from tests.test_speaker_power_domain import BASE
 from tests.test_tws_domain_method import BASE as TWS_BASE
 
+SPEAKER_COUNTERS=['amplifier clipping rather than transducer nonlinearity',
+                  'limiter gain reduction rather than thermal compression','fixture response change rather than power compression']
+TWS_COUNTERS=['seal leakage rather than insufficient bass EQ','feedback delay rather than feedforward filter magnitude',
+              'outward-mic wind rather than stationary ambient noise']
+
 
 def thermal_input():
     return {'parameters':{**BASE,'duration_s':0.0},
             'candidate':{'predicted_coil_temperature_c':25.0,'compression_db':0.0,
                          'thermal_passed':True,'next_experiment':'HARMONIC_HEADROOM_SWEEP',
-                         'physical_measurement_verified':False,'lifetime_verified':False},
+                         'physical_measurement_verified':False,'lifetime_verified':False,'counter_hypotheses':SPEAKER_COUNTERS},
             'context':{'product':'','transducer':'Speaker','lifecycle':'EVT','risk':'R1',
                        'source_kind':'SYNTHETIC'}}
 
@@ -43,7 +48,7 @@ class DomainReviewTests(unittest.TestCase):
     def test_nonlinear_review_rejects_amplitude_sum_and_unproven_attribution(self):
         request=thermal_input(); request['parameters']['harmonic_rms_pa']=[0.03,0.04]
         request['candidate']={'thd_percent':5.0,'compression_db':0.0,'thd_passed':True,'compression_passed':True,
-                              'transducer_cause_verified':False,'physical_measurement_verified':False,'lifetime_verified':False}
+                              'transducer_cause_verified':False,'physical_measurement_verified':False,'lifetime_verified':False,'counter_hypotheses':SPEAKER_COUNTERS}
         self.assertEqual(domain_review.review('speaker-nonlinear',request)['decision'],'BOUNDED_REVIEW_ACCEPT')
         request['candidate']['thd_percent']=7.0
         self.assertEqual(domain_review.review('speaker-nonlinear',request)['decision'],'CHANGES_REQUIRED')
@@ -55,7 +60,7 @@ class DomainReviewTests(unittest.TestCase):
                  'context':{'product':'R048','transducer':'Both','lifecycle':'EVT','risk':'R1','source_kind':'SYNTHETIC'},
                  'candidate':{'phase_margin_deg':45.0,'feedback_passed':True,'feedforward_passed':True,
                               'anc_topology_candidate':'HYBRID','full_loop_stability_verified':False,
-                              'physical_measurement_verified':False,'lifetime_verified':False}}
+                              'physical_measurement_verified':False,'lifetime_verified':False,'counter_hypotheses':TWS_COUNTERS}}
         self.assertEqual(domain_review.review('tws-anc',request)['decision'],'BOUNDED_REVIEW_ACCEPT')
         request['candidate']['full_loop_stability_verified']=True
         self.assertEqual(domain_review.review('tws-anc',request)['decision'],'CHANGES_REQUIRED')
@@ -70,8 +75,8 @@ class DomainReviewTests(unittest.TestCase):
                  'context':{'product':'R048','transducer':'Both','lifecycle':'EVT','risk':'R1','source_kind':'SYNTHETIC'},
                  'candidate':{'leak_loss_db':0.0,'call_snr_db':12.041199826559248,'seal_passed':True,
                      'capture_passed':False,'next_experiment':'WIND_SHIELD_AND_PORT_ORIENTATION',
-                     'excursion_measured':False,'occlusion_measured':False,
-                     'physical_measurement_verified':False,'lifetime_verified':False}}
+                     'excursion_measured':False,'occlusion_measured':False,'excursion_passed':True,'occlusion_passed':True,
+                     'physical_measurement_verified':False,'lifetime_verified':False,'counter_hypotheses':TWS_COUNTERS}}
         self.assertEqual(domain_review.review('tws-fit-capture',request)['decision'],'BOUNDED_REVIEW_ACCEPT')
         request['parameters'].update(call_ambient_rms_pa=0.004,ff_wind_rms_pa=0.003)
         self.assertEqual(domain_review.review('tws-fit-capture',request)['decision'],'CHANGES_REQUIRED')

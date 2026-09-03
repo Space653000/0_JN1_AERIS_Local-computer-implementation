@@ -37,10 +37,13 @@ def select_reviewers(request,executor_ids):
     if not isinstance(conflicts,list) or any(not isinstance(role,str) for role in conflicts):
         raise ValueError('explicit conflicted role IDs required')
     excluded=set(executor_ids)|set(conflicts)
+    evidence_types=request.get('required_evidence',[])
+    evidence_supported=(isinstance(evidence_types,list) and bool(evidence_types)
+                        and all(item in {'sealed numerical run','independent counterreview'} for item in evidence_types))
     found=[]; missing=[]; runner=role_acceptance.RoleAcceptanceFactory()
     for domain in needed:
         selected=None
-        if applicable(domain,context):
+        if evidence_supported and applicable(domain,context):
             for role,contract in sorted(ROLE_DOMAIN_CONTRACTS.items()):
                 if role in excluded: continue
                 manifest=factory.read(ROOT/f"skills/{contract['skill_id']}/manifest.json")
@@ -55,7 +58,7 @@ def select_reviewers(request,executor_ids):
         else: missing.append(domain)
     return {'reviewers':found,'uncovered_review_domains':missing,'unsupported_review_skills':unknown,
             'complete':bool(needed) and not missing and not unknown,
-            'human_approval':False,'context':context}
+            'human_approval':False,'context':context,'evidence_requirements_supported':evidence_supported}
 
 
 def _validate(value,schema):
@@ -136,10 +139,16 @@ def review(domain,request):
                     'STATIONARY_NOISE_AND_CAPTURE_PATH' if snr<p['min_call_snr_db'] else 'FIT_DISTRIBUTION_AND_PORT_TRANSFER')
         expected={'leak_loss_db':loss,'call_snr_db':snr,'seal_passed':loss<=p['max_leak_loss_db'],
                   'capture_passed':snr>=p['min_call_snr_db'],'next_experiment':experiment,
+                  'excursion_passed':p['driver_peak_excursion_mm']<=p['safe_peak_excursion_mm'],
+                  'occlusion_passed':p['occlusion_boost_db']<=p['max_occlusion_boost_db'],
                   'excursion_measured':False,'occlusion_measured':False}
         observations={'counter_hypothesis':'port wind or seal leakage rather than capsule sensitivity or insufficient EQ',
                       'limitation':'supplied excursion and occlusion estimates are not acquired measurements'}
     expected.update(physical_measurement_verified=False,lifetime_verified=False)
+    expected['counter_hypotheses']=(['amplifier clipping rather than transducer nonlinearity',
+        'limiter gain reduction rather than thermal compression','fixture response change rather than power compression'] if speaker else
+        ['seal leakage rather than insufficient bass EQ','feedback delay rather than feedforward filter magnitude',
+         'outward-mic wind rather than stationary ambient noise'])
     if set(candidate)!=set(expected): raise ValueError('exact scoped candidate assertions required')
     disagreements=[]
     for key,wanted in expected.items():
@@ -162,6 +171,7 @@ def execution_context(request,role_id,skill_id,source_kind):
             'applicability':{key:copy.deepcopy(request[key]) for key in
                 ('product','transducer','lifecycle','risk','required_evidence')},
             'required_review_domains':list(REQUIRED_DOMAINS.get(skill_id,[])),
+            'conflicted_role_ids':copy.deepcopy(request.get('conflicted_role_ids',[])),
             'review_policy_version':'H0001-bounded-software-review-v1'}
 
 
@@ -169,7 +179,7 @@ def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
-           'lifetime_verified':v.get('lifetime_verified',False)}
+           'lifetime_verified':v.get('lifetime_verified',False),'counter_hypotheses':v.get('counter_hypotheses')}
     if domain=='speaker-thermal':
         experiment={
             'Measure resistance-derived coil temperature and repeat the level sweep after cooling at identical gain':'COOLING_RESISTANCE_SWEEP',
@@ -195,6 +205,8 @@ def _candidate(domain,output):
                     'FIT_DISTRIBUTION_AND_PORT_TRANSFER')
         return {**truth,'leak_loss_db':v['leak_loss_db'],'call_snr_db':v['call_snr_db'],
                 'seal_passed':checks['SEAL_LEAK_LOSS_DB']['passed'],'capture_passed':checks['OUTWARD_CALL_SNR_DB']['passed'],
+                'excursion_passed':checks['MINIATURE_DRIVER_EXCURSION_MM']['passed'],
+                'occlusion_passed':checks['OCCLUSION_BOOST_DB']['passed'],
                 'next_experiment':experiment,'excursion_measured':v.get('excursion_measured',False),
                 'occlusion_measured':v.get('occlusion_measured',False)}
     raise ValueError('unknown domain')
@@ -217,9 +229,13 @@ def _assess_execution(run_id):
             or method['skill_id']!=skill or output['skill_id']!=skill
             or output['input_sha256']!=catalog.digest(params)
             or output['implementation_sha256']!=domain_methods.LOADED_SHA256
-            or output.get('evidence_class')!='DETERMINISTIC_ROLE_DOMAIN_CALCULATION'):
+            or output.get('evidence_class')!='DETERMINISTIC_ROLE_DOMAIN_CALCULATION'
+            or output.get('professional_tool_verified') is not False
+            or context.get('physical_verification') is not False):
         raise ValueError('sealed context/Skill/source/review domain mismatch')
-    request={**context['applicability'],'source_kind':context['source_kind'],'needed_skills':[skill]}
+    if skill not in factory.load_pack(role)['required_skills']: raise ValueError('executor seat/Skill mismatch')
+    request={**context['applicability'],'source_kind':context['source_kind'],'needed_skills':[skill],
+             'conflicted_role_ids':context['conflicted_role_ids']}
     selection=select_reviewers(request,[role])
     if not selection['complete']: raise ValueError('missing current independent qualifications or unsupported applicability')
     reviews=[]
@@ -231,7 +247,8 @@ def _assess_execution(run_id):
     all_passed=bool(checks) and all(c.get('passed') is True for c in checks)
     expected_disposition='BOUNDED_BASELINE_ACCEPT' if all_passed else 'DESIGN_REVISION_REQUIRED'
     expected_revisions=[c['on_failure'] for c in checks if c.get('passed') is not True]
-    coherent=(values['disposition']==expected_disposition and values['required_revisions']==expected_revisions)
+    coherent=(_checks_coherent(skill,params,values) and values['disposition']==expected_disposition
+              and values['required_revisions']==expected_revisions)
     review_passed=coherent and all(r['output']['values']['decision']=='BOUNDED_REVIEW_ACCEPT' for r in reviews)
     return {'execution_run_id':run_id,'execution_sha256':catalog.digest({'context':context,'parameters':params,'output':output,'method':method}),
             'review_source_sha256':domain_methods.LOADED_SHA256,'reviews':reviews,
@@ -239,6 +256,34 @@ def _assess_execution(run_id):
             'qualified_review':review_passed,'disposition_coherent':coherent,
             'human_approval':False,'role_l3_awarded':False,
             'scope':'bounded software review; original execution remains EVIDENCED, not physical/Human verified'}
+
+
+def _checks_coherent(skill,params,values):
+    """Require every bounded constraint and its actual units/action contract.
+
+    Scalars used here are independently checked by domain reviewers. Comparing
+    a caller-supplied set with itself cannot prove coverage or correct actions.
+    """
+    from .catalog import digest
+    if skill=='speaker-power-distortion-baseline':
+        rows=[
+            ('THD_PERCENT',values['thd_percent'],params['max_thd_percent'],'<=','LOWER_DRIVE_AND_DISCRIMINATE_TRANSDUCER_FROM_AMPLIFIER_NONLINEARITY'),
+            ('COMPRESSION_DB',values['compression_db'],params['max_compression_db'],'<=','SEPARATE_THERMAL_COMPRESSION_FROM_LIMITER_GAIN'),
+            ('COIL_TEMPERATURE_C',values['predicted_coil_temperature_c'],params['max_coil_temperature_c'],'<=','REDUCE_DUTY_AND_RECHECK_COIL_TEMPERATURE')]
+    elif skill=='tws-fit-anc-call-baseline':
+        rows=[
+            ('SEAL_LEAK_LOSS_DB',values['leak_loss_db'],params['max_leak_loss_db'],'<=','RECHECK_TIP_SEAL_BEFORE_BASS_EQ'),
+            ('FEEDBACK_PHASE_MARGIN_DEG',values['phase_margin_deg'],params['min_phase_margin_deg'],'>=','LOWER_CROSSOVER_OR_LATENCY_AND_REMEASURE_LOOP'),
+            ('OUTWARD_FF_WIND_RMS_PA',params['ff_wind_rms_pa'],params['max_ff_wind_rms_pa'],'<=','DISABLE_OR_LIMIT_WIND_EXPOSED_FEEDFORWARD_PATH'),
+            ('OUTWARD_CALL_SNR_DB',values['call_snr_db'],params['min_call_snr_db'],'>=','REVISE_CALL_CAPTURE_PATH_OR_WIND_SHIELDING'),
+            ('MINIATURE_DRIVER_EXCURSION_MM',params['driver_peak_excursion_mm'],params['safe_peak_excursion_mm'],'<=','LIMIT_BASS_DRIVE_OR_REVISE_RECEIVER'),
+            ('OCCLUSION_BOOST_DB',params['occlusion_boost_db'],params['max_occlusion_boost_db'],'<=','REVISE_VENT_OR_SIDETONE_WITH_SEAL_RETEST')]
+    else: return False
+    expected=[{'id':key,'actual':actual,'limit':limit,'operator':op,
+               'margin':limit-actual if op=='<=' else actual-limit,
+               'passed':actual<=limit if op=='<=' else actual>=limit,'on_failure':action}
+              for key,actual,limit,op,action in rows]
+    return digest(expected)==digest(values['checks'])
 
 
 def review_bundle(run_id):

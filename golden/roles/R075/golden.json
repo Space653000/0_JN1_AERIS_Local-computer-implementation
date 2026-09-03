@@ -30,7 +30,12 @@
       "thermal_passed": true,
       "next_experiment": "HARMONIC_HEADROOM_SWEEP",
       "physical_measurement_verified": false,
-      "lifetime_verified": false
+      "lifetime_verified": false,
+      "counter_hypotheses": [
+        "amplifier clipping rather than transducer nonlinearity",
+        "limiter gain reduction rather than thermal compression",
+        "fixture response change rather than power compression"
+      ]
     },
     "context": {
       "product": "",
@@ -88,7 +93,12 @@
           "thermal_passed": true,
           "next_experiment": "HARMONIC_HEADROOM_SWEEP",
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "amplifier clipping rather than transducer nonlinearity",
+            "limiter gain reduction rather than thermal compression",
+            "fixture response change rather than power compression"
+          ]
         }
       },
       "checks": [
@@ -115,7 +125,12 @@
           "thermal_passed": true,
           "next_experiment": "HARMONIC_HEADROOM_SWEEP",
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "amplifier clipping rather than transducer nonlinearity",
+            "limiter gain reduction rather than thermal compression",
+            "fixture response change rather than power compression"
+          ]
         }
       },
       "checks": [
@@ -160,7 +175,12 @@
           "thermal_passed": true,
           "next_experiment": "COOLING_RESISTANCE_SWEEP",
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "amplifier clipping rather than transducer nonlinearity",
+            "limiter gain reduction rather than thermal compression",
+            "fixture response change rather than power compression"
+          ]
         }
       },
       "checks": [
@@ -187,7 +207,12 @@
           "thermal_passed": true,
           "next_experiment": "HARMONIC_HEADROOM_SWEEP",
           "physical_measurement_verified": true,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "amplifier clipping rather than transducer nonlinearity",
+            "limiter gain reduction rather than thermal compression",
+            "fixture response change rather than power compression"
+          ]
         }
       },
       "checks": [
@@ -244,6 +269,31 @@
         }
       },
       "expected_error": "ValueError"
+    },
+    {
+      "id": "R075-UNSUPPORTED-HYPOTHESIS",
+      "kind": "counter_hypothesis",
+      "question": "Must a numerically correct report reject this unsupported professional inference: Compression alone proves thermal aging?",
+      "input_overrides": {
+        "candidate": {
+          "predicted_coil_temperature_c": 25,
+          "compression_db": 0,
+          "thermal_passed": true,
+          "next_experiment": "HARMONIC_HEADROOM_SWEEP",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "Compression alone proves thermal aging"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
     }
   ]
 }

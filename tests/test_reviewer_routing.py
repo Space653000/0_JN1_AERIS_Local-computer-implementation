@@ -11,7 +11,7 @@ class ReviewerRoutingTests(unittest.TestCase):
     def test_qualification_scope_independence_and_seal_control_reviewer_selection(self):
         runner=role_acceptance.RoleAcceptanceFactory(self.root/'qualification')
         context={'product':'','transducer':'Speaker','lifecycle':'EVT','risk':'R1','source_kind':'SYNTHETIC'}
-        request={**context,'needed_skills':['speaker-power-distortion-baseline']}
+        request={**context,'needed_skills':['speaker-power-distortion-baseline'],'required_evidence':['sealed numerical run','independent counterreview']}
         with patch.object(role_acceptance,'STATE',self.root/'qualification'):
             self.assertFalse(domain_review.select_reviewers(request,['R016'])['complete'])
             nonlinear=runner.evaluate('R010')
@@ -23,6 +23,7 @@ class ReviewerRoutingTests(unittest.TestCase):
             self.assertFalse(domain_review.select_reviewers(request,['R010'])['complete'])
             self.assertFalse(domain_review.select_reviewers({**request,'conflicted_role_ids':['R075']},['R016'])['complete'])
             self.assertFalse(domain_review.select_reviewers({**request,'lifecycle':'MP'},['R016'])['complete'])
+            self.assertFalse(domain_review.select_reviewers({**request,'required_evidence':['calibrated physical measurement']},['R016'])['complete'])
             # A different role's intact bundle cannot qualify this seat.
             (self.root/'qualification/R075.json').write_text(json.dumps({'run_id':nonlinear['run_id']}),encoding='utf-8')
             self.assertFalse(domain_review.select_reviewers(request,['R016'])['complete'])

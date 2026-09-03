@@ -211,3 +211,24 @@ spot checks remained 200 and read-only Core status remained clean. This is not
 new deployed-runtime acceptance, a new soak, clean Ubuntu CI or H0001 completion.
 Code review and additional negative cases remain next, along with the previously
 listed role/product/challenge/live/CI/handoff gaps. No remote write occurred.
+
+### Reviewer checkpoint code-review corrections
+
+Standards review: one P1, accepted. Spec review: one P1 and one P2, accepted.
+The shared P1 reproduced a self-consistent but false TWS excursion PASS; the
+P2 showed missing/contradictory counter-hypotheses never entered the reviewer.
+Permanent real-bundle mutation tests now reject forged excursion verdicts,
+missing checks, incorrect repair actions, unsupported professional-tool claims,
+and contradictory engineering hypotheses. Reviewer checks independently cover
+excursion/occlusion bounds; aggregation requires the full check/action contract.
+Evidence requirements must match the supported numerical/review scope. Sealed
+conflicts and executor/Skill bindings are checked. Additional authored role
+cases bring the total to 50 across six suites; this does not award role L3.
+
+The first post-review affected run passed 13 tests (16.970 s). The checkpoint
+six-page browser semantic E2E and fixed-environment screenshot repeatability/
+basic seven-marker accessibility baseline passed at d6bee13. All results remain
+scoped local tests, not deployed new-runtime or clean Windows/Ubuntu acceptance.
+
+After all reviewer corrections and 50 role cases, full local unit rerun passed
+263 tests in 53.222 s. No remote push or live supervisor restart was performed.

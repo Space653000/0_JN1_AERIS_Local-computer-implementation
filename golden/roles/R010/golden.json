@@ -31,7 +31,12 @@
       "compression_passed": true,
       "transducer_cause_verified": false,
       "physical_measurement_verified": false,
-      "lifetime_verified": false
+      "lifetime_verified": false,
+      "counter_hypotheses": [
+        "amplifier clipping rather than transducer nonlinearity",
+        "limiter gain reduction rather than thermal compression",
+        "fixture response change rather than power compression"
+      ]
     },
     "context": {
       "product": "",
@@ -90,7 +95,12 @@
           "compression_passed": true,
           "transducer_cause_verified": false,
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "amplifier clipping rather than transducer nonlinearity",
+            "limiter gain reduction rather than thermal compression",
+            "fixture response change rather than power compression"
+          ]
         }
       },
       "checks": [
@@ -118,7 +128,12 @@
           "compression_passed": true,
           "transducer_cause_verified": false,
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "amplifier clipping rather than transducer nonlinearity",
+            "limiter gain reduction rather than thermal compression",
+            "fixture response change rather than power compression"
+          ]
         }
       },
       "checks": [
@@ -146,7 +161,12 @@
           "compression_passed": true,
           "transducer_cause_verified": true,
           "physical_measurement_verified": false,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "amplifier clipping rather than transducer nonlinearity",
+            "limiter gain reduction rather than thermal compression",
+            "fixture response change rather than power compression"
+          ]
         }
       },
       "checks": [
@@ -174,7 +194,12 @@
           "compression_passed": true,
           "transducer_cause_verified": false,
           "physical_measurement_verified": true,
-          "lifetime_verified": false
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "amplifier clipping rather than transducer nonlinearity",
+            "limiter gain reduction rather than thermal compression",
+            "fixture response change rather than power compression"
+          ]
         }
       },
       "checks": [
@@ -231,6 +256,32 @@
         }
       },
       "expected_error": "ValueError"
+    },
+    {
+      "id": "R010-UNSUPPORTED-HYPOTHESIS",
+      "kind": "counter_hypothesis",
+      "question": "Must a numerically correct report reject this unsupported professional inference: Scalar THD uniquely proves a motor defect?",
+      "input_overrides": {
+        "candidate": {
+          "thd_percent": 5,
+          "compression_db": 0,
+          "thd_passed": true,
+          "compression_passed": true,
+          "transducer_cause_verified": false,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "Scalar THD uniquely proves a motor defect"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
     }
   ]
 }
