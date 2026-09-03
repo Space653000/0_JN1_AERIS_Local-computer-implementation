@@ -30,6 +30,13 @@ def _head_sha() -> str:
     return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip()
 
 
+def _runtime_revision() -> tuple[bool, str]:
+    from .operations import supervisor_status
+    live = supervisor_status()
+    revision = live.get("implementation_sha")
+    return bool(live.get("reachable") and revision == _head_sha()), f"live implementation={revision or 'UNREPORTED'}; pid={live.get('pid')}"
+
+
 def _files(*paths: str) -> tuple[bool, str]:
     missing = [path for path in paths if not (ROOT / path).is_file()]
     return (not missing, "required files present" if not missing else f"missing files: {missing}")
@@ -137,6 +144,7 @@ def _acceptance() -> tuple[bool, str]:
 
 
 CHECKS: dict[str, Callable[[], tuple[bool, str]]] = {
+    "live_backend_implementation_revision": _runtime_revision,
     "ollama_api_no_desktop_autostart": lambda: _files("scripts/windows-ollama-api.ps1", "aeris_runtime/ollama_service.py", "tests/windows/test-ollama-api.ps1", "tests/test_ollama_service.py"),
     "core_ui_ssot_six_pages": lambda: _files("ui/web/dashboard.html", "ui/web/workspace.html", "ui/web/services.html", ".aeris/core-reference/aeris.css", ".aeris/core-reference/aeris-theme.js"),
     "workspace_fields_sqlite_workflow": _workspace,

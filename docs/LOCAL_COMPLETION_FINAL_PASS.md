@@ -1,7 +1,8 @@
 # Local completion evidence boundaries
 
 The original local-software inventory contained 10 gaps. Final real-machine
-Autopilot exposed an additional installer defect on 2026-09-03: invoking
+checks exposed two additional defects, for 12 total. One installer defect on
+2026-09-03 was that invoking
 `ollama list` caused Windows Ollama desktop autostart, inherited log handles and
 an update check. The attempt was interrupted; its log remains in
 `.aeris/evidence/completion-autopilot-720309a.log` and is not PASS evidence.
@@ -32,3 +33,9 @@ SHA-256 is recomputed, and stale browser, monitor or acceptance reports fail
 closed. Local zero software gaps is bounded by the explicit inventory and
 tested baselines; it does not assert commercial release, licensed professional
 tool equivalence, expert validation or physical calibration.
+
+The other defect was a still-running Python supervisor from the previous day:
+disk changes and a new Git commit had not reloaded its imported modules.
+`/health` now reports the commit captured at module import and process ID.
+The completion gate rejects an older or unreported live revision even when
+browser reports and on-disk files match the new commit.

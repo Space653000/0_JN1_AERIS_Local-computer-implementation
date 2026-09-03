@@ -35,6 +35,14 @@ class CompletionPassTests(unittest.TestCase):
             report["implementation_sha"] = "current"
             self.assertTrue(completion._acceptance()[0])
 
+    def test_old_running_backend_cannot_claim_new_commit(self):
+        with patch.object(completion, "_head_sha", return_value="new"), patch("aeris_runtime.operations.supervisor_status") as status:
+            for live in ({"reachable": True}, {"reachable": True, "implementation_sha": "old"}, {"reachable": False, "implementation_sha": "new"}):
+                status.return_value = live
+                self.assertFalse(completion._runtime_revision()[0])
+            status.return_value = {"reachable": True, "implementation_sha": "new"}
+            self.assertTrue(completion._runtime_revision()[0])
+
     def test_browser_rejects_stale_commit_and_tampered_screenshot(self):
         temp_root = completion.ROOT / ".aeris" / "test-temp"
         temp_root.mkdir(parents=True, exist_ok=True)

@@ -35,6 +35,17 @@ DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
 
 
+def _loaded_revision() -> str:
+    try:
+        return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip()
+    except (OSError, subprocess.SubprocessError):
+        return "UNKNOWN"
+
+
+# Capture once at module load; a later git commit must not relabel old code.
+LOADED_IMPLEMENTATION_SHA = _loaded_revision()
+
+
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -194,6 +205,8 @@ class _Handler(BaseHTTPRequestHandler):
             self._json(200, {
                 "service": "AERIS_LOCAL_SUPERVISOR",
                 "service_state": "SERVING",
+                "implementation_sha": LOADED_IMPLEMENTATION_SHA,
+                "pid": os.getpid(),
                 "company_opening_state": opening.get("operational_state"),
                 "company_complete": False,
                 "scope": "loopback local supervisor heartbeat, not whole-company health proof",
@@ -241,6 +254,7 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
     supervisor_state = {
         "schema_version": 2,
         "pid": os.getpid(),
+        "implementation_sha": LOADED_IMPLEMENTATION_SHA,
         "bind_host": DEFAULT_HOST,
         "port": int(port),
         "started_at_utc": _now(),
