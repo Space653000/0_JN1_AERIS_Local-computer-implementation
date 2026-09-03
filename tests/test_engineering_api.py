@@ -61,6 +61,12 @@ class EngineeringApiTests(unittest.TestCase):
         with patch('pathlib.Path.is_file', return_value=True):
             self.assertIn('.venv', operations.supervisor_python())
 
+    def test_workspace_reuses_core_form_structure(self):
+        script=(operations.ROOT/'ui'/'web'/'capabilities.js').read_text(encoding='utf-8')
+        self.assertIn("form.className='formgrid'",script)
+        self.assertIn("?'field full':'field'",script)
+        self.assertIn("querySelector('#capOutput').className='code'",script)
+
 
 if __name__ == '__main__':
     unittest.main()

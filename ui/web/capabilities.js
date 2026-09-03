@@ -21,6 +21,13 @@
   async function loadRole(){const id=document.getElementById('capRole').value;selectedRole=id;const pack=await api('/roles/'+id);const select=document.getElementById('capSkill');select.innerHTML=pack.required_skills.map(s=>`<option>${escape(s)}</option>`).join('');document.getElementById('capParams').value='';document.getElementById('capOutput').textContent=pack.scope.join('\n');}
   if(page==='workspace'){
     const work=document.createElement('div');work.className='panel';work.innerHTML='<h3>執行專業工程能力</h3><p>選擇角色與方法，載入明確標示的合成案例，或貼上自己的 JSON 工程資料。執行會建立 SQLite Task、Workflow、Evidence 與獨立規則審查。</p><label for="capRole">Capability Seat</label><select id="capRole"></select><label for="capSkill">Executable Skill</label><select id="capSkill"></select><label for="capObjective">Engineering Objective</label><input id="capObjective" placeholder="例如：驗證陣列兩通道的延遲與方向估計"><label for="capSource">資料來源</label><select id="capSource"><option value="USER_SUPPLIED_UNVERIFIED">使用者資料（尚未驗證校正）</option><option value="SYNTHETIC">合成 Golden 案例</option></select><label for="capParams">符合 input schema 的 JSON</label><textarea id="capParams" rows="12" spellcheck="false"></textarea><div class="actions"><button type="button" class="btn" id="capFixture">載入合成 Golden 案例</button><button type="button" class="btn" id="capRun">執行本機分析並建立 Evidence</button></div><pre id="capOutput" aria-live="polite"></pre>';
+    const form=document.createElement('div');form.className='formgrid';
+    work.insertBefore(form,work.querySelector('label'));
+    for(const id of ['capRole','capSkill','capSource','capObjective','capParams']){
+      const field=document.createElement('div');field.className=['capObjective','capParams'].includes(id)?'field full':'field';
+      field.appendChild(work.querySelector(`label[for="${id}"]`));field.appendChild(work.querySelector('#'+id));form.appendChild(field);
+    }
+    work.querySelector('#capOutput').className='code';
     section.appendChild(work);
     const intake=document.createElement('button');intake.type='button';intake.className='btn';intake.textContent='用本機 AI 理解工程目標並建議方法';work.querySelector('.actions').prepend(intake);
     intake.onclick=async()=>{intake.disabled=true;try{const description=document.getElementById('capObjective').value.trim();if(!description)throw Error('請先輸入工程目標');const result=await api('/intake',{description,transducer:'Both',lifecycle:'EVT'});document.getElementById('capOutput').textContent=JSON.stringify(result,null,2);}catch(e){showError(e);}finally{intake.disabled=false;}};
