@@ -30,6 +30,12 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Install free engineering numerical dependencies
         run: python -m pip install -r requirements-engineering.txt
+      - name: Clean checkout role registry without private artifacts
+        run: |
+          python -c "from pathlib import Path; assert not Path('.aeris').exists(), 'private cache must not arrive in checkout'; from aeris_runtime.engineering.factory import canonical_roles; assert len(canonical_roles()) == 100"
+          python -m unittest tests.test_canonical_registry_portability tests.test_pptx_provenance -v
+      - name: Independently compare role identities to pinned read-only Core source
+        run: python scripts/verify-canonical-role-source.py
       - name: Compile runtime and Python tooling
         run: python -m compileall aeris_runtime tests scripts
       - name: Bash syntax checks

@@ -3,6 +3,14 @@
   "core_repository": "https://github.com/Space653000/0_JN1_AERIS.git",
   "branch": "main",
   "baseline_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "canonical_roles": {
+    "core_commit": "82f4554623b2d87185dac39a3b93194af7dd5275",
+    "source_path": "aeris-data.js",
+    "source_sha256_lf": "16e2bb2bfba5a31e39540361a4743041649adc58a16461868332ce2c8ab81815",
+    "extraction": "AERIS_ROLE_GROUPS_ORDERED_V1",
+    "ordered_groups_sha256": "647f97d5a142e4f74fe4e90114548f38b0fbe02f60c36efa0dc6f9739b3f35a5",
+    "assurance": "Offline consistency only; CI compares source at pinned upstream commit. CRLF is normalized to LF."
+  },
   "role": "read_only_target",
   "reviewed_change": "Human-authorized Core PR #3 removes the remaining aeris.policy.yaml v1 trigger conflict and adds governance CI checks that fail on stale Full-Build authority text. The two canonical URLs plus one safe selected workspace remain the complete Full-Build command; Claude and Codex scheduling remain off by default; software-gap closure remains mandatory.",
   "implementation_obligation": "Implementation must target Core 82f4554623b2d87185dac39a3b93194af7dd5275, preserve the two-URL Full-Build trigger, close safely implementable software-only gaps, keep Core read-only, avoid default Claude/Codex scheduling, and keep all tracked truth snapshots aligned to this reviewed SHA.",

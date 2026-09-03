@@ -37,9 +37,11 @@ def get(url):
     if path=="/api/v1/capabilities/memory": return Harness().context(query.get("project",["CAPABILITY_FACTORY"])[0])
     if path=="/api/v1/capabilities/knowledge":
         corpus=factory.read(factory.ROOT/"knowledge"/"engineering"/"manifest.json")
+        from .knowledge_registry import summary
+        classified=summary(corpus,root=factory.ROOT)
         if query.get("q"):
             return catalog.execute("provenance-research",{"query":query["q"][0],"documents":corpus["documents"]})
-        return {"documents":len(corpus["documents"]),"categories":corpus["categories"],"memory_is_evidence":False}
+        return classified
     raise KeyError("capability endpoint not found")
 
 

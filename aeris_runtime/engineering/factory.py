@@ -38,12 +38,10 @@ def write(path: Path, value):
 
 
 def canonical_roles() -> list[dict]:
-    registry=read(ROOT/"company"/"organization"/"roles.v1.json")
-    core=(ROOT/".aeris"/"core-reference"/"aeris-data.js").read_text(encoding="utf-8-sig")
-    match=re.search(r"window\.AERIS_ROLE_GROUPS\s*=\s*(\{.*?\});",core,re.S)
-    if not match or json.loads(match[1])!=registry["groups"]: raise ValueError("role registry drift from read-only Core")
+    from .canonical_registry import load
+    groups=load(ROOT)
     result=[]
-    for group,names in registry["groups"].items():
+    for group,names in groups.items():
         for name in names: result.append({"id":f"R{len(result)+1:03d}","name":name,"group":group})
     if len(result)!=100 or len(SEAT_SKILLS)!=100: raise ValueError("100 explicit canonical seat mappings required")
     return result
@@ -51,6 +49,11 @@ def canonical_roles() -> list[dict]:
 
 def pack_digest(pack):
     return catalog.digest({k:v for k,v in pack.items() if k not in {"current_maturity_level","maturity_evidence"}})
+
+
+def acceptance_engine_digest():
+    """Evidence produced by a different maturity predicate cannot be reused."""
+    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
 
 def artifact_digest(pack, cache=None):
@@ -111,7 +114,7 @@ def materialize() -> dict:
         example=catalog.execute(skill,fixture["input"])
         write(folder/"output.schema.json",catalog.schema_for(example))
         (folder/"implementation.py").write_text(f'"""Version {catalog.VERSION}; {skill} local entrypoint."""\nfrom aeris_runtime.engineering.catalog import execute\n\ndef run(params):\n    return execute({skill!r}, params)\n',encoding="utf-8")
-        (folder/"SKILL.md").write_text(f"# {skill}\n\nVersion: {catalog.VERSION}. Tool layer: FREE_LOCAL_BASELINE.\n\n{definition['method_reason']}\n\nInvoke with `python -m aeris_runtime.engineering.factory run-skill {skill} --input PATH`. Inputs must match `input.schema.json`; unknown fields, nonfinite values and out-of-domain values are rejected.\n\nMethod: `{method_ref}`. Analytical, negative and repeated-run cases: `{golden_ref}`.\n\nRaw measurements require source, units, calibration, fixture and uncertainty. Synthetic fixture success is bounded L3 evidence and never L4. No proprietary tool execution, physical measurement or formal standards conformance is claimed.\n\nThe factory seals raw input, numerical output, method version, source SHA-256 and check results into an Evidence bundle. Role mappings and failure modes are in the manifest.\n",encoding="utf-8")
+        (folder/"SKILL.md").write_text(f"# {skill}\n\nVersion: {catalog.VERSION}. Tool layer: FREE_LOCAL_BASELINE.\n\n{definition['method_reason']}\n\nInvoke with `python -m aeris_runtime.engineering.factory run-skill {skill} --input PATH`. Inputs must match `input.schema.json`; unknown fields, nonfinite values and out-of-domain values are rejected.\n\nMethod: `{method_ref}`. Analytical, negative and repeated-run cases: `{golden_ref}`.\n\nRaw measurements require source, units, calibration, fixture and uncertainty. Shared synthetic Skill fixtures establish only the stated Skill baseline. Role L3 requires separate role-specific domain acceptance with independent decision oracles and qualified bounded review. L4 requires real instrument/calibration/Human evidence. No proprietary tool execution, physical measurement or formal standards conformance is claimed.\n\nThe factory seals raw input, numerical output, method version, source SHA-256 and check results into an Evidence bundle. Role mappings and failure modes are in the manifest.\n",encoding="utf-8")
         write(ROOT/method_ref,{"method_id":skill,"version":catalog.VERSION,"implementation":definition["implementation"],
                               "applicability":definition["method_reason"],"input_schema":manifest["input_schema"],
                               "assumptions":manifest["assumptions"],"uncertainty":manifest["uncertainty"],"units":manifest["units"],
@@ -137,7 +140,7 @@ def materialize() -> dict:
               "forbidden_actions":["modify raw Evidence","invent measurements","claim calibration","self approve R3/R4","launch paid tool","remote private-data upload"],
               "risk_authority":{"automatic":"R0/R1 software only","R2":"controlled local calculation; physical IO gated","R3/R4":"Human Approval required"},
               "evidence_requirements":["input SHA-256","method version and implementation hash","unit/schema validation","numerical output","independent expected-value checks","negative case rejection","repeatable output hash"],
-              "verification_rubric":{"L0":"registry only","L1":"complete referenced contract","L2":"all mapped local capabilities executed into intact evidence","L3":"all mapped analytical/negative/regression cases pass","L4":"real instrument/calibration/expert approval; cannot be granted by this factory"},
+              "verification_rubric":{"L0":"registry only","L1":"complete referenced contract","L2":"all mapped local capabilities executed into intact evidence","L3":"separate role-specific domain acceptance with independent decision oracle and qualified bounded review","L4":"real instrument/calibration/expert approval; cannot be granted by this factory"},
               "uncertainty_requirements":["declare model applicability","separate numerical result from calibration uncertainty","state unavailable uncertainty instead of inventing confidence"],
               "common_failure_modes":["wrong transducer geometry","unexcited or aliased input","units/reference mismatch","model validity exceeded"],
               "counter_hypotheses":["fixture or assembly error rather than product defect","measurement-chain error rather than signal-processing failure","insufficient data rather than a confirmed pass"],
@@ -210,6 +213,7 @@ def evaluate_role(role_id: str) -> dict:
         runs.append({"skill_id":skill,"input":fixture["input"],"output":output,"checks":checks,"evaluation":base,
                      "passed":base["passed"] and all(r["passed"] for r in checks)})
     record={"role_id":role_id,"identity":pack["identity"],"created_at_utc":now(),"contract_sha256":pack_digest(pack),"artifacts_sha256":artifact_digest(pack),
+            "acceptance_engine_sha256":acceptance_engine_digest(),"evidence_kind":"SHARED_SKILL_EXECUTION",
             "implementation_sha256":catalog.implementation_digest(),"runs":runs,"all_executable":bool(runs),
             "all_evaluated":all(r["passed"] for r in runs),"scope":"bounded role-mapped synthetic analytical capabilities, not full specialty or physical verification"}
     bundle=create_bundle(f"CAPABILITY-{role_id}","AERIS Capability Factory",method_snapshot={"factory_version":catalog.VERSION,"implementation_sha256":record["implementation_sha256"]})
@@ -218,7 +222,7 @@ def evaluate_role(role_id: str) -> dict:
     write(folder/"validation.json",{"role_id":role_id,"all_evaluated":record["all_evaluated"],"physical_measurement_verified":False})
     seal_bundle(run_id,"AERIS Capability Factory")
     record_ref={k:v for k,v in record.items() if k!="runs"}
-    record_ref.update({"run_id":run_id,"sealed_evidence_ref":str(folder.relative_to(ROOT)),"level":"L3" if record["all_evaluated"] else "L2"})
+    record_ref.update({"run_id":run_id,"sealed_evidence_ref":str(folder.relative_to(ROOT)),"level":"L2" if runs and record["all_evaluated"] else "L1"})
     write(STATE/"evaluations"/(role_id+".json"),record_ref)
     pack["current_maturity_level"]=record_ref["level"]; pack["maturity_evidence"]=[record_ref["sealed_evidence_ref"]]
     write(PACKS/role_id/"capability.json",pack)
@@ -238,28 +242,54 @@ def matrix() -> dict:
             else: weaknesses+=errors
             path=STATE/"evaluations"/(role["id"]+".json")
             if level=="L1" and path.is_file():
-                evaluation=read(path); intact=validate_bundle(evaluation["run_id"]).get("valid")
-                if intact and evaluation.get("contract_sha256")==pack_digest(pack) and evaluation.get("artifacts_sha256")==artifact_digest(pack,artifact_cache) and evaluation.get("implementation_sha256")==implementation:
-                    sealed=read(bundle_dir(evaluation["run_id"])/"processed"/"capability-evaluation.json")
-                    actual={r["skill_id"] for r in sealed["runs"]}
-                    if actual==set(skills) and all(r["output"].get("result")=="PASS" for r in sealed["runs"]):
-                        level="L3" if all(r["passed"] for r in sealed["runs"]) else "L2"
-                        refs=[evaluation["sealed_evidence_ref"]]
-                else: weaknesses.append("missing, stale or tampered executable evaluation evidence")
+                evaluation=read(path)
+                if validate_bundle(evaluation["run_id"]).get("valid"):
+                    # The unsealed index is a locator, never a source of truth.
+                    sealed_path=bundle_dir(evaluation["run_id"])/"processed"/"capability-evaluation.json"
+                    sealed=read(sealed_path)
+                    expected={"role_id":role["id"],"identity":pack["identity"],
+                              "contract_sha256":pack_digest(pack),"artifacts_sha256":artifact_digest(pack,artifact_cache),
+                              "implementation_sha256":implementation,"acceptance_engine_sha256":acceptance_engine_digest(),
+                              "evidence_kind":"SHARED_SKILL_EXECUTION"}
+                    if all(sealed.get(k)==v for k,v in expected.items()) and valid_skill_runs(sealed.get("runs",[]),pack):
+                        level="L2"
+                        refs=[str(sealed_path.parent.parent.relative_to(ROOT))]
+                    else: weaknesses.append("sealed role/source/contract/predicate mismatch or incomplete Skill/negative evidence")
+                else: weaknesses.append("missing or tampered executable evaluation evidence")
+            if level in {"L1","L2"}: weaknesses.append("independent role-specific domain acceptance not established; shared Skill Golden is not role L3")
         except (OSError,ValueError,KeyError,TypeError) as exc: weaknesses.append(str(exc))
         counts[level]+=1
         group=groups.setdefault(role["group"],{"total":0,"L2_or_higher":0,"L3":0})
         group["total"]+=1; group["L2_or_higher"]+=int(level in {"L2","L3","L4"}); group["L3"]+=int(level=="L3")
         rows.append({**role,"level":level,"skills":skills,"evidence":refs,
-                     "coverage":{"skills":len(skills),"methods":len(skills),"knowledge":len(skills),"golden":len(skills),"evaluated":len(skills) if level=="L3" else 0},
+                     "coverage":{"skills":len(skills),"methods":len(skills),"knowledge":len(skills),"golden":len(skills),"evaluated":len(skills) if level in {"L2","L3"} else 0,"role_acceptance":0},
                      "known_weaknesses":weaknesses+["no physical/calibrated expert-accepted L4 evidence"]})
     definitions=catalog.definitions(); unresolved=[r["id"] for r in rows if r["level"] in {"L0","L1"}]
     return {"assessed_at_utc":now(),"total_roles":100,"maturity_counts":counts,"100_role_L2":100-len(unresolved),
             "total_executable_skills":len(definitions),"total_methods":len(definitions),"total_golden_cases":len(definitions),
+            "total_role_golden_cases":len(list((ROOT/"golden"/"roles").glob("R*/golden.json"))),
             "total_negative_cases":len(definitions),"total_regression_cases":len(definitions),"coverage_by_group":groups,
             "unresolved_capability_gaps":unresolved,"ROLE_CAN_BE_MADE_L2_WITH_FREE_LOCAL_SOFTWARE":bool(unresolved),
             "roles":rows,"physical_verification_claimed":False,"legacy_registered_skills_not_counted":5,
-            "scope":f"{len(definitions)} distinct factory methods and per-seat scoped analytic capabilities; L3 is not human-equivalent engineering or professional tool verification"}
+            "role_acceptance_gaps":[r["id"] for r in rows if r["level"] not in {"L3","L4"}],
+            "scope":f"{len(definitions)} shared Skill baselines; independent role-domain acceptance required for L3; no physical/professional verification"}
+
+
+def valid_skill_runs(runs, pack):
+    """Validate sealed coverage against current fixtures, including negatives."""
+    skills=pack["required_skills"]
+    if not runs or len(runs)!=len(skills) or {r["skill_id"] for r in runs}!=set(skills): return False
+    for run in runs:
+        skill=run["skill_id"]; fixture=fixture_for(pack["identity"]["id"],skill)
+        output=run["output"]; evaluation=run["evaluation"]
+        if not fixture["checks"] or catalog.digest(run["input"])!=catalog.digest(fixture["input"]): return False
+        if output.get("skill_id")!=skill or output.get("input_sha256")!=catalog.digest(run["input"]): return False
+        if output.get("implementation_sha256")!=catalog.implementation_digest() or output.get("result")!="PASS": return False
+        if not all(c["passed"] for c in catalog.verify_checks(output["values"],fixture["checks"])): return False
+        if evaluation.get("case_sha256")!=catalog.digest(catalog.definitions()[skill]["fixture"]): return False
+        if evaluation.get("implementation_sha256")!=catalog.implementation_digest() or evaluation.get("skill_id")!=skill: return False
+        if not evaluation.get("checks") or not all(evaluation.get(k) is True for k in ("golden_pass","negative_pass","regression_pass","passed")): return False
+    return True
 
 
 def main():

@@ -76,7 +76,7 @@
     "L0": "registry only",
     "L1": "complete referenced contract",
     "L2": "all mapped local capabilities executed into intact evidence",
-    "L3": "all mapped analytical/negative/regression cases pass",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
@@ -141,7 +141,7 @@
   "report_templates": [
     "company/capabilities/R080/report-template.md"
   ],
-  "current_maturity_level": "L3",
+  "current_maturity_level": "L1",
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070724Z-98908b5d"
   ],

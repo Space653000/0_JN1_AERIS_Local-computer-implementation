@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import threading
+import urllib.request
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
@@ -199,17 +200,28 @@ def run() -> int:
 def run_live(base_url: str) -> int:
     """Render the deployed service and require values produced by its real APIs."""
     browser = find_browser()
+    def live(path):
+        with urllib.request.urlopen(base_url.rstrip('/')+path,timeout=20) as response:
+            return json.load(response)
+    status=live('/api/v1/status'); services=live('/api/v1/services')
+    opening=status['company_opening_state']
     routes = {
-        "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", "100 roles"),
-        "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", " · workflow WF-"),
-        "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "OPEN_VERIFIED_SCOPE", "20 observed services"),
-        "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", "100 roles"),
-        "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", " · workflow WF-"),
-        "/services?theme=light": ('data-page="services"', 'data-theme="light"', "OPEN_VERIFIED_SCOPE", "20 observed services"),
+        "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', opening),
+        "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', opening),
+        "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', opening, f"{len(services['services'])} observed services"),
+        "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', opening),
+        "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', opening),
+        "/services?theme=light": ('data-page="services"', 'data-theme="light"', opening, f"{len(services['services'])} observed services"),
     }
     results = []
     for route, required in routes.items():
-        required = (*required, 'id="capability-factory"', 'L2 以上 100/100', 'Skills 42', 'Methods 42')
+        matrix=live('/api/v1/capabilities')
+        knowledge=live('/api/v1/capabilities/knowledge')
+        required = (*required, 'id="capability-factory"',
+                    f"L2 以上 {matrix['100_role_L2']}/{matrix['total_roles']}",
+                    f"Skills {matrix['total_executable_skills']}", f"Methods {matrix['total_methods']}",
+                    f"角色領域驗收 {matrix['maturity_counts']['L3']}")
+        required=(*required,*(f'{k} {v}' for k,v in knowledge['counts_by_source_kind'].items()))
         if '/workspace' in route:
             required = (*required, 'id="capRun"', 'id="capRole"', 'R100')
         dom = _dump_dom_with_bounded_timeout_retry(browser, base_url.rstrip("/") + route, route)

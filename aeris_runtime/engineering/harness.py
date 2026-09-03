@@ -86,12 +86,17 @@ class Harness:
                 "memory_is_evidence":False,"chain":self.verify()}
 
     def distill(self,project):
-        events=self.events(project)
-        failures=[e for e in events if e["kind"] in {"FAILURE_LIBRARY","CONSENSUS_DISAGREEMENT"}]
-        result={"source_event_hashes":[e["event_hash"] for e in events],"observed_events":len(events),
-                "failure_count":len(failures),"lesson":"Retain failed runs and distinguish analytical baselines from calibrated measurements.",
-                "method":"deterministic event aggregation; no LLM promotion of Memory to Evidence"}
+        from .distillation import derive
+        if not self.verify()['valid']: raise ValueError('Memory hash chain failed; distillation blocked')
+        with self.connect() as conn:
+            rows=conn.execute('SELECT * FROM events WHERE project=? ORDER BY sequence',(project,)).fetchall()
+        events=[{**dict(r),'payload':json.loads(r['payload'])} for r in rows]
+        result=derive(project,events)
+        if not result['observed_events']: return result
+        if any(e['kind']=='KNOWLEDGE_DISTILLATION' and e['payload'].get('source_set_sha256')==result['source_set_sha256'] for e in events):
+            return {**result,'state':'NO_NEW_SOURCE_EVENTS'}
         self.append(project,"RETROSPECTIVE",result,"AERIS Harness")
-        self.append(project,"INSIGHT",{"source_event_hashes":result["source_event_hashes"],"failure_count":len(failures),"interpretation":"Disagreements and failures require a discriminating follow-up test, not a consensus-only conclusion."},"AERIS Harness")
+        for insight in result['insights']:
+            self.append(project,'INSIGHT',{**insight,'distillation_version':result['distillation_version']},'AERIS Harness')
         self.append(project,"KNOWLEDGE_DISTILLATION",result,"AERIS Harness")
         return result

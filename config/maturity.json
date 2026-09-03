@@ -41,7 +41,7 @@
     "professional_100_seat_capability_factory": {
       "state": "TESTED",
       "evidence": "company/capabilities + .aeris/capability-factory/PROFESSIONAL_ACCEPTANCE.json + tests/test_capability_factory.py",
-      "note": "100/100 scoped L3 analytical baselines across 42 distinct executable methods; no L4 physical/calibrated/human-equivalent claim. Runtime matrix revalidates source, assets, contracts and sealed evidence."
+      "note": "H0001 correction: the prior 100/100 L3 claim is withdrawn. Shared Skill execution is not role-domain acceptance. Runtime recomputes identity, source, contract, predicate and sealed evidence; stale records downgrade. Separate role-specific acceptance remains required."
     },
     "professional_engineering_workflow_harness": {
       "state": "TESTED",
