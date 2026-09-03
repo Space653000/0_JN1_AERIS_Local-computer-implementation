@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "contract_id": "AERIS-PERSISTENT-BUILD-PHASES-V1",
+  "purpose": "Allow any supported machine to resume AERIS construction from durable repository specs and real evidence instead of depending on chat history.",
+  "canonical_core": "https://github.com/Space653000/0_JN1_AERIS",
+  "implementation": "https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation",
+  "default_local_target_example": "C:\\0_JN1_AERIS",
+  "resume_policy": {
+    "read_phase_catalog_on_two_url_trigger": true,
+    "inspect_local_evidence_before_execution": true,
+    "skip_satisfied_phases": true,
+    "rerun_only_if_evidence_missing_stale_invalid_or_incompatible": true,
+    "continue_automatically_to_next_unsatisfied_phase": true,
+    "never_use_chat_prose_as_completion_evidence": true,
+    "never_modify_canonical_core": true,
+    "no_claude_required": true,
+    "paid_professional_software_required": false
+  },
+  "phases": [
+    {
+      "id": "P01",
+      "name": "AERIS Local Software Completion Pass",
+      "spec": "docs/AERIS_LOCAL_SOFTWARE_COMPLETION_PASS.md",
+      "primary_stop_condition": "SOFTWARE_LOCAL_FIXABLE = 0",
+      "evidence_hints": [
+        ".aeris/state/SOFTWARE_COMPLETION.json",
+        ".aeris/state/LOCAL_ACCEPTANCE.json",
+        ".aeris/state/AUTOPILOT_RESULT.json"
+      ],
+      "completion_truth": "All safe zero-cost software-local gaps are closed; only genuine Human/External/Reboot/physical/license gates remain."
+    },
+    {
+      "id": "P02",
+      "name": "AERIS Professional Company Build — 100-Engineer Capability Factory",
+      "spec": "docs/AERIS_PROFESSIONAL_COMPANY_BUILD_100_ENGINEER_CAPABILITY_FACTORY.md",
+      "primary_stop_condition": "100_role_L2 = 100 / 100",
+      "evidence_hints": [
+        "company/capabilities/",
+        "config/maturity.json",
+        "skills/",
+        "methods/",
+        "golden/"
+      ],
+      "completion_truth": "All 100 canonical capability seats have real executable local capability paths at L2 or higher, with no persona/prompt-only seat counted as complete."
+    }
+  ],
+  "future_phase_policy": {
+    "persist_every_major_build_prompt_as_repo_spec": true,
+    "append_to_docs_catalog": "docs/AERIS_BUILD_PHASES.md",
+    "append_to_this_machine_readable_catalog": true,
+    "preserve_core_read_only_and_evidence_truth_rules": true,
+    "require_normal_implementation_pr_ci_governance": true
+  }
+}
