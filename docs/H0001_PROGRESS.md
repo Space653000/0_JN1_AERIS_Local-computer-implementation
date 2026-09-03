@@ -255,3 +255,26 @@ HTTP 200, still the earlier loaded supervisor, not new deployment acceptance.
 The previous reviewer correction was independently rechecked: original P1/P2
 resolved, all 34 reviewer qualification cases matched the authored expectations.
 No Core edits, remote push, PR #32 edits, H0001 PR creation or merge occurred.
+
+### Microphone code-review correction and qualification extension
+
+Both read-only review axes reproduced the same P2: a 2 V RMS noise reference
+could pass with a 1 V ADC peak range. Regression first reproduced three failures
+(over range, exactly at range, uncertainty crossing range); the adapter now
+rejects these invalid common-frame references. Headroom is explicitly
+SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED, not combined peak immunity or capsule AOP.
+
+R028 pressure/gain reference review and R030 noise/headroom review now have
+separate eight-case qualification suites and independent computations. Their
+scoped qualification is L2 only. R033's suite adds two ADC-range negatives,
+bringing the current source total to nine role suites / 78 cases. Reference
+versus deployment gain, uncertainty intervals, unresolved subtraction and false
+overload/calibration claims are separate review questions. Sealed R033 workflows
+now select both qualified seats; the normal worked example is accepted within
+scope while a frontend-dominated unresolved floor requires design revision.
+The real workflow and routing integration tests passed (2 tests, 22.262 s).
+Whole-role L3, physical acceptance, deployment and final clean CI remain open.
+
+Full local unit rerun after the microphone review integration: 271 passed in
+60.845 s. This result includes the ADC range regression, six reviewer suites,
+three execution suites and real reviewed/rejected/reproduced workflows.

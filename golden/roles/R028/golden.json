@@ -1,0 +1,302 @@
+{
+  "suite_id": "R028-MICROPHONE-REVIEW-V1",
+  "role_id": "R028",
+  "skill_id": "microphone-reference-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Independently authored sensitivity reference and RMS 6-8-10 noise triangle with 100 dB SPL=2 Pa; zero headroom and uncertainty boundaries. No executor-generated expected verdict.",
+  "scope": "Challenge microphone sensitivity reference frames, gain ownership and uncertainty intervals; bounded software review, not whole profession or physical calibration.",
+  "base_input": {
+    "parameters": {
+      "calibrator_pressure_rms_pa": 1,
+      "calibrator_output_rms_v": 0.1,
+      "calibration_gain_linear": 10,
+      "analysis_gain_linear": 10,
+      "total_noise_rms_v": 0.00001,
+      "frontend_noise_rms_v": 0.000006,
+      "ambient_noise_rms_pa": 0,
+      "adc_peak_v": 1,
+      "required_spl_db": 100,
+      "signal_crest_factor": 2,
+      "minimum_sensitivity_dbv_per_pa": -42,
+      "maximum_sensitivity_dbv_per_pa": -38,
+      "maximum_self_noise_spl_db": 20,
+      "minimum_electrical_headroom_db": 3,
+      "pressure_relative_bound": 0,
+      "gain_relative_bound": 0,
+      "noise_relative_bound": 0
+    },
+    "candidate": {
+      "sensitivity_dbv_per_pa": -40,
+      "sensitivity_interval_dbv_per_pa": [
+        -40,
+        -40
+      ],
+      "sensitivity_passed": true,
+      "physical_measurement_verified": false,
+      "lifetime_verified": false,
+      "capsule_overload_verified": false,
+      "counter_hypotheses": [
+        "room noise rather than capsule self-noise",
+        "frontend noise rather than capsule noise",
+        "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+      ]
+    },
+    "context": {
+      "product": "",
+      "transducer": "Microphone",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "R028-REFERENCE",
+      "kind": "positive",
+      "question": "Challenge microphone sensitivity reference frames, gain ownership and uncertainty intervals",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R028-BOUNDARY",
+      "kind": "boundary",
+      "question": "Are exact zero-uncertainty bounds inclusive in this domain?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -40,
+          "maximum_sensitivity_dbv_per_pa": -40,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R028-WRONG-ASSERTION",
+      "kind": "positive",
+      "question": "Does the domain reviewer challenge a wrong pass or capsule-overload assertion?",
+      "input_overrides": {
+        "candidate": {
+          "sensitivity_dbv_per_pa": -40,
+          "sensitivity_interval_dbv_per_pa": [
+            -40,
+            -40
+          ],
+          "sensitivity_passed": false,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "room noise rather than capsule self-noise",
+            "frontend noise rather than capsule noise",
+            "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R028-COUNTER",
+      "kind": "counter_hypothesis",
+      "question": "Can deployment gain be substituted for calibration gain to invent a sensitivity change?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 100,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        },
+        "candidate": {
+          "sensitivity_dbv_per_pa": -60,
+          "sensitivity_interval_dbv_per_pa": [
+            -40,
+            -40
+          ],
+          "sensitivity_passed": true,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "room noise rather than capsule self-noise",
+            "frontend noise rather than capsule noise",
+            "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R028-FALSE-HYPOTHESIS",
+      "kind": "counter_hypothesis",
+      "question": "Can correct scalar outputs justify claiming instrument calibration?",
+      "input_overrides": {
+        "candidate": {
+          "sensitivity_dbv_per_pa": -40,
+          "sensitivity_interval_dbv_per_pa": [
+            -40,
+            -40
+          ],
+          "sensitivity_passed": true,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "Numerical agreement proves microphone calibration"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R028-WRONG-UNIT",
+      "kind": "negative",
+      "question": "Must dBFS without a full-scale reference be rejected?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0,
+          "calibrator_output_dbfs": -20
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R028-NOISE-CLIPPING",
+      "kind": "negative",
+      "question": "Must common-frame noise beyond ADC range invalidate the reference?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 2,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R028-UNAUTHORIZED",
+      "kind": "negative",
+      "question": "Can synthetic qualification authorize a production release?",
+      "input_overrides": {
+        "context": {
+          "product": "",
+          "transducer": "Microphone",
+          "lifecycle": "EVT",
+          "risk": "R4",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

@@ -22,7 +22,8 @@
     "acquiring calibrated pressure",
     "capsule acoustic overload from small-signal gain",
     "correlated noise separation",
-    "instrument or paid-standard conformance"
+    "instrument or paid-standard conformance",
+    "combined signal/noise peak immunity without a noise crest-factor bound"
   ],
   "golden_tests": "golden/roles/R033/golden.json"
 }

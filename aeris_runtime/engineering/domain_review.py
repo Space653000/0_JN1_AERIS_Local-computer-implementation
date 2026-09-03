@@ -10,18 +10,20 @@ from ..config import ROOT
 REQUIRED_DOMAINS={
     'speaker-power-distortion-baseline':['speaker-nonlinear','speaker-thermal'],
     'tws-fit-anc-call-baseline':['tws-anc','tws-fit-capture'],
+    'microphone-reference-noise-headroom-baseline':['microphone-reference','microphone-noise-headroom'],
 }
 DOMAIN_SKILLS={domain:skill for skill,domains in REQUIRED_DOMAINS.items() for domain in domains}
 
 
 def applicable(domain,context):
     speaker=domain.startswith('speaker-')
+    microphone=domain.startswith('microphone-')
     return (domain in DOMAIN_SKILLS and context.get('risk') in {'R0','R1'}
             and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
             and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
-            and context.get('transducer') in ({'Speaker','Both'} if speaker else {'Both'})
+            and context.get('transducer') in ({'Speaker','Both'} if speaker else {'Microphone','Both'} if microphone else {'Both'})
             and isinstance(context.get('product'),str)
-            and (speaker or context['product'] in {'R048','TWS Earbuds'}))
+            and (speaker or microphone or context['product'] in {'R048','TWS Earbuds'}))
 
 
 def select_reviewers(request,executor_ids):
@@ -97,12 +99,19 @@ def review(domain,request):
     if set(context)!={'product','transducer','lifecycle','risk','source_kind'}:
         raise ValueError('exact applicability context required')
     speaker=domain.startswith('speaker-')
+    microphone=domain.startswith('microphone-')
     if not applicable(domain,context):
         raise ValueError('outside evidenced bounded review applicability')
     expected={}; observations={}
     if speaker:
         if p['drive_voltage_rms_v']<p['reference_voltage_rms_v'] or p['max_coil_temperature_c']<p['ambient_temperature_c']:
             raise ValueError('inconsistent power review bounds')
+    if microphone:
+        if (p['minimum_sensitivity_dbv_per_pa']>p['maximum_sensitivity_dbv_per_pa']
+                or p['calibrator_output_rms_v']*math.sqrt(2)>=p['adc_peak_v']
+                or p['total_noise_rms_v']*(1+p['noise_relative_bound'])>=p['adc_peak_v']
+                or p['frontend_noise_rms_v']>p['total_noise_rms_v']):
+            raise ValueError('invalid common-frame microphone reference or bounds')
     if domain=='speaker-thermal':
         temperature=p['ambient_temperature_c']+p['input_power_w']*p['thermal_resistance_k_per_w']*(1-math.exp(-p['duration_s']/p['thermal_resistance_k_per_w']/p['thermal_capacity_j_per_k']))
         compression=20*math.log10(p['drive_voltage_rms_v']*p['reference_fundamental_rms_pa']/(p['reference_voltage_rms_v']*p['fundamental_rms_pa']))
@@ -144,8 +153,48 @@ def review(domain,request):
                   'excursion_measured':False,'occlusion_measured':False}
         observations={'counter_hypothesis':'port wind or seal leakage rather than capsule sensitivity or insufficient EQ',
                       'limitation':'supplied excursion and occlusion estimates are not acquired measurements'}
+    elif domain=='microphone-reference':
+        sensitivity_db=20*(math.log10(p['calibrator_output_rms_v'])-math.log10(p['calibration_gain_linear'])-math.log10(p['calibrator_pressure_rms_pa']))
+        interval=[sensitivity_db-20*math.log10((1+p['pressure_relative_bound'])*(1+p['gain_relative_bound'])),
+                  sensitivity_db-20*math.log10((1-p['pressure_relative_bound'])*(1-p['gain_relative_bound']))]
+        expected={'sensitivity_dbv_per_pa':sensitivity_db,'sensitivity_interval_dbv_per_pa':interval,
+                  'sensitivity_passed':interval[0]>=p['minimum_sensitivity_dbv_per_pa'] and interval[1]<=p['maximum_sensitivity_dbv_per_pa'],
+                  'capsule_overload_verified':False}
+        observations={'counter_hypothesis':'calibration gain or pressure coupling rather than changed capsule sensitivity',
+                      'next_experiment':'repeat an unclipped common reference and independently establish calibration gain',
+                      'limitation':'supplied sensitivity cannot establish capsule acoustic overload'}
+    elif domain=='microphone-noise-headroom':
+        # Work in input-equivalent pressure, separately from the executor's
+        # voltage-chain implementation. The noise subtraction is identifiable
+        # only when its conservative lower residual remains positive.
+        ratio=p['calibrator_pressure_rms_pa']*p['calibration_gain_linear']/p['calibrator_output_rms_v']/p['analysis_gain_linear']
+        pu=p['pressure_relative_bound']; gu=p['gain_relative_bound']; nu=p['noise_relative_bound']
+        ratio_low=ratio*(1-pu)*(1-gu)/(1+gu)
+        ratio_high=ratio*(1+pu)*(1+gu)/(1-gu)
+        total=p['total_noise_rms_v']; frontend=p['frontend_noise_rms_v']; ambient=p['ambient_noise_rms_pa']
+        residual=(total*ratio)**2-(frontend*ratio)**2-ambient**2
+        low=((total*(1-nu))**2-(frontend*(1+nu))**2)*ratio_low**2-(ambient*(1+nu))**2
+        high=((total*(1+nu))**2-(frontend*(1-nu))**2)*ratio_high**2-(ambient*(1-nu))**2
+        resolved=residual>max(1e-30,(total*ratio)**2*1e-12) and low>0
+        noise=math.sqrt(residual) if resolved else None
+        noise_db=20*math.log10(noise/20e-6) if resolved else None
+        upper=20*math.log10(math.sqrt(high)/20e-6) if high>0 else None
+        headroom=20*math.log10(p['adc_peak_v']*ratio/20e-6/p['signal_crest_factor'])-p['required_spl_db']
+        headroom_low=20*math.log10(p['adc_peak_v']*ratio_low/20e-6/p['signal_crest_factor'])-p['required_spl_db']
+        experiment=('QUIETER_ROOM_OR_CALIBRATOR_COUPLING' if ambient>=frontend*ratio else 'LOWER_NOISE_FRONTEND_AT_MATCHED_GAIN') if not resolved else 'LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM'
+        expected={'noise_resolved':resolved,'self_noise_rms_pa':noise,'self_noise_spl_db':noise_db,
+                  'self_noise_upper_spl_db':upper,'electrical_headroom_db':headroom,'electrical_headroom_lower_db':headroom_low,
+                  'noise_passed':resolved and upper<=p['maximum_self_noise_spl_db'],
+                  'headroom_passed':headroom_low>=p['minimum_electrical_headroom_db'],
+                  'next_experiment':experiment,'headroom_scope':'SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED','capsule_overload_verified':False}
+        observations={'counter_hypothesis':'frontend or ambient floor instead of intrinsic capsule noise',
+                      'limitation':'common-bandwidth uncorrelated subtraction; signal-only headroom is not capsule AOP or total peak immunity'}
+    else:
+        raise ValueError('domain reviewer not implemented')
     expected.update(physical_measurement_verified=False,lifetime_verified=False)
-    expected['counter_hypotheses']=(['amplifier clipping rather than transducer nonlinearity',
+    expected['counter_hypotheses']=(['room noise rather than capsule self-noise','frontend noise rather than capsule noise',
+        'calibrator coupling or gain-reference error rather than capsule sensitivity drift'] if microphone else
+        ['amplifier clipping rather than transducer nonlinearity',
         'limiter gain reduction rather than thermal compression','fixture response change rather than power compression'] if speaker else
         ['seal leakage rather than insufficient bass EQ','feedback delay rather than feedforward filter magnitude',
          'outward-mic wind rather than stationary ambient noise'])
@@ -153,15 +202,21 @@ def review(domain,request):
     disagreements=[]
     for key,wanted in expected.items():
         actual=candidate[key]
-        if isinstance(wanted,bool): matches=actual is wanted
-        elif isinstance(wanted,(float,int)):
-            matches=(isinstance(actual,(float,int)) and not isinstance(actual,bool) and math.isfinite(actual)
-                     and math.isclose(actual,wanted,rel_tol=0,abs_tol=1e-7))
-        else: matches=actual==wanted
+        matches=_same_assertion(actual,wanted)
         if not matches: disagreements.append({'field':key,'asserted':actual,'expected':wanted})
     return {'domain':domain,'decision':'CHANGES_REQUIRED' if disagreements else 'BOUNDED_REVIEW_ACCEPT',
             'disagreements':disagreements,'observations':observations,
             'human_approval':False,'role_l3_awarded':False,'scope':'bounded software report consistency only'}
+
+
+def _same_assertion(actual,wanted):
+    if isinstance(wanted,bool) or wanted is None: return actual is wanted
+    if isinstance(wanted,(float,int)):
+        return (isinstance(actual,(float,int)) and not isinstance(actual,bool) and math.isfinite(actual)
+                and math.isclose(actual,wanted,rel_tol=1e-9,abs_tol=1e-12))
+    if isinstance(wanted,list):
+        return isinstance(actual,list) and len(actual)==len(wanted) and all(_same_assertion(a,b) for a,b in zip(actual,wanted))
+    return actual==wanted
 
 
 def execution_context(request,role_id,skill_id,source_kind):
@@ -209,6 +264,16 @@ def _candidate(domain,output):
                 'occlusion_passed':checks['OCCLUSION_BOOST_DB']['passed'],
                 'next_experiment':experiment,'excursion_measured':v.get('excursion_measured',False),
                 'occlusion_measured':v.get('occlusion_measured',False)}
+    if domain=='microphone-reference':
+        return {**truth,'sensitivity_dbv_per_pa':v['sensitivity_dbv_per_pa'],
+                'sensitivity_interval_dbv_per_pa':v['sensitivity_interval_dbv_per_pa'],
+                'sensitivity_passed':checks['SENSITIVITY_INTERVAL']['passed'],
+                'capsule_overload_verified':v['capsule_overload_verified']}
+    if domain=='microphone-noise-headroom':
+        return {**truth,**{key:v[key] for key in ('noise_resolved','self_noise_rms_pa','self_noise_spl_db',
+                    'self_noise_upper_spl_db','electrical_headroom_db','electrical_headroom_lower_db','headroom_scope','capsule_overload_verified')},
+                'noise_passed':checks['SELF_NOISE_UPPER_BOUND']['passed'],'headroom_passed':checks['ELECTRICAL_HEADROOM']['passed'],
+                'next_experiment':v['next_discriminating_experiment']}
     raise ValueError('unknown domain')
 
 
@@ -278,6 +343,17 @@ def _checks_coherent(skill,params,values):
             ('OUTWARD_CALL_SNR_DB',values['call_snr_db'],params['min_call_snr_db'],'>=','REVISE_CALL_CAPTURE_PATH_OR_WIND_SHIELDING'),
             ('MINIATURE_DRIVER_EXCURSION_MM',params['driver_peak_excursion_mm'],params['safe_peak_excursion_mm'],'<=','LIMIT_BASS_DRIVE_OR_REVISE_RECEIVER'),
             ('OCCLUSION_BOOST_DB',params['occlusion_boost_db'],params['max_occlusion_boost_db'],'<=','REVISE_VENT_OR_SIDETONE_WITH_SEAL_RETEST')]
+    elif skill=='microphone-reference-noise-headroom-baseline':
+        interval=values['sensitivity_interval_dbv_per_pa']; resolved=values['noise_resolved']
+        expected=[
+            {'id':'SENSITIVITY_INTERVAL','passed':interval[0]>=params['minimum_sensitivity_dbv_per_pa'] and interval[1]<=params['maximum_sensitivity_dbv_per_pa'],
+             'on_failure':'RECHECK_PRESSURE_GAIN_AND_REFERENCE_COUPLING'},
+            {'id':'IDENTIFIABLE_SELF_NOISE','passed':resolved,'on_failure':'SEPARATE_ROOM_AND_FRONTEND_NOISE_BEFORE_CAPSULE_ATTRIBUTION'},
+            {'id':'SELF_NOISE_UPPER_BOUND','passed':resolved and values['self_noise_upper_spl_db']<=params['maximum_self_noise_spl_db'],
+             'on_failure':'REDUCE_INPUT_NOISE_AND_REPEAT_COMMON_BANDWIDTH_RUN'},
+            {'id':'ELECTRICAL_HEADROOM','passed':values['electrical_headroom_lower_db']>=params['minimum_electrical_headroom_db'],
+             'on_failure':'REDUCE_DEPLOYMENT_GAIN_OR_REVISE_ADC_RANGE'}]
+        return digest(expected)==digest(values['checks'])
     else: return False
     expected=[{'id':key,'actual':actual,'limit':limit,'operator':op,
                'margin':limit-actual if op=='<=' else actual-limit,

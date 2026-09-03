@@ -16,6 +16,8 @@ def analyze(params):
         raise ValueError('inverted sensitivity requirement')
     if p['calibrator_output_rms_v']*math.sqrt(2)>=p['adc_peak_v']:
         raise ValueError('calibration sine reaches ADC clipping; sensitivity reference invalid')
+    if p['total_noise_rms_v']*(1+p['noise_relative_bound'])>=p['adc_peak_v']:
+        raise ValueError('noise RMS interval reaches ADC range; common-frame noise reference invalid')
     if p['frontend_noise_rms_v']>p['total_noise_rms_v']:
         raise ValueError('frontend noise exceeds total in the declared common output frame')
     sensitivity=p['calibrator_output_rms_v']/p['calibration_gain_linear']/p['calibrator_pressure_rms_pa']
@@ -52,7 +54,7 @@ def analyze(params):
     return {'sensitivity_dbv_per_pa':sensitivity_db,'sensitivity_interval_dbv_per_pa':sensitivity_interval,
             'self_noise_rms_pa':noise_pa,'self_noise_spl_db':noise_db,'self_noise_upper_spl_db':noise_upper,
             'noise_resolved':resolved,'electrical_headroom_db':headroom,'electrical_headroom_lower_db':headroom_low,
-            'predicted_output_peak_v':peak,'checks':checks,
+            'predicted_output_peak_v':peak,'headroom_scope':'SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED','checks':checks,
             'disposition':'BOUNDED_BASELINE_ACCEPT' if all(c['passed'] for c in checks) else 'DESIGN_REVISION_REQUIRED',
             'required_revisions':[c['on_failure'] for c in checks if not c['passed']],
             'counter_hypotheses':['room noise rather than capsule self-noise','frontend noise rather than capsule noise',
@@ -61,4 +63,5 @@ def analyze(params):
             'model_assumptions':['common-bandwidth uncorrelated RMS noise sources','supplied sinusoidal calibration reference',
                 'conservative independent relative bounds, not a statistical confidence interval'],
             'unresolved':['actual acoustic calibration and instrument uncertainty','correlated noise and capsule acoustic overload',
+                'noise crest factor and combined signal/noise peak clipping',
                 'physical microphone measurement and qualified Human acceptance']}

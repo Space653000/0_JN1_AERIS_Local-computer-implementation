@@ -207,6 +207,26 @@
         "frontend_noise_rms_v": 0.001
       },
       "expected_error": "ValueError"
+    },
+    {
+      "id": "R033-ADC-NOISE-RANGE",
+      "kind": "negative",
+      "question": "Must common-frame noise or its uncertainty bound reaching ADC range invalidate the analysis?",
+      "input_overrides": {
+        "total_noise_rms_v": 2,
+        "maximum_self_noise_spl_db": 120
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R033-ADC-NOISE-BOUND",
+      "kind": "negative",
+      "question": "Must common-frame noise or its uncertainty bound reaching ADC range invalidate the analysis?",
+      "input_overrides": {
+        "total_noise_rms_v": 0.8,
+        "noise_relative_bound": 0.3
+      },
+      "expected_error": "ValueError"
     }
   ]
 }

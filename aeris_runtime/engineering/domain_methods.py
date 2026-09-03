@@ -137,7 +137,7 @@ def _review_handler(domain):
     return run
 
 
-for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture'):
+for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom'):
     HANDLERS[_domain+'-domain-review']=_review_handler(_domain)
 
 

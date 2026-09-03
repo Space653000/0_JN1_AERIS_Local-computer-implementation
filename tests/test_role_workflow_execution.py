@@ -113,6 +113,14 @@ class RoleWorkflowExecutionTests(unittest.TestCase):
             self.assertEqual(mic['review']['decision'],'REVIEW_BLOCKED')
             self.assertEqual(reproduction.reproduce_run(mic['evidence_run_id'])['result'],'PASS')
             self.assertFalse(mic['numerical_result']['values']['capsule_overload_verified'])
+            for role in ('R028','R030'):
+                self.assertTrue(role_acceptance.RoleAcceptanceFactory().evaluate(role)['execution_passed'])
+            reviewed_mic=run_role('R033',MIC_SKILL,MIC_BASE,objective='Independently review microphone reference',source_kind='SYNTHETIC')
+            self.assertEqual(reviewed_mic['review']['decision'],'BOUNDED_REVIEW_ACCEPT')
+            self.assertEqual({r['role_id'] for r in reviewed_mic['pod']['reviewers']},{'R028','R030'})
+            self.assertTrue(domain_review.review_status(reviewed_mic['review']['review_run_id'])['valid'])
+            unresolved_mic=run_role('R033',MIC_SKILL,{**MIC_BASE,'frontend_noise_rms_v':0.00001},objective='Challenge unresolved microphone floor',source_kind='SYNTHETIC')
+            self.assertEqual(unresolved_mic['review']['decision'],'DESIGN_REVISION_REQUIRED')
 
 
 if __name__=='__main__': unittest.main()

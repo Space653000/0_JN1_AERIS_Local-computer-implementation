@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
-    "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json"
+    "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+    "microphone-reference-domain-review": "skills/microphone-reference-domain-review/input.schema.json"
   },
   "outputs": {
     "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
-    "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json"
+    "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+    "microphone-reference-domain-review": "skills/microphone-reference-domain-review/output.schema.json"
   },
   "required_skills": [
     "microphone-sensitivity",
-    "circuit-noise-budget"
+    "circuit-noise-budget",
+    "microphone-reference-domain-review"
   ],
   "required_methods": [
     "methods/engineering/microphone-sensitivity.json",
-    "methods/engineering/circuit-noise-budget.json"
+    "methods/engineering/circuit-noise-budget.json",
+    "methods/roles/microphone-reference-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/microphone-sensitivity.json",
@@ -155,11 +159,13 @@
     "question": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
     "required_methods": [
       "methods/engineering/microphone-sensitivity.json",
-      "methods/engineering/circuit-noise-budget.json"
+      "methods/engineering/circuit-noise-budget.json",
+      "methods/roles/microphone-reference-domain-review.json"
     ],
     "required_skills": [
       "microphone-sensitivity",
-      "circuit-noise-budget"
+      "circuit-noise-budget",
+      "microphone-reference-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -191,7 +197,8 @@
     ],
     "calculation_schemas": {
       "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
-      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json"
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+      "microphone-reference-domain-review": "skills/microphone-reference-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -205,7 +212,8 @@
     ],
     "calculation_schemas": {
       "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
-      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json"
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+      "microphone-reference-domain-review": "skills/microphone-reference-domain-review/output.schema.json"
     }
   },
   "report_sections": [
@@ -215,5 +223,11 @@
     "bias network noise rather than capsule noise",
     "calibrator coupling rather than sensitivity shift",
     "calibrator uncertainty and capsule production spread"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "microphone-reference-domain-review",
+    "method": "methods/roles/microphone-reference-domain-review.json",
+    "suite": "golden/roles/R028/golden.json",
+    "scope": "Bounded pressure/voltage/gain sensitivity review; not physical capsule characterization."
+  }
 }

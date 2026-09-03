@@ -56,5 +56,11 @@ class MicrophoneMeasurementDomainTests(unittest.TestCase):
                        {'minimum_sensitivity_dbv_per_pa':-30.0}):
             with self.subTest(change=change),self.assertRaises(ValueError): run_skill(SKILL,{**BASE,**change})
 
+    def test_noise_at_or_beyond_adc_range_cannot_become_a_valid_reference(self):
+        for change in ({'total_noise_rms_v':2.0,'maximum_self_noise_spl_db':120.0},
+                       {'total_noise_rms_v':1.0},
+                       {'total_noise_rms_v':0.8,'noise_relative_bound':0.3}):
+            with self.subTest(change=change),self.assertRaises(ValueError): run_skill(SKILL,{**BASE,**change})
+
 
 if __name__=='__main__': unittest.main()

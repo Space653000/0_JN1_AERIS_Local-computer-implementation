@@ -5,6 +5,7 @@ import unittest
 from aeris_runtime.engineering import domain_review
 from tests.test_speaker_power_domain import BASE
 from tests.test_tws_domain_method import BASE as TWS_BASE
+from tests.test_microphone_measurement_domain import BASE as MIC_BASE
 
 SPEAKER_COUNTERS=['amplifier clipping rather than transducer nonlinearity',
                   'limiter gain reduction rather than thermal compression','fixture response change rather than power compression']
@@ -92,6 +93,36 @@ class DomainReviewTests(unittest.TestCase):
             with self.subTest(values=values),self.assertRaises(ValueError): domain_review.review('speaker-thermal',request)
         request=thermal_input(); del request['candidate']['lifetime_verified']
         with self.assertRaises(ValueError): domain_review.review('speaker-thermal',request)
+
+    def test_microphone_reference_review_rejects_deployment_gain_as_calibration_gain(self):
+        request={'parameters':{**MIC_BASE,'analysis_gain_linear':100.0},
+                 'context':{'product':'','transducer':'Microphone','lifecycle':'EVT','risk':'R1','source_kind':'SYNTHETIC'},
+                 'candidate':{'sensitivity_dbv_per_pa':-40.0,'sensitivity_interval_dbv_per_pa':[-40.0,-40.0],
+                     'sensitivity_passed':True,'capsule_overload_verified':False,
+                     'physical_measurement_verified':False,'lifetime_verified':False,
+                     'counter_hypotheses':['room noise rather than capsule self-noise','frontend noise rather than capsule noise',
+                         'calibrator coupling or gain-reference error rather than capsule sensitivity drift']}}
+        self.assertEqual(domain_review.review('microphone-reference',request)['decision'],'BOUNDED_REVIEW_ACCEPT')
+        request['candidate']['sensitivity_dbv_per_pa']=-60.0
+        self.assertEqual(domain_review.review('microphone-reference',request)['decision'],'CHANGES_REQUIRED')
+
+    def test_microphone_noise_review_challenges_false_resolution_and_capsule_overload(self):
+        candidate={'noise_resolved':True,'self_noise_rms_pa':0.00008,'self_noise_spl_db':12.041199826559248,
+                   'self_noise_upper_spl_db':12.041199826559248,'electrical_headroom_db':7.958800173440752,
+                   'electrical_headroom_lower_db':7.958800173440752,'noise_passed':True,'headroom_passed':True,
+                   'next_experiment':'LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM',
+                   'headroom_scope':'SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED','capsule_overload_verified':False,
+                   'physical_measurement_verified':False,'lifetime_verified':False,
+                   'counter_hypotheses':['room noise rather than capsule self-noise','frontend noise rather than capsule noise',
+                       'calibrator coupling or gain-reference error rather than capsule sensitivity drift']}
+        request={'parameters':MIC_BASE,'candidate':candidate,
+                 'context':{'product':'','transducer':'Microphone','lifecycle':'EVT','risk':'R1','source_kind':'SYNTHETIC'}}
+        self.assertEqual(domain_review.review('microphone-noise-headroom',request)['decision'],'BOUNDED_REVIEW_ACCEPT')
+        candidate['capsule_overload_verified']=True
+        self.assertEqual(domain_review.review('microphone-noise-headroom',request)['decision'],'CHANGES_REQUIRED')
+        candidate['capsule_overload_verified']=False
+        request['parameters']={**MIC_BASE,'noise_relative_bound':0.3}
+        self.assertEqual(domain_review.review('microphone-noise-headroom',request)['decision'],'CHANGES_REQUIRED')
 
 
 if __name__=='__main__': unittest.main()

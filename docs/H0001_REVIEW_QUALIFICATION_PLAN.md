@@ -98,3 +98,15 @@ that sealed context, never the mutable workflow/Pod. Missing context blocks
 review; changing the external workflow cannot change the sealed context.
 Add regression coverage at the public run_role/Evidence seam before routing.
 No other direction blocker was reported. User has authorized implementation.
+
+## Microphone extension after R033 execution
+
+Apply the same noncircular, sealed qualification contract to two distinct seats:
+R028 reviews pressure/voltage/gain reference and sensitivity interval claims;
+R030 reviews common-bandwidth noise subtraction, identifiability, deployment
+gain and ADC headroom. Both are required for the R033 supplied-reference Method.
+Use separate candidate-report oracles with gain-frame mistakes, unresolved floor,
+uncertainty, interval boundaries, clipped reference and unproven capsule AOP.
+Product-independent acoustic calculation scope permits Microphone/Both only,
+Concept through EVT, R0/R1, synthetic or supplied-unverified numerical evidence.
+It does not grant physical measurement, whole-role L3 or product release.
