@@ -33,6 +33,8 @@ Repository contract 要求 Codex 自動執行：
 → loopback supervisor + heartbeat
 → persistence/watchdog
 → Evidence/Audit handoff
+→ 讀 Persistent Build Phases
+→ 從第一個未完成階段續建
 ```
 
 Codex 主入口：
@@ -340,5 +342,36 @@ cloud/software trust baselines closed
 → optional licensed tool adapters as environments become available
 → signed/attested release + formal Human approval
 ```
+
+## 21. Persistent Build Phases：換電腦不用重走聊天歷史
+
+AERIS 後續建設不再依賴某一次 ChatGPT/Codex 對話內容。
+
+正式續建索引：
+
+- [`docs/AERIS_BUILD_PHASES.md`](docs/AERIS_BUILD_PHASES.md)
+- [`config/build_phases.v1.json`](config/build_phases.v1.json)
+
+已納入的正式階段：
+
+1. [`AERIS LOCAL SOFTWARE COMPLETION PASS`](docs/AERIS_LOCAL_SOFTWARE_COMPLETION_PASS.md)
+2. [`AERIS PROFESSIONAL COMPANY BUILD — 100-Engineer Capability Factory`](docs/AERIS_PROFESSIONAL_COMPANY_BUILD_100_ENGINEER_CAPABILITY_FACTORY.md)
+
+未來每一次大型 AERIS 擴建提示詞都必須沉澱成新的 versioned Build Phase，並加入上述兩個索引。
+
+因此未來任何支援電腦的正確流程是：
+
+```text
+選定唯一安全 local workspace
+→ 貼兩個 GitHub URL
+→ Codex 讀 Core + Implementation governance
+→ 讀 Build Phase catalog
+→ 查真實 local Evidence
+→ 已完成且相容的 phase 直接略過
+→ 從第一個未完成 phase 繼續
+→ 不重新依聊天紀錄摸索整條建設路徑
+```
+
+這是 AERIS 的跨機器持久建設記憶。完成狀態仍只能由 Evidence 判定，不能由 AI 自述判定。
 
 **Implemented is not Verified. CI green is not Company Complete. Supervisor serving is not Company Healthy. Dashboard is not Truth.**
