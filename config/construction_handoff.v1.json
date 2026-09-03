@@ -18,7 +18,24 @@
     "chat_prose_is_not_evidence": true,
     "github_diff_is_primary_code_review_surface": true,
     "local_evidence_may_remain_local_only": true,
-    "require_privacy_secret_screen_before_push": true
+    "require_privacy_secret_screen_before_push": true,
+    "never_reuse_handoff_id": true,
+    "new_supervisor_prompt_requires_new_handoff_id": true,
+    "new_handoff_requires_new_branch_and_new_pr": true,
+    "previous_handoff_pr_must_not_be_overwritten": true
+  },
+  "numbering": {
+    "handoff_id_format": "H%04d",
+    "first_handoff_id": "H0001",
+    "sequence_scope": "repository_global",
+    "sequence_is_monotonic": true,
+    "reuse_closed_or_abandoned_ids": false,
+    "supervisor_allocation_rule": "Before issuing every new Codex construction/repair prompt that will be supervised, inspect all existing and closed AERIS SUPERVISION HANDOFF PR titles plus handoff/construction directories, take the maximum H#### value, then allocate max+1 and embed it in the prompt.",
+    "codex_collision_rule": "Before push, independently verify that the assigned H#### does not already exist as a handoff directory, branch, open PR or closed PR. If a collision exists, increment until an unused H#### is found and report the actual allocated ID.",
+    "branch_template": "codex/handoff/{handoff_id}-{phase_id}-{local_sha7}",
+    "directory_template": "handoff/construction/{handoff_id}-{phase_id}-{local_sha7}/",
+    "pr_title_template": "AERIS SUPERVISION HANDOFF {handoff_id} — {phase_id} — {local_sha7}",
+    "ready_signal_template": "AERIS_SUPERVISION_HANDOFF_READY {handoff_id}"
   },
   "review_branch_prefix": "codex/handoff/",
   "required_handoff_files": [
@@ -69,19 +86,21 @@
     "verify_local_commit_exists",
     "fetch_remote_implementation_main",
     "record_remote_main_and_merge_base",
+    "verify_assigned_handoff_id_is_unique_or_increment_to_next_unused_id",
     "screen_intended_push_for_secrets_private_raw_data_and_binaries",
-    "create_non_main_review_branch_from_local_commit",
-    "add_curated_handoff_summary_and_snapshot",
+    "create_new_non_main_review_branch_for_this_handoff_id",
+    "add_new_curated_handoff_summary_and_snapshot_directory",
     "push_review_branch_only",
-    "open_draft_pr_against_main",
+    "open_new_draft_pr_against_main",
     "stop_without_merge",
     "chatgpt_reviews_real_diff_ci_and_handoff_snapshot",
-    "codex_repairs_same_review_branch_if_requested",
-    "repeat_until_supervision_pass_or_true_external_gate"
+    "next_supervisor_prompt_allocates_a_new_handoff_id_and_new_pr",
+    "repeat_as_an_immutable_handoff_chain_until_supervision_pass_or_true_external_gate"
   ],
   "truth_boundary": {
     "draft_pr_means": "reviewable construction snapshot",
     "draft_pr_does_not_mean": "phase complete or production verified",
-    "l4_requires": "real evidence appropriate to the claimed capability including hardware/calibration/human approval where applicable"
+    "l4_requires": "real evidence appropriate to the claimed capability including hardware/calibration/human approval where applicable",
+    "handoff_history_rule": "Every new supervised Codex prompt creates a new numbered snapshot; earlier handoff PRs remain historical review records and are never repurposed for later work."
   }
 }
