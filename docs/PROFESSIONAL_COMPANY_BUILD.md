@@ -87,3 +87,19 @@ second-device relocation are outside this software capability acceptance.
 
 No GitHub push or CI run was performed for this local-only change. Previous
 remote CI evidence is not evidence for this new local commit.
+
+## Six-page continuity defect discovered during acceptance
+
+The first 900-cycle / 5,400-request observation contained one
+`RemoteDisconnected` failure, preserved as
+`.aeris/evidence/professional-six-page-original-failure.json`. The predecessor
+server log records Windows `PermissionError [WinError 5]` while atomically
+replacing the expected-run registry inside a page's heartbeat update. Existing
+writer locking does not stop an independent reader briefly denying replacement.
+
+`test_transient_windows_replace_lock_does_not_drop_page` reproduced that exact
+HTTP disconnection before the fix. A bounded retry of the same atomic
+replacement restores HTTP 200; a separate permanent-denial test ensures the
+original registry survives and failure is not reported as success. Red/green
+logs are retained. Post-fix monitoring is separate evidence and does not erase
+the historical interruption or prove uninterrupted availability forever.

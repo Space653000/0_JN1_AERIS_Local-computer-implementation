@@ -78,7 +78,17 @@ def _write(data: dict[str, Any]) -> None:
         tmp = REGISTRY_PATH.with_name(f"{REGISTRY_PATH.name}.{os.getpid()}.{threading.get_ident()}.{uuid.uuid4().hex}.tmp")
         try:
             tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            tmp.replace(REGISTRY_PATH)
+            # Windows readers may briefly deny FILE_SHARE_DELETE even though
+            # writers hold the process lock. Retry the same atomic replacement;
+            # never truncate the registry or turn a persistent denial into PASS.
+            for attempt in range(20):
+                try:
+                    tmp.replace(REGISTRY_PATH)
+                    break
+                except PermissionError:
+                    if attempt == 19:
+                        raise
+                    time.sleep(0.025)
         finally:
             try:
                 tmp.unlink()
