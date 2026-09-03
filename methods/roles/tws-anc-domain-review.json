@@ -1,0 +1,19 @@
+{
+  "method_id": "tws-anc-domain-review",
+  "version": "1.0.0",
+  "role": "R005",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_review:review",
+  "review_domain": "tws-anc",
+  "applicability": "Review FF wind and FB delay independently without extrapolating one crossover to full-loop stability",
+  "executor_calls_permitted": false,
+  "uncertainty": "Supplied model assumptions remain uncalibrated. Agreement proves scoped report consistency, not real-world correctness.",
+  "excluded": [
+    "Human approval",
+    "full profession acceptance",
+    "physical calibration",
+    "formal release"
+  ],
+  "golden_tests": "golden/roles/R005/golden.json"
+}

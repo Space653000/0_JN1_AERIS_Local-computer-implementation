@@ -1,0 +1,249 @@
+{
+  "suite_id": "R075-BOUNDED-REVIEW-V1",
+  "role_id": "R075",
+  "skill_id": "speaker-thermal-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "AERIS manually authored report candidates and expected engineering review decisions. RMS 3-4-5 triangle, zero-time RC, 45 degree delay margin, and 3-4-5 noise triangle worked examples; no executor-generated verdict oracle.",
+  "scope": "Review transient coil temperature and separate thermal compression from limiter behavior; bounded review capability only, not whole-role acceptance.",
+  "base_input": {
+    "parameters": {
+      "reference_voltage_rms_v": 1,
+      "drive_voltage_rms_v": 2,
+      "reference_fundamental_rms_pa": 0.5,
+      "fundamental_rms_pa": 1,
+      "harmonic_rms_pa": [
+        0.03,
+        0.04
+      ],
+      "input_power_w": 1,
+      "thermal_resistance_k_per_w": 10,
+      "thermal_capacity_j_per_k": 10,
+      "duration_s": 0,
+      "ambient_temperature_c": 25,
+      "max_thd_percent": 5,
+      "max_compression_db": 3,
+      "max_coil_temperature_c": 80
+    },
+    "candidate": {
+      "predicted_coil_temperature_c": 25,
+      "compression_db": 0,
+      "thermal_passed": true,
+      "next_experiment": "HARMONIC_HEADROOM_SWEEP",
+      "physical_measurement_verified": false,
+      "lifetime_verified": false
+    },
+    "context": {
+      "product": "",
+      "transducer": "Speaker",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "R075-REPORT",
+      "kind": "positive",
+      "question": "Review transient coil temperature and separate thermal compression from limiter behavior",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R075-LIMIT",
+      "kind": "boundary",
+      "question": "Does the inclusive domain limit and its neighboring failure preserve the stated decision?",
+      "input_overrides": {
+        "parameters": {
+          "reference_voltage_rms_v": 1,
+          "drive_voltage_rms_v": 2,
+          "reference_fundamental_rms_pa": 0.5,
+          "fundamental_rms_pa": 1,
+          "harmonic_rms_pa": [
+            0.03,
+            0.04
+          ],
+          "input_power_w": 1,
+          "thermal_resistance_k_per_w": 10,
+          "thermal_capacity_j_per_k": 10,
+          "duration_s": 0,
+          "ambient_temperature_c": 80,
+          "max_thd_percent": 5,
+          "max_compression_db": 3,
+          "max_coil_temperature_c": 80
+        },
+        "candidate": {
+          "predicted_coil_temperature_c": 80,
+          "compression_db": 0,
+          "thermal_passed": true,
+          "next_experiment": "HARMONIC_HEADROOM_SWEEP",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R075-WRONG-REPORT",
+      "kind": "positive",
+      "question": "Does the reviewer challenge this domain-specific incorrect numerical or topology assertion?",
+      "input_overrides": {
+        "candidate": {
+          "predicted_coil_temperature_c": 35,
+          "compression_db": 0,
+          "thermal_passed": true,
+          "next_experiment": "HARMONIC_HEADROOM_SWEEP",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R075-ALTERNATIVE",
+      "kind": "counter_hypothesis",
+      "question": "Must a cold coil reject a claimed thermal mechanism and require amplifier/limiter capture?",
+      "input_overrides": {
+        "parameters": {
+          "reference_voltage_rms_v": 1,
+          "drive_voltage_rms_v": 2,
+          "reference_fundamental_rms_pa": 0.5,
+          "fundamental_rms_pa": 0.5,
+          "harmonic_rms_pa": [
+            0.03,
+            0.04
+          ],
+          "input_power_w": 0,
+          "thermal_resistance_k_per_w": 10,
+          "thermal_capacity_j_per_k": 10,
+          "duration_s": 0,
+          "ambient_temperature_c": 25,
+          "max_thd_percent": 5,
+          "max_compression_db": 3,
+          "max_coil_temperature_c": 80
+        },
+        "candidate": {
+          "predicted_coil_temperature_c": 25,
+          "compression_db": 6.020599913279624,
+          "thermal_passed": true,
+          "next_experiment": "COOLING_RESISTANCE_SWEEP",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R075-PHYSICAL",
+      "kind": "counter_hypothesis",
+      "question": "Can synthetic report review establish physical measurement verification?",
+      "input_overrides": {
+        "candidate": {
+          "predicted_coil_temperature_c": 25,
+          "compression_db": 0,
+          "thermal_passed": true,
+          "next_experiment": "HARMONIC_HEADROOM_SWEEP",
+          "physical_measurement_verified": true,
+          "lifetime_verified": false
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R075-UNIT",
+      "kind": "negative",
+      "question": "Are undeclared input units rejected?",
+      "input_overrides": {
+        "parameters": {
+          "reference_voltage_rms_v": 1,
+          "drive_voltage_rms_v": 2,
+          "reference_fundamental_rms_pa": 0.5,
+          "fundamental_rms_pa": 1,
+          "harmonic_rms_pa": [
+            0.03,
+            0.04
+          ],
+          "input_power_w": 1,
+          "thermal_resistance_k_per_w": 10,
+          "thermal_capacity_j_per_k": 10,
+          "duration_s": 0,
+          "ambient_temperature_c": 25,
+          "max_thd_percent": 5,
+          "max_compression_db": 3,
+          "max_coil_temperature_c": 80,
+          "voltage_dbv": 6
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R075-RELEASE",
+      "kind": "negative",
+      "question": "Must automated software review reject production release authority?",
+      "input_overrides": {
+        "context": {
+          "product": "",
+          "transducer": "Speaker",
+          "lifecycle": "EVT",
+          "risk": "R3",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

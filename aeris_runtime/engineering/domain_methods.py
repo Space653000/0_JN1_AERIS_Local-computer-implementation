@@ -23,8 +23,8 @@ def _canonical(value):
 
 
 def _fingerprint():
-    paths=[Path(__file__)]
-    for skill in ('tws-fit-anc-call-baseline','speaker-power-distortion-baseline'):
+    paths=[Path(__file__),ROOT/'aeris_runtime/engineering/domain_review.py']
+    for skill in HANDLERS:
         paths.append(ROOT/f'methods/roles/{skill}.json')
         paths.extend(ROOT/f'skills/{skill}/{name}' for name in ('manifest.json','input.schema.json','output.schema.json','SKILL.md'))
     return hashlib.sha256(_canonical({p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in paths})).hexdigest()
@@ -125,6 +125,17 @@ def speaker_power_distortion(params):
 
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion}
+
+
+def _review_handler(domain):
+    def run(params):
+        from .domain_review import review
+        return review(domain,params)
+    return run
+
+
+for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture'):
+    HANDLERS[_domain+'-domain-review']=_review_handler(_domain)
 
 
 def execute(skill_id,params):

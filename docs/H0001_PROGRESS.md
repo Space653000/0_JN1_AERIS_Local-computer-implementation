@@ -182,3 +182,32 @@ integration remains required. No new uninterrupted-soak claim is made.
 Implementation remote main remains `32ca69baa778959d01c10a72bba1a8f0c0ac7eb5`.
 Read-only Core remains `82f4554623b2d87185dac39a3b93194af7dd5275`, clean.
 No push, main merge, PR #32 modification or H0001 handoff completion occurred.
+
+## Fifth construction checkpoint — bounded reviewer qualifications
+
+Four independent report-review Methods now have separately authored role suites:
+R010 nonlinear, R075 thermal, R005 ANC and R029 fit/capture. Seven cases per seat
+cover correct/incorrect reports, boundaries, competing explanations, physical
+overclaim, wrong units and forbidden release context. Their sealed qualification
+is scoped L2, not whole-role L3 or Human credentials. Total role suites: 6;
+role cases: 44. Shared factory Skills remain separate from role qualification.
+
+The isolated same-model plan reviewer found missing sealed applicability context.
+This was accepted and fixed before routing: execution now seals product,
+transducer, lifecycle, risk, source kind, evidence requirements, Skill, seat and
+required review domains. Independent review reads the sealed bundle, not mutable
+workflow metadata. Current qualification replay, scope and executor/conflict
+exclusion govern selection. No universal R098 fallback or runtime seat override.
+
+Speaker and TWS paths execute real temporary SQLite/workflow/Evidence/Memory
+integration. Missing qualification blocks review, not safe numerical execution.
+Excessive distortion is retained as DESIGN_REVISION_REQUIRED; corrected input
+can receive BOUNDED_REVIEW_ACCEPT. Review bundles bind executor source and
+qualification refs; replay detects tamper and ignores subsequent external
+workflow-context edits. No L3/L4 or G2-G5 promotion is made by these functions.
+
+Full local unit suite at this checkpoint: 263 passed in 50.127 s. Six live HTTP
+spot checks remained 200 and read-only Core status remained clean. This is not
+new deployed-runtime acceptance, a new soak, clean Ubuntu CI or H0001 completion.
+Code review and additional negative cases remain next, along with the previously
+listed role/product/challenge/live/CI/handoff gaps. No remote write occurred.

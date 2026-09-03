@@ -1,0 +1,19 @@
+{
+  "method_id": "speaker-nonlinear-domain-review",
+  "version": "1.0.0",
+  "role": "R010",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_review:review",
+  "review_domain": "speaker-nonlinear",
+  "applicability": "Review RMS harmonic aggregation and prohibit transducer cause attribution from scalar distortion alone",
+  "executor_calls_permitted": false,
+  "uncertainty": "Supplied model assumptions remain uncalibrated. Agreement proves scoped report consistency, not real-world correctness.",
+  "excluded": [
+    "Human approval",
+    "full profession acceptance",
+    "physical calibration",
+    "formal release"
+  ],
+  "golden_tests": "golden/roles/R010/golden.json"
+}

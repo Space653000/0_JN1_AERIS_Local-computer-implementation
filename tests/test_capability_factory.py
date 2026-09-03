@@ -50,21 +50,31 @@ class CapabilityFactoryTests(unittest.TestCase):
     def test_capability_router_needs_actual_available_skills_not_keywords(self):
         roles=[]
         for role in factory.canonical_roles():
-            roles.append({**role,"level":"L3","skills":factory.load_pack(role["id"])["required_skills"]})
+            skills=factory.load_pack(role['id'])['required_skills']
+            roles.append({**role,"level":"L2","skills":skills,'executable_skills':skills})
         request={"product":"TWS Earbuds","transducer":"Microphone","lifecycle":"EVT","risk":"R1",
                  "requirement":"bound known delay","required_evidence":["numerical lag check"],
                  "needed_skills":["gcc-phat-tdoa"],"available_tools":["FREE_LOCAL_BASELINE"]}
         pod=route_pod(request,{"roles":roles})
         self.assertEqual(pod["lead"],"R048")
         self.assertEqual(pod["uncovered_skills"],[])
-        self.assertNotIn(pod["reviewer"],pod["executors"])
+        # Execution fixtures do not establish independent review qualification.
+        self.assertIsNone(pod['reviewer'])
+        self.assertFalse(pod['pod_complete'])
         for lifecycle in ('Architecture','Prototype','Field Return'):
             core_pod=route_pod({**request,'transducer':'microphone','lifecycle':lifecycle},{'roles':roles})
-            self.assertEqual(core_pod['state'],'PLANNED')
+            self.assertEqual(core_pod['state'],'EXECUTION_READY_REVIEW_BLOCKED')
             self.assertEqual(core_pod['request']['transducer'],'Microphone')
         unavailable=route_pod({**request,"available_tools":[]},{"roles":roles})
         self.assertEqual(unavailable["state"],"BLOCKED")
         with self.assertRaises(ValueError): route_pod({"query":"lots of microphone keywords"},{"roles":roles})
+        label_only=[{k:v for k,v in role.items() if k!='executable_skills'} for role in roles]
+        rejected=route_pod(request,{'roles':label_only})
+        self.assertEqual(rejected['state'],'BLOCKED')
+        self.assertEqual(rejected['uncovered_skills'],['gcc-phat-tdoa'])
+        wrong_executor=route_pod({**request,'execution_role_id':'R016'},{'roles':roles})
+        self.assertEqual(wrong_executor['state'],'BLOCKED')
+        self.assertFalse(wrong_executor['software_execution_permitted'])
 
     def test_memory_is_append_only_and_cannot_mutate_evidence(self):
         temp_root=factory.ROOT/".aeris"/"test-temp"; temp_root.mkdir(parents=True,exist_ok=True)

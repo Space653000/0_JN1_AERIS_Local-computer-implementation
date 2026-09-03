@@ -1,0 +1,236 @@
+{
+  "suite_id": "R010-BOUNDED-REVIEW-V1",
+  "role_id": "R010",
+  "skill_id": "speaker-nonlinear-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "AERIS manually authored report candidates and expected engineering review decisions. RMS 3-4-5 triangle, zero-time RC, 45 degree delay margin, and 3-4-5 noise triangle worked examples; no executor-generated verdict oracle.",
+  "scope": "Review RMS harmonic aggregation and prohibit transducer cause attribution from scalar distortion alone; bounded review capability only, not whole-role acceptance.",
+  "base_input": {
+    "parameters": {
+      "reference_voltage_rms_v": 1,
+      "drive_voltage_rms_v": 2,
+      "reference_fundamental_rms_pa": 0.5,
+      "fundamental_rms_pa": 1,
+      "harmonic_rms_pa": [
+        0.03,
+        0.04
+      ],
+      "input_power_w": 1,
+      "thermal_resistance_k_per_w": 10,
+      "thermal_capacity_j_per_k": 10,
+      "duration_s": 0,
+      "ambient_temperature_c": 25,
+      "max_thd_percent": 5,
+      "max_compression_db": 3,
+      "max_coil_temperature_c": 80
+    },
+    "candidate": {
+      "thd_percent": 5,
+      "compression_db": 0,
+      "thd_passed": true,
+      "compression_passed": true,
+      "transducer_cause_verified": false,
+      "physical_measurement_verified": false,
+      "lifetime_verified": false
+    },
+    "context": {
+      "product": "",
+      "transducer": "Speaker",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "R010-REPORT",
+      "kind": "positive",
+      "question": "Review RMS harmonic aggregation and prohibit transducer cause attribution from scalar distortion alone",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R010-LIMIT",
+      "kind": "boundary",
+      "question": "Does the inclusive domain limit and its neighboring failure preserve the stated decision?",
+      "input_overrides": {
+        "parameters": {
+          "reference_voltage_rms_v": 1,
+          "drive_voltage_rms_v": 2,
+          "reference_fundamental_rms_pa": 0.5,
+          "fundamental_rms_pa": 1,
+          "harmonic_rms_pa": [
+            0.03,
+            0.04
+          ],
+          "input_power_w": 1,
+          "thermal_resistance_k_per_w": 10,
+          "thermal_capacity_j_per_k": 10,
+          "duration_s": 0,
+          "ambient_temperature_c": 25,
+          "max_thd_percent": 4.999,
+          "max_compression_db": 3,
+          "max_coil_temperature_c": 80
+        },
+        "candidate": {
+          "thd_percent": 5,
+          "compression_db": 0,
+          "thd_passed": false,
+          "compression_passed": true,
+          "transducer_cause_verified": false,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R010-WRONG-REPORT",
+      "kind": "positive",
+      "question": "Does the reviewer challenge this domain-specific incorrect numerical or topology assertion?",
+      "input_overrides": {
+        "candidate": {
+          "thd_percent": 7,
+          "compression_db": 0,
+          "thd_passed": true,
+          "compression_passed": true,
+          "transducer_cause_verified": false,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R010-ALTERNATIVE",
+      "kind": "counter_hypothesis",
+      "question": "Must correct THD still fail review when it is used to assert an identified transducer cause?",
+      "input_overrides": {
+        "candidate": {
+          "thd_percent": 5,
+          "compression_db": 0,
+          "thd_passed": true,
+          "compression_passed": true,
+          "transducer_cause_verified": true,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R010-PHYSICAL",
+      "kind": "counter_hypothesis",
+      "question": "Can synthetic report review establish physical measurement verification?",
+      "input_overrides": {
+        "candidate": {
+          "thd_percent": 5,
+          "compression_db": 0,
+          "thd_passed": true,
+          "compression_passed": true,
+          "transducer_cause_verified": false,
+          "physical_measurement_verified": true,
+          "lifetime_verified": false
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R010-UNIT",
+      "kind": "negative",
+      "question": "Are undeclared input units rejected?",
+      "input_overrides": {
+        "parameters": {
+          "reference_voltage_rms_v": 1,
+          "drive_voltage_rms_v": 2,
+          "reference_fundamental_rms_pa": 0.5,
+          "fundamental_rms_pa": 1,
+          "harmonic_rms_pa": [
+            0.03,
+            0.04
+          ],
+          "input_power_w": 1,
+          "thermal_resistance_k_per_w": 10,
+          "thermal_capacity_j_per_k": 10,
+          "duration_s": 0,
+          "ambient_temperature_c": 25,
+          "max_thd_percent": 5,
+          "max_compression_db": 3,
+          "max_coil_temperature_c": 80,
+          "voltage_dbv": 6
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R010-RELEASE",
+      "kind": "negative",
+      "question": "Must automated software review reject production release authority?",
+      "input_overrides": {
+        "context": {
+          "product": "",
+          "transducer": "Speaker",
+          "lifecycle": "EVT",
+          "risk": "R3",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

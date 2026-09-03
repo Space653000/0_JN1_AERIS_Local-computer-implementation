@@ -21,22 +21,26 @@
   "inputs": {
     "spectral-analysis": "skills/spectral-analysis/input.schema.json",
     "butterworth-filter": "skills/butterworth-filter/input.schema.json",
-    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json"
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+    "tws-anc-domain-review": "skills/tws-anc-domain-review/input.schema.json"
   },
   "outputs": {
     "spectral-analysis": "skills/spectral-analysis/output.schema.json",
     "butterworth-filter": "skills/butterworth-filter/output.schema.json",
-    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json"
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+    "tws-anc-domain-review": "skills/tws-anc-domain-review/output.schema.json"
   },
   "required_skills": [
     "spectral-analysis",
     "butterworth-filter",
-    "enhancement-aec-metrics"
+    "enhancement-aec-metrics",
+    "tws-anc-domain-review"
   ],
   "required_methods": [
     "methods/engineering/spectral-analysis.json",
     "methods/engineering/butterworth-filter.json",
-    "methods/engineering/enhancement-aec-metrics.json"
+    "methods/engineering/enhancement-aec-metrics.json",
+    "methods/roles/tws-anc-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/spectral-analysis.json",
@@ -175,12 +179,14 @@
     "required_methods": [
       "methods/engineering/spectral-analysis.json",
       "methods/engineering/butterworth-filter.json",
-      "methods/engineering/enhancement-aec-metrics.json"
+      "methods/engineering/enhancement-aec-metrics.json",
+      "methods/roles/tws-anc-domain-review.json"
     ],
     "required_skills": [
       "spectral-analysis",
       "butterworth-filter",
-      "enhancement-aec-metrics"
+      "enhancement-aec-metrics",
+      "tws-anc-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -213,7 +219,8 @@
     "calculation_schemas": {
       "spectral-analysis": "skills/spectral-analysis/input.schema.json",
       "butterworth-filter": "skills/butterworth-filter/input.schema.json",
-      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json"
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+      "tws-anc-domain-review": "skills/tws-anc-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -228,7 +235,8 @@
     "calculation_schemas": {
       "spectral-analysis": "skills/spectral-analysis/output.schema.json",
       "butterworth-filter": "skills/butterworth-filter/output.schema.json",
-      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json"
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+      "tws-anc-domain-review": "skills/tws-anc-domain-review/output.schema.json"
     }
   },
   "report_sections": [
@@ -238,5 +246,11 @@
     "clipping before DSP rather than filter defect",
     "reference misalignment rather than adaptation failure",
     "finite-window estimates and algorithm operating domain"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "tws-anc-domain-review",
+    "method": "methods/roles/tws-anc-domain-review.json",
+    "suite": "golden/roles/R005/golden.json",
+    "scope": "Bounded FF/FB delay, margin and topology review; not full-loop stability verification."
+  }
 }

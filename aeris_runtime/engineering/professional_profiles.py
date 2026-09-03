@@ -116,6 +116,14 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R010':{'skill_id':'speaker-nonlinear-domain-review','method':'methods/roles/speaker-nonlinear-domain-review.json',
+            'suite':'golden/roles/R010/golden.json','scope':'Bounded RMS distortion and unsupported mechanism attribution review; not whole-role acceptance.'},
+    'R075':{'skill_id':'speaker-thermal-domain-review','method':'methods/roles/speaker-thermal-domain-review.json',
+            'suite':'golden/roles/R075/golden.json','scope':'Bounded transient thermal and compression counter-hypothesis review; not lifetime verification.'},
+    'R005':{'skill_id':'tws-anc-domain-review','method':'methods/roles/tws-anc-domain-review.json',
+            'suite':'golden/roles/R005/golden.json','scope':'Bounded FF/FB delay, margin and topology review; not full-loop stability verification.'},
+    'R029':{'skill_id':'tws-fit-capture-domain-review','method':'methods/roles/tws-fit-capture-domain-review.json',
+            'suite':'golden/roles/R029/golden.json','scope':'Bounded seal and capture noise discrimination review; not physical port/mesh characterization.'},
     'R016':{'skill_id':'speaker-power-distortion-baseline',
             'method':'methods/roles/speaker-power-distortion-baseline.json',
             'suite':'golden/roles/R016/golden.json',

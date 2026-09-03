@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "thermal-rc": "skills/thermal-rc/input.schema.json",
-    "reliability-binomial": "skills/reliability-binomial/input.schema.json"
+    "reliability-binomial": "skills/reliability-binomial/input.schema.json",
+    "speaker-thermal-domain-review": "skills/speaker-thermal-domain-review/input.schema.json"
   },
   "outputs": {
     "thermal-rc": "skills/thermal-rc/output.schema.json",
-    "reliability-binomial": "skills/reliability-binomial/output.schema.json"
+    "reliability-binomial": "skills/reliability-binomial/output.schema.json",
+    "speaker-thermal-domain-review": "skills/speaker-thermal-domain-review/output.schema.json"
   },
   "required_skills": [
     "thermal-rc",
-    "reliability-binomial"
+    "reliability-binomial",
+    "speaker-thermal-domain-review"
   ],
   "required_methods": [
     "methods/engineering/thermal-rc.json",
-    "methods/engineering/reliability-binomial.json"
+    "methods/engineering/reliability-binomial.json",
+    "methods/roles/speaker-thermal-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/thermal-rc.json",
@@ -153,11 +157,13 @@
     "question": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
     "required_methods": [
       "methods/engineering/thermal-rc.json",
-      "methods/engineering/reliability-binomial.json"
+      "methods/engineering/reliability-binomial.json",
+      "methods/roles/speaker-thermal-domain-review.json"
     ],
     "required_skills": [
       "thermal-rc",
-      "reliability-binomial"
+      "reliability-binomial",
+      "speaker-thermal-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -189,7 +195,8 @@
     ],
     "calculation_schemas": {
       "thermal-rc": "skills/thermal-rc/input.schema.json",
-      "reliability-binomial": "skills/reliability-binomial/input.schema.json"
+      "reliability-binomial": "skills/reliability-binomial/input.schema.json",
+      "speaker-thermal-domain-review": "skills/speaker-thermal-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -203,7 +210,8 @@
     ],
     "calculation_schemas": {
       "thermal-rc": "skills/thermal-rc/output.schema.json",
-      "reliability-binomial": "skills/reliability-binomial/output.schema.json"
+      "reliability-binomial": "skills/reliability-binomial/output.schema.json",
+      "speaker-thermal-domain-review": "skills/speaker-thermal-domain-review/output.schema.json"
     }
   },
   "report_sections": [
@@ -213,5 +221,11 @@
     "contact resistance rather than coil aging",
     "duty-cycle change rather than material defect",
     "thermal network parameters and censored failure data"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "speaker-thermal-domain-review",
+    "method": "methods/roles/speaker-thermal-domain-review.json",
+    "suite": "golden/roles/R075/golden.json",
+    "scope": "Bounded transient thermal and compression counter-hypothesis review; not lifetime verification."
+  }
 }

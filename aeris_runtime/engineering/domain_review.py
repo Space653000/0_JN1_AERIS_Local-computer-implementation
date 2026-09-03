@@ -1,0 +1,268 @@
+"""Bounded software review policy; never Human approval or role-wide L3."""
+from __future__ import annotations
+
+import copy
+import json
+import math
+
+from ..config import ROOT
+
+REQUIRED_DOMAINS={
+    'speaker-power-distortion-baseline':['speaker-nonlinear','speaker-thermal'],
+    'tws-fit-anc-call-baseline':['tws-anc','tws-fit-capture'],
+}
+DOMAIN_SKILLS={domain:skill for skill,domains in REQUIRED_DOMAINS.items() for domain in domains}
+
+
+def applicable(domain,context):
+    speaker=domain.startswith('speaker-')
+    return (domain in DOMAIN_SKILLS and context.get('risk') in {'R0','R1'}
+            and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
+            and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
+            and context.get('transducer') in ({'Speaker','Both'} if speaker else {'Both'})
+            and isinstance(context.get('product'),str)
+            and (speaker or context['product'] in {'R048','TWS Earbuds'}))
+
+
+def select_reviewers(request,executor_ids):
+    """A matrix label is not qualification; replay the seat's sealed suite."""
+    from . import factory,role_acceptance
+    from .professional_profiles import ROLE_DOMAIN_CONTRACTS
+    skills=request.get('needed_skills',[])
+    needed=sorted({d for skill in skills for d in REQUIRED_DOMAINS.get(skill,[])})
+    unknown=[skill for skill in skills if skill not in REQUIRED_DOMAINS]
+    context={key:request.get(key) for key in ('product','transducer','lifecycle','risk')}
+    context['source_kind']=request.get('source_kind','USER_SUPPLIED_UNVERIFIED')
+    conflicts=request.get('conflicted_role_ids',[])
+    if not isinstance(conflicts,list) or any(not isinstance(role,str) for role in conflicts):
+        raise ValueError('explicit conflicted role IDs required')
+    excluded=set(executor_ids)|set(conflicts)
+    found=[]; missing=[]; runner=role_acceptance.RoleAcceptanceFactory()
+    for domain in needed:
+        selected=None
+        if applicable(domain,context):
+            for role,contract in sorted(ROLE_DOMAIN_CONTRACTS.items()):
+                if role in excluded: continue
+                manifest=factory.read(ROOT/f"skills/{contract['skill_id']}/manifest.json")
+                if manifest.get('review_domain')!=domain: continue
+                status=runner.status(role)
+                if not status['execution_passed']: continue
+                selected={'role_id':role,'domain':domain,'skill_id':contract['skill_id'],
+                          'qualification_run_id':status['run_id'],'qualification_evidence_ref':status['evidence_ref'],
+                          'reason':'current sealed domain review suite replayed; context in bounded scope; executor/conflict excluded'}
+                break
+        if selected: found.append(selected)
+        else: missing.append(domain)
+    return {'reviewers':found,'uncovered_review_domains':missing,'unsupported_review_skills':unknown,
+            'complete':bool(needed) and not missing and not unknown,
+            'human_approval':False,'context':context}
+
+
+def _validate(value,schema):
+    """Strict declared-unit input validation, without invoking an executor."""
+    kind=schema.get('type')
+    if kind=='object':
+        if not isinstance(value,dict) or set(schema.get('required',[]))-set(value):
+            raise ValueError('required review input fields missing')
+        if schema.get('additionalProperties') is False and set(value)-set(schema.get('properties',{})):
+            raise ValueError('unknown review input field or unit')
+        for key,item in value.items(): _validate(item,schema.get('properties',{}).get(key,{}))
+    elif kind=='array':
+        if not isinstance(value,list) or not schema.get('minItems',0)<=len(value)<=schema.get('maxItems',1000):
+            raise ValueError('bounded review vector required')
+        for item in value: _validate(item,schema.get('items',{}))
+    elif kind=='number':
+        if (isinstance(value,bool) or not isinstance(value,(int,float)) or not math.isfinite(value)
+                or value<schema.get('minimum',-math.inf) or value>schema.get('maximum',math.inf)
+                or value<=schema.get('exclusiveMinimum',-math.inf)):
+            raise ValueError('finite declared-unit review input required')
+
+
+def review(domain,request):
+    """Challenge a scoped candidate; acceptance means report consistency only.
+
+    Candidate fields are assertions to check, not inputs to recomputation. These
+    independent equations never call domain_methods or use its decision output.
+    """
+    if domain not in DOMAIN_SKILLS: raise ValueError('unknown review domain')
+    if not isinstance(request,dict) or set(request)!={'parameters','candidate','context'}:
+        raise ValueError('exact review envelope required')
+    p=request['parameters']; candidate=request['candidate']; context=request['context']
+    schema=json.loads((ROOT/f'skills/{DOMAIN_SKILLS[domain]}/input.schema.json').read_text())
+    _validate(p,schema)
+    if not isinstance(candidate,dict) or not isinstance(context,dict): raise ValueError('review objects required')
+    if set(context)!={'product','transducer','lifecycle','risk','source_kind'}:
+        raise ValueError('exact applicability context required')
+    speaker=domain.startswith('speaker-')
+    if not applicable(domain,context):
+        raise ValueError('outside evidenced bounded review applicability')
+    expected={}; observations={}
+    if speaker:
+        if p['drive_voltage_rms_v']<p['reference_voltage_rms_v'] or p['max_coil_temperature_c']<p['ambient_temperature_c']:
+            raise ValueError('inconsistent power review bounds')
+    if domain=='speaker-thermal':
+        temperature=p['ambient_temperature_c']+p['input_power_w']*p['thermal_resistance_k_per_w']*(1-math.exp(-p['duration_s']/p['thermal_resistance_k_per_w']/p['thermal_capacity_j_per_k']))
+        compression=20*math.log10(p['drive_voltage_rms_v']*p['reference_fundamental_rms_pa']/(p['reference_voltage_rms_v']*p['fundamental_rms_pa']))
+        hot=temperature>p['max_coil_temperature_c']; compressed=compression>p['max_compression_db']
+        experiment='COOLING_RESISTANCE_SWEEP' if hot and compressed else 'COLD_AMPLIFIER_LIMITER_CAPTURE' if compressed else 'HARMONIC_HEADROOM_SWEEP'
+        expected={'predicted_coil_temperature_c':temperature,'compression_db':compression,
+                  'thermal_passed':not hot,'next_experiment':experiment}
+        observations={'temperature_margin_c':p['max_coil_temperature_c']-temperature,
+                      'counter_hypothesis':'limiter gain or amplifier headroom can mimic thermal compression',
+                      'limitation':'single RC, constant real power, initial ambient; no lifetime inference'}
+    elif domain=='speaker-nonlinear':
+        thd=100*math.sqrt(sum(h*h for h in p['harmonic_rms_pa']))/p['fundamental_rms_pa']
+        compression=20*math.log10(p['drive_voltage_rms_v']*p['reference_fundamental_rms_pa']/(p['reference_voltage_rms_v']*p['fundamental_rms_pa']))
+        expected={'thd_percent':thd,'compression_db':compression,
+                  'thd_passed':thd<=p['max_thd_percent'],'compression_passed':compression<=p['max_compression_db'],
+                  'transducer_cause_verified':False}
+        observations={'counter_hypothesis':'amplifier clipping, limiter gain or fixture rattling rather than proven transducer cause',
+                      'next_experiment':'matched level and fixture sweep with amplifier voltage/headroom recorded',
+                      'limitation':'RMS harmonics exclude fundamental; no Bl/Kms/Le identification from scalar THD'}
+    elif domain=='tws-anc':
+        margin=180-(p['plant_phase_lag_deg']+0.36*p['feedback_crossover_hz']*p['feedback_delay_ms'])
+        feedback=margin>=p['min_phase_margin_deg']; feedforward=p['ff_wind_rms_pa']<=p['max_ff_wind_rms_pa']
+        topology={(True,True):'HYBRID',(True,False):'FB_ONLY',(False,True):'FF_ONLY',(False,False):'PASSIVE'}[(feedback,feedforward)]
+        expected={'phase_margin_deg':margin,'feedback_passed':feedback,'feedforward_passed':feedforward,
+                  'anc_topology_candidate':topology,'full_loop_stability_verified':False}
+        observations={'counter_hypothesis':'feedback latency versus wind-exposed feedforward path',
+                      'next_experiment':'measure inward/outward loop transfer across all crossovers and fit states',
+                      'limitation':'one crossover and supplied plant phase cannot establish full-loop stability'}
+    elif domain=='tws-fit-capture':
+        loss=10*math.log10((p['bass_reference_hz']**2+p['leak_pole_hz']**2)/p['bass_reference_hz']**2)
+        snr=10*math.log10(p['call_speech_rms_pa']**2/(p['call_ambient_rms_pa']**2+p['ff_wind_rms_pa']**2))
+        experiment=('RESEAL_BEFORE_EQ' if loss>p['max_leak_loss_db'] else
+                    'WIND_SHIELD_AND_PORT_ORIENTATION' if p['ff_wind_rms_pa']>p['max_ff_wind_rms_pa'] else
+                    'STATIONARY_NOISE_AND_CAPTURE_PATH' if snr<p['min_call_snr_db'] else 'FIT_DISTRIBUTION_AND_PORT_TRANSFER')
+        expected={'leak_loss_db':loss,'call_snr_db':snr,'seal_passed':loss<=p['max_leak_loss_db'],
+                  'capture_passed':snr>=p['min_call_snr_db'],'next_experiment':experiment,
+                  'excursion_measured':False,'occlusion_measured':False}
+        observations={'counter_hypothesis':'port wind or seal leakage rather than capsule sensitivity or insufficient EQ',
+                      'limitation':'supplied excursion and occlusion estimates are not acquired measurements'}
+    expected.update(physical_measurement_verified=False,lifetime_verified=False)
+    if set(candidate)!=set(expected): raise ValueError('exact scoped candidate assertions required')
+    disagreements=[]
+    for key,wanted in expected.items():
+        actual=candidate[key]
+        if isinstance(wanted,bool): matches=actual is wanted
+        elif isinstance(wanted,(float,int)):
+            matches=(isinstance(actual,(float,int)) and not isinstance(actual,bool) and math.isfinite(actual)
+                     and math.isclose(actual,wanted,rel_tol=0,abs_tol=1e-7))
+        else: matches=actual==wanted
+        if not matches: disagreements.append({'field':key,'asserted':actual,'expected':wanted})
+    return {'domain':domain,'decision':'CHANGES_REQUIRED' if disagreements else 'BOUNDED_REVIEW_ACCEPT',
+            'disagreements':disagreements,'observations':observations,
+            'human_approval':False,'role_l3_awarded':False,'scope':'bounded software report consistency only'}
+
+
+def execution_context(request,role_id,skill_id,source_kind):
+    """Capture applicability before execution; subsequent review uses its seal."""
+    return {'source_kind':source_kind,'objective':request['requirement'],
+            'role_id':role_id,'skill_id':skill_id,'physical_verification':False,
+            'applicability':{key:copy.deepcopy(request[key]) for key in
+                ('product','transducer','lifecycle','risk','required_evidence')},
+            'required_review_domains':list(REQUIRED_DOMAINS.get(skill_id,[])),
+            'review_policy_version':'H0001-bounded-software-review-v1'}
+
+
+def _candidate(domain,output):
+    """Project executor assertions, never recompute answers for the reviewer."""
+    v=output['values']; checks={c['id']:c for c in v['checks']}
+    truth={'physical_measurement_verified':output['physical_measurement_verified'],
+           'lifetime_verified':v.get('lifetime_verified',False)}
+    if domain=='speaker-thermal':
+        experiment={
+            'Measure resistance-derived coil temperature and repeat the level sweep after cooling at identical gain':'COOLING_RESISTANCE_SWEEP',
+            'Record amplifier output and limiter gain at matched cold-coil conditions before attributing loss to heat':'COLD_AMPLIFIER_LIMITER_CAPTURE',
+            'Measure harmonic order trends with verified amplifier headroom and matched acoustic fixture':'HARMONIC_HEADROOM_SWEEP',
+        }.get(v.get('next_discriminating_experiment'),'UNRECOGNIZED_EXPERIMENT')
+        return {**truth,'predicted_coil_temperature_c':v['predicted_coil_temperature_c'],
+                'compression_db':v['compression_db'],'thermal_passed':checks['COIL_TEMPERATURE_C']['passed'],
+                'next_experiment':experiment}
+    if domain=='speaker-nonlinear':
+        return {**truth,'thd_percent':v['thd_percent'],'compression_db':v['compression_db'],
+                'thd_passed':checks['THD_PERCENT']['passed'],'compression_passed':checks['COMPRESSION_DB']['passed'],
+                'transducer_cause_verified':v.get('transducer_cause_verified',False)}
+    if domain=='tws-anc':
+        return {**truth,'phase_margin_deg':v['phase_margin_deg'],'feedback_passed':checks['FEEDBACK_PHASE_MARGIN_DEG']['passed'],
+                'feedforward_passed':checks['OUTWARD_FF_WIND_RMS_PA']['passed'],'anc_topology_candidate':v['anc_topology_candidate'],
+                'full_loop_stability_verified':v.get('full_loop_stability_verified',False)}
+    if domain=='tws-fit-capture':
+        revisions=v['required_revisions']
+        experiment=('RESEAL_BEFORE_EQ' if 'RECHECK_TIP_SEAL_BEFORE_BASS_EQ' in revisions else
+                    'WIND_SHIELD_AND_PORT_ORIENTATION' if 'DISABLE_OR_LIMIT_WIND_EXPOSED_FEEDFORWARD_PATH' in revisions else
+                    'STATIONARY_NOISE_AND_CAPTURE_PATH' if 'REVISE_CALL_CAPTURE_PATH_OR_WIND_SHIELDING' in revisions else
+                    'FIT_DISTRIBUTION_AND_PORT_TRANSFER')
+        return {**truth,'leak_loss_db':v['leak_loss_db'],'call_snr_db':v['call_snr_db'],
+                'seal_passed':checks['SEAL_LEAK_LOSS_DB']['passed'],'capture_passed':checks['OUTWARD_CALL_SNR_DB']['passed'],
+                'next_experiment':experiment,'excursion_measured':v.get('excursion_measured',False),
+                'occlusion_measured':v.get('occlusion_measured',False)}
+    raise ValueError('unknown domain')
+
+
+def _assess_execution(run_id):
+    from .. import evidence
+    from ..skills_runtime import run_skill
+    from . import catalog,factory,domain_methods
+    if not evidence.validate_bundle(run_id).get('valid'): raise ValueError('executor evidence integrity failed')
+    root=evidence.bundle_dir(run_id)
+    context=factory.read(root/'raw/engineering-context.json')
+    params=factory.read(root/'raw/engineering-input.json')
+    output=factory.read(root/'processed/skill_result.json')
+    method=factory.read(root/'method_snapshot.json')
+    skill=context['skill_id']; role=context['role_id']
+    domains=REQUIRED_DOMAINS.get(skill)
+    if (not domains or context['required_review_domains']!=domains
+            or context.get('review_policy_version')!='H0001-bounded-software-review-v1'
+            or method['skill_id']!=skill or output['skill_id']!=skill
+            or output['input_sha256']!=catalog.digest(params)
+            or output['implementation_sha256']!=domain_methods.LOADED_SHA256
+            or output.get('evidence_class')!='DETERMINISTIC_ROLE_DOMAIN_CALCULATION'):
+        raise ValueError('sealed context/Skill/source/review domain mismatch')
+    request={**context['applicability'],'source_kind':context['source_kind'],'needed_skills':[skill]}
+    selection=select_reviewers(request,[role])
+    if not selection['complete']: raise ValueError('missing current independent qualifications or unsupported applicability')
+    reviews=[]
+    for seat in selection['reviewers']:
+        inputs={'parameters':params,'candidate':_candidate(seat['domain'],output),'context':selection['context']}
+        reviewed=run_skill(seat['skill_id'],inputs)
+        reviews.append({**seat,'input':inputs,'output':reviewed})
+    values=output['values']; checks=values['checks']
+    all_passed=bool(checks) and all(c.get('passed') is True for c in checks)
+    expected_disposition='BOUNDED_BASELINE_ACCEPT' if all_passed else 'DESIGN_REVISION_REQUIRED'
+    expected_revisions=[c['on_failure'] for c in checks if c.get('passed') is not True]
+    coherent=(values['disposition']==expected_disposition and values['required_revisions']==expected_revisions)
+    review_passed=coherent and all(r['output']['values']['decision']=='BOUNDED_REVIEW_ACCEPT' for r in reviews)
+    return {'execution_run_id':run_id,'execution_sha256':catalog.digest({'context':context,'parameters':params,'output':output,'method':method}),
+            'review_source_sha256':domain_methods.LOADED_SHA256,'reviews':reviews,
+            'decision':'CHANGES_REQUIRED' if not review_passed else 'BOUNDED_REVIEW_ACCEPT' if all_passed else 'DESIGN_REVISION_REQUIRED',
+            'qualified_review':review_passed,'disposition_coherent':coherent,
+            'human_approval':False,'role_l3_awarded':False,
+            'scope':'bounded software review; original execution remains EVIDENCED, not physical/Human verified'}
+
+
+def review_bundle(run_id):
+    from .. import evidence
+    from . import factory
+    try: record=_assess_execution(run_id)
+    except (OSError,ValueError,KeyError,TypeError,RuntimeError) as exc:
+        return {'decision':'REVIEW_BLOCKED','qualified_review':False,'human_approval':False,'reason':str(exc)}
+    bundle=evidence.create_bundle('DOMAIN-REVIEW','AERIS bounded review',
+        method_snapshot={'execution_run_id':run_id,'review_source_sha256':record['review_source_sha256']})
+    review_id=bundle['run_id']
+    factory.write(evidence.bundle_dir(review_id)/'processed/domain-review.json',record)
+    evidence.seal_bundle(review_id,'AERIS bounded review')
+    return {**record,'review_run_id':review_id}
+
+
+def review_status(review_id):
+    from .. import evidence
+    from . import factory,catalog
+    try:
+        if not evidence.validate_bundle(review_id).get('valid'): raise ValueError('review evidence integrity failed')
+        record=factory.read(evidence.bundle_dir(review_id)/'processed/domain-review.json')
+        replay=_assess_execution(record['execution_run_id'])
+        if catalog.digest(record)!=catalog.digest(replay): raise ValueError('review source/qualification/decision replay mismatch')
+        return {'valid':True,'decision':record['decision'],'human_approval':False}
+    except (OSError,ValueError,KeyError,TypeError,RuntimeError) as exc:
+        return {'valid':False,'decision':'REVIEW_BLOCKED','reason':str(exc)}
