@@ -5,16 +5,18 @@
     "name": "Patent / Prior-Art Intelligence",
     "group": "Distinguished Experts"
   },
-  "mission": "Patent / Prior-Art Intelligence: execute and challenge the bounded methods listed in scope.",
+  "mission": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
   "domain": "Distinguished Experts",
   "scope": [
-    "Local retrieval preserves document hash and rights classification.",
-    "An independent rule-based reviewer rejects an unsupported Evidence claim."
+    "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+    "Investigate and bound: keyword similarity presented as novelty verdict",
+    "Investigate and bound: priority date confused with publication date"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R088 owns: Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+    "Neighbor R089 owns: Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
   ],
   "inputs": {
     "provenance-research": "skills/provenance-research/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/provenance-research.json",
     "knowledge/engineering/evidence-counterreview.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "search coverage, translation and legal interpretation"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "keyword similarity presented as novelty verdict",
+    "priority date confused with publication date"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "claim-scope difference rather than contradiction",
+    "family duplicate rather than independent prior art"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+      "must_challenge": [
+        "claim-scope difference rather than contradiction",
+        "family duplicate rather than independent prior art"
+      ],
+      "must_account_for": "search coverage, translation and legal interpretation",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/provenance-research/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "provenance-research",
       "inputs": "skills/provenance-research/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+      "decision_contract": "R087-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "claim-scope difference rather than contradiction",
+        "family duplicate rather than independent prior art"
+      ]
     },
     {
       "role_id": "R087",
       "skill_id": "evidence-counterreview",
       "inputs": "skills/evidence-counterreview/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+      "decision_contract": "R087-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "claim-scope difference rather than contradiction",
+        "family duplicate rather than independent prior art"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070725Z-6219e75a"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R087-DOMAIN-DECISION",
+    "question": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+    "required_methods": [
+      "methods/engineering/provenance-research.json",
+      "methods/engineering/evidence-counterreview.json"
+    ],
+    "required_skills": [
+      "provenance-research",
+      "evidence-counterreview"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R088",
+      "this_seat_owns": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+      "neighbor_owns": "Test acoustic research hypotheses against reproducible sources and discriminating experiments"
+    },
+    {
+      "neighbor_role": "R089",
+      "this_seat_owns": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+      "neighbor_owns": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+    "Discriminate: claim-scope difference rather than contradiction",
+    "Discriminate: family duplicate rather than independent prior art"
+  ],
+  "professional_inputs": {
+    "decision_question": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "search coverage, translation and legal interpretation"
+    ],
+    "calculation_schemas": {
+      "provenance-research": "skills/provenance-research/input.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R087-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "provenance-research": "skills/provenance-research/output.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+    "keyword similarity presented as novelty verdict",
+    "priority date confused with publication date",
+    "claim-scope difference rather than contradiction",
+    "family duplicate rather than independent prior art",
+    "search coverage, translation and legal interpretation"
+  ]
 }

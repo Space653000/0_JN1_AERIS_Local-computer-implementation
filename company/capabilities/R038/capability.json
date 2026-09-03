@@ -5,16 +5,18 @@
     "name": "Speech Quality Tuning Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Speech Quality Tuning Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
   "domain": "Microphone CoE",
   "scope": [
-    "Orthogonal 10% error gives SI-SDR 20 dB; 10x echo attenuation gives ERLE 20 dB.",
-    "Equal energy at 1 and 3 kHz has a 2 kHz centroid; no MOS inference."
+    "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+    "Investigate and bound: noise metric improves while speech is suppressed",
+    "Investigate and bound: proxy score represented as MOS"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R035 owns: Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+    "Neighbor R044 owns: Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
   ],
   "inputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/enhancement-aec-metrics.json",
     "knowledge/engineering/psychoacoustic-descriptors.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "speech corpus coverage and perceptual-proxy limits"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "noise metric improves while speech is suppressed",
+    "proxy score represented as MOS"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "level mismatch rather than speech degradation",
+    "reference misalignment rather than enhancement damage"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+      "must_challenge": [
+        "level mismatch rather than speech degradation",
+        "reference misalignment rather than enhancement damage"
+      ],
+      "must_account_for": "speech corpus coverage and perceptual-proxy limits",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/enhancement-aec-metrics/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "enhancement-aec-metrics",
       "inputs": "skills/enhancement-aec-metrics/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+      "decision_contract": "R038-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level mismatch rather than speech degradation",
+        "reference misalignment rather than enhancement damage"
+      ]
     },
     {
       "role_id": "R038",
       "skill_id": "psychoacoustic-descriptors",
       "inputs": "skills/psychoacoustic-descriptors/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+      "decision_contract": "R038-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level mismatch rather than speech degradation",
+        "reference misalignment rather than enhancement damage"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070714Z-f50a6f53"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R038-DOMAIN-DECISION",
+    "question": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+    "required_methods": [
+      "methods/engineering/enhancement-aec-metrics.json",
+      "methods/engineering/psychoacoustic-descriptors.json"
+    ],
+    "required_skills": [
+      "enhancement-aec-metrics",
+      "psychoacoustic-descriptors"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R035",
+      "this_seat_owns": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+      "neighbor_owns": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions"
+    },
+    {
+      "neighbor_role": "R044",
+      "this_seat_owns": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+      "neighbor_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+    "Discriminate: level mismatch rather than speech degradation",
+    "Discriminate: reference misalignment rather than enhancement damage"
+  ],
+  "professional_inputs": {
+    "decision_question": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "speech corpus coverage and perceptual-proxy limits"
+    ],
+    "calculation_schemas": {
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R038-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+    "noise metric improves while speech is suppressed",
+    "proxy score represented as MOS",
+    "level mismatch rather than speech degradation",
+    "reference misalignment rather than enhancement damage",
+    "speech corpus coverage and perceptual-proxy limits"
+  ]
 }

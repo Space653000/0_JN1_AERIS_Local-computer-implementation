@@ -5,17 +5,18 @@
     "name": "Port / Mesh / Wind / Isolation Specialist",
     "group": "Microphone CoE"
   },
-  "mission": "Port / Mesh / Wind / Isolation Specialist: execute and challenge the bounded methods listed in scope.",
+  "mission": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
   "domain": "Microphone CoE",
   "scope": [
-    "Poiseuille resistance scales inversely with radius to the fourth power.",
-    "Passive rigid-backed fibrous layer; 1 kHz reference computed independently using scalar complex arithmetic and the stated Delany-Bazley equations.",
-    "Integration of a sine divides amplitude by angular frequency."
+    "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+    "Investigate and bound: mesh resonance omitted",
+    "Investigate and bound: mechanical rubbing mistaken for wind"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R039 owns: Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+    "Neighbor R041 owns: Separate wind, room and structure paths in microphone disturbance models"
   ],
   "inputs": {
     "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
@@ -43,7 +44,6 @@
     "knowledge/engineering/nvh-integration.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
     "IEC 60268-4"
   ],
   "permitted_tools": [
@@ -80,25 +80,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "porosity, leakage path and flow direction"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "mesh resonance omitted",
+    "mechanical rubbing mistaken for wind"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "structure-borne vibration rather than airflow",
+    "blocked vent rather than capsule defect"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+      "must_challenge": [
+        "structure-borne vibration rather than airflow",
+        "blocked vent rather than capsule defect"
+      ],
+      "must_account_for": "porosity, leakage path and flow direction",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/leakage-tolerance/golden.json",
@@ -121,21 +127,39 @@
       "skill_id": "leakage-tolerance",
       "inputs": "skills/leakage-tolerance/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+      "decision_contract": "R029-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "structure-borne vibration rather than airflow",
+        "blocked vent rather than capsule defect"
+      ]
     },
     {
       "role_id": "R029",
       "skill_id": "porous-absorption",
       "inputs": "skills/porous-absorption/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+      "decision_contract": "R029-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "structure-borne vibration rather than airflow",
+        "blocked vent rather than capsule defect"
+      ]
     },
     {
       "role_id": "R029",
       "skill_id": "nvh-integration",
       "inputs": "skills/nvh-integration/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+      "decision_contract": "R029-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "structure-borne vibration rather than airflow",
+        "blocked vent rather than capsule defect"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +169,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070712Z-4d1b587f"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R029-DOMAIN-DECISION",
+    "question": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+    "required_methods": [
+      "methods/engineering/leakage-tolerance.json",
+      "methods/engineering/porous-absorption.json",
+      "methods/engineering/nvh-integration.json"
+    ],
+    "required_skills": [
+      "leakage-tolerance",
+      "porous-absorption",
+      "nvh-integration"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R039",
+      "this_seat_owns": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+      "neighbor_owns": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation"
+    },
+    {
+      "neighbor_role": "R041",
+      "this_seat_owns": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+      "neighbor_owns": "Separate wind, room and structure paths in microphone disturbance models"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+    "Discriminate: structure-borne vibration rather than airflow",
+    "Discriminate: blocked vent rather than capsule defect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "porosity, leakage path and flow direction"
+    ],
+    "calculation_schemas": {
+      "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
+      "porous-absorption": "skills/porous-absorption/input.schema.json",
+      "nvh-integration": "skills/nvh-integration/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R029-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "leakage-tolerance": "skills/leakage-tolerance/output.schema.json",
+      "porous-absorption": "skills/porous-absorption/output.schema.json",
+      "nvh-integration": "skills/nvh-integration/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+    "mesh resonance omitted",
+    "mechanical rubbing mistaken for wind",
+    "structure-borne vibration rather than airflow",
+    "blocked vent rather than capsule defect",
+    "porosity, leakage path and flow direction"
+  ]
 }

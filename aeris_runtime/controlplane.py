@@ -6,6 +6,7 @@ import json
 import mimetypes
 import re
 import sqlite3
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -378,6 +379,35 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
         _write_json(handler, 500, {"error": "internal_error", "detail": type(exc).__name__}); return True
 
 
+def _reject_capability_request(handler: Any) -> None:
+    """Drain a bounded rejected body before close to preserve HTTP 403 on Windows.
+
+No JSON parsing or mutation occurs. A partial/slow/oversized body cannot hold
+the rejection open indefinitely. Unread TCP data can otherwise turn the denial
+response into a connection reset (WinError 10053).
+"""
+    handler.close_connection=True
+    try:
+        remaining=int(handler.headers.get('Content-Length','0'))
+    except ValueError:
+        remaining=0
+    if 0<remaining<=MAX_BODY and not handler.headers.get('Transfer-Encoding'):
+        timeout=handler.connection.gettimeout(); deadline=time.monotonic()+0.25
+        try:
+            while remaining:
+                budget=deadline-time.monotonic()
+                if budget<=0: break
+                handler.connection.settimeout(budget)
+                chunk=handler.rfile.read(min(remaining,65536))
+                if not chunk: break
+                remaining-=len(chunk)
+        except OSError:
+            pass  # Denial remains mandatory even if the body is incomplete.
+        finally:
+            handler.connection.settimeout(timeout)
+    _write_json(handler,403,{'error':'same_origin_json_required'})
+
+
 def handle_post(handler: Any) -> bool:
     path = urlsplit(handler.path).path
     if not path.startswith("/api/v1/"):
@@ -385,7 +415,7 @@ def handle_post(handler: Any) -> bool:
     if path.startswith("/api/v1/capabilities/"):
         host=handler.headers.get("Host",""); origin=handler.headers.get("Origin")
         if urlsplit("http://"+host).hostname not in {"localhost","127.0.0.1","::1"} or origin and origin!="http://"+host or not handler.headers.get("Content-Type","").lower().startswith("application/json"):
-            _write_json(handler,403,{"error":"same_origin_json_required"}); return True
+            _reject_capability_request(handler); return True
     try:
         payload = _body(handler)
         if path == "/api/v1/projects":

@@ -5,17 +5,18 @@
     "name": "Smart-Amp / Protection Algorithm Engineer",
     "group": "Speaker CoE"
   },
-  "mission": "Smart-Amp / Protection Algorithm Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
   "domain": "Speaker CoE",
   "scope": [
-    "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm.",
-    "At one thermal time constant the rise is 1-exp(-1) of steady state.",
-    "Thirty ms of buffers plus thirty ms of other serial stages."
+    "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+    "Investigate and bound: resistance drift misread as ambient temperature",
+    "Investigate and bound: feedback latency misses excursion peak"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R013 owns: Bound amplifier rail, load current and temperature under speaker peak and duty-cycle demands",
+    "Neighbor R019 owns: Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes"
   ],
   "inputs": {
     "lumped-speaker": "skills/lumped-speaker/input.schema.json",
@@ -43,8 +44,7 @@
     "knowledge/engineering/latency-budget.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
+    "AES75"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -80,25 +80,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "observer uncertainty, electrical parameter drift and delay"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "resistance drift misread as ambient temperature",
+    "feedback latency misses excursion peak"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "sensor gain error rather than actual heating",
+    "model mismatch rather than unsafe content"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+      "must_challenge": [
+        "sensor gain error rather than actual heating",
+        "model mismatch rather than unsafe content"
+      ],
+      "must_account_for": "observer uncertainty, electrical parameter drift and delay",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/lumped-speaker/golden.json",
@@ -121,21 +127,39 @@
       "skill_id": "lumped-speaker",
       "inputs": "skills/lumped-speaker/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+      "decision_contract": "R025-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "sensor gain error rather than actual heating",
+        "model mismatch rather than unsafe content"
+      ]
     },
     {
       "role_id": "R025",
       "skill_id": "thermal-rc",
       "inputs": "skills/thermal-rc/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+      "decision_contract": "R025-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "sensor gain error rather than actual heating",
+        "model mismatch rather than unsafe content"
+      ]
     },
     {
       "role_id": "R025",
       "skill_id": "latency-budget",
       "inputs": "skills/latency-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+      "decision_contract": "R025-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "sensor gain error rather than actual heating",
+        "model mismatch rather than unsafe content"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +169,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070711Z-442e4946"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R025-DOMAIN-DECISION",
+    "question": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+    "required_methods": [
+      "methods/engineering/lumped-speaker.json",
+      "methods/engineering/thermal-rc.json",
+      "methods/engineering/latency-budget.json"
+    ],
+    "required_skills": [
+      "lumped-speaker",
+      "thermal-rc",
+      "latency-budget"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R013",
+      "this_seat_owns": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+      "neighbor_owns": "Bound amplifier rail, load current and temperature under speaker peak and duty-cycle demands"
+    },
+    {
+      "neighbor_role": "R019",
+      "this_seat_owns": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+      "neighbor_owns": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+    "Discriminate: sensor gain error rather than actual heating",
+    "Discriminate: model mismatch rather than unsafe content"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "observer uncertainty, electrical parameter drift and delay"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+      "thermal-rc": "skills/thermal-rc/input.schema.json",
+      "latency-budget": "skills/latency-budget/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R025-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+      "thermal-rc": "skills/thermal-rc/output.schema.json",
+      "latency-budget": "skills/latency-budget/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
+    "resistance drift misread as ambient temperature",
+    "feedback latency misses excursion peak",
+    "sensor gain error rather than actual heating",
+    "model mismatch rather than unsafe content",
+    "observer uncertainty, electrical parameter drift and delay"
+  ]
 }

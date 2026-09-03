@@ -5,16 +5,18 @@
     "name": "Acoustic Red-Team / DFMEA Reviewer",
     "group": "Engineering Ops"
   },
-  "mission": "Acoustic Red-Team / DFMEA Reviewer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
   "domain": "Engineering Ops",
   "scope": [
-    "An independent rule-based reviewer rejects an unsupported Evidence claim.",
-    "High-severity mode remains Human-review required regardless of RPN ranking."
+    "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+    "Investigate and bound: RPN ranking hides catastrophic severity",
+    "Investigate and bound: consensus presented as independent validation"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R006 owns: Decide whether verification margins survive measurement uncertainty and reviewer objections",
+    "Neighbor R094 owns: Rank FACA hypotheses and choose experiments that distinguish root causes before closure"
   ],
   "inputs": {
     "evidence-counterreview": "skills/evidence-counterreview/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/evidence-counterreview.json",
     "knowledge/engineering/dfmea-ranking.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "failure-mode coverage and reviewer independence limits"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "RPN ranking hides catastrophic severity",
+    "consensus presented as independent validation"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "measurement artifact rather than design mechanism",
+    "shared oracle rather than corroboration"
   ],
   "review_requirements": {
     "reviewer": "R006",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+      "must_challenge": [
+        "measurement artifact rather than design mechanism",
+        "shared oracle rather than corroboration"
+      ],
+      "must_account_for": "failure-mode coverage and reviewer independence limits",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Failure/evidence-counterreview/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "evidence-counterreview",
       "inputs": "skills/evidence-counterreview/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+      "decision_contract": "R098-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "measurement artifact rather than design mechanism",
+        "shared oracle rather than corroboration"
+      ]
     },
     {
       "role_id": "R098",
       "skill_id": "dfmea-ranking",
       "inputs": "skills/dfmea-ranking/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+      "decision_contract": "R098-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "measurement artifact rather than design mechanism",
+        "shared oracle rather than corroboration"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070727Z-8fef23ca"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R098-DOMAIN-DECISION",
+    "question": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+    "required_methods": [
+      "methods/engineering/evidence-counterreview.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "evidence-counterreview",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R006",
+      "this_seat_owns": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+      "neighbor_owns": "Decide whether verification margins survive measurement uncertainty and reviewer objections"
+    },
+    {
+      "neighbor_role": "R094",
+      "this_seat_owns": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+      "neighbor_owns": "Rank FACA hypotheses and choose experiments that distinguish root causes before closure"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+    "Discriminate: measurement artifact rather than design mechanism",
+    "Discriminate: shared oracle rather than corroboration"
+  ],
+  "professional_inputs": {
+    "decision_question": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "failure-mode coverage and reviewer independence limits"
+    ],
+    "calculation_schemas": {
+      "evidence-counterreview": "skills/evidence-counterreview/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R098-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "evidence-counterreview": "skills/evidence-counterreview/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
+    "RPN ranking hides catastrophic severity",
+    "consensus presented as independent validation",
+    "measurement artifact rather than design mechanism",
+    "shared oracle rather than corroboration",
+    "failure-mode coverage and reviewer independence limits"
+  ]
 }

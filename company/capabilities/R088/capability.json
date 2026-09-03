@@ -5,17 +5,18 @@
     "name": "Frontier Acoustic Research Scientist",
     "group": "Distinguished Experts"
   },
-  "mission": "Frontier Acoustic Research Scientist: execute and challenge the bounded methods listed in scope.",
+  "mission": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
   "domain": "Distinguished Experts",
   "scope": [
-    "Single-factor effect equals high minus low response.",
-    "Maximin exploration selects the farthest allowed unexplored point without hardware actions.",
-    "Local retrieval preserves document hash and rights classification."
+    "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+    "Investigate and bound: citation count treated as replication",
+    "Investigate and bound: unavailable raw data hidden by abstract summary"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R087 owns: Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+    "Neighbor R008 owns: Separate source authority, standards applicability and research hypotheses before reuse"
   ],
   "inputs": {
     "factorial-doe": "skills/factorial-doe/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/experiment-optimization.json",
     "knowledge/engineering/provenance-research.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "replication scope and publication selection bias"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "citation count treated as replication",
+    "unavailable raw data hidden by abstract summary"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "confounding rather than new mechanism",
+    "measurement artifact rather than novel effect"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+      "must_challenge": [
+        "confounding rather than new mechanism",
+        "measurement artifact rather than novel effect"
+      ],
+      "must_account_for": "replication scope and publication selection bias",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/factorial-doe/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "factorial-doe",
       "inputs": "skills/factorial-doe/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+      "decision_contract": "R088-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "confounding rather than new mechanism",
+        "measurement artifact rather than novel effect"
+      ]
     },
     {
       "role_id": "R088",
       "skill_id": "experiment-optimization",
       "inputs": "skills/experiment-optimization/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+      "decision_contract": "R088-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "confounding rather than new mechanism",
+        "measurement artifact rather than novel effect"
+      ]
     },
     {
       "role_id": "R088",
       "skill_id": "provenance-research",
       "inputs": "skills/provenance-research/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+      "decision_contract": "R088-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "confounding rather than new mechanism",
+        "measurement artifact rather than novel effect"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070725Z-ffe52f86"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R088-DOMAIN-DECISION",
+    "question": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+    "required_methods": [
+      "methods/engineering/factorial-doe.json",
+      "methods/engineering/experiment-optimization.json",
+      "methods/engineering/provenance-research.json"
+    ],
+    "required_skills": [
+      "factorial-doe",
+      "experiment-optimization",
+      "provenance-research"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R087",
+      "this_seat_owns": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+      "neighbor_owns": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance"
+    },
+    {
+      "neighbor_role": "R008",
+      "this_seat_owns": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+      "neighbor_owns": "Separate source authority, standards applicability and research hypotheses before reuse"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+    "Discriminate: confounding rather than new mechanism",
+    "Discriminate: measurement artifact rather than novel effect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "replication scope and publication selection bias"
+    ],
+    "calculation_schemas": {
+      "factorial-doe": "skills/factorial-doe/input.schema.json",
+      "experiment-optimization": "skills/experiment-optimization/input.schema.json",
+      "provenance-research": "skills/provenance-research/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R088-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "factorial-doe": "skills/factorial-doe/output.schema.json",
+      "experiment-optimization": "skills/experiment-optimization/output.schema.json",
+      "provenance-research": "skills/provenance-research/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+    "citation count treated as replication",
+    "unavailable raw data hidden by abstract summary",
+    "confounding rather than new mechanism",
+    "measurement artifact rather than novel effect",
+    "replication scope and publication selection bias"
+  ]
 }

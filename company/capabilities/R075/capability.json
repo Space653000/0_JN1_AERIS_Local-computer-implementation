@@ -5,16 +5,18 @@
     "name": "Thermal / Power / Reliability",
     "group": "Distinguished Experts"
   },
-  "mission": "Thermal / Power / Reliability: execute and challenge the bounded methods listed in scope.",
+  "mission": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
   "domain": "Distinguished Experts",
   "scope": [
-    "At one thermal time constant the rise is 1-exp(-1) of steady state.",
-    "Zero failures in 100 trials gives exact one-sided binomial bound."
+    "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+    "Investigate and bound: steady thermal model applied to short bursts",
+    "Investigate and bound: room ambient assumed at hot junction"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R013 owns: Bound amplifier rail, load current and temperature under speaker peak and duty-cycle demands",
+    "Neighbor R096 owns: Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims"
   ],
   "inputs": {
     "thermal-rc": "skills/thermal-rc/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/thermal-rc.json",
     "knowledge/engineering/reliability-binomial.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "thermal network parameters and censored failure data"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "steady thermal model applied to short bursts",
+    "room ambient assumed at hot junction"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "contact resistance rather than coil aging",
+    "duty-cycle change rather than material defect"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+      "must_challenge": [
+        "contact resistance rather than coil aging",
+        "duty-cycle change rather than material defect"
+      ],
+      "must_account_for": "thermal network parameters and censored failure data",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/thermal-rc/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "thermal-rc",
       "inputs": "skills/thermal-rc/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+      "decision_contract": "R075-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "contact resistance rather than coil aging",
+        "duty-cycle change rather than material defect"
+      ]
     },
     {
       "role_id": "R075",
       "skill_id": "reliability-binomial",
       "inputs": "skills/reliability-binomial/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+      "decision_contract": "R075-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "contact resistance rather than coil aging",
+        "duty-cycle change rather than material defect"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070723Z-2e4db82a"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R075-DOMAIN-DECISION",
+    "question": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+    "required_methods": [
+      "methods/engineering/thermal-rc.json",
+      "methods/engineering/reliability-binomial.json"
+    ],
+    "required_skills": [
+      "thermal-rc",
+      "reliability-binomial"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R013",
+      "this_seat_owns": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+      "neighbor_owns": "Bound amplifier rail, load current and temperature under speaker peak and duty-cycle demands"
+    },
+    {
+      "neighbor_role": "R096",
+      "this_seat_owns": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+      "neighbor_owns": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+    "Discriminate: contact resistance rather than coil aging",
+    "Discriminate: duty-cycle change rather than material defect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "thermal network parameters and censored failure data"
+    ],
+    "calculation_schemas": {
+      "thermal-rc": "skills/thermal-rc/input.schema.json",
+      "reliability-binomial": "skills/reliability-binomial/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R075-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "thermal-rc": "skills/thermal-rc/output.schema.json",
+      "reliability-binomial": "skills/reliability-binomial/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Bound temperature rise, power compression and reliability duty-cycle tradeoffs",
+    "steady thermal model applied to short bursts",
+    "room ambient assumed at hot junction",
+    "contact resistance rather than coil aging",
+    "duty-cycle change rather than material defect",
+    "thermal network parameters and censored failure data"
+  ]
 }

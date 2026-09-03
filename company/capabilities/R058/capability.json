@@ -5,18 +5,18 @@
     "name": "TV / Display Audio",
     "group": "Product Chiefs"
   },
-  "mission": "TV / Display Audio: execute and challenge the bounded methods listed in scope.",
+  "mission": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
   "domain": "Product Chiefs",
   "scope": [
-    "A valid product plan includes both transducer workstreams and preserves requirement coverage.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "High-severity mode remains Human-review required regardless of RPN ranking."
+    "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+    "Investigate and bound: panel resonance mistaken for driver breakup",
+    "Investigate and bound: dialogue EQ consumes bass headroom"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R016 owns: Derate speaker drive from distortion, compression, temperature and durability limits",
+    "Neighbor R073 owns: Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
   ],
   "inputs": {
     "product-system-plan": "skills/product-system-plan/input.schema.json",
@@ -49,8 +49,7 @@
     "knowledge/engineering/dfmea-ranking.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
+    "IEC 60268-5"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -86,25 +85,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "panel tolerance and placement constraints"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "panel resonance mistaken for driver breakup",
+    "dialogue EQ consumes bass headroom"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "mount-induced buzz rather than diaphragm fault",
+    "wall reflection rather than tonal defect"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+      "must_challenge": [
+        "mount-induced buzz rather than diaphragm fault",
+        "wall reflection rather than tonal defect"
+      ],
+      "must_account_for": "panel tolerance and placement constraints",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/product-system-plan/golden.json",
@@ -130,28 +135,52 @@
       "skill_id": "product-system-plan",
       "inputs": "skills/product-system-plan/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+      "decision_contract": "R058-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount-induced buzz rather than diaphragm fault",
+        "wall reflection rather than tonal defect"
+      ]
     },
     {
       "role_id": "R058",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+      "decision_contract": "R058-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount-induced buzz rather than diaphragm fault",
+        "wall reflection rather than tonal defect"
+      ]
     },
     {
       "role_id": "R058",
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+      "decision_contract": "R058-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount-induced buzz rather than diaphragm fault",
+        "wall reflection rather than tonal defect"
+      ]
     },
     {
       "role_id": "R058",
       "skill_id": "dfmea-ranking",
       "inputs": "skills/dfmea-ranking/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+      "decision_contract": "R058-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount-induced buzz rather than diaphragm fault",
+        "wall reflection rather than tonal defect"
+      ]
     }
   ],
   "report_templates": [
@@ -212,5 +241,80 @@
       "licensed-tool equivalence",
       "physical qualification without measurements"
     ]
-  }
+  },
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R058-DOMAIN-DECISION",
+    "question": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R016",
+      "this_seat_owns": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+      "neighbor_owns": "Derate speaker drive from distortion, compression, temperature and durability limits"
+    },
+    {
+      "neighbor_role": "R073",
+      "this_seat_owns": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+      "neighbor_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+    "Discriminate: mount-induced buzz rather than diaphragm fault",
+    "Discriminate: wall reflection rather than tonal defect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "panel tolerance and placement constraints"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R058-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",
+    "panel resonance mistaken for driver breakup",
+    "dialogue EQ consumes bass headroom",
+    "mount-induced buzz rather than diaphragm fault",
+    "wall reflection rather than tonal defect",
+    "panel tolerance and placement constraints"
+  ]
 }

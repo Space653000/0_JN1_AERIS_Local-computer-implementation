@@ -51,9 +51,16 @@ def pack_digest(pack):
     return catalog.digest({k:v for k,v in pack.items() if k not in {"current_maturity_level","maturity_evidence"}})
 
 
+def _disk_acceptance_engine_digest():
+    names=('factory.py','canonical_registry.py','professional_profiles.py')
+    return catalog.digest({name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest() for name in names})
+
+
 def acceptance_engine_digest():
     """Evidence produced by a different maturity predicate cannot be reused."""
-    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    if _disk_acceptance_engine_digest()!=LOADED_ACCEPTANCE_ENGINE_SHA256:
+        raise RuntimeError('Maturity predicate changed after load; restart required before evaluation')
+    return LOADED_ACCEPTANCE_ENGINE_SHA256
 
 
 def artifact_digest(pack, cache=None):
@@ -152,8 +159,13 @@ def materialize() -> dict:
               "report_templates":[f"company/capabilities/{role['id']}/report-template.md"],
               "current_maturity_level":"L1","maturity_evidence":[],"canonical_core_sha":read(ROOT/"core.lock.json")["baseline_sha"]}
         if role["group"]=="Product Chiefs": pack["product_architecture"]=product_profile(i-44)
+        from .professional_profiles import enrich_pack
+        pack=enrich_pack(pack)
         write(PACKS/role["id"]/"capability.json",pack)
         (PACKS/role["id"]/"report-template.md").write_text(f"# {role['id']} {role['name']}\n\n## Engineering objective\n\n## Inputs, units and provenance\n\n## Method and applicability\n\n## Numerical results and requirement margins\n\n## Uncertainty and missing measurements\n\n## Counter-hypotheses and discriminating tests\n\n## Independent review and unresolved disagreement\n\n## Evidence hashes and reproducibility\n\n## Next action and Human Gates\n",encoding="utf-8")
+        from .professional_profiles import professional_report_section
+        report=PACKS/role['id']/'report-template.md'
+        report.write_text(report.read_text(encoding='utf-8')+professional_report_section(pack),encoding='utf-8')
     write(PACKS/"schema.json",{"$schema":"https://json-schema.org/draft/2020-12/schema","type":"object","required":list(SCHEMA_REQUIRED),"additionalProperties":True})
     write(ROOT/"config"/"engineering_tool_bus.json",{"FREE_LOCAL_BASELINE":{"numpy":"2.2.6","scipy":"1.15.3","skills":list(definitions)},
           "PROFESSIONAL_LICENSED_TOOL":{name:{"state":"OPTIONAL_NOT_INSTALLED_NOT_VERIFIED","interface":{"inputs":["model_or_measurement_contract","tool_version","license_authority"],"outputs":["raw_result","tool_run_log","evidence_hashes"]},"blocks_free_layer":False} for name in ["COMSOL","MATLAB","Ansys/Simcenter","APx","KLIPPEL","SoundCheck","ACQUA"]}})
@@ -188,6 +200,14 @@ def materialize() -> dict:
 
 def contract_errors(pack):
     errors=["missing field "+k for k in SCHEMA_REQUIRED if k not in pack]
+    from .professional_profiles import profiles
+    profile=profiles().get(pack.get('identity',{}).get('id'))
+    if profile is None:
+        errors.append('unknown professional role identity')
+    else:
+        for key in ('required_skills','mission','common_failure_modes','counter_hypotheses',
+                    'standards_metadata_references','professional_decision_contract','neighbor_distinctions'):
+            if pack.get(key)!=profile[key]: errors.append('professional contract mismatch: '+key)
     definitions=catalog.definitions()
     for skill in pack.get("required_skills",[]):
         if skill not in definitions: errors.append("unknown skill "+skill); continue
@@ -312,6 +332,9 @@ def main():
         result=matrix(); write(STATE/"CAPABILITY_MATRIX.json",result)
     print(json.dumps(catalog.json_value(result),ensure_ascii=False,indent=2))
     return 0
+
+
+LOADED_ACCEPTANCE_ENGINE_SHA256=_disk_acceptance_engine_digest()
 
 
 if __name__=="__main__": raise SystemExit(main())

@@ -5,18 +5,18 @@
     "name": "Medical Hearing Aid",
     "group": "Product Chiefs"
   },
-  "mission": "Medical Hearing Aid: execute and challenge the bounded methods listed in scope.",
+  "mission": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
   "domain": "Product Chiefs",
   "scope": [
-    "A valid product plan includes both transducer workstreams and preserves requirement coverage.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "High-severity mode remains Human-review required regardless of RPN ranking."
+    "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+    "Investigate and bound: coupler response mistaken for real-ear benefit",
+    "Investigate and bound: feedback margin lost at high gain"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R046 owns: Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+    "Neighbor R028 owns: Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference"
   ],
   "inputs": {
     "product-system-plan": "skills/product-system-plan/input.schema.json",
@@ -48,10 +48,7 @@
     "knowledge/engineering/requirement-traceability.json",
     "knowledge/engineering/dfmea-ranking.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -86,25 +83,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "ear-canal transfer and individual hearing needs"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "coupler response mistaken for real-ear benefit",
+    "feedback margin lost at high gain"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "vent leakage rather than receiver defect",
+    "fit change rather than algorithm instability"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+      "must_challenge": [
+        "vent leakage rather than receiver defect",
+        "fit change rather than algorithm instability"
+      ],
+      "must_account_for": "ear-canal transfer and individual hearing needs",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/product-system-plan/golden.json",
@@ -130,28 +133,52 @@
       "skill_id": "product-system-plan",
       "inputs": "skills/product-system-plan/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+      "decision_contract": "R045-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "vent leakage rather than receiver defect",
+        "fit change rather than algorithm instability"
+      ]
     },
     {
       "role_id": "R045",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+      "decision_contract": "R045-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "vent leakage rather than receiver defect",
+        "fit change rather than algorithm instability"
+      ]
     },
     {
       "role_id": "R045",
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+      "decision_contract": "R045-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "vent leakage rather than receiver defect",
+        "fit change rather than algorithm instability"
+      ]
     },
     {
       "role_id": "R045",
       "skill_id": "dfmea-ranking",
       "inputs": "skills/dfmea-ranking/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+      "decision_contract": "R045-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "vent leakage rather than receiver defect",
+        "fit change rather than algorithm instability"
+      ]
     }
   ],
   "report_templates": [
@@ -213,5 +240,80 @@
       "licensed-tool equivalence",
       "physical qualification without measurements"
     ]
-  }
+  },
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R045-DOMAIN-DECISION",
+    "question": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R046",
+      "this_seat_owns": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+      "neighbor_owns": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy"
+    },
+    {
+      "neighbor_role": "R028",
+      "this_seat_owns": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+      "neighbor_owns": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+    "Discriminate: vent leakage rather than receiver defect",
+    "Discriminate: fit change rather than algorithm instability"
+  ],
+  "professional_inputs": {
+    "decision_question": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "ear-canal transfer and individual hearing needs"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R045-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+    "coupler response mistaken for real-ear benefit",
+    "feedback margin lost at high gain",
+    "vent leakage rather than receiver defect",
+    "fit change rather than algorithm instability",
+    "ear-canal transfer and individual hearing needs"
+  ]
 }

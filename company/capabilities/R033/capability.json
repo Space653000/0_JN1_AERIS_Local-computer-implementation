@@ -5,17 +5,18 @@
     "name": "Microphone Measurement Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Microphone Measurement Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
   "domain": "Microphone CoE",
   "scope": [
-    "10 mV at 10 mV/Pa corresponds to 1 Pa RMS.",
-    "Unit fundamental plus 0.1 second harmonic gives 10% THD, absent added noise.",
-    "Equal-duration energies average linearly, not as decibels."
+    "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+    "Investigate and bound: dBFS lacks full-scale voltage reference",
+    "Investigate and bound: room noise presented as intrinsic self-noise"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R015 owns: Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+    "Neighbor R028 owns: Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference"
   ],
   "inputs": {
     "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
@@ -43,7 +44,6 @@
     "knowledge/engineering/level-statistics.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
     "IEC 60268-4"
   ],
   "permitted_tools": [
@@ -80,25 +80,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "pressure calibration, noise subtraction and gain uncertainty"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "dBFS lacks full-scale voltage reference",
+    "room noise presented as intrinsic self-noise"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "calibrator seal leak rather than low sensitivity",
+    "preamp noise rather than capsule noise"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+      "must_challenge": [
+        "calibrator seal leak rather than low sensitivity",
+        "preamp noise rather than capsule noise"
+      ],
+      "must_account_for": "pressure calibration, noise subtraction and gain uncertainty",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/microphone-sensitivity/golden.json",
@@ -121,21 +127,39 @@
       "skill_id": "microphone-sensitivity",
       "inputs": "skills/microphone-sensitivity/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+      "decision_contract": "R033-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "calibrator seal leak rather than low sensitivity",
+        "preamp noise rather than capsule noise"
+      ]
     },
     {
       "role_id": "R033",
       "skill_id": "harmonic-noise-analysis",
       "inputs": "skills/harmonic-noise-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+      "decision_contract": "R033-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "calibrator seal leak rather than low sensitivity",
+        "preamp noise rather than capsule noise"
+      ]
     },
     {
       "role_id": "R033",
       "skill_id": "level-statistics",
       "inputs": "skills/level-statistics/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+      "decision_contract": "R033-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "calibrator seal leak rather than low sensitivity",
+        "preamp noise rather than capsule noise"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +169,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070713Z-5d1c296e"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R033-DOMAIN-DECISION",
+    "question": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+    "required_methods": [
+      "methods/engineering/microphone-sensitivity.json",
+      "methods/engineering/harmonic-noise-analysis.json",
+      "methods/engineering/level-statistics.json"
+    ],
+    "required_skills": [
+      "microphone-sensitivity",
+      "harmonic-noise-analysis",
+      "level-statistics"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R015",
+      "this_seat_owns": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+      "neighbor_owns": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions"
+    },
+    {
+      "neighbor_role": "R028",
+      "this_seat_owns": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+      "neighbor_owns": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+    "Discriminate: calibrator seal leak rather than low sensitivity",
+    "Discriminate: preamp noise rather than capsule noise"
+  ],
+  "professional_inputs": {
+    "decision_question": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "pressure calibration, noise subtraction and gain uncertainty"
+    ],
+    "calculation_schemas": {
+      "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json",
+      "level-statistics": "skills/level-statistics/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R033-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/output.schema.json",
+      "level-statistics": "skills/level-statistics/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references",
+    "dBFS lacks full-scale voltage reference",
+    "room noise presented as intrinsic self-noise",
+    "calibrator seal leak rather than low sensitivity",
+    "preamp noise rather than capsule noise",
+    "pressure calibration, noise subtraction and gain uncertainty"
+  ]
 }

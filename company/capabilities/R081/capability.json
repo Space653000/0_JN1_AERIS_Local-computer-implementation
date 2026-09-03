@@ -5,16 +5,18 @@
     "name": "Bluetooth / LE Audio / Wireless Audio",
     "group": "Distinguished Experts"
   },
-  "mission": "Bluetooth / LE Audio / Wireless Audio: execute and challenge the bounded methods listed in scope.",
+  "mission": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
   "domain": "Distinguished Experts",
   "scope": [
-    "Thirty ms of buffers plus thirty ms of other serial stages.",
-    "Ideal uniform quantization variance is one LSB squared divided by 12."
+    "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+    "Investigate and bound: nominal codec frame excludes transport queues",
+    "Investigate and bound: broadcast sync generalized across receivers"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R047 owns: Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+    "Neighbor R083 owns: Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality"
   ],
   "inputs": {
     "latency-budget": "skills/latency-budget/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/latency-budget.json",
     "knowledge/engineering/circuit-noise-budget.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "radio-condition coverage and receiver implementation"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "nominal codec frame excludes transport queues",
+    "broadcast sync generalized across receivers"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "packet scheduling rather than codec delay",
+    "clock drift rather than jitter burst"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+      "must_challenge": [
+        "packet scheduling rather than codec delay",
+        "clock drift rather than jitter burst"
+      ],
+      "must_account_for": "radio-condition coverage and receiver implementation",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/latency-budget/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "latency-budget",
       "inputs": "skills/latency-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+      "decision_contract": "R081-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "packet scheduling rather than codec delay",
+        "clock drift rather than jitter burst"
+      ]
     },
     {
       "role_id": "R081",
       "skill_id": "circuit-noise-budget",
       "inputs": "skills/circuit-noise-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+      "decision_contract": "R081-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "packet scheduling rather than codec delay",
+        "clock drift rather than jitter burst"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070724Z-d37fc5e1"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R081-DOMAIN-DECISION",
+    "question": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+    "required_methods": [
+      "methods/engineering/latency-budget.json",
+      "methods/engineering/circuit-noise-budget.json"
+    ],
+    "required_skills": [
+      "latency-budget",
+      "circuit-noise-budget"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R047",
+      "this_seat_owns": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+      "neighbor_owns": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths"
+    },
+    {
+      "neighbor_role": "R083",
+      "this_seat_owns": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+      "neighbor_owns": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+    "Discriminate: packet scheduling rather than codec delay",
+    "Discriminate: clock drift rather than jitter burst"
+  ],
+  "professional_inputs": {
+    "decision_question": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "radio-condition coverage and receiver implementation"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R081-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+    "nominal codec frame excludes transport queues",
+    "broadcast sync generalized across receivers",
+    "packet scheduling rather than codec delay",
+    "clock drift rather than jitter burst",
+    "radio-condition coverage and receiver implementation"
+  ]
 }

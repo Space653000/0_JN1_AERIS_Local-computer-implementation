@@ -5,16 +5,18 @@
     "name": "Metrology / Measurement Uncertainty",
     "group": "Distinguished Experts"
   },
-  "mission": "Metrology / Measurement Uncertainty: execute and challenge the bounded methods listed in scope.",
+  "mission": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
   "domain": "Distinguished Experts",
   "scope": [
-    "Independent variance terms are 0.01 and 0.16.",
-    "Balanced random-effects calculation separates within-group variance from group means."
+    "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+    "Investigate and bound: repeatability mistaken for total uncertainty",
+    "Investigate and bound: correlated contributors added as independent"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R006 owns: Decide whether verification margins survive measurement uncertainty and reviewer objections",
+    "Neighbor R078 owns: Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty"
   ],
   "inputs": {
     "uncertainty-propagation": "skills/uncertainty-propagation/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/uncertainty-propagation.json",
     "knowledge/engineering/repeatability-reproducibility.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "coverage factor, covariance and metrological traceability"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "repeatability mistaken for total uncertainty",
+    "correlated contributors added as independent"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "fixture bias rather than operator error",
+    "drift rather than random spread"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+      "must_challenge": [
+        "fixture bias rather than operator error",
+        "drift rather than random spread"
+      ],
+      "must_account_for": "coverage factor, covariance and metrological traceability",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Failure/uncertainty-propagation/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "uncertainty-propagation",
       "inputs": "skills/uncertainty-propagation/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+      "decision_contract": "R079-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture bias rather than operator error",
+        "drift rather than random spread"
+      ]
     },
     {
       "role_id": "R079",
       "skill_id": "repeatability-reproducibility",
       "inputs": "skills/repeatability-reproducibility/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+      "decision_contract": "R079-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture bias rather than operator error",
+        "drift rather than random spread"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070724Z-18121174"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R079-DOMAIN-DECISION",
+    "question": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+    "required_methods": [
+      "methods/engineering/uncertainty-propagation.json",
+      "methods/engineering/repeatability-reproducibility.json"
+    ],
+    "required_skills": [
+      "uncertainty-propagation",
+      "repeatability-reproducibility"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R006",
+      "this_seat_owns": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+      "neighbor_owns": "Decide whether verification margins survive measurement uncertainty and reviewer objections"
+    },
+    {
+      "neighbor_role": "R078",
+      "this_seat_owns": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+      "neighbor_owns": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+    "Discriminate: fixture bias rather than operator error",
+    "Discriminate: drift rather than random spread"
+  ],
+  "professional_inputs": {
+    "decision_question": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "coverage factor, covariance and metrological traceability"
+    ],
+    "calculation_schemas": {
+      "uncertainty-propagation": "skills/uncertainty-propagation/input.schema.json",
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R079-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "uncertainty-propagation": "skills/uncertainty-propagation/output.schema.json",
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+    "repeatability mistaken for total uncertainty",
+    "correlated contributors added as independent",
+    "fixture bias rather than operator error",
+    "drift rather than random spread",
+    "coverage factor, covariance and metrological traceability"
+  ]
 }

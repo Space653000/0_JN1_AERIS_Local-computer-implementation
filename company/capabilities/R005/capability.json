@@ -5,17 +5,18 @@
     "name": "DSP & Algorithm Director",
     "group": "Chief Council"
   },
-  "mission": "DSP & Algorithm Director: execute and challenge the bounded methods listed in scope.",
+  "mission": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
   "domain": "Chief Council",
   "scope": [
-    "Coherent bin-64 sinusoid has unit peak amplitude and 1/sqrt(2) RMS.",
-    "Stable unit-DC-gain lowpass impulse response sums to one.",
-    "Orthogonal 10% error gives SI-SDR 20 dB; 10x echo attenuation gives ERLE 20 dB."
+    "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+    "Investigate and bound: filter group delay exceeds interaction budget",
+    "Investigate and bound: enhancement removes desired speech"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R024 owns: Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+    "Neighbor R044 owns: Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
   ],
   "inputs": {
     "spectral-analysis": "skills/spectral-analysis/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/butterworth-filter.json",
     "knowledge/engineering/enhancement-aec-metrics.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "finite-window estimates and algorithm operating domain"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "filter group delay exceeds interaction budget",
+    "enhancement removes desired speech"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "clipping before DSP rather than filter defect",
+    "reference misalignment rather than adaptation failure"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+      "must_challenge": [
+        "clipping before DSP rather than filter defect",
+        "reference misalignment rather than adaptation failure"
+      ],
+      "must_account_for": "finite-window estimates and algorithm operating domain",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/DSP/spectral-analysis/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "spectral-analysis",
       "inputs": "skills/spectral-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+      "decision_contract": "R005-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clipping before DSP rather than filter defect",
+        "reference misalignment rather than adaptation failure"
+      ]
     },
     {
       "role_id": "R005",
       "skill_id": "butterworth-filter",
       "inputs": "skills/butterworth-filter/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+      "decision_contract": "R005-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clipping before DSP rather than filter defect",
+        "reference misalignment rather than adaptation failure"
+      ]
     },
     {
       "role_id": "R005",
       "skill_id": "enhancement-aec-metrics",
       "inputs": "skills/enhancement-aec-metrics/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+      "decision_contract": "R005-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clipping before DSP rather than filter defect",
+        "reference misalignment rather than adaptation failure"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070707Z-277faa15"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R005-DOMAIN-DECISION",
+    "question": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+    "required_methods": [
+      "methods/engineering/spectral-analysis.json",
+      "methods/engineering/butterworth-filter.json",
+      "methods/engineering/enhancement-aec-metrics.json"
+    ],
+    "required_skills": [
+      "spectral-analysis",
+      "butterworth-filter",
+      "enhancement-aec-metrics"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R024",
+      "this_seat_owns": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+      "neighbor_owns": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks"
+    },
+    {
+      "neighbor_role": "R044",
+      "this_seat_owns": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+      "neighbor_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+    "Discriminate: clipping before DSP rather than filter defect",
+    "Discriminate: reference misalignment rather than adaptation failure"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "finite-window estimates and algorithm operating domain"
+    ],
+    "calculation_schemas": {
+      "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+      "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R005-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+      "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
+    "filter group delay exceeds interaction budget",
+    "enhancement removes desired speech",
+    "clipping before DSP rather than filter defect",
+    "reference misalignment rather than adaptation failure",
+    "finite-window estimates and algorithm operating domain"
+  ]
 }

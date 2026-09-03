@@ -5,17 +5,18 @@
     "name": "Microphone Audio Circuit Architect",
     "group": "Microphone CoE"
   },
-  "mission": "Microphone Audio Circuit Architect: execute and challenge the bounded methods listed in scope.",
+  "mission": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
   "domain": "Microphone CoE",
   "scope": [
-    "Ideal uniform quantization variance is one LSB squared divided by 12.",
-    "10 mV at 10 mV/Pa corresponds to 1 Pa RMS.",
-    "A noiseless gain-of-two system has H=2 and unit coherence in excited bins."
+    "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+    "Investigate and bound: input/output noise mixed across gain stages",
+    "Investigate and bound: bias impedance shifts low-frequency response"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R012 owns: Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+    "Neighbor R031 owns: Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution"
   ],
   "inputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/microphone-sensitivity.json",
     "knowledge/engineering/transfer-coherence.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "noise-source correlation and component tolerance"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "input/output noise mixed across gain stages",
+    "bias impedance shifts low-frequency response"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "supply ripple rather than capsule self-noise",
+    "common-mode conversion rather than differential signal"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+      "must_challenge": [
+        "supply ripple rather than capsule self-noise",
+        "common-mode conversion rather than differential signal"
+      ],
+      "must_account_for": "noise-source correlation and component tolerance",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/circuit-noise-budget/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "circuit-noise-budget",
       "inputs": "skills/circuit-noise-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+      "decision_contract": "R030-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "supply ripple rather than capsule self-noise",
+        "common-mode conversion rather than differential signal"
+      ]
     },
     {
       "role_id": "R030",
       "skill_id": "microphone-sensitivity",
       "inputs": "skills/microphone-sensitivity/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+      "decision_contract": "R030-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "supply ripple rather than capsule self-noise",
+        "common-mode conversion rather than differential signal"
+      ]
     },
     {
       "role_id": "R030",
       "skill_id": "transfer-coherence",
       "inputs": "skills/transfer-coherence/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+      "decision_contract": "R030-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "supply ripple rather than capsule self-noise",
+        "common-mode conversion rather than differential signal"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070713Z-28858f44"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R030-DOMAIN-DECISION",
+    "question": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+    "required_methods": [
+      "methods/engineering/circuit-noise-budget.json",
+      "methods/engineering/microphone-sensitivity.json",
+      "methods/engineering/transfer-coherence.json"
+    ],
+    "required_skills": [
+      "circuit-noise-budget",
+      "microphone-sensitivity",
+      "transfer-coherence"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R012",
+      "this_seat_owns": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+      "neighbor_owns": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets"
+    },
+    {
+      "neighbor_role": "R031",
+      "this_seat_owns": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+      "neighbor_owns": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+    "Discriminate: supply ripple rather than capsule self-noise",
+    "Discriminate: common-mode conversion rather than differential signal"
+  ],
+  "professional_inputs": {
+    "decision_question": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "noise-source correlation and component tolerance"
+    ],
+    "calculation_schemas": {
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+      "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R030-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+      "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+    "input/output noise mixed across gain stages",
+    "bias impedance shifts low-frequency response",
+    "supply ripple rather than capsule self-noise",
+    "common-mode conversion rather than differential signal",
+    "noise-source correlation and component tolerance"
+  ]
 }

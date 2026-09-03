@@ -5,16 +5,18 @@
     "name": "Requirement / Traceability / Configuration Manager",
     "group": "Engineering Ops"
   },
-  "mission": "Requirement / Traceability / Configuration Manager: execute and challenge the bounded methods listed in scope.",
+  "mission": "Maintain requirement-test-evidence and configuration links across revisions",
   "domain": "Engineering Ops",
   "scope": [
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound."
+    "Maintain requirement-test-evidence and configuration links across revisions",
+    "Investigate and bound: orphan requirement hidden in denominator",
+    "Investigate and bound: test result linked to wrong hardware/software revision"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R089 owns: Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+    "Neighbor R099 owns: Curate report claims, evidence hashes and knowledge provenance without domain self-approval"
   ],
   "inputs": {
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/requirement-traceability.json",
     "knowledge/engineering/engineering-requirements.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "revision ambiguity and incomplete provenance"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "orphan requirement hidden in denominator",
+    "test result linked to wrong hardware/software revision"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "configuration drift rather than test regression",
+    "missing evidence rather than failed requirement"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Maintain requirement-test-evidence and configuration links across revisions",
+      "must_challenge": [
+        "configuration drift rather than test regression",
+        "missing evidence rather than failed requirement"
+      ],
+      "must_account_for": "revision ambiguity and incomplete provenance",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/requirement-traceability/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Maintain requirement-test-evidence and configuration links across revisions",
+      "decision_contract": "R097-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "configuration drift rather than test regression",
+        "missing evidence rather than failed requirement"
+      ]
     },
     {
       "role_id": "R097",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Maintain requirement-test-evidence and configuration links across revisions",
+      "decision_contract": "R097-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "configuration drift rather than test regression",
+        "missing evidence rather than failed requirement"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070727Z-084e129d"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R097-DOMAIN-DECISION",
+    "question": "Maintain requirement-test-evidence and configuration links across revisions",
+    "required_methods": [
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/engineering-requirements.json"
+    ],
+    "required_skills": [
+      "requirement-traceability",
+      "engineering-requirements"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R089",
+      "this_seat_owns": "Maintain requirement-test-evidence and configuration links across revisions",
+      "neighbor_owns": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
+    },
+    {
+      "neighbor_role": "R099",
+      "this_seat_owns": "Maintain requirement-test-evidence and configuration links across revisions",
+      "neighbor_owns": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Maintain requirement-test-evidence and configuration links across revisions",
+    "Discriminate: configuration drift rather than test regression",
+    "Discriminate: missing evidence rather than failed requirement"
+  ],
+  "professional_inputs": {
+    "decision_question": "Maintain requirement-test-evidence and configuration links across revisions",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "revision ambiguity and incomplete provenance"
+    ],
+    "calculation_schemas": {
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R097-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Maintain requirement-test-evidence and configuration links across revisions",
+    "orphan requirement hidden in denominator",
+    "test result linked to wrong hardware/software revision",
+    "configuration drift rather than test regression",
+    "missing evidence rather than failed requirement",
+    "revision ambiguity and incomplete provenance"
+  ]
 }

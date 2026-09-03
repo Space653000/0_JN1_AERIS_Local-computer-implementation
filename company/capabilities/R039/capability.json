@@ -5,17 +5,18 @@
     "name": "Mic-Port / Thermoviscous Simulation Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Mic-Port / Thermoviscous Simulation Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
   "domain": "Microphone CoE",
   "scope": [
-    "Poiseuille resistance scales inversely with radius to the fourth power.",
-    "Area/(length*volume)=1/m2 in the ideal Helmholtz model.",
-    "Passive rigid-backed fibrous layer; 1 kHz reference computed independently using scalar complex arithmetic and the stated Delany-Bazley equations."
+    "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+    "Investigate and bound: viscous losses omitted in narrow port",
+    "Investigate and bound: Helmholtz approximation used outside compact geometry"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R029 owns: Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+    "Neighbor R074 owns: Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions"
   ],
   "inputs": {
     "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/helmholtz-port.json",
     "knowledge/engineering/porous-absorption.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "effective cavity volume and thermoviscous model-form error"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "viscous losses omitted in narrow port",
+    "Helmholtz approximation used outside compact geometry"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "assembly leak rather than mesh impedance",
+    "compliance change rather than port length error"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+      "must_challenge": [
+        "assembly leak rather than mesh impedance",
+        "compliance change rather than port length error"
+      ],
+      "must_account_for": "effective cavity volume and thermoviscous model-form error",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/leakage-tolerance/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "leakage-tolerance",
       "inputs": "skills/leakage-tolerance/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+      "decision_contract": "R039-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "assembly leak rather than mesh impedance",
+        "compliance change rather than port length error"
+      ]
     },
     {
       "role_id": "R039",
       "skill_id": "helmholtz-port",
       "inputs": "skills/helmholtz-port/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+      "decision_contract": "R039-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "assembly leak rather than mesh impedance",
+        "compliance change rather than port length error"
+      ]
     },
     {
       "role_id": "R039",
       "skill_id": "porous-absorption",
       "inputs": "skills/porous-absorption/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+      "decision_contract": "R039-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "assembly leak rather than mesh impedance",
+        "compliance change rather than port length error"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070715Z-7ef97550"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R039-DOMAIN-DECISION",
+    "question": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+    "required_methods": [
+      "methods/engineering/leakage-tolerance.json",
+      "methods/engineering/helmholtz-port.json",
+      "methods/engineering/porous-absorption.json"
+    ],
+    "required_skills": [
+      "leakage-tolerance",
+      "helmholtz-port",
+      "porous-absorption"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R029",
+      "this_seat_owns": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+      "neighbor_owns": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss"
+    },
+    {
+      "neighbor_role": "R074",
+      "this_seat_owns": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+      "neighbor_owns": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+    "Discriminate: assembly leak rather than mesh impedance",
+    "Discriminate: compliance change rather than port length error"
+  ],
+  "professional_inputs": {
+    "decision_question": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "effective cavity volume and thermoviscous model-form error"
+    ],
+    "calculation_schemas": {
+      "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
+      "helmholtz-port": "skills/helmholtz-port/input.schema.json",
+      "porous-absorption": "skills/porous-absorption/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R039-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "leakage-tolerance": "skills/leakage-tolerance/output.schema.json",
+      "helmholtz-port": "skills/helmholtz-port/output.schema.json",
+      "porous-absorption": "skills/porous-absorption/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation",
+    "viscous losses omitted in narrow port",
+    "Helmholtz approximation used outside compact geometry",
+    "assembly leak rather than mesh impedance",
+    "compliance change rather than port length error",
+    "effective cavity volume and thermoviscous model-form error"
+  ]
 }

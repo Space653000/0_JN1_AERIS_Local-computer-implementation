@@ -178,6 +178,9 @@ def run_skill(skill_id: str, params: dict[str, Any]) -> dict[str, Any]:
     manifest_path=SKILLS_ROOT / skill_id / "manifest.json"
     if manifest_path.resolve().is_relative_to(SKILLS_ROOT.resolve()) and manifest_path.is_file():
         manifest=json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+        if manifest.get("domain_factory_contract") is True:
+            from .engineering.domain_methods import execute
+            return execute(skill_id,params)
         if manifest.get("factory_contract") is True:
             from .engineering.catalog import execute
             return execute(skill_id,params)

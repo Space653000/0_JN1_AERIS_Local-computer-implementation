@@ -5,18 +5,18 @@
     "name": "Laptop",
     "group": "Product Chiefs"
   },
-  "mission": "Laptop: execute and challenge the bounded methods listed in scope.",
+  "mission": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
   "domain": "Product Chiefs",
   "scope": [
-    "A valid product plan includes both transducer workstreams and preserves requirement coverage.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "High-severity mode remains Human-review required regardless of RPN ranking."
+    "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+    "Investigate and bound: fan harmonics contaminate capture",
+    "Investigate and bound: hinge angle changes bezel-array transfer"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R073 owns: Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+    "Neighbor R082 owns: Locate OS audio scheduling, resampling and synchronization bottlenecks end to end"
   ],
   "inputs": {
     "product-system-plan": "skills/product-system-plan/input.schema.json",
@@ -48,10 +48,7 @@
     "knowledge/engineering/requirement-traceability.json",
     "knowledge/engineering/dfmea-ranking.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -86,25 +83,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "fan operating points and hinge angle"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "fan harmonics contaminate capture",
+    "hinge angle changes bezel-array transfer"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "structure coupling rather than AEC failure",
+    "thermal policy rather than microphone defect"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+      "must_challenge": [
+        "structure coupling rather than AEC failure",
+        "thermal policy rather than microphone defect"
+      ],
+      "must_account_for": "fan operating points and hinge angle",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/product-system-plan/golden.json",
@@ -130,28 +133,52 @@
       "skill_id": "product-system-plan",
       "inputs": "skills/product-system-plan/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+      "decision_contract": "R053-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "structure coupling rather than AEC failure",
+        "thermal policy rather than microphone defect"
+      ]
     },
     {
       "role_id": "R053",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+      "decision_contract": "R053-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "structure coupling rather than AEC failure",
+        "thermal policy rather than microphone defect"
+      ]
     },
     {
       "role_id": "R053",
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+      "decision_contract": "R053-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "structure coupling rather than AEC failure",
+        "thermal policy rather than microphone defect"
+      ]
     },
     {
       "role_id": "R053",
       "skill_id": "dfmea-ranking",
       "inputs": "skills/dfmea-ranking/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+      "decision_contract": "R053-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "structure coupling rather than AEC failure",
+        "thermal policy rather than microphone defect"
+      ]
     }
   ],
   "report_templates": [
@@ -212,5 +239,80 @@
       "licensed-tool equivalence",
       "physical qualification without measurements"
     ]
-  }
+  },
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R053-DOMAIN-DECISION",
+    "question": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R073",
+      "this_seat_owns": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+      "neighbor_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
+    },
+    {
+      "neighbor_role": "R082",
+      "this_seat_owns": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+      "neighbor_owns": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+    "Discriminate: structure coupling rather than AEC failure",
+    "Discriminate: thermal policy rather than microphone defect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "fan operating points and hinge angle"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R053-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
+    "fan harmonics contaminate capture",
+    "hinge angle changes bezel-array transfer",
+    "structure coupling rather than AEC failure",
+    "thermal policy rather than microphone defect",
+    "fan operating points and hinge angle"
+  ]
 }

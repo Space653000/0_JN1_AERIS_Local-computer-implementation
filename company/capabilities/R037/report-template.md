@@ -17,3 +17,26 @@
 ## Evidence hashes and reproducibility
 
 ## Next action and Human Gates
+
+## Role-specific professional decision
+
+Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain
+
+### Failure mechanisms to distinguish
+
+- narrow beam destroys robustness to mismatch
+- desired direction overlaps spatial alias
+
+### Competing explanations and discriminating experiments
+
+- gain mismatch rather than taper choice
+- wrong geometry rather than bad optimization
+
+### Role-specific uncertainty
+
+- sensor phase spread and diffuse-field assumptions
+
+### Neighboring role ownership
+
+- R034: Validate microphone-array directionality against angular, gain and delay uncertainty
+- R043: Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration

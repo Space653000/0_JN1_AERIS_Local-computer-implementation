@@ -5,17 +5,18 @@
     "name": "NR / AGC / Dereverb / Speech Enhancement Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "NR / AGC / Dereverb / Speech Enhancement Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
   "domain": "Microphone CoE",
   "scope": [
-    "Orthogonal 10% error gives SI-SDR 20 dB; 10x echo attenuation gives ERLE 20 dB.",
-    "Held-out affine regression without train/validation ID leakage.",
-    "Stable unit-DC-gain lowpass impulse response sums to one."
+    "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+    "Investigate and bound: AGC masks clipping",
+    "Investigate and bound: denoiser hallucinates or removes speech detail"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R038 owns: Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+    "Neighbor R042 owns: Choose echo-control alignment and adaptation constraints across delay and double-talk"
   ],
   "inputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/local-audio-regression.json",
     "knowledge/engineering/butterworth-filter.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "out-of-distribution speech and proxy validity"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "AGC masks clipping",
+    "denoiser hallucinates or removes speech detail"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "level normalization rather than true improvement",
+    "reference drift rather than dereverb gain"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+      "must_challenge": [
+        "level normalization rather than true improvement",
+        "reference drift rather than dereverb gain"
+      ],
+      "must_account_for": "out-of-distribution speech and proxy validity",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/enhancement-aec-metrics/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "enhancement-aec-metrics",
       "inputs": "skills/enhancement-aec-metrics/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+      "decision_contract": "R044-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level normalization rather than true improvement",
+        "reference drift rather than dereverb gain"
+      ]
     },
     {
       "role_id": "R044",
       "skill_id": "local-audio-regression",
       "inputs": "skills/local-audio-regression/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+      "decision_contract": "R044-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level normalization rather than true improvement",
+        "reference drift rather than dereverb gain"
+      ]
     },
     {
       "role_id": "R044",
       "skill_id": "butterworth-filter",
       "inputs": "skills/butterworth-filter/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+      "decision_contract": "R044-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level normalization rather than true improvement",
+        "reference drift rather than dereverb gain"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070716Z-426c4c95"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R044-DOMAIN-DECISION",
+    "question": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+    "required_methods": [
+      "methods/engineering/enhancement-aec-metrics.json",
+      "methods/engineering/local-audio-regression.json",
+      "methods/engineering/butterworth-filter.json"
+    ],
+    "required_skills": [
+      "enhancement-aec-metrics",
+      "local-audio-regression",
+      "butterworth-filter"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R038",
+      "this_seat_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+      "neighbor_owns": "Tune speech capture for double-talk, spectral preservation and transient intelligibility"
+    },
+    {
+      "neighbor_role": "R042",
+      "this_seat_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+      "neighbor_owns": "Choose echo-control alignment and adaptation constraints across delay and double-talk"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+    "Discriminate: level normalization rather than true improvement",
+    "Discriminate: reference drift rather than dereverb gain"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "out-of-distribution speech and proxy validity"
+    ],
+    "calculation_schemas": {
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+      "local-audio-regression": "skills/local-audio-regression/input.schema.json",
+      "butterworth-filter": "skills/butterworth-filter/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R044-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+      "local-audio-regression": "skills/local-audio-regression/output.schema.json",
+      "butterworth-filter": "skills/butterworth-filter/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
+    "AGC masks clipping",
+    "denoiser hallucinates or removes speech detail",
+    "level normalization rather than true improvement",
+    "reference drift rather than dereverb gain",
+    "out-of-distribution speech and proxy validity"
+  ]
 }

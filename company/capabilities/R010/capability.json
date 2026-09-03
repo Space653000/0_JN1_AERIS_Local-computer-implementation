@@ -5,17 +5,18 @@
     "name": "Transducer / T-S / Nonlinear Specialist",
     "group": "Speaker CoE"
   },
-  "mission": "Transducer / T-S / Nonlinear Specialist: execute and challenge the bounded methods listed in scope.",
+  "mission": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
   "domain": "Speaker CoE",
   "scope": [
-    "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm.",
-    "100 Hz resonance with half-power crossings at 90/110 Hz has Q=5.",
-    "Unit fundamental plus 0.1 second harmonic gives 10% THD, absent added noise."
+    "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+    "Investigate and bound: small-signal parameters reused at large excursion",
+    "Investigate and bound: distortion bins include noise"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R009 owns: Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "Neighbor R016 owns: Derate speaker drive from distortion, compression, temperature and durability limits"
   ],
   "inputs": {
     "lumped-speaker": "skills/lumped-speaker/input.schema.json",
@@ -43,8 +44,7 @@
     "knowledge/engineering/harmonic-noise-analysis.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
+    "IEC 60268-5"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -80,25 +80,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "level dependence and parameter-identifiability limits"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "small-signal parameters reused at large excursion",
+    "distortion bins include noise"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "coil heating rather than Bl nonlinearity",
+    "fixture rattling rather than suspension asymmetry"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+      "must_challenge": [
+        "coil heating rather than Bl nonlinearity",
+        "fixture rattling rather than suspension asymmetry"
+      ],
+      "must_account_for": "level dependence and parameter-identifiability limits",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/lumped-speaker/golden.json",
@@ -121,21 +127,39 @@
       "skill_id": "lumped-speaker",
       "inputs": "skills/lumped-speaker/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+      "decision_contract": "R010-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "coil heating rather than Bl nonlinearity",
+        "fixture rattling rather than suspension asymmetry"
+      ]
     },
     {
       "role_id": "R010",
       "skill_id": "resonance-characterization",
       "inputs": "skills/resonance-characterization/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+      "decision_contract": "R010-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "coil heating rather than Bl nonlinearity",
+        "fixture rattling rather than suspension asymmetry"
+      ]
     },
     {
       "role_id": "R010",
       "skill_id": "harmonic-noise-analysis",
       "inputs": "skills/harmonic-noise-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+      "decision_contract": "R010-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "coil heating rather than Bl nonlinearity",
+        "fixture rattling rather than suspension asymmetry"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +169,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070708Z-4c7c9e2a"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R010-DOMAIN-DECISION",
+    "question": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+    "required_methods": [
+      "methods/engineering/lumped-speaker.json",
+      "methods/engineering/resonance-characterization.json",
+      "methods/engineering/harmonic-noise-analysis.json"
+    ],
+    "required_skills": [
+      "lumped-speaker",
+      "resonance-characterization",
+      "harmonic-noise-analysis"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R009",
+      "this_seat_owns": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+      "neighbor_owns": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints"
+    },
+    {
+      "neighbor_role": "R016",
+      "this_seat_owns": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+      "neighbor_owns": "Derate speaker drive from distortion, compression, temperature and durability limits"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+    "Discriminate: coil heating rather than Bl nonlinearity",
+    "Discriminate: fixture rattling rather than suspension asymmetry"
+  ],
+  "professional_inputs": {
+    "decision_question": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "level dependence and parameter-identifiability limits"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+      "resonance-characterization": "skills/resonance-characterization/input.schema.json",
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R010-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+      "resonance-characterization": "skills/resonance-characterization/output.schema.json",
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+    "small-signal parameters reused at large excursion",
+    "distortion bins include noise",
+    "coil heating rather than Bl nonlinearity",
+    "fixture rattling rather than suspension asymmetry",
+    "level dependence and parameter-identifiability limits"
+  ]
 }

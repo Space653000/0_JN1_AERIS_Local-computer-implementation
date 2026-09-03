@@ -5,17 +5,18 @@
     "name": "Room / Wind / Structure Simulation Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Room / Wind / Structure Simulation Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Separate wind, room and structure paths in microphone disturbance models",
   "domain": "Microphone CoE",
   "scope": [
-    "Exponential amplitude decay of 60 dB in 0.6 s yields the same extrapolated RT.",
-    "Passive rigid-backed fibrous layer; 1 kHz reference computed independently using scalar complex arithmetic and the stated Delany-Bazley equations.",
-    "Integration of a sine divides amplitude by angular frequency."
+    "Separate wind, room and structure paths in microphone disturbance models",
+    "Investigate and bound: wind spectrum treated as diffuse acoustic noise",
+    "Investigate and bound: vibration integration hides low-frequency drift"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R029 owns: Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+    "Neighbor R073 owns: Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
   ],
   "inputs": {
     "room-ir-decay": "skills/room-ir-decay/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/porous-absorption.json",
     "knowledge/engineering/nvh-integration.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "flow field, mount transfer path and decay-fit uncertainty"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "wind spectrum treated as diffuse acoustic noise",
+    "vibration integration hides low-frequency drift"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "mount vibration rather than turbulent pressure",
+    "room mode rather than body resonance"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Separate wind, room and structure paths in microphone disturbance models",
+      "must_challenge": [
+        "mount vibration rather than turbulent pressure",
+        "room mode rather than body resonance"
+      ],
+      "must_account_for": "flow field, mount transfer path and decay-fit uncertainty",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/room-ir-decay/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "room-ir-decay",
       "inputs": "skills/room-ir-decay/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate wind, room and structure paths in microphone disturbance models",
+      "decision_contract": "R041-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount vibration rather than turbulent pressure",
+        "room mode rather than body resonance"
+      ]
     },
     {
       "role_id": "R041",
       "skill_id": "porous-absorption",
       "inputs": "skills/porous-absorption/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate wind, room and structure paths in microphone disturbance models",
+      "decision_contract": "R041-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount vibration rather than turbulent pressure",
+        "room mode rather than body resonance"
+      ]
     },
     {
       "role_id": "R041",
       "skill_id": "nvh-integration",
       "inputs": "skills/nvh-integration/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate wind, room and structure paths in microphone disturbance models",
+      "decision_contract": "R041-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount vibration rather than turbulent pressure",
+        "room mode rather than body resonance"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070715Z-3f6fcc6e"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R041-DOMAIN-DECISION",
+    "question": "Separate wind, room and structure paths in microphone disturbance models",
+    "required_methods": [
+      "methods/engineering/room-ir-decay.json",
+      "methods/engineering/porous-absorption.json",
+      "methods/engineering/nvh-integration.json"
+    ],
+    "required_skills": [
+      "room-ir-decay",
+      "porous-absorption",
+      "nvh-integration"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R029",
+      "this_seat_owns": "Separate wind, room and structure paths in microphone disturbance models",
+      "neighbor_owns": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss"
+    },
+    {
+      "neighbor_role": "R073",
+      "this_seat_owns": "Separate wind, room and structure paths in microphone disturbance models",
+      "neighbor_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Separate wind, room and structure paths in microphone disturbance models",
+    "Discriminate: mount vibration rather than turbulent pressure",
+    "Discriminate: room mode rather than body resonance"
+  ],
+  "professional_inputs": {
+    "decision_question": "Separate wind, room and structure paths in microphone disturbance models",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "flow field, mount transfer path and decay-fit uncertainty"
+    ],
+    "calculation_schemas": {
+      "room-ir-decay": "skills/room-ir-decay/input.schema.json",
+      "porous-absorption": "skills/porous-absorption/input.schema.json",
+      "nvh-integration": "skills/nvh-integration/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R041-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "room-ir-decay": "skills/room-ir-decay/output.schema.json",
+      "porous-absorption": "skills/porous-absorption/output.schema.json",
+      "nvh-integration": "skills/nvh-integration/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Separate wind, room and structure paths in microphone disturbance models",
+    "wind spectrum treated as diffuse acoustic noise",
+    "vibration integration hides low-frequency drift",
+    "mount vibration rather than turbulent pressure",
+    "room mode rather than body resonance",
+    "flow field, mount transfer path and decay-fit uncertainty"
+  ]
 }

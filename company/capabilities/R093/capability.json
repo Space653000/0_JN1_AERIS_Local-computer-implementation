@@ -5,16 +5,18 @@
     "name": "Factory EOL / QC Engineer",
     "group": "Engineering Ops"
   },
-  "mission": "Factory EOL / QC Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
   "domain": "Engineering Ops",
   "scope": [
-    "Sample SD=sqrt(0.5); centered Ppk=3/(3*SD).",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound."
+    "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+    "Investigate and bound: unguarded limit ignores gage uncertainty",
+    "Investigate and bound: population capability inferred from pilot samples"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R007 owns: Set NPI readiness conditions using capability, yield and reliability evidence",
+    "Neighbor R095 owns: Separate supplier incoming quality, sampling and traceability from assembly/test-system variation"
   ],
   "inputs": {
     "process-quality": "skills/process-quality/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/process-quality.json",
     "knowledge/engineering/engineering-requirements.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "sampling confidence and gage R&R contribution"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "unguarded limit ignores gage uncertainty",
+    "population capability inferred from pilot samples"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "test fixture drift rather than supplier defect",
+    "lot mixture rather than process spread"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+      "must_challenge": [
+        "test fixture drift rather than supplier defect",
+        "lot mixture rather than process spread"
+      ],
+      "must_account_for": "sampling confidence and gage R&R contribution",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Failure/process-quality/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "process-quality",
       "inputs": "skills/process-quality/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+      "decision_contract": "R093-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "test fixture drift rather than supplier defect",
+        "lot mixture rather than process spread"
+      ]
     },
     {
       "role_id": "R093",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+      "decision_contract": "R093-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "test fixture drift rather than supplier defect",
+        "lot mixture rather than process spread"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070726Z-51484c68"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R093-DOMAIN-DECISION",
+    "question": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+    "required_methods": [
+      "methods/engineering/process-quality.json",
+      "methods/engineering/engineering-requirements.json"
+    ],
+    "required_skills": [
+      "process-quality",
+      "engineering-requirements"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R007",
+      "this_seat_owns": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+      "neighbor_owns": "Set NPI readiness conditions using capability, yield and reliability evidence"
+    },
+    {
+      "neighbor_role": "R095",
+      "this_seat_owns": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+      "neighbor_owns": "Separate supplier incoming quality, sampling and traceability from assembly/test-system variation"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+    "Discriminate: test fixture drift rather than supplier defect",
+    "Discriminate: lot mixture rather than process spread"
+  ],
+  "professional_inputs": {
+    "decision_question": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "sampling confidence and gage R&R contribution"
+    ],
+    "calculation_schemas": {
+      "process-quality": "skills/process-quality/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R093-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "process-quality": "skills/process-quality/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
+    "unguarded limit ignores gage uncertainty",
+    "population capability inferred from pilot samples",
+    "test fixture drift rather than supplier defect",
+    "lot mixture rather than process spread",
+    "sampling confidence and gage R&R contribution"
+  ]
 }

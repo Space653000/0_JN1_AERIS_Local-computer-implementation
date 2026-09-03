@@ -5,17 +5,18 @@
     "name": "Research / Standards / Knowledge Director",
     "group": "Chief Council"
   },
-  "mission": "Research / Standards / Knowledge Director: execute and challenge the bounded methods listed in scope.",
+  "mission": "Separate source authority, standards applicability and research hypotheses before reuse",
   "domain": "Chief Council",
   "scope": [
-    "Local retrieval preserves document hash and rights classification.",
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "An independent rule-based reviewer rejects an unsupported Evidence claim."
+    "Separate source authority, standards applicability and research hypotheses before reuse",
+    "Investigate and bound: bibliography counted as retrieved knowledge",
+    "Investigate and bound: obsolete edition used as current requirement"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R087 owns: Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+    "Neighbor R089 owns: Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
   ],
   "inputs": {
     "provenance-research": "skills/provenance-research/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/requirement-traceability.json",
     "knowledge/engineering/evidence-counterreview.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "source date, coverage and rights uncertainty"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "bibliography counted as retrieved knowledge",
+    "obsolete edition used as current requirement"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "source duplication rather than corroboration",
+    "scope mismatch rather than scientific disagreement"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "must_challenge": [
+        "source duplication rather than corroboration",
+        "scope mismatch rather than scientific disagreement"
+      ],
+      "must_account_for": "source date, coverage and rights uncertainty",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/provenance-research/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "provenance-research",
       "inputs": "skills/provenance-research/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "decision_contract": "R008-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "source duplication rather than corroboration",
+        "scope mismatch rather than scientific disagreement"
+      ]
     },
     {
       "role_id": "R008",
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "decision_contract": "R008-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "source duplication rather than corroboration",
+        "scope mismatch rather than scientific disagreement"
+      ]
     },
     {
       "role_id": "R008",
       "skill_id": "evidence-counterreview",
       "inputs": "skills/evidence-counterreview/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "decision_contract": "R008-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "source duplication rather than corroboration",
+        "scope mismatch rather than scientific disagreement"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070708Z-76a75bdf"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R008-DOMAIN-DECISION",
+    "question": "Separate source authority, standards applicability and research hypotheses before reuse",
+    "required_methods": [
+      "methods/engineering/provenance-research.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/evidence-counterreview.json"
+    ],
+    "required_skills": [
+      "provenance-research",
+      "requirement-traceability",
+      "evidence-counterreview"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R087",
+      "this_seat_owns": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "neighbor_owns": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance"
+    },
+    {
+      "neighbor_role": "R089",
+      "this_seat_owns": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "neighbor_owns": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Separate source authority, standards applicability and research hypotheses before reuse",
+    "Discriminate: source duplication rather than corroboration",
+    "Discriminate: scope mismatch rather than scientific disagreement"
+  ],
+  "professional_inputs": {
+    "decision_question": "Separate source authority, standards applicability and research hypotheses before reuse",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "source date, coverage and rights uncertainty"
+    ],
+    "calculation_schemas": {
+      "provenance-research": "skills/provenance-research/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R008-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "provenance-research": "skills/provenance-research/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Separate source authority, standards applicability and research hypotheses before reuse",
+    "bibliography counted as retrieved knowledge",
+    "obsolete edition used as current requirement",
+    "source duplication rather than corroboration",
+    "scope mismatch rather than scientific disagreement",
+    "source date, coverage and rights uncertainty"
+  ]
 }

@@ -5,17 +5,18 @@
     "name": "Far-field / Noise Scenario Validation Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Far-field / Noise Scenario Validation Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
   "domain": "Microphone CoE",
   "scope": [
-    "Orthogonal 10% error gives SI-SDR 20 dB; 10x echo attenuation gives ERLE 20 dB.",
-    "Exponential amplitude decay of 60 dB in 0.6 s yields the same extrapolated RT.",
-    "Equal-duration energies average linearly, not as decibels."
+    "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+    "Investigate and bound: stationary-noise success generalized to competing speech",
+    "Investigate and bound: near-field SNR extrapolated to far-field"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R038 owns: Tune speech capture for double-talk, spectral preservation and transient intelligibility",
+    "Neighbor R041 owns: Separate wind, room and structure paths in microphone disturbance models"
   ],
   "inputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/room-ir-decay.json",
     "knowledge/engineering/level-statistics.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "talker variability, room variability and nonstationary noise"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "stationary-noise success generalized to competing speech",
+    "near-field SNR extrapolated to far-field"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "room decay rather than NR failure",
+    "playback leakage rather than ambient noise"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+      "must_challenge": [
+        "room decay rather than NR failure",
+        "playback leakage rather than ambient noise"
+      ],
+      "must_account_for": "talker variability, room variability and nonstationary noise",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/enhancement-aec-metrics/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "enhancement-aec-metrics",
       "inputs": "skills/enhancement-aec-metrics/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+      "decision_contract": "R035-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "room decay rather than NR failure",
+        "playback leakage rather than ambient noise"
+      ]
     },
     {
       "role_id": "R035",
       "skill_id": "room-ir-decay",
       "inputs": "skills/room-ir-decay/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+      "decision_contract": "R035-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "room decay rather than NR failure",
+        "playback leakage rather than ambient noise"
+      ]
     },
     {
       "role_id": "R035",
       "skill_id": "level-statistics",
       "inputs": "skills/level-statistics/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+      "decision_contract": "R035-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "room decay rather than NR failure",
+        "playback leakage rather than ambient noise"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070714Z-9c6e9cc6"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R035-DOMAIN-DECISION",
+    "question": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+    "required_methods": [
+      "methods/engineering/enhancement-aec-metrics.json",
+      "methods/engineering/room-ir-decay.json",
+      "methods/engineering/level-statistics.json"
+    ],
+    "required_skills": [
+      "enhancement-aec-metrics",
+      "room-ir-decay",
+      "level-statistics"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R038",
+      "this_seat_owns": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+      "neighbor_owns": "Tune speech capture for double-talk, spectral preservation and transient intelligibility"
+    },
+    {
+      "neighbor_role": "R041",
+      "this_seat_owns": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+      "neighbor_owns": "Separate wind, room and structure paths in microphone disturbance models"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+    "Discriminate: room decay rather than NR failure",
+    "Discriminate: playback leakage rather than ambient noise"
+  ],
+  "professional_inputs": {
+    "decision_question": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "talker variability, room variability and nonstationary noise"
+    ],
+    "calculation_schemas": {
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+      "room-ir-decay": "skills/room-ir-decay/input.schema.json",
+      "level-statistics": "skills/level-statistics/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R035-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+      "room-ir-decay": "skills/room-ir-decay/output.schema.json",
+      "level-statistics": "skills/level-statistics/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+    "stationary-noise success generalized to competing speech",
+    "near-field SNR extrapolated to far-field",
+    "room decay rather than NR failure",
+    "playback leakage rather than ambient noise",
+    "talker variability, room variability and nonstationary noise"
+  ]
 }

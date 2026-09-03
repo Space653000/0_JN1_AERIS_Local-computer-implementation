@@ -5,17 +5,18 @@
     "name": "Speaker Engineering Director",
     "group": "Chief Council"
   },
-  "mission": "Speaker Engineering Director: execute and challenge the bounded methods listed in scope.",
+  "mission": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
   "domain": "Chief Council",
   "scope": [
-    "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
-    "At one thermal time constant the rise is 1-exp(-1) of steady state."
+    "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+    "Investigate and bound: excursion-safe but thermally unsafe drive",
+    "Investigate and bound: enclosure target detached from amplifier rail"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R009 owns: Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "Neighbor R016 owns: Derate speaker drive from distortion, compression, temperature and durability limits"
   ],
   "inputs": {
     "lumped-speaker": "skills/lumped-speaker/input.schema.json",
@@ -44,7 +45,7 @@
   ],
   "standards_metadata_references": [
     "IEC 60268-5",
-    "IEC 60268-4"
+    "AES75"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -80,25 +81,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "T-S parameter variation and duty-cycle envelope"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "excursion-safe but thermally unsafe drive",
+    "enclosure target detached from amplifier rail"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "power compression rather than insufficient motor force",
+    "leakage rather than mistaken EQ"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+      "must_challenge": [
+        "power compression rather than insufficient motor force",
+        "leakage rather than mistaken EQ"
+      ],
+      "must_account_for": "T-S parameter variation and duty-cycle envelope",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/lumped-speaker/golden.json",
@@ -121,21 +128,39 @@
       "skill_id": "lumped-speaker",
       "inputs": "skills/lumped-speaker/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+      "decision_contract": "R002-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "power compression rather than insufficient motor force",
+        "leakage rather than mistaken EQ"
+      ]
     },
     {
       "role_id": "R002",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+      "decision_contract": "R002-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "power compression rather than insufficient motor force",
+        "leakage rather than mistaken EQ"
+      ]
     },
     {
       "role_id": "R002",
       "skill_id": "thermal-rc",
       "inputs": "skills/thermal-rc/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+      "decision_contract": "R002-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "power compression rather than insufficient motor force",
+        "leakage rather than mistaken EQ"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +170,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070707Z-9edf881e"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R002-DOMAIN-DECISION",
+    "question": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+    "required_methods": [
+      "methods/engineering/lumped-speaker.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/thermal-rc.json"
+    ],
+    "required_skills": [
+      "lumped-speaker",
+      "engineering-requirements",
+      "thermal-rc"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R009",
+      "this_seat_owns": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+      "neighbor_owns": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints"
+    },
+    {
+      "neighbor_role": "R016",
+      "this_seat_owns": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+      "neighbor_owns": "Derate speaker drive from distortion, compression, temperature and durability limits"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+    "Discriminate: power compression rather than insufficient motor force",
+    "Discriminate: leakage rather than mistaken EQ"
+  ],
+  "professional_inputs": {
+    "decision_question": "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "T-S parameter variation and duty-cycle envelope"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "thermal-rc": "skills/thermal-rc/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R002-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "thermal-rc": "skills/thermal-rc/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Allocate speaker output, excursion and thermal limits across enclosure, amplifier and protection teams",
+    "excursion-safe but thermally unsafe drive",
+    "enclosure target detached from amplifier rail",
+    "power compression rather than insufficient motor force",
+    "leakage rather than mistaken EQ",
+    "T-S parameter variation and duty-cycle envelope"
+  ]
 }

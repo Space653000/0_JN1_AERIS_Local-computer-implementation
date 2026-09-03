@@ -5,17 +5,18 @@
     "name": "Psychoacoustics",
     "group": "Distinguished Experts"
   },
-  "mission": "Psychoacoustics: execute and challenge the bounded methods listed in scope.",
+  "mission": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
   "domain": "Distinguished Experts",
   "scope": [
-    "Equal energy at 1 and 3 kHz has a 2 kHz centroid; no MOS inference.",
-    "Z weighting is unity gain.",
-    "Equal-duration energies average linearly, not as decibels."
+    "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+    "Investigate and bound: sharpness equated to preference",
+    "Investigate and bound: unmatched loudness biases comparison"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R020 owns: Evaluate perceived speaker balance using level, masking and spectral context",
+    "Neighbor R070 owns: Validate perceptual metric relevance and avoid unsupported MOS predictions"
   ],
   "inputs": {
     "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/frequency-weighting.json",
     "knowledge/engineering/level-statistics.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "listener variance and stimulus duration"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "sharpness equated to preference",
+    "unmatched loudness biases comparison"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "level bias rather than spectral preference",
+    "test order rather than actual improvement"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+      "must_challenge": [
+        "level bias rather than spectral preference",
+        "test order rather than actual improvement"
+      ],
+      "must_account_for": "listener variance and stimulus duration",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/psychoacoustic-descriptors/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "psychoacoustic-descriptors",
       "inputs": "skills/psychoacoustic-descriptors/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+      "decision_contract": "R069-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level bias rather than spectral preference",
+        "test order rather than actual improvement"
+      ]
     },
     {
       "role_id": "R069",
       "skill_id": "frequency-weighting",
       "inputs": "skills/frequency-weighting/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+      "decision_contract": "R069-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level bias rather than spectral preference",
+        "test order rather than actual improvement"
+      ]
     },
     {
       "role_id": "R069",
       "skill_id": "level-statistics",
       "inputs": "skills/level-statistics/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+      "decision_contract": "R069-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level bias rather than spectral preference",
+        "test order rather than actual improvement"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070721Z-01a10924"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R069-DOMAIN-DECISION",
+    "question": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+    "required_methods": [
+      "methods/engineering/psychoacoustic-descriptors.json",
+      "methods/engineering/frequency-weighting.json",
+      "methods/engineering/level-statistics.json"
+    ],
+    "required_skills": [
+      "psychoacoustic-descriptors",
+      "frequency-weighting",
+      "level-statistics"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R020",
+      "this_seat_owns": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+      "neighbor_owns": "Evaluate perceived speaker balance using level, masking and spectral context"
+    },
+    {
+      "neighbor_role": "R070",
+      "this_seat_owns": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+      "neighbor_owns": "Validate perceptual metric relevance and avoid unsupported MOS predictions"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+    "Discriminate: level bias rather than spectral preference",
+    "Discriminate: test order rather than actual improvement"
+  ],
+  "professional_inputs": {
+    "decision_question": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "listener variance and stimulus duration"
+    ],
+    "calculation_schemas": {
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+      "frequency-weighting": "skills/frequency-weighting/input.schema.json",
+      "level-statistics": "skills/level-statistics/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R069-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+      "frequency-weighting": "skills/frequency-weighting/output.schema.json",
+      "level-statistics": "skills/level-statistics/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort",
+    "sharpness equated to preference",
+    "unmatched loudness biases comparison",
+    "level bias rather than spectral preference",
+    "test order rather than actual improvement",
+    "listener variance and stimulus duration"
+  ]
 }

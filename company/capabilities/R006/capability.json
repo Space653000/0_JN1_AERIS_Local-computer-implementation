@@ -5,17 +5,18 @@
     "name": "Validation & Quality Director",
     "group": "Chief Council"
   },
-  "mission": "Validation & Quality Director: execute and challenge the bounded methods listed in scope.",
+  "mission": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
   "domain": "Chief Council",
   "scope": [
-    "Independent variance terms are 0.01 and 0.16.",
-    "Sample SD=sqrt(0.5); centered Ppk=3/(3*SD).",
-    "An independent rule-based reviewer rejects an unsupported Evidence claim."
+    "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+    "Investigate and bound: nominal pass with uncertainty crossing limit",
+    "Investigate and bound: shared test oracle masquerading as independent acceptance"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R079 owns: Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+    "Neighbor R098 owns: Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries"
   ],
   "inputs": {
     "uncertainty-propagation": "skills/uncertainty-propagation/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/process-quality.json",
     "knowledge/engineering/evidence-counterreview.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "expanded uncertainty and false acceptance risk"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "nominal pass with uncertainty crossing limit",
+    "shared test oracle masquerading as independent acceptance"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "fixture bias rather than product failure",
+    "insufficient sample size rather than process shift"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+      "must_challenge": [
+        "fixture bias rather than product failure",
+        "insufficient sample size rather than process shift"
+      ],
+      "must_account_for": "expanded uncertainty and false acceptance risk",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Failure/uncertainty-propagation/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "uncertainty-propagation",
       "inputs": "skills/uncertainty-propagation/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+      "decision_contract": "R006-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture bias rather than product failure",
+        "insufficient sample size rather than process shift"
+      ]
     },
     {
       "role_id": "R006",
       "skill_id": "process-quality",
       "inputs": "skills/process-quality/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+      "decision_contract": "R006-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture bias rather than product failure",
+        "insufficient sample size rather than process shift"
+      ]
     },
     {
       "role_id": "R006",
       "skill_id": "evidence-counterreview",
       "inputs": "skills/evidence-counterreview/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+      "decision_contract": "R006-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture bias rather than product failure",
+        "insufficient sample size rather than process shift"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070708Z-6c1d90ff"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R006-DOMAIN-DECISION",
+    "question": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+    "required_methods": [
+      "methods/engineering/uncertainty-propagation.json",
+      "methods/engineering/process-quality.json",
+      "methods/engineering/evidence-counterreview.json"
+    ],
+    "required_skills": [
+      "uncertainty-propagation",
+      "process-quality",
+      "evidence-counterreview"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R079",
+      "this_seat_owns": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+      "neighbor_owns": "Build traceable uncertainty and gage R&R budgets with correct references and correlations"
+    },
+    {
+      "neighbor_role": "R098",
+      "this_seat_owns": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+      "neighbor_owns": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+    "Discriminate: fixture bias rather than product failure",
+    "Discriminate: insufficient sample size rather than process shift"
+  ],
+  "professional_inputs": {
+    "decision_question": "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "expanded uncertainty and false acceptance risk"
+    ],
+    "calculation_schemas": {
+      "uncertainty-propagation": "skills/uncertainty-propagation/input.schema.json",
+      "process-quality": "skills/process-quality/input.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R006-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "uncertainty-propagation": "skills/uncertainty-propagation/output.schema.json",
+      "process-quality": "skills/process-quality/output.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Decide whether verification margins survive measurement uncertainty and reviewer objections",
+    "nominal pass with uncertainty crossing limit",
+    "shared test oracle masquerading as independent acceptance",
+    "fixture bias rather than product failure",
+    "insufficient sample size rather than process shift",
+    "expanded uncertainty and false acceptance risk"
+  ]
 }

@@ -5,17 +5,18 @@
     "name": "Embedded Capture Pipeline Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Embedded Capture Pipeline Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
   "domain": "Microphone CoE",
   "scope": [
-    "Thirty ms of buffers plus thirty ms of other serial stages.",
-    "Coherent bin-64 sinusoid has unit peak amplitude and 1/sqrt(2) RMS.",
-    "A noiseless gain-of-two system has H=2 and unit coherence in excited bins."
+    "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "Investigate and bound: channel swap invalidates array geometry",
+    "Investigate and bound: clock slip creates false TDOA"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R014 owns: Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+    "Neighbor R043 owns: Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
   ],
   "inputs": {
     "latency-budget": "skills/latency-budget/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/spectral-analysis.json",
     "knowledge/engineering/transfer-coherence.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "timestamp granularity and independent clock drift"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "channel swap invalidates array geometry",
+    "clock slip creates false TDOA"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "scheduling gap rather than DOA instability",
+    "format packing rather than microphone failure"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "must_challenge": [
+        "scheduling gap rather than DOA instability",
+        "format packing rather than microphone failure"
+      ],
+      "must_account_for": "timestamp granularity and independent clock drift",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/latency-budget/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "latency-budget",
       "inputs": "skills/latency-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "decision_contract": "R032-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "scheduling gap rather than DOA instability",
+        "format packing rather than microphone failure"
+      ]
     },
     {
       "role_id": "R032",
       "skill_id": "spectral-analysis",
       "inputs": "skills/spectral-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "decision_contract": "R032-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "scheduling gap rather than DOA instability",
+        "format packing rather than microphone failure"
+      ]
     },
     {
       "role_id": "R032",
       "skill_id": "transfer-coherence",
       "inputs": "skills/transfer-coherence/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "decision_contract": "R032-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "scheduling gap rather than DOA instability",
+        "format packing rather than microphone failure"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070713Z-9a5a4194"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R032-DOMAIN-DECISION",
+    "question": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "required_methods": [
+      "methods/engineering/latency-budget.json",
+      "methods/engineering/spectral-analysis.json",
+      "methods/engineering/transfer-coherence.json"
+    ],
+    "required_skills": [
+      "latency-budget",
+      "spectral-analysis",
+      "transfer-coherence"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R014",
+      "this_seat_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "neighbor_owns": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback"
+    },
+    {
+      "neighbor_role": "R043",
+      "this_seat_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "Discriminate: scheduling gap rather than DOA instability",
+    "Discriminate: format packing rather than microphone failure"
+  ],
+  "professional_inputs": {
+    "decision_question": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "timestamp granularity and independent clock drift"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R032-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "channel swap invalidates array geometry",
+    "clock slip creates false TDOA",
+    "scheduling gap rather than DOA instability",
+    "format packing rather than microphone failure",
+    "timestamp granularity and independent clock drift"
+  ]
 }

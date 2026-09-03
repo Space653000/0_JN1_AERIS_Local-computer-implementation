@@ -5,17 +5,18 @@
     "name": "Beamforming / DOA Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Beamforming / DOA Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
   "domain": "Microphone CoE",
   "scope": [
-    "A seven-sample shifted impulse establishes correlation lag sign and magnitude.",
-    "Averaging identical broadside channels preserves the source.",
-    "Broadside in-phase sensors have normalized unit power."
+    "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+    "Investigate and bound: lag exceeds physically possible aperture delay",
+    "Investigate and bound: front/back ambiguity reported as unique direction"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R034 owns: Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "Neighbor R040 owns: Predict array propagation and aliasing with geometric delay and steering-vector checks"
   ],
   "inputs": {
     "gcc-phat-tdoa": "skills/gcc-phat-tdoa/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/delay-sum-beamforming.json",
     "knowledge/engineering/linear-array-pattern.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "sample quantization, aperture error and competing arrivals"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "lag exceeds physically possible aperture delay",
+    "front/back ambiguity reported as unique direction"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "channel reorder rather than source motion",
+    "reflection peak rather than direct arrival"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+      "must_challenge": [
+        "channel reorder rather than source motion",
+        "reflection peak rather than direct arrival"
+      ],
+      "must_account_for": "sample quantization, aperture error and competing arrivals",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Array/gcc-phat-tdoa/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "gcc-phat-tdoa",
       "inputs": "skills/gcc-phat-tdoa/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+      "decision_contract": "R043-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel reorder rather than source motion",
+        "reflection peak rather than direct arrival"
+      ]
     },
     {
       "role_id": "R043",
       "skill_id": "delay-sum-beamforming",
       "inputs": "skills/delay-sum-beamforming/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+      "decision_contract": "R043-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel reorder rather than source motion",
+        "reflection peak rather than direct arrival"
+      ]
     },
     {
       "role_id": "R043",
       "skill_id": "linear-array-pattern",
       "inputs": "skills/linear-array-pattern/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+      "decision_contract": "R043-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel reorder rather than source motion",
+        "reflection peak rather than direct arrival"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070716Z-82e9d98d"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R043-DOMAIN-DECISION",
+    "question": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+    "required_methods": [
+      "methods/engineering/gcc-phat-tdoa.json",
+      "methods/engineering/delay-sum-beamforming.json",
+      "methods/engineering/linear-array-pattern.json"
+    ],
+    "required_skills": [
+      "gcc-phat-tdoa",
+      "delay-sum-beamforming",
+      "linear-array-pattern"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R034",
+      "this_seat_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+      "neighbor_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty"
+    },
+    {
+      "neighbor_role": "R040",
+      "this_seat_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+      "neighbor_owns": "Predict array propagation and aliasing with geometric delay and steering-vector checks"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+    "Discriminate: channel reorder rather than source motion",
+    "Discriminate: reflection peak rather than direct arrival"
+  ],
+  "professional_inputs": {
+    "decision_question": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "sample quantization, aperture error and competing arrivals"
+    ],
+    "calculation_schemas": {
+      "gcc-phat-tdoa": "skills/gcc-phat-tdoa/input.schema.json",
+      "delay-sum-beamforming": "skills/delay-sum-beamforming/input.schema.json",
+      "linear-array-pattern": "skills/linear-array-pattern/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R043-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "gcc-phat-tdoa": "skills/gcc-phat-tdoa/output.schema.json",
+      "delay-sum-beamforming": "skills/delay-sum-beamforming/output.schema.json",
+      "linear-array-pattern": "skills/linear-array-pattern/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration",
+    "lag exceeds physically possible aperture delay",
+    "front/back ambiguity reported as unique direction",
+    "channel reorder rather than source motion",
+    "reflection peak rather than direct arrival",
+    "sample quantization, aperture error and competing arrivals"
+  ]
 }

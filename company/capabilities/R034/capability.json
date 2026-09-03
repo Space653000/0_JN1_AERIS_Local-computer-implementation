@@ -5,17 +5,18 @@
     "name": "Array / Directivity Validation Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Array / Directivity Validation Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Validate microphone-array directionality against angular, gain and delay uncertainty",
   "domain": "Microphone CoE",
   "scope": [
-    "Broadside in-phase sensors have normalized unit power.",
-    "A seven-sample shifted impulse establishes correlation lag sign and magnitude.",
-    "Independent variance terms are 0.01 and 0.16."
+    "Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "Investigate and bound: grating lobes outside sampled angles",
+    "Investigate and bound: calibration mismatch hidden by normalized gain"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R017 owns: Validate directivity and spatial response across angles rather than a single on-axis trace",
+    "Neighbor R040 owns: Predict array propagation and aliasing with geometric delay and steering-vector checks"
   ],
   "inputs": {
     "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
@@ -43,7 +44,6 @@
     "knowledge/engineering/uncertainty-propagation.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
     "IEC 60268-4"
   ],
   "permitted_tools": [
@@ -80,25 +80,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "aperture tolerance, phase mismatch and angular sampling"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "grating lobes outside sampled angles",
+    "calibration mismatch hidden by normalized gain"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "channel delay bias rather than steering error",
+    "spatial aliasing rather than poor estimator"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Validate microphone-array directionality against angular, gain and delay uncertainty",
+      "must_challenge": [
+        "channel delay bias rather than steering error",
+        "spatial aliasing rather than poor estimator"
+      ],
+      "must_account_for": "aperture tolerance, phase mismatch and angular sampling",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Array/linear-array-pattern/golden.json",
@@ -121,21 +127,39 @@
       "skill_id": "linear-array-pattern",
       "inputs": "skills/linear-array-pattern/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate microphone-array directionality against angular, gain and delay uncertainty",
+      "decision_contract": "R034-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel delay bias rather than steering error",
+        "spatial aliasing rather than poor estimator"
+      ]
     },
     {
       "role_id": "R034",
       "skill_id": "gcc-phat-tdoa",
       "inputs": "skills/gcc-phat-tdoa/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate microphone-array directionality against angular, gain and delay uncertainty",
+      "decision_contract": "R034-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel delay bias rather than steering error",
+        "spatial aliasing rather than poor estimator"
+      ]
     },
     {
       "role_id": "R034",
       "skill_id": "uncertainty-propagation",
       "inputs": "skills/uncertainty-propagation/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate microphone-array directionality against angular, gain and delay uncertainty",
+      "decision_contract": "R034-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel delay bias rather than steering error",
+        "spatial aliasing rather than poor estimator"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +169,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070714Z-6240b9d0"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R034-DOMAIN-DECISION",
+    "question": "Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "required_methods": [
+      "methods/engineering/linear-array-pattern.json",
+      "methods/engineering/gcc-phat-tdoa.json",
+      "methods/engineering/uncertainty-propagation.json"
+    ],
+    "required_skills": [
+      "linear-array-pattern",
+      "gcc-phat-tdoa",
+      "uncertainty-propagation"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R017",
+      "this_seat_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty",
+      "neighbor_owns": "Validate directivity and spatial response across angles rather than a single on-axis trace"
+    },
+    {
+      "neighbor_role": "R040",
+      "this_seat_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty",
+      "neighbor_owns": "Predict array propagation and aliasing with geometric delay and steering-vector checks"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "Discriminate: channel delay bias rather than steering error",
+    "Discriminate: spatial aliasing rather than poor estimator"
+  ],
+  "professional_inputs": {
+    "decision_question": "Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "aperture tolerance, phase mismatch and angular sampling"
+    ],
+    "calculation_schemas": {
+      "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
+      "gcc-phat-tdoa": "skills/gcc-phat-tdoa/input.schema.json",
+      "uncertainty-propagation": "skills/uncertainty-propagation/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R034-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
+      "gcc-phat-tdoa": "skills/gcc-phat-tdoa/output.schema.json",
+      "uncertainty-propagation": "skills/uncertainty-propagation/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "grating lobes outside sampled angles",
+    "calibration mismatch hidden by normalized gain",
+    "channel delay bias rather than steering error",
+    "spatial aliasing rather than poor estimator",
+    "aperture tolerance, phase mismatch and angular sampling"
+  ]
 }

@@ -5,18 +5,18 @@
     "name": "Directional / Array Microphone System",
     "group": "Product Chiefs"
   },
-  "mission": "Directional / Array Microphone System: execute and challenge the bounded methods listed in scope.",
+  "mission": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
   "domain": "Product Chiefs",
   "scope": [
-    "A valid product plan includes both transducer workstreams and preserves requirement coverage.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "High-severity mode remains Human-review required regardless of RPN ranking."
+    "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+    "Investigate and bound: narrow beam hides severe sidelobes",
+    "Investigate and bound: unique DOA claimed from symmetric array"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R034 owns: Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "Neighbor R043 owns: Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
   ],
   "inputs": {
     "product-system-plan": "skills/product-system-plan/input.schema.json",
@@ -49,7 +49,6 @@
     "knowledge/engineering/dfmea-ranking.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
     "IEC 60268-4"
   ],
   "permitted_tools": [
@@ -86,25 +85,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "aperture spacing and gain/phase calibration"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "narrow beam hides severe sidelobes",
+    "unique DOA claimed from symmetric array"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "channel mismatch rather than steering defect",
+    "reflected arrival rather than target movement"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+      "must_challenge": [
+        "channel mismatch rather than steering defect",
+        "reflected arrival rather than target movement"
+      ],
+      "must_account_for": "aperture spacing and gain/phase calibration",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/product-system-plan/golden.json",
@@ -130,28 +135,52 @@
       "skill_id": "product-system-plan",
       "inputs": "skills/product-system-plan/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+      "decision_contract": "R068-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel mismatch rather than steering defect",
+        "reflected arrival rather than target movement"
+      ]
     },
     {
       "role_id": "R068",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+      "decision_contract": "R068-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel mismatch rather than steering defect",
+        "reflected arrival rather than target movement"
+      ]
     },
     {
       "role_id": "R068",
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+      "decision_contract": "R068-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel mismatch rather than steering defect",
+        "reflected arrival rather than target movement"
+      ]
     },
     {
       "role_id": "R068",
       "skill_id": "dfmea-ranking",
       "inputs": "skills/dfmea-ranking/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+      "decision_contract": "R068-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "channel mismatch rather than steering defect",
+        "reflected arrival rather than target movement"
+      ]
     }
   ],
   "report_templates": [
@@ -212,5 +241,80 @@
       "licensed-tool equivalence",
       "physical qualification without measurements"
     ]
-  }
+  },
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R068-DOMAIN-DECISION",
+    "question": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R034",
+      "this_seat_owns": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+      "neighbor_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty"
+    },
+    {
+      "neighbor_role": "R043",
+      "this_seat_owns": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+      "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+    "Discriminate: channel mismatch rather than steering defect",
+    "Discriminate: reflected arrival rather than target movement"
+  ],
+  "professional_inputs": {
+    "decision_question": "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "aperture spacing and gain/phase calibration"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R068-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",
+    "narrow beam hides severe sidelobes",
+    "unique DOA claimed from symmetric array",
+    "channel mismatch rather than steering defect",
+    "reflected arrival rather than target movement",
+    "aperture spacing and gain/phase calibration"
+  ]
 }

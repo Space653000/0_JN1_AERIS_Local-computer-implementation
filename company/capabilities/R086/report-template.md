@@ -17,3 +17,26 @@
 ## Evidence hashes and reproducibility
 
 ## Next action and Human Gates
+
+## Role-specific professional decision
+
+Compare products/teardowns under matched conditions and bounded inference
+
+### Failure mechanisms to distinguish
+
+- unmatched SPL biases benchmark
+- teardown appearance promoted to validated topology
+
+### Competing explanations and discriminating experiments
+
+- firmware mode rather than hardware difference
+- fixture mismatch rather than product superiority
+
+### Role-specific uncertainty
+
+- configuration parity and sampling representativeness
+
+### Neighboring role ownership
+
+- R088: Test acoustic research hypotheses against reproducible sources and discriminating experiments
+- R099: Curate report claims, evidence hashes and knowledge provenance without domain self-approval

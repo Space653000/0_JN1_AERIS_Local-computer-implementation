@@ -5,17 +5,18 @@
     "name": "Nonlinear / Power / Reliability Validation Engineer",
     "group": "Speaker CoE"
   },
-  "mission": "Nonlinear / Power / Reliability Validation Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Derate speaker drive from distortion, compression, temperature and durability limits",
   "domain": "Speaker CoE",
   "scope": [
-    "Unit fundamental plus 0.1 second harmonic gives 10% THD, absent added noise.",
-    "At one thermal time constant the rise is 1-exp(-1) of steady state.",
-    "Zero failures in 100 trials gives exact one-sided binomial bound."
+    "Derate speaker drive from distortion, compression, temperature and durability limits",
+    "Investigate and bound: low THD interpreted as safe coil temperature",
+    "Investigate and bound: peak power rating applied continuously"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R010 owns: Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+    "Neighbor R075 owns: Bound temperature rise, power compression and reliability duty-cycle tradeoffs"
   ],
   "inputs": {
     "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json",
@@ -44,7 +45,7 @@
   ],
   "standards_metadata_references": [
     "IEC 60268-5",
-    "IEC 60268-4"
+    "AES75"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -80,25 +81,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "test duration, duty cycle and failure censoring"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "low THD interpreted as safe coil temperature",
+    "peak power rating applied continuously"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "thermal compression rather than motor nonlinearity",
+    "fixture buzz rather than cone breakup"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Derate speaker drive from distortion, compression, temperature and durability limits",
+      "must_challenge": [
+        "thermal compression rather than motor nonlinearity",
+        "fixture buzz rather than cone breakup"
+      ],
+      "must_account_for": "test duration, duty cycle and failure censoring",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/DSP/harmonic-noise-analysis/golden.json",
@@ -121,21 +128,39 @@
       "skill_id": "harmonic-noise-analysis",
       "inputs": "skills/harmonic-noise-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Derate speaker drive from distortion, compression, temperature and durability limits",
+      "decision_contract": "R016-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "thermal compression rather than motor nonlinearity",
+        "fixture buzz rather than cone breakup"
+      ]
     },
     {
       "role_id": "R016",
       "skill_id": "thermal-rc",
       "inputs": "skills/thermal-rc/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Derate speaker drive from distortion, compression, temperature and durability limits",
+      "decision_contract": "R016-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "thermal compression rather than motor nonlinearity",
+        "fixture buzz rather than cone breakup"
+      ]
     },
     {
       "role_id": "R016",
       "skill_id": "reliability-binomial",
       "inputs": "skills/reliability-binomial/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Derate speaker drive from distortion, compression, temperature and durability limits",
+      "decision_contract": "R016-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "thermal compression rather than motor nonlinearity",
+        "fixture buzz rather than cone breakup"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +170,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070710Z-9ef1f16f"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R016-DOMAIN-DECISION",
+    "question": "Derate speaker drive from distortion, compression, temperature and durability limits",
+    "required_methods": [
+      "methods/engineering/harmonic-noise-analysis.json",
+      "methods/engineering/thermal-rc.json",
+      "methods/engineering/reliability-binomial.json"
+    ],
+    "required_skills": [
+      "harmonic-noise-analysis",
+      "thermal-rc",
+      "reliability-binomial"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R010",
+      "this_seat_owns": "Derate speaker drive from distortion, compression, temperature and durability limits",
+      "neighbor_owns": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion"
+    },
+    {
+      "neighbor_role": "R075",
+      "this_seat_owns": "Derate speaker drive from distortion, compression, temperature and durability limits",
+      "neighbor_owns": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Derate speaker drive from distortion, compression, temperature and durability limits",
+    "Discriminate: thermal compression rather than motor nonlinearity",
+    "Discriminate: fixture buzz rather than cone breakup"
+  ],
+  "professional_inputs": {
+    "decision_question": "Derate speaker drive from distortion, compression, temperature and durability limits",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "test duration, duty cycle and failure censoring"
+    ],
+    "calculation_schemas": {
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json",
+      "thermal-rc": "skills/thermal-rc/input.schema.json",
+      "reliability-binomial": "skills/reliability-binomial/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R016-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/output.schema.json",
+      "thermal-rc": "skills/thermal-rc/output.schema.json",
+      "reliability-binomial": "skills/reliability-binomial/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Derate speaker drive from distortion, compression, temperature and durability limits",
+    "low THD interpreted as safe coil temperature",
+    "peak power rating applied continuously",
+    "thermal compression rather than motor nonlinearity",
+    "fixture buzz rather than cone breakup",
+    "test duration, duty cycle and failure censoring"
+  ]
 }

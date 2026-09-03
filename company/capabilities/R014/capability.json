@@ -5,17 +5,18 @@
     "name": "Embedded Audio Interface Specialist",
     "group": "Speaker CoE"
   },
-  "mission": "Embedded Audio Interface Specialist: execute and challenge the bounded methods listed in scope.",
+  "mission": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
   "domain": "Speaker CoE",
   "scope": [
-    "Thirty ms of buffers plus thirty ms of other serial stages.",
-    "Ideal uniform quantization variance is one LSB squared divided by 12.",
-    "Coherent bin-64 sinusoid has unit peak amplitude and 1/sqrt(2) RMS."
+    "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+    "Investigate and bound: slot-width mismatch",
+    "Investigate and bound: underrun masked by average latency"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R032 owns: Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "Neighbor R082 owns: Locate OS audio scheduling, resampling and synchronization bottlenecks end to end"
   ],
   "inputs": {
     "latency-budget": "skills/latency-budget/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/circuit-noise-budget.json",
     "knowledge/engineering/spectral-analysis.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "jitter, buffer occupancy and worst-case scheduling"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "slot-width mismatch",
+    "underrun masked by average latency"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "clock-domain slip rather than DSP overload",
+    "format mismatch rather than acoustic fault"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+      "must_challenge": [
+        "clock-domain slip rather than DSP overload",
+        "format mismatch rather than acoustic fault"
+      ],
+      "must_account_for": "jitter, buffer occupancy and worst-case scheduling",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/latency-budget/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "latency-budget",
       "inputs": "skills/latency-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+      "decision_contract": "R014-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clock-domain slip rather than DSP overload",
+        "format mismatch rather than acoustic fault"
+      ]
     },
     {
       "role_id": "R014",
       "skill_id": "circuit-noise-budget",
       "inputs": "skills/circuit-noise-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+      "decision_contract": "R014-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clock-domain slip rather than DSP overload",
+        "format mismatch rather than acoustic fault"
+      ]
     },
     {
       "role_id": "R014",
       "skill_id": "spectral-analysis",
       "inputs": "skills/spectral-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+      "decision_contract": "R014-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clock-domain slip rather than DSP overload",
+        "format mismatch rather than acoustic fault"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070709Z-fc93b227"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R014-DOMAIN-DECISION",
+    "question": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+    "required_methods": [
+      "methods/engineering/latency-budget.json",
+      "methods/engineering/circuit-noise-budget.json",
+      "methods/engineering/spectral-analysis.json"
+    ],
+    "required_skills": [
+      "latency-budget",
+      "circuit-noise-budget",
+      "spectral-analysis"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R032",
+      "this_seat_owns": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+      "neighbor_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity"
+    },
+    {
+      "neighbor_role": "R082",
+      "this_seat_owns": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+      "neighbor_owns": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+    "Discriminate: clock-domain slip rather than DSP overload",
+    "Discriminate: format mismatch rather than acoustic fault"
+  ],
+  "professional_inputs": {
+    "decision_question": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "jitter, buffer occupancy and worst-case scheduling"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R014-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+    "slot-width mismatch",
+    "underrun masked by average latency",
+    "clock-domain slip rather than DSP overload",
+    "format mismatch rather than acoustic fault",
+    "jitter, buffer occupancy and worst-case scheduling"
+  ]
 }

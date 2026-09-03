@@ -5,16 +5,18 @@
     "name": "Directivity / Spatial Validation Engineer",
     "group": "Speaker CoE"
   },
-  "mission": "Directivity / Spatial Validation Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Validate directivity and spatial response across angles rather than a single on-axis trace",
   "domain": "Speaker CoE",
   "scope": [
-    "Broadside in-phase sensors have normalized unit power.",
-    "Linear phase of a 1 ms delay has constant group delay."
+    "Validate directivity and spatial response across angles rather than a single on-axis trace",
+    "Investigate and bound: sparse angular grid hides lobes",
+    "Investigate and bound: normalization hides absolute off-axis loss"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R011 owns: Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+    "Neighbor R034 owns: Validate microphone-array directionality against angular, gain and delay uncertainty"
   ],
   "inputs": {
     "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
@@ -37,8 +39,7 @@
     "knowledge/engineering/response-phase-delay.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
+    "CTA-2034"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -74,25 +75,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "angular sampling and microphone position error"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "sparse angular grid hides lobes",
+    "normalization hides absolute off-axis loss"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "baffle diffraction rather than crossover error",
+    "alignment offset rather than asymmetric radiation"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Validate directivity and spatial response across angles rather than a single on-axis trace",
+      "must_challenge": [
+        "baffle diffraction rather than crossover error",
+        "alignment offset rather than asymmetric radiation"
+      ],
+      "must_account_for": "angular sampling and microphone position error",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Array/linear-array-pattern/golden.json",
@@ -112,14 +119,26 @@
       "skill_id": "linear-array-pattern",
       "inputs": "skills/linear-array-pattern/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate directivity and spatial response across angles rather than a single on-axis trace",
+      "decision_contract": "R017-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "baffle diffraction rather than crossover error",
+        "alignment offset rather than asymmetric radiation"
+      ]
     },
     {
       "role_id": "R017",
       "skill_id": "response-phase-delay",
       "inputs": "skills/response-phase-delay/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate directivity and spatial response across angles rather than a single on-axis trace",
+      "decision_contract": "R017-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "baffle diffraction rather than crossover error",
+        "alignment offset rather than asymmetric radiation"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +148,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070710Z-588c5646"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R017-DOMAIN-DECISION",
+    "question": "Validate directivity and spatial response across angles rather than a single on-axis trace",
+    "required_methods": [
+      "methods/engineering/linear-array-pattern.json",
+      "methods/engineering/response-phase-delay.json"
+    ],
+    "required_skills": [
+      "linear-array-pattern",
+      "response-phase-delay"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R011",
+      "this_seat_owns": "Validate directivity and spatial response across angles rather than a single on-axis trace",
+      "neighbor_owns": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity"
+    },
+    {
+      "neighbor_role": "R034",
+      "this_seat_owns": "Validate directivity and spatial response across angles rather than a single on-axis trace",
+      "neighbor_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Validate directivity and spatial response across angles rather than a single on-axis trace",
+    "Discriminate: baffle diffraction rather than crossover error",
+    "Discriminate: alignment offset rather than asymmetric radiation"
+  ],
+  "professional_inputs": {
+    "decision_question": "Validate directivity and spatial response across angles rather than a single on-axis trace",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "angular sampling and microphone position error"
+    ],
+    "calculation_schemas": {
+      "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
+      "response-phase-delay": "skills/response-phase-delay/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R017-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
+      "response-phase-delay": "skills/response-phase-delay/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Validate directivity and spatial response across angles rather than a single on-axis trace",
+    "sparse angular grid hides lobes",
+    "normalization hides absolute off-axis loss",
+    "baffle diffraction rather than crossover error",
+    "alignment offset rather than asymmetric radiation",
+    "angular sampling and microphone position error"
+  ]
 }

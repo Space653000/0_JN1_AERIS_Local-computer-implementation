@@ -5,17 +5,18 @@
     "name": "Speaker Acoustic System Architect",
     "group": "Speaker CoE"
   },
-  "mission": "Speaker Acoustic System Architect: execute and challenge the bounded methods listed in scope.",
+  "mission": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
   "domain": "Speaker CoE",
   "scope": [
-    "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm.",
-    "Area/(length*volume)=1/m2 in the ideal Helmholtz model.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound."
+    "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "Investigate and bound: tuning below usable excursion range",
+    "Investigate and bound: box leakage spoils predicted alignment"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R010 owns: Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
+    "Neighbor R011 owns: Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity"
   ],
   "inputs": {
     "lumped-speaker": "skills/lumped-speaker/input.schema.json",
@@ -43,8 +44,7 @@
     "knowledge/engineering/engineering-requirements.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
+    "IEC 60268-5"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -80,25 +80,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "small-signal T-S tolerances and enclosure effective volume"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "tuning below usable excursion range",
+    "box leakage spoils predicted alignment"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "leakage rather than T-S drift",
+    "voltage droop rather than acoustic roll-off"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+      "must_challenge": [
+        "leakage rather than T-S drift",
+        "voltage droop rather than acoustic roll-off"
+      ],
+      "must_account_for": "small-signal T-S tolerances and enclosure effective volume",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/lumped-speaker/golden.json",
@@ -121,21 +127,39 @@
       "skill_id": "lumped-speaker",
       "inputs": "skills/lumped-speaker/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+      "decision_contract": "R009-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "leakage rather than T-S drift",
+        "voltage droop rather than acoustic roll-off"
+      ]
     },
     {
       "role_id": "R009",
       "skill_id": "helmholtz-port",
       "inputs": "skills/helmholtz-port/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+      "decision_contract": "R009-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "leakage rather than T-S drift",
+        "voltage droop rather than acoustic roll-off"
+      ]
     },
     {
       "role_id": "R009",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+      "decision_contract": "R009-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "leakage rather than T-S drift",
+        "voltage droop rather than acoustic roll-off"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +169,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070708Z-2a299003"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R009-DOMAIN-DECISION",
+    "question": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "required_methods": [
+      "methods/engineering/lumped-speaker.json",
+      "methods/engineering/helmholtz-port.json",
+      "methods/engineering/engineering-requirements.json"
+    ],
+    "required_skills": [
+      "lumped-speaker",
+      "helmholtz-port",
+      "engineering-requirements"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R010",
+      "this_seat_owns": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+      "neighbor_owns": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion"
+    },
+    {
+      "neighbor_role": "R011",
+      "this_seat_owns": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+      "neighbor_owns": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "Discriminate: leakage rather than T-S drift",
+    "Discriminate: voltage droop rather than acoustic roll-off"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "small-signal T-S tolerances and enclosure effective volume"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+      "helmholtz-port": "skills/helmholtz-port/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R009-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+      "helmholtz-port": "skills/helmholtz-port/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "tuning below usable excursion range",
+    "box leakage spoils predicted alignment",
+    "leakage rather than T-S drift",
+    "voltage droop rather than acoustic roll-off",
+    "small-signal T-S tolerances and enclosure effective volume"
+  ]
 }

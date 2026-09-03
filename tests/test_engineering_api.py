@@ -1,4 +1,6 @@
 import json
+import http.client
+import time
 import threading
 import unittest
 import urllib.error
@@ -49,6 +51,35 @@ class EngineeringApiTests(unittest.TestCase):
             self.assertEqual(self.request('/api/v1/capabilities/execute', {'role_id':'R001'}, Origin=self.base)[0], 200)
             mutation.assert_called_once_with('/api/v1/capabilities/execute', {'role_id':'R001'})
         self.assertEqual(self.request('/api/v1/capabilities/fixture/R001?skill=unknown')[0], 400)
+
+    def test_rejected_body_preserves_403_response_without_mutation(self):
+        # Exercise unread-body/connection-close races, not retries that hide them.
+        with patch.object(api,'post') as mutation:
+            for size in (0,128,65536):
+                for attempt in range(20):
+                    with self.subTest(bytes=size,attempt=attempt):
+                        status,result=self.request('/api/v1/capabilities/execute',{'synthetic':'x'*size},
+                                                   **{'Content-Type':'text/plain'})
+                        self.assertEqual(status,403)
+                        self.assertEqual(result['error'],'same_origin_json_required')
+            mutation.assert_not_called()
+
+    def test_rejected_partial_body_cannot_hold_connection_open_indefinitely(self):
+        with patch.object(api,'post') as mutation:
+            connection=http.client.HTTPConnection('127.0.0.1',self.server.server_port,timeout=2)
+            try:
+                start=time.monotonic()
+                connection.putrequest('POST','/api/v1/capabilities/execute')
+                connection.putheader('Content-Type','text/plain')
+                connection.putheader('Content-Length','1024')
+                connection.endheaders()  # Deliberately withhold the declared body.
+                response=connection.getresponse()
+                self.assertEqual(response.status,403)
+                self.assertLess(time.monotonic()-start,1.5)
+                self.assertEqual(json.loads(response.read())['error'],'same_origin_json_required')
+            finally:
+                connection.close()
+            mutation.assert_not_called()
 
     def test_risk_and_calibration_cannot_be_self_asserted(self):
         params=catalog.definitions()['engineering-requirements']['fixture']['input']

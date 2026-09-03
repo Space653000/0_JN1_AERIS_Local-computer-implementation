@@ -56,3 +56,38 @@ Current work branch: codex/h0001-depth-repair. No remote write or merge performe
   Windows/Ubuntu CI, sanitized H0001 handoff and new Draft PR.
 
 P02 is NOT ACCEPTED. This checkpoint is not software completion or handoff READY.
+
+## Second construction checkpoint
+
+The previous list records the first checkpoint, not a frozen completion claim.
+New progress:
+
+- All 100 packs now carry individually authored professional decisions, failure
+  modes, counterhypotheses, uncertainty, neighboring-seat ownership, task context
+  and role-specific report sections. Empty/unrelated Skill mappings fail the
+  contract. This is L1 documentation, not proof of role acceptance.
+- Role-scoped standards metadata replaces universal IEC references. The metadata
+  engine evaluates edition, region, applicability, supersession, provenance age,
+  normative/informative status, access rights and requirement change impact.
+  Legacy formal-use access cannot bypass explicit scope checks.
+- Windows rejection-response failure reproduced twice (5/60, 3/60). Reading the
+  rejected request body eliminated the connection-reset race (600/600 probe).
+  The production fix drains only bounded bytes for at most 250 ms, without JSON
+  parsing/mutation. Permanent tests cover repeated denials and withheld bodies;
+  post-fix stress passed 600/600. Original failure logs are preserved locally.
+- A new registered TWS domain Skill calculates seal leakage, single-crossover
+  feedback delay margin, outward FF/call wind noise, excursion and occlusion.
+  Independent tests distinguish equal call SNR with different wind/ambient ANC
+  decisions, boundary margins, wrong units, design revisions and deterministic
+  replay. Actual domain workflow produces sealed EVIDENCED but not VERIFIED;
+  tampered input blocks reproduction. This is not complete TWS acceptance.
+- Full local unit suite: 240 passed. Latest log:
+  `.aeris/evidence/H0001-batch4-tests.log`.
+- Six live page probes returned HTTP 200; live maturity remained L1=100, L3=0.
+  This spot check is not a new full-duration HTTP soak certificate.
+
+Still outstanding: Role Acceptance Factory, qualified contextual review routing,
+36/24 role-domain execution breadth, complete product acceptance scenarios,
+external Knowledge retrieval provenance, eight integrated challenges, complete
+live API/registry integration and clean-checkout/dual-platform CI/new Draft PR.
+No P02 completion, Human approval or professional certification is claimed.

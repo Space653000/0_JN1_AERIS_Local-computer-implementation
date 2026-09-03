@@ -5,16 +5,18 @@
     "name": "BEM / Vibro-acoustic Simulation Engineer",
     "group": "Speaker CoE"
   },
-  "mission": "BEM / Vibro-acoustic Simulation Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
   "domain": "Speaker CoE",
   "scope": [
-    "Integration of a sine divides amplitude by angular frequency.",
-    "Broadside in-phase sensors have normalized unit power."
+    "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+    "Investigate and bound: structural resonance confused with airborne mode",
+    "Investigate and bound: radiation efficiency assumed constant"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R021 owns: Select a defensible lumped model and boundary assumptions before escalating to FEM",
+    "Neighbor R073 owns: Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
   ],
   "inputs": {
     "nvh-integration": "skills/nvh-integration/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/nvh-integration.json",
     "knowledge/engineering/linear-array-pattern.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "coupling strength and unresolved spatial mode shapes"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "structural resonance confused with airborne mode",
+    "radiation efficiency assumed constant"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "mount stiffness rather than panel material",
+    "acoustic loading rather than structural damping"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+      "must_challenge": [
+        "mount stiffness rather than panel material",
+        "acoustic loading rather than structural damping"
+      ],
+      "must_account_for": "coupling strength and unresolved spatial mode shapes",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/nvh-integration/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "nvh-integration",
       "inputs": "skills/nvh-integration/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+      "decision_contract": "R022-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount stiffness rather than panel material",
+        "acoustic loading rather than structural damping"
+      ]
     },
     {
       "role_id": "R022",
       "skill_id": "linear-array-pattern",
       "inputs": "skills/linear-array-pattern/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+      "decision_contract": "R022-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount stiffness rather than panel material",
+        "acoustic loading rather than structural damping"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070711Z-38d9d777"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R022-DOMAIN-DECISION",
+    "question": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+    "required_methods": [
+      "methods/engineering/nvh-integration.json",
+      "methods/engineering/linear-array-pattern.json"
+    ],
+    "required_skills": [
+      "nvh-integration",
+      "linear-array-pattern"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R021",
+      "this_seat_owns": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+      "neighbor_owns": "Select a defensible lumped model and boundary assumptions before escalating to FEM"
+    },
+    {
+      "neighbor_role": "R073",
+      "this_seat_owns": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+      "neighbor_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+    "Discriminate: mount stiffness rather than panel material",
+    "Discriminate: acoustic loading rather than structural damping"
+  ],
+  "professional_inputs": {
+    "decision_question": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "coupling strength and unresolved spatial mode shapes"
+    ],
+    "calculation_schemas": {
+      "nvh-integration": "skills/nvh-integration/input.schema.json",
+      "linear-array-pattern": "skills/linear-array-pattern/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R022-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "nvh-integration": "skills/nvh-integration/output.schema.json",
+      "linear-array-pattern": "skills/linear-array-pattern/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+    "structural resonance confused with airborne mode",
+    "radiation efficiency assumed constant",
+    "mount stiffness rather than panel material",
+    "acoustic loading rather than structural damping",
+    "coupling strength and unresolved spatial mode shapes"
+  ]
 }

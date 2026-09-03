@@ -5,17 +5,18 @@
     "name": "Speaker DSP Engineer",
     "group": "Speaker CoE"
   },
-  "mission": "Speaker DSP Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
   "domain": "Speaker CoE",
   "scope": [
-    "Stable unit-DC-gain lowpass impulse response sums to one.",
-    "Coherent bin-64 sinusoid has unit peak amplitude and 1/sqrt(2) RMS.",
-    "Unit fundamental plus 0.1 second harmonic gives 10% THD, absent added noise."
+    "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+    "Investigate and bound: unstable or overly resonant coefficients",
+    "Investigate and bound: correct magnitude but incompatible crossover phase"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R018 owns: Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+    "Neighbor R005 owns: Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints"
   ],
   "inputs": {
     "butterworth-filter": "skills/butterworth-filter/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/spectral-analysis.json",
     "knowledge/engineering/harmonic-noise-analysis.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "coefficient precision, sample rate and accumulated headroom"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "unstable or overly resonant coefficients",
+    "correct magnitude but incompatible crossover phase"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "polarity inversion rather than EQ error",
+    "finite precision rather than acoustic variation"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+      "must_challenge": [
+        "polarity inversion rather than EQ error",
+        "finite precision rather than acoustic variation"
+      ],
+      "must_account_for": "coefficient precision, sample rate and accumulated headroom",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/DSP/butterworth-filter/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "butterworth-filter",
       "inputs": "skills/butterworth-filter/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+      "decision_contract": "R024-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "polarity inversion rather than EQ error",
+        "finite precision rather than acoustic variation"
+      ]
     },
     {
       "role_id": "R024",
       "skill_id": "spectral-analysis",
       "inputs": "skills/spectral-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+      "decision_contract": "R024-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "polarity inversion rather than EQ error",
+        "finite precision rather than acoustic variation"
+      ]
     },
     {
       "role_id": "R024",
       "skill_id": "harmonic-noise-analysis",
       "inputs": "skills/harmonic-noise-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+      "decision_contract": "R024-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "polarity inversion rather than EQ error",
+        "finite precision rather than acoustic variation"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070711Z-83a279a1"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R024-DOMAIN-DECISION",
+    "question": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+    "required_methods": [
+      "methods/engineering/butterworth-filter.json",
+      "methods/engineering/spectral-analysis.json",
+      "methods/engineering/harmonic-noise-analysis.json"
+    ],
+    "required_skills": [
+      "butterworth-filter",
+      "spectral-analysis",
+      "harmonic-noise-analysis"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R018",
+      "this_seat_owns": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+      "neighbor_owns": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances"
+    },
+    {
+      "neighbor_role": "R005",
+      "this_seat_owns": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+      "neighbor_owns": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+    "Discriminate: polarity inversion rather than EQ error",
+    "Discriminate: finite precision rather than acoustic variation"
+  ],
+  "professional_inputs": {
+    "decision_question": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "coefficient precision, sample rate and accumulated headroom"
+    ],
+    "calculation_schemas": {
+      "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R024-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+    "unstable or overly resonant coefficients",
+    "correct magnitude but incompatible crossover phase",
+    "polarity inversion rather than EQ error",
+    "finite precision rather than acoustic variation",
+    "coefficient precision, sample rate and accumulated headroom"
+  ]
 }

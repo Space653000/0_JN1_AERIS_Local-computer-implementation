@@ -15,6 +15,7 @@ _matrix_at=0.0
 def live_matrix():
     global _matrix_cache,_matrix_at
     catalog.implementation_digest()
+    factory.acceptance_engine_digest()
     with _matrix_lock:
         if _matrix_cache is None or time.monotonic()-_matrix_at>2:
             _matrix_cache=factory.matrix(); _matrix_cache["cache_max_age_s"]=2
@@ -46,6 +47,12 @@ def get(url):
 
 
 def post(path,payload):
+    if path=="/api/v1/capabilities/standards/applicability":
+        from ..standards_registry import assess_applicability
+        return assess_applicability(payload['record'],payload['context'])
+    if path=="/api/v1/capabilities/standards/change-impact":
+        from ..standards_registry import change_impact
+        return change_impact(payload['previous'],payload['current'],payload['requirement_links'])
     if path=="/api/v1/capabilities/intake":
         from .intake import understand
         return understand(payload["description"],product=payload.get("product",""),transducer=payload.get("transducer","Both"),lifecycle=payload.get("lifecycle","EVT"),project=payload.get("project","CAPABILITY_FACTORY"))

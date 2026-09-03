@@ -5,16 +5,18 @@
     "name": "Acoustic Materials / Foam / Mesh / Porous Media",
     "group": "Distinguished Experts"
   },
-  "mission": "Acoustic Materials / Foam / Mesh / Porous Media: execute and challenge the bounded methods listed in scope.",
+  "mission": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
   "domain": "Distinguished Experts",
   "scope": [
-    "Passive rigid-backed fibrous layer; 1 kHz reference computed independently using scalar complex arithmetic and the stated Delany-Bazley equations.",
-    "Poiseuille resistance scales inversely with radius to the fourth power."
+    "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+    "Investigate and bound: material model used outside thickness regime",
+    "Investigate and bound: sealing loss attributed to absorption"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R029 owns: Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
+    "Neighbor R039 owns: Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation"
   ],
   "inputs": {
     "porous-absorption": "skills/porous-absorption/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/porous-absorption.json",
     "knowledge/engineering/leakage-tolerance.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "flow resistivity, compression and boundary layers"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "material model used outside thickness regime",
+    "sealing loss attributed to absorption"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "edge leakage rather than bulk material loss",
+    "compression rather than material aging"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+      "must_challenge": [
+        "edge leakage rather than bulk material loss",
+        "compression rather than material aging"
+      ],
+      "must_account_for": "flow resistivity, compression and boundary layers",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/porous-absorption/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "porous-absorption",
       "inputs": "skills/porous-absorption/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+      "decision_contract": "R074-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "edge leakage rather than bulk material loss",
+        "compression rather than material aging"
+      ]
     },
     {
       "role_id": "R074",
       "skill_id": "leakage-tolerance",
       "inputs": "skills/leakage-tolerance/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+      "decision_contract": "R074-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "edge leakage rather than bulk material loss",
+        "compression rather than material aging"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070723Z-d33e69f5"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R074-DOMAIN-DECISION",
+    "question": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+    "required_methods": [
+      "methods/engineering/porous-absorption.json",
+      "methods/engineering/leakage-tolerance.json"
+    ],
+    "required_skills": [
+      "porous-absorption",
+      "leakage-tolerance"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R029",
+      "this_seat_owns": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+      "neighbor_owns": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss"
+    },
+    {
+      "neighbor_role": "R039",
+      "this_seat_owns": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+      "neighbor_owns": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+    "Discriminate: edge leakage rather than bulk material loss",
+    "Discriminate: compression rather than material aging"
+  ],
+  "professional_inputs": {
+    "decision_question": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "flow resistivity, compression and boundary layers"
+    ],
+    "calculation_schemas": {
+      "porous-absorption": "skills/porous-absorption/input.schema.json",
+      "leakage-tolerance": "skills/leakage-tolerance/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R074-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "porous-absorption": "skills/porous-absorption/output.schema.json",
+      "leakage-tolerance": "skills/leakage-tolerance/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
+    "material model used outside thickness regime",
+    "sealing loss attributed to absorption",
+    "edge leakage rather than bulk material loss",
+    "compression rather than material aging",
+    "flow resistivity, compression and boundary layers"
+  ]
 }

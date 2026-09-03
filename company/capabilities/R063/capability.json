@@ -5,18 +5,18 @@
     "name": "Automotive Audio / Hands-Free",
     "group": "Product Chiefs"
   },
-  "mission": "Automotive Audio / Hands-Free: execute and challenge the bounded methods listed in scope.",
+  "mission": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
   "domain": "Product Chiefs",
   "scope": [
-    "A valid product plan includes both transducer workstreams and preserves requirement coverage.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "High-severity mode remains Human-review required regardless of RPN ranking."
+    "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+    "Investigate and bound: driver-seat optimization harms rear passengers",
+    "Investigate and bound: road noise invalidates parked-cabin tuning"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R035 owns: Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+    "Neighbor R042 owns: Choose echo-control alignment and adaptation constraints across delay and double-talk"
   ],
   "inputs": {
     "product-system-plan": "skills/product-system-plan/input.schema.json",
@@ -49,8 +49,8 @@
     "knowledge/engineering/dfmea-ranking.json"
   ],
   "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
+    "ITU-T P.1100",
+    "ITU-T P.1110"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -86,25 +86,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "seat occupancy, speed and cabin state"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "driver-seat optimization harms rear passengers",
+    "road noise invalidates parked-cabin tuning"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "seat geometry rather than array defect",
+    "vehicle speed rather than NR regression"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+      "must_challenge": [
+        "seat geometry rather than array defect",
+        "vehicle speed rather than NR regression"
+      ],
+      "must_account_for": "seat occupancy, speed and cabin state",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/product-system-plan/golden.json",
@@ -130,28 +136,52 @@
       "skill_id": "product-system-plan",
       "inputs": "skills/product-system-plan/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+      "decision_contract": "R063-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "seat geometry rather than array defect",
+        "vehicle speed rather than NR regression"
+      ]
     },
     {
       "role_id": "R063",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+      "decision_contract": "R063-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "seat geometry rather than array defect",
+        "vehicle speed rather than NR regression"
+      ]
     },
     {
       "role_id": "R063",
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+      "decision_contract": "R063-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "seat geometry rather than array defect",
+        "vehicle speed rather than NR regression"
+      ]
     },
     {
       "role_id": "R063",
       "skill_id": "dfmea-ranking",
       "inputs": "skills/dfmea-ranking/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+      "decision_contract": "R063-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "seat geometry rather than array defect",
+        "vehicle speed rather than NR regression"
+      ]
     }
   ],
   "report_templates": [
@@ -213,5 +243,80 @@
       "licensed-tool equivalence",
       "physical qualification without measurements"
     ]
-  }
+  },
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R063-DOMAIN-DECISION",
+    "question": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R035",
+      "this_seat_owns": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+      "neighbor_owns": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions"
+    },
+    {
+      "neighbor_role": "R042",
+      "this_seat_owns": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+      "neighbor_owns": "Choose echo-control alignment and adaptation constraints across delay and double-talk"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+    "Discriminate: seat geometry rather than array defect",
+    "Discriminate: vehicle speed rather than NR regression"
+  ],
+  "professional_inputs": {
+    "decision_question": "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "seat occupancy, speed and cabin state"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R063-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Validate automotive media/hands-free tradeoffs across seats, road noise and cabin echo",
+    "driver-seat optimization harms rear passengers",
+    "road noise invalidates parked-cabin tuning",
+    "seat geometry rather than array defect",
+    "vehicle speed rather than NR regression",
+    "seat occupancy, speed and cabin state"
+  ]
 }

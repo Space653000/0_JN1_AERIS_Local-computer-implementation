@@ -5,18 +5,18 @@
     "name": "Assistive Listening / Auracast",
     "group": "Product Chiefs"
   },
-  "mission": "Assistive Listening / Auracast: execute and challenge the bounded methods listed in scope.",
+  "mission": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
   "domain": "Product Chiefs",
   "scope": [
-    "A valid product plan includes both transducer workstreams and preserves requirement coverage.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "High-severity mode remains Human-review required regardless of RPN ranking."
+    "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+    "Investigate and bound: multi-receiver desynchronization",
+    "Investigate and bound: broadcast compatibility confused with audibility"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R081 owns: Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+    "Neighbor R083 owns: Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality"
   ],
   "inputs": {
     "product-system-plan": "skills/product-system-plan/input.schema.json",
@@ -48,10 +48,7 @@
     "knowledge/engineering/requirement-traceability.json",
     "knowledge/engineering/dfmea-ranking.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -86,25 +83,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "receiver diversity and clock synchronization"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "multi-receiver desynchronization",
+    "broadcast compatibility confused with audibility"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "transport jitter rather than hearing-device latency",
+    "receiver gain rather than content level"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+      "must_challenge": [
+        "transport jitter rather than hearing-device latency",
+        "receiver gain rather than content level"
+      ],
+      "must_account_for": "receiver diversity and clock synchronization",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/product-system-plan/golden.json",
@@ -130,28 +133,52 @@
       "skill_id": "product-system-plan",
       "inputs": "skills/product-system-plan/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+      "decision_contract": "R047-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "transport jitter rather than hearing-device latency",
+        "receiver gain rather than content level"
+      ]
     },
     {
       "role_id": "R047",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+      "decision_contract": "R047-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "transport jitter rather than hearing-device latency",
+        "receiver gain rather than content level"
+      ]
     },
     {
       "role_id": "R047",
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+      "decision_contract": "R047-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "transport jitter rather than hearing-device latency",
+        "receiver gain rather than content level"
+      ]
     },
     {
       "role_id": "R047",
       "skill_id": "dfmea-ranking",
       "inputs": "skills/dfmea-ranking/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+      "decision_contract": "R047-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "transport jitter rather than hearing-device latency",
+        "receiver gain rather than content level"
+      ]
     }
   ],
   "report_templates": [
@@ -212,5 +239,80 @@
       "licensed-tool equivalence",
       "physical qualification without measurements"
     ]
-  }
+  },
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R047-DOMAIN-DECISION",
+    "question": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R081",
+      "this_seat_owns": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+      "neighbor_owns": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification"
+    },
+    {
+      "neighbor_role": "R083",
+      "this_seat_owns": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+      "neighbor_owns": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+    "Discriminate: transport jitter rather than hearing-device latency",
+    "Discriminate: receiver gain rather than content level"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "receiver diversity and clock synchronization"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R047-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",
+    "multi-receiver desynchronization",
+    "broadcast compatibility confused with audibility",
+    "transport jitter rather than hearing-device latency",
+    "receiver gain rather than content level",
+    "receiver diversity and clock synchronization"
+  ]
 }

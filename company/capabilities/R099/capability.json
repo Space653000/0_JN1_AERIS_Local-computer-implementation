@@ -5,17 +5,18 @@
     "name": "Technical Report / Evidence / Knowledge Curator",
     "group": "Engineering Ops"
   },
-  "mission": "Technical Report / Evidence / Knowledge Curator: execute and challenge the bounded methods listed in scope.",
+  "mission": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
   "domain": "Engineering Ops",
   "scope": [
-    "One of two requirements has a test/evidence link; missing coverage remains visible.",
-    "Local retrieval preserves document hash and rights classification.",
-    "An independent rule-based reviewer rejects an unsupported Evidence claim."
+    "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+    "Investigate and bound: Memory note promoted to Evidence",
+    "Investigate and bound: report conclusion detached from sealed input revision"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R097 owns: Maintain requirement-test-evidence and configuration links across revisions",
+    "Neighbor R008 owns: Separate source authority, standards applicability and research hypotheses before reuse"
   ],
   "inputs": {
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/provenance-research.json",
     "knowledge/engineering/evidence-counterreview.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "source completeness and unresolved reviewer disagreement"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "Memory note promoted to Evidence",
+    "report conclusion detached from sealed input revision"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "provenance mismatch rather than conflicting result",
+    "stale report rather than changed product"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R097",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+      "must_challenge": [
+        "provenance mismatch rather than conflicting result",
+        "stale report rather than changed product"
+      ],
+      "must_account_for": "source completeness and unresolved reviewer disagreement",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/requirement-traceability/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "requirement-traceability",
       "inputs": "skills/requirement-traceability/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+      "decision_contract": "R099-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "provenance mismatch rather than conflicting result",
+        "stale report rather than changed product"
+      ]
     },
     {
       "role_id": "R099",
       "skill_id": "provenance-research",
       "inputs": "skills/provenance-research/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+      "decision_contract": "R099-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "provenance mismatch rather than conflicting result",
+        "stale report rather than changed product"
+      ]
     },
     {
       "role_id": "R099",
       "skill_id": "evidence-counterreview",
       "inputs": "skills/evidence-counterreview/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+      "decision_contract": "R099-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "provenance mismatch rather than conflicting result",
+        "stale report rather than changed product"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070727Z-ae7afd20"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R099-DOMAIN-DECISION",
+    "question": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+    "required_methods": [
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/provenance-research.json",
+      "methods/engineering/evidence-counterreview.json"
+    ],
+    "required_skills": [
+      "requirement-traceability",
+      "provenance-research",
+      "evidence-counterreview"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R097",
+      "this_seat_owns": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+      "neighbor_owns": "Maintain requirement-test-evidence and configuration links across revisions"
+    },
+    {
+      "neighbor_role": "R008",
+      "this_seat_owns": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+      "neighbor_owns": "Separate source authority, standards applicability and research hypotheses before reuse"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+    "Discriminate: provenance mismatch rather than conflicting result",
+    "Discriminate: stale report rather than changed product"
+  ],
+  "professional_inputs": {
+    "decision_question": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "source completeness and unresolved reviewer disagreement"
+    ],
+    "calculation_schemas": {
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "provenance-research": "skills/provenance-research/input.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R099-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "provenance-research": "skills/provenance-research/output.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
+    "Memory note promoted to Evidence",
+    "report conclusion detached from sealed input revision",
+    "provenance mismatch rather than conflicting result",
+    "stale report rather than changed product",
+    "source completeness and unresolved reviewer disagreement"
+  ]
 }

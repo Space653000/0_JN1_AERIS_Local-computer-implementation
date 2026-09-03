@@ -5,16 +5,18 @@
     "name": "Audio Machine Learning",
     "group": "Distinguished Experts"
   },
-  "mission": "Audio Machine Learning: execute and challenge the bounded methods listed in scope.",
+  "mission": "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
   "domain": "Distinguished Experts",
   "scope": [
-    "Held-out affine regression without train/validation ID leakage.",
-    "Welch integration of a coherent unit sine conserves mean-square power."
+    "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+    "Investigate and bound: same recording appears in train/test",
+    "Investigate and bound: synthetic accuracy called production robustness"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R070 owns: Validate perceptual metric relevance and avoid unsupported MOS predictions",
+    "Neighbor R085 owns: Preserve acoustic dataset schema, units, provenance and leakage-free partitions"
   ],
   "inputs": {
     "local-audio-regression": "skills/local-audio-regression/input.schema.json",
@@ -36,10 +38,7 @@
     "knowledge/engineering/local-audio-regression.json",
     "knowledge/engineering/time-frequency-analysis.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -74,25 +73,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "held-out domain coverage and prediction uncertainty"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "same recording appears in train/test",
+    "synthetic accuracy called production robustness"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "dataset bias rather than feature superiority",
+    "label noise rather than model incapacity"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+      "must_challenge": [
+        "dataset bias rather than feature superiority",
+        "label noise rather than model incapacity"
+      ],
+      "must_account_for": "held-out domain coverage and prediction uncertainty",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/local-audio-regression/golden.json",
@@ -112,14 +117,26 @@
       "skill_id": "local-audio-regression",
       "inputs": "skills/local-audio-regression/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+      "decision_contract": "R084-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "dataset bias rather than feature superiority",
+        "label noise rather than model incapacity"
+      ]
     },
     {
       "role_id": "R084",
       "skill_id": "time-frequency-analysis",
       "inputs": "skills/time-frequency-analysis/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+      "decision_contract": "R084-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "dataset bias rather than feature superiority",
+        "label noise rather than model incapacity"
+      ]
     }
   ],
   "report_templates": [
@@ -129,5 +146,72 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070724Z-8d35e8d0"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R084-DOMAIN-DECISION",
+    "question": "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+    "required_methods": [
+      "methods/engineering/local-audio-regression.json",
+      "methods/engineering/time-frequency-analysis.json"
+    ],
+    "required_skills": [
+      "local-audio-regression",
+      "time-frequency-analysis"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R070",
+      "this_seat_owns": "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+      "neighbor_owns": "Validate perceptual metric relevance and avoid unsupported MOS predictions"
+    },
+    {
+      "neighbor_role": "R085",
+      "this_seat_owns": "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+      "neighbor_owns": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+    "Discriminate: dataset bias rather than feature superiority",
+    "Discriminate: label noise rather than model incapacity"
+  ],
+  "professional_inputs": {
+    "decision_question": "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "held-out domain coverage and prediction uncertainty"
+    ],
+    "calculation_schemas": {
+      "local-audio-regression": "skills/local-audio-regression/input.schema.json",
+      "time-frequency-analysis": "skills/time-frequency-analysis/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R084-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "local-audio-regression": "skills/local-audio-regression/output.schema.json",
+      "time-frequency-analysis": "skills/time-frequency-analysis/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+    "same recording appears in train/test",
+    "synthetic accuracy called production robustness",
+    "dataset bias rather than feature superiority",
+    "label noise rather than model incapacity",
+    "held-out domain coverage and prediction uncertainty"
+  ]
 }

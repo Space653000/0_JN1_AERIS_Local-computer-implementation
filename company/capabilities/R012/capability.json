@@ -5,17 +5,18 @@
     "name": "Audio Circuit Architect",
     "group": "Speaker CoE"
   },
-  "mission": "Audio Circuit Architect: execute and challenge the bounded methods listed in scope.",
+  "mission": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
   "domain": "Speaker CoE",
   "scope": [
-    "Ideal uniform quantization variance is one LSB squared divided by 12.",
-    "A noiseless gain-of-two system has H=2 and unit coherence in excited bins.",
-    "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound."
+    "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+    "Investigate and bound: noise references mixed before gain referral",
+    "Investigate and bound: load impedance omitted from stability assessment"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R013 owns: Bound amplifier rail, load current and temperature under speaker peak and duty-cycle demands",
+    "Neighbor R030 owns: Refer analog microphone noise and headroom through bias, gain and ADC interfaces"
   ],
   "inputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/transfer-coherence.json",
     "knowledge/engineering/engineering-requirements.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "noise correlation and gain tolerance"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "noise references mixed before gain referral",
+    "load impedance omitted from stability assessment"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "ground loop rather than intrinsic op-amp noise",
+    "source impedance mismatch rather than codec distortion"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+      "must_challenge": [
+        "ground loop rather than intrinsic op-amp noise",
+        "source impedance mismatch rather than codec distortion"
+      ],
+      "must_account_for": "noise correlation and gain tolerance",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Microphone/circuit-noise-budget/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "circuit-noise-budget",
       "inputs": "skills/circuit-noise-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+      "decision_contract": "R012-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "ground loop rather than intrinsic op-amp noise",
+        "source impedance mismatch rather than codec distortion"
+      ]
     },
     {
       "role_id": "R012",
       "skill_id": "transfer-coherence",
       "inputs": "skills/transfer-coherence/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+      "decision_contract": "R012-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "ground loop rather than intrinsic op-amp noise",
+        "source impedance mismatch rather than codec distortion"
+      ]
     },
     {
       "role_id": "R012",
       "skill_id": "engineering-requirements",
       "inputs": "skills/engineering-requirements/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+      "decision_contract": "R012-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "ground loop rather than intrinsic op-amp noise",
+        "source impedance mismatch rather than codec distortion"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070709Z-cc55844a"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R012-DOMAIN-DECISION",
+    "question": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+    "required_methods": [
+      "methods/engineering/circuit-noise-budget.json",
+      "methods/engineering/transfer-coherence.json",
+      "methods/engineering/engineering-requirements.json"
+    ],
+    "required_skills": [
+      "circuit-noise-budget",
+      "transfer-coherence",
+      "engineering-requirements"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R013",
+      "this_seat_owns": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+      "neighbor_owns": "Bound amplifier rail, load current and temperature under speaker peak and duty-cycle demands"
+    },
+    {
+      "neighbor_role": "R030",
+      "this_seat_owns": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+      "neighbor_owns": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+    "Discriminate: ground loop rather than intrinsic op-amp noise",
+    "Discriminate: source impedance mismatch rather than codec distortion"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "noise correlation and gain tolerance"
+    ],
+    "calculation_schemas": {
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R012-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+    "noise references mixed before gain referral",
+    "load impedance omitted from stability assessment",
+    "ground loop rather than intrinsic op-amp noise",
+    "source impedance mismatch rather than codec distortion",
+    "noise correlation and gain tolerance"
+  ]
 }

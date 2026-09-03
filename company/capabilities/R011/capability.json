@@ -5,17 +5,18 @@
     "name": "Enclosure / Port / Waveguide Specialist",
     "group": "Speaker CoE"
   },
-  "mission": "Enclosure / Port / Waveguide Specialist: execute and challenge the bounded methods listed in scope.",
+  "mission": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
   "domain": "Speaker CoE",
   "scope": [
-    "Area/(length*volume)=1/m2 in the ideal Helmholtz model.",
-    "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm.",
-    "Broadside in-phase sensors have normalized unit power."
+    "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+    "Investigate and bound: end correction omitted",
+    "Investigate and bound: port resonance or chuffing hidden by on-axis FR"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R009 owns: Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "Neighbor R017 owns: Validate directivity and spatial response across angles rather than a single on-axis trace"
   ],
   "inputs": {
     "helmholtz-port": "skills/helmholtz-port/input.schema.json",
@@ -44,7 +45,7 @@
   ],
   "standards_metadata_references": [
     "IEC 60268-5",
-    "IEC 60268-4"
+    "CTA-2034"
   ],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
@@ -80,25 +81,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "effective length, flow regime and boundary conditions"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "end correction omitted",
+    "port resonance or chuffing hidden by on-axis FR"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "turbulence rather than driver THD",
+    "boundary loading rather than incorrect port length"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+      "must_challenge": [
+        "turbulence rather than driver THD",
+        "boundary loading rather than incorrect port length"
+      ],
+      "must_account_for": "effective length, flow regime and boundary conditions",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Speaker/helmholtz-port/golden.json",
@@ -121,21 +128,39 @@
       "skill_id": "helmholtz-port",
       "inputs": "skills/helmholtz-port/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+      "decision_contract": "R011-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "turbulence rather than driver THD",
+        "boundary loading rather than incorrect port length"
+      ]
     },
     {
       "role_id": "R011",
       "skill_id": "lumped-speaker",
       "inputs": "skills/lumped-speaker/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+      "decision_contract": "R011-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "turbulence rather than driver THD",
+        "boundary loading rather than incorrect port length"
+      ]
     },
     {
       "role_id": "R011",
       "skill_id": "linear-array-pattern",
       "inputs": "skills/linear-array-pattern/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+      "decision_contract": "R011-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "turbulence rather than driver THD",
+        "boundary loading rather than incorrect port length"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +170,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070709Z-2e6da1a3"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R011-DOMAIN-DECISION",
+    "question": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+    "required_methods": [
+      "methods/engineering/helmholtz-port.json",
+      "methods/engineering/lumped-speaker.json",
+      "methods/engineering/linear-array-pattern.json"
+    ],
+    "required_skills": [
+      "helmholtz-port",
+      "lumped-speaker",
+      "linear-array-pattern"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R009",
+      "this_seat_owns": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+      "neighbor_owns": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints"
+    },
+    {
+      "neighbor_role": "R017",
+      "this_seat_owns": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+      "neighbor_owns": "Validate directivity and spatial response across angles rather than a single on-axis trace"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+    "Discriminate: turbulence rather than driver THD",
+    "Discriminate: boundary loading rather than incorrect port length"
+  ],
+  "professional_inputs": {
+    "decision_question": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "effective length, flow regime and boundary conditions"
+    ],
+    "calculation_schemas": {
+      "helmholtz-port": "skills/helmholtz-port/input.schema.json",
+      "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+      "linear-array-pattern": "skills/linear-array-pattern/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R011-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "helmholtz-port": "skills/helmholtz-port/output.schema.json",
+      "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+      "linear-array-pattern": "skills/linear-array-pattern/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity",
+    "end correction omitted",
+    "port resonance or chuffing hidden by on-axis FR",
+    "turbulence rather than driver THD",
+    "boundary loading rather than incorrect port length",
+    "effective length, flow regime and boundary conditions"
+  ]
 }

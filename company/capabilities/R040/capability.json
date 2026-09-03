@@ -5,17 +5,18 @@
     "name": "Array / Wave Propagation Simulation Engineer",
     "group": "Microphone CoE"
   },
-  "mission": "Array / Wave Propagation Simulation Engineer: execute and challenge the bounded methods listed in scope.",
+  "mission": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
   "domain": "Microphone CoE",
   "scope": [
-    "Broadside in-phase sensors have normalized unit power.",
-    "A seven-sample shifted impulse establishes correlation lag sign and magnitude.",
-    "Averaging identical broadside channels preserves the source."
+    "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+    "Investigate and bound: far-field plane wave used for near-field source",
+    "Investigate and bound: front/back ambiguity ignored"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R034 owns: Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "Neighbor R043 owns: Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
   ],
   "inputs": {
     "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/gcc-phat-tdoa.json",
     "knowledge/engineering/delay-sum-beamforming.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "source range, sound speed and element position"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "far-field plane wave used for near-field source",
+    "front/back ambiguity ignored"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "speed-of-sound drift rather than clock error",
+    "channel permutation rather than wave model failure"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+      "must_challenge": [
+        "speed-of-sound drift rather than clock error",
+        "channel permutation rather than wave model failure"
+      ],
+      "must_account_for": "source range, sound speed and element position",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Array/linear-array-pattern/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "linear-array-pattern",
       "inputs": "skills/linear-array-pattern/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+      "decision_contract": "R040-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "speed-of-sound drift rather than clock error",
+        "channel permutation rather than wave model failure"
+      ]
     },
     {
       "role_id": "R040",
       "skill_id": "gcc-phat-tdoa",
       "inputs": "skills/gcc-phat-tdoa/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+      "decision_contract": "R040-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "speed-of-sound drift rather than clock error",
+        "channel permutation rather than wave model failure"
+      ]
     },
     {
       "role_id": "R040",
       "skill_id": "delay-sum-beamforming",
       "inputs": "skills/delay-sum-beamforming/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+      "decision_contract": "R040-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "speed-of-sound drift rather than clock error",
+        "channel permutation rather than wave model failure"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070715Z-c5739480"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R040-DOMAIN-DECISION",
+    "question": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+    "required_methods": [
+      "methods/engineering/linear-array-pattern.json",
+      "methods/engineering/gcc-phat-tdoa.json",
+      "methods/engineering/delay-sum-beamforming.json"
+    ],
+    "required_skills": [
+      "linear-array-pattern",
+      "gcc-phat-tdoa",
+      "delay-sum-beamforming"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R034",
+      "this_seat_owns": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+      "neighbor_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty"
+    },
+    {
+      "neighbor_role": "R043",
+      "this_seat_owns": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+      "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+    "Discriminate: speed-of-sound drift rather than clock error",
+    "Discriminate: channel permutation rather than wave model failure"
+  ],
+  "professional_inputs": {
+    "decision_question": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "source range, sound speed and element position"
+    ],
+    "calculation_schemas": {
+      "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
+      "gcc-phat-tdoa": "skills/gcc-phat-tdoa/input.schema.json",
+      "delay-sum-beamforming": "skills/delay-sum-beamforming/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R040-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
+      "gcc-phat-tdoa": "skills/gcc-phat-tdoa/output.schema.json",
+      "delay-sum-beamforming": "skills/delay-sum-beamforming/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Predict array propagation and aliasing with geometric delay and steering-vector checks",
+    "far-field plane wave used for near-field source",
+    "front/back ambiguity ignored",
+    "speed-of-sound drift rather than clock error",
+    "channel permutation rather than wave model failure",
+    "source range, sound speed and element position"
+  ]
 }

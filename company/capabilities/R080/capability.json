@@ -5,17 +5,18 @@
     "name": "Sensor Fusion / IMU / Head Tracking",
     "group": "Distinguished Experts"
   },
-  "mission": "Sensor Fusion / IMU / Head Tracking: execute and challenge the bounded methods listed in scope.",
+  "mission": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
   "domain": "Distinguished Experts",
   "scope": [
-    "Thirty ms of buffers plus thirty ms of other serial stages.",
-    "Exact affine relation y=2x+1.",
-    "A seven-sample shifted impulse establishes correlation lag sign and magnitude."
+    "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+    "Investigate and bound: frame convention reverses direction",
+    "Investigate and bound: timestamp skew mistaken for motion"
   ],
   "non_scope": [
-    "complete human-equivalent specialty competence",
-    "real instrumentation/calibration unless separately evidenced",
-    "licensed FEM/BEM/CAE or clinical/production approval"
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R071 owns: Choose binaural/spatial rendering assumptions from HRTF, head pose and temporal alignment",
+    "Neighbor R043 owns: Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
   ],
   "inputs": {
     "latency-budget": "skills/latency-budget/input.schema.json",
@@ -42,10 +43,7 @@
     "knowledge/engineering/correlation-outliers.json",
     "knowledge/engineering/gcc-phat-tdoa.json"
   ],
-  "standards_metadata_references": [
-    "IEC 60268-5",
-    "IEC 60268-4"
-  ],
+  "standards_metadata_references": [],
   "permitted_tools": [
     "FREE_LOCAL_BASELINE",
     "LOCAL_AI_MEMORY_SUMMARY"
@@ -80,25 +78,31 @@
     "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
   },
   "uncertainty_requirements": [
-    "declare model applicability",
-    "separate numerical result from calibration uncertainty",
-    "state unavailable uncertainty instead of inventing confidence"
+    "pose covariance and synchronization error"
   ],
   "common_failure_modes": [
-    "wrong transducer geometry",
-    "unexcited or aliased input",
-    "units/reference mismatch",
-    "model validity exceeded"
+    "frame convention reverses direction",
+    "timestamp skew mistaken for motion"
   ],
   "counter_hypotheses": [
-    "fixture or assembly error rather than product defect",
-    "measurement-chain error rather than signal-processing failure",
-    "insufficient data rather than a confirmed pass"
+    "sensor alignment rather than DOA error",
+    "latency rather than rotational bias"
   ],
   "review_requirements": {
     "reviewer": "R098",
     "evidence_curator": "R099",
-    "automated_review_is_human_approval": false
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+      "must_challenge": [
+        "sensor alignment rather than DOA error",
+        "latency rather than rotational bias"
+      ],
+      "must_account_for": "pose covariance and synchronization error",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
   },
   "golden_cases": [
     "golden/engineering/Product/latency-budget/golden.json",
@@ -121,21 +125,39 @@
       "skill_id": "latency-budget",
       "inputs": "skills/latency-budget/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+      "decision_contract": "R080-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "sensor alignment rather than DOA error",
+        "latency rather than rotational bias"
+      ]
     },
     {
       "role_id": "R080",
       "skill_id": "correlation-outliers",
       "inputs": "skills/correlation-outliers/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+      "decision_contract": "R080-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "sensor alignment rather than DOA error",
+        "latency rather than rotational bias"
+      ]
     },
     {
       "role_id": "R080",
       "skill_id": "gcc-phat-tdoa",
       "inputs": "skills/gcc-phat-tdoa/input.schema.json",
       "risk": "R1",
-      "required_evidence": "sealed numerical run"
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+      "decision_contract": "R080-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "sensor alignment rather than DOA error",
+        "latency rather than rotational bias"
+      ]
     }
   ],
   "report_templates": [
@@ -145,5 +167,76 @@
   "maturity_evidence": [
     ".aeris\\evidence\\RUN-20260903T070724Z-98908b5d"
   ],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R080-DOMAIN-DECISION",
+    "question": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+    "required_methods": [
+      "methods/engineering/latency-budget.json",
+      "methods/engineering/correlation-outliers.json",
+      "methods/engineering/gcc-phat-tdoa.json"
+    ],
+    "required_skills": [
+      "latency-budget",
+      "correlation-outliers",
+      "gcc-phat-tdoa"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R071",
+      "this_seat_owns": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+      "neighbor_owns": "Choose binaural/spatial rendering assumptions from HRTF, head pose and temporal alignment"
+    },
+    {
+      "neighbor_role": "R043",
+      "this_seat_owns": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+      "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+    "Discriminate: sensor alignment rather than DOA error",
+    "Discriminate: latency rather than rotational bias"
+  ],
+  "professional_inputs": {
+    "decision_question": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "pose covariance and synchronization error"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+      "gcc-phat-tdoa": "skills/gcc-phat-tdoa/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R080-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+      "gcc-phat-tdoa": "skills/gcc-phat-tdoa/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty",
+    "frame convention reverses direction",
+    "timestamp skew mistaken for motion",
+    "sensor alignment rather than DOA error",
+    "latency rather than rotational bias",
+    "pose covariance and synchronization error"
+  ]
 }
