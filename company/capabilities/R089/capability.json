@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "provenance-research": "skills/provenance-research/input.schema.json",
-    "requirement-traceability": "skills/requirement-traceability/input.schema.json"
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "standards-metadata-applicability-baseline": "skills/standards-metadata-applicability-baseline/input.schema.json"
   },
   "outputs": {
     "provenance-research": "skills/provenance-research/output.schema.json",
-    "requirement-traceability": "skills/requirement-traceability/output.schema.json"
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "standards-metadata-applicability-baseline": "skills/standards-metadata-applicability-baseline/output.schema.json"
   },
   "required_skills": [
     "provenance-research",
-    "requirement-traceability"
+    "requirement-traceability",
+    "standards-metadata-applicability-baseline"
   ],
   "required_methods": [
     "methods/engineering/provenance-research.json",
-    "methods/engineering/requirement-traceability.json"
+    "methods/engineering/requirement-traceability.json",
+    "methods/roles/standards-metadata-applicability-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/provenance-research.json",
@@ -153,11 +157,13 @@
     "question": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
     "required_methods": [
       "methods/engineering/provenance-research.json",
-      "methods/engineering/requirement-traceability.json"
+      "methods/engineering/requirement-traceability.json",
+      "methods/roles/standards-metadata-applicability-baseline.json"
     ],
     "required_skills": [
       "provenance-research",
-      "requirement-traceability"
+      "requirement-traceability",
+      "standards-metadata-applicability-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -189,7 +195,8 @@
     ],
     "calculation_schemas": {
       "provenance-research": "skills/provenance-research/input.schema.json",
-      "requirement-traceability": "skills/requirement-traceability/input.schema.json"
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "standards-metadata-applicability-baseline": "skills/standards-metadata-applicability-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -203,7 +210,8 @@
     ],
     "calculation_schemas": {
       "provenance-research": "skills/provenance-research/output.schema.json",
-      "requirement-traceability": "skills/requirement-traceability/output.schema.json"
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "standards-metadata-applicability-baseline": "skills/standards-metadata-applicability-baseline/output.schema.json"
     }
   },
   "report_sections": [
@@ -213,5 +221,11 @@
     "regional adoption difference rather than conflicting standard",
     "scope exclusion rather than noncompliance",
     "edition status, adoption date and source verification age"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "standards-metadata-applicability-baseline",
+    "method": "methods/roles/standards-metadata-applicability-baseline.json",
+    "suite": "golden/roles/R089/golden.json",
+    "scope": "Supplied standards metadata applicability/access/requirement-change reasoning; no authoritative current-edition or conformance verification."
+  }
 }

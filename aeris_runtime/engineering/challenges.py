@@ -131,6 +131,8 @@ def run(identifier, *, prepare_qualifications=False):
             record['revision_origin']=_faca_origin(inputs,record['stages'][0]['report'],attempt)
         if stage=='revised' and identifier=='REQUIREMENT_TRACEABILITY':
             record['revision_origin']=_trace_origin(inputs,record['stages'][0]['report'],attempt)
+        if stage=='revised' and identifier=='STANDARDS_PROVENANCE':
+            record['revision_origin']=_standard_origin(inputs,record['stages'][0]['report'],attempt)
         objective = f'{attempt}/{stage}: {identifier}'
         report = run_role(definition['role_id'], skill, inputs[stage], objective=objective,
                           project_id=project, source_kind='SYNTHETIC',context=definition.get('context'))
@@ -195,6 +197,24 @@ def _trace_origin(inputs, first_report, attempt):
             'new_link_sha256':catalog.digest(inputs['revised']['links'][-1]),
             'immutable_contract_sha256':catalog.digest({k:v for k,v in initial.items() if k!='links'}),
             'classification':'SYNTHETIC_LINK_REVISION_NOT_PHYSICAL_MEASUREMENT'}
+
+
+def _standard_origin(inputs,first_report,attempt):
+    from .standard_metadata import validate_revision
+    execution=first_report['evidence_run_id']
+    if not evidence.validate_bundle(execution)['valid']:raise ValueError('standards initial execution integrity failed')
+    root=evidence.bundle_dir(execution)
+    context=_object(factory.read(root/'raw/engineering-context.json'))
+    initial=factory.read(root/'raw/engineering-input.json')
+    if (context.get('objective')!=attempt+'/initial: STANDARDS_PROVENANCE'
+            or context.get('role_id')!='R089' or context.get('skill_id')!='standards-metadata-applicability-baseline'
+            or initial!=inputs['initial'] or factory.read(root/'processed/skill_result.json')!=first_report['numerical_result']):
+        raise ValueError('standards source belongs to another attempt or metadata')
+    validate_revision(initial,inputs['revised'])
+    return {'attempt_id':attempt,'initial_execution_id':execution,'initial_input_sha256':catalog.digest(initial),
+            'preserved_metadata_sha256':catalog.digest(initial['current']['metadata']),
+            'new_source_record_sha256':catalog.digest(inputs['revised']['current']['source']),
+            'classification':'HYPOTHETICAL_METADATA_REFRESH_NOT_LIVE_RETRIEVAL'}
 
 
 def _objects(value):
@@ -320,6 +340,9 @@ def status(run_id):
         if record['challenge_id']=='REQUIREMENT_TRACEABILITY':
             if record.get('revision_origin')!=_trace_origin(inputs,record['stages'][0]['report'],run_id):
                 raise ValueError('trace revision origin receipt mismatch')
+        if record['challenge_id']=='STANDARDS_PROVENANCE':
+            if record.get('revision_origin')!=_standard_origin(inputs,record['stages'][0]['report'],run_id):
+                raise ValueError('standards revision origin receipt mismatch')
         memory = Harness()
         if (record['memory']['memory_is_evidence'] is not False or not memory.verify()['valid']
                 or record['memory']['events'] != memory.events(record['project_id'], limit=10000)):

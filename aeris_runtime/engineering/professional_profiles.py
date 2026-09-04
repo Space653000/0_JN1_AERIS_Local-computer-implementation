@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R089':{'skill_id':'standards-metadata-applicability-baseline','method':'methods/roles/standards-metadata-applicability-baseline.json',
+            'suite':'golden/roles/R089/golden.json','scope':'Supplied standards metadata applicability/access/requirement-change reasoning; no authoritative current-edition or conformance verification.'},
+    'R090':{'skill_id':'standards-metadata-domain-review','method':'methods/roles/standards-metadata-domain-review.json',
+            'suite':'golden/roles/R090/golden.json','scope':'Independent metadata and requirement impact assertion review; no customer/regulatory certification or live source verification.'},
     'R097':{'skill_id':'requirement-association-baseline','method':'methods/roles/requirement-association-baseline.json',
             'suite':'golden/roles/R097/golden.json','scope':'Exact required association/version/reference and supplied interval coverage; no physical/customer acceptance.'},
     'R099':{'skill_id':'requirement-association-domain-review','method':'methods/roles/requirement-association-domain-review.json',

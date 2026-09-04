@@ -50,6 +50,11 @@
      "initial_failures":["REQUIRED_ASSOCIATION_COVERAGE","CURRENT_REVISION_AND_SEMANTICS","BOUNDED_REQUIREMENT_INTERVALS"],
      "oracles":{"initial":[{"path":"required_associations","expected":2,"absolute_tolerance":0},{"path":"linked_associations","expected":1,"absolute_tolerance":0},{"path":"complete_requirements","expected":0,"absolute_tolerance":0}],
                 "revised":[{"path":"required_associations","expected":2,"absolute_tolerance":0},{"path":"bounded_associations","expected":2,"absolute_tolerance":0},{"path":"real_evidence_count","expected":0,"absolute_tolerance":0}]}},
-    {"id":"STANDARDS_PROVENANCE","implemented":false}
+    {"id":"STANDARDS_PROVENANCE","implemented":true,"role_id":"R089","initial_case_id":"STANDARD-STALE",
+     "context":{"product":"Metadata review"},"allowed_revision_fields":["current"],"initial":{},"revised":{},
+     "requirements":{"as_of":"2026-09-01T00:00:00Z","freshness_days":180,"intended_use":"METADATA_ONLY","region":"TW","domain_tags":["speaker"]},
+     "initial_failures":["METADATA_COMPLETENESS_AND_FRESHNESS"],
+     "oracles":{"initial":[{"path":"metadata_blockers.0","expected":"SOURCE_STALE","absolute_tolerance":0},{"path":"live_verified","expected":false,"absolute_tolerance":0}],
+                "revised":[{"path":"metadata_blockers","expected":[],"absolute_tolerance":0},{"path":"semantic_changes","expected":[],"absolute_tolerance":0},{"path":"live_verified","expected":false,"absolute_tolerance":0},{"path":"formal_conformance_verified","expected":false,"absolute_tolerance":0}]} }
   ]
 }

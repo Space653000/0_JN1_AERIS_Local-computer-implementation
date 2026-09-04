@@ -1,0 +1,986 @@
+{
+  "suite_id": "R090-METADATA-V1",
+  "role_id": "R090",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Fictitious family/example.invalid metadata and hand-authored exact scope, 180-day freshness, access and impact decision oracles; no real standard edition or live retrieval asserted.",
+  "scope": "Supplied metadata policy only, not source authenticity/current-edition/customer acceptance",
+  "skill_id": "standards-metadata-domain-review",
+  "base_input": {
+    "parameters": {
+      "as_of": "2026-09-01T00:00:00Z",
+      "freshness_days": 180,
+      "intended_use": "METADATA_ONLY",
+      "region": "TW",
+      "domain_tags": [
+        "speaker"
+      ],
+      "requirements": [
+        {
+          "id": "REQ-SPL",
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "region": "TW",
+          "domain_tags": [
+            "speaker"
+          ]
+        }
+      ],
+      "previous": {
+        "metadata": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "status": "CURRENT",
+          "superseded_by": null,
+          "regions": [
+            "TW"
+          ],
+          "domain_tags": [
+            "speaker"
+          ],
+          "normative_informative": "NORMATIVE",
+          "license_access": "METADATA_ONLY",
+          "requirement_ids": [
+            "REQ-SPL"
+          ]
+        },
+        "source": {
+          "record_id": "SYN-PREVIOUS",
+          "publisher": "Synthetic fixture publisher",
+          "url": "https://example.invalid/fixture-metadata",
+          "retrieved_at": "2024-01-01T00:00:00Z",
+          "source_kind": "SYNTHETIC",
+          "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+        }
+      },
+      "current": {
+        "metadata": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "status": "CURRENT",
+          "superseded_by": null,
+          "regions": [
+            "TW"
+          ],
+          "domain_tags": [
+            "speaker"
+          ],
+          "normative_informative": "NORMATIVE",
+          "license_access": "METADATA_ONLY",
+          "requirement_ids": [
+            "REQ-SPL"
+          ]
+        },
+        "source": {
+          "record_id": "SYN-NEW",
+          "publisher": "Synthetic fixture publisher",
+          "url": "https://example.invalid/fixture-metadata",
+          "retrieved_at": "2026-08-01T00:00:00Z",
+          "source_kind": "SYNTHETIC",
+          "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+        }
+      }
+    },
+    "candidate": {
+      "family": "SYNTHETIC-SPEAKER-STANDARD",
+      "edition": "fixture-2",
+      "as_of": "2026-09-01T00:00:00Z",
+      "applicability": "APPLICABLE",
+      "metadata_blockers": [],
+      "license_blockers": [],
+      "semantic_changes": [],
+      "provenance_changes": [
+        "record_id",
+        "retrieved_at"
+      ],
+      "impacted_requirement_ids": [],
+      "checks": [
+        {
+          "id": "DECLARED_SCOPE_APPLICABILITY",
+          "passed": true,
+          "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+        },
+        {
+          "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+          "passed": true,
+          "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+        },
+        {
+          "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+          "passed": true,
+          "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+        },
+        {
+          "id": "SEMANTIC_CHANGE_REVIEW",
+          "passed": true,
+          "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+        }
+      ],
+      "required_revisions": [],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "live_verified": false,
+      "source_authenticity_verified": false,
+      "formal_conformance_verified": false,
+      "physical_measurement_verified": false,
+      "customer_approval": false,
+      "free_baseline_execution_allowed": true,
+      "counter_hypotheses": [
+        "Regional adoption or scope difference rather than contradictory standard",
+        "Retrieval refresh rather than semantic edition change"
+      ],
+      "next_discriminating_experiment": "VERIFY_EXACT_EDITION_SCOPE_AND_REQUIREMENT_IMPACT_WITH_AUTHORIZED_SOURCE",
+      "model_assumptions": [
+        "Supplied metadata declarations are not live-verified facts",
+        "Freshness uses pinned as-of time; content identity is not authenticity",
+        "Previous/current scope union preserves requirements removed from current scope"
+      ],
+      "unresolved": [
+        "Actual authoritative source verification",
+        "Normative access rights and qualified Human/customer review"
+      ]
+    },
+    "context": {
+      "product": "Metadata review",
+      "transducer": "Both",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "STANDARD-REVIEW-BASE",
+      "kind": "positive",
+      "question": "Does exact supplied edition/scope/freshness content support only bounded metadata consistency?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-LIVE_VERIFIED",
+      "kind": "counter_hypothesis",
+      "question": "Does independent metadata review reject unsupported live_verified?",
+      "input_overrides": {
+        "candidate": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "as_of": "2026-09-01T00:00:00Z",
+          "applicability": "APPLICABLE",
+          "metadata_blockers": [],
+          "license_blockers": [],
+          "semantic_changes": [],
+          "provenance_changes": [
+            "record_id",
+            "retrieved_at"
+          ],
+          "impacted_requirement_ids": [],
+          "checks": [
+            {
+              "id": "DECLARED_SCOPE_APPLICABILITY",
+              "passed": true,
+              "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+            },
+            {
+              "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+              "passed": true,
+              "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+            },
+            {
+              "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+              "passed": true,
+              "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+            },
+            {
+              "id": "SEMANTIC_CHANGE_REVIEW",
+              "passed": true,
+              "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "live_verified": true,
+          "source_authenticity_verified": false,
+          "formal_conformance_verified": false,
+          "physical_measurement_verified": false,
+          "customer_approval": false,
+          "free_baseline_execution_allowed": true,
+          "counter_hypotheses": [
+            "Regional adoption or scope difference rather than contradictory standard",
+            "Retrieval refresh rather than semantic edition change"
+          ],
+          "next_discriminating_experiment": "VERIFY_EXACT_EDITION_SCOPE_AND_REQUIREMENT_IMPACT_WITH_AUTHORIZED_SOURCE",
+          "model_assumptions": [
+            "Supplied metadata declarations are not live-verified facts",
+            "Freshness uses pinned as-of time; content identity is not authenticity",
+            "Previous/current scope union preserves requirements removed from current scope"
+          ],
+          "unresolved": [
+            "Actual authoritative source verification",
+            "Normative access rights and qualified Human/customer review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-SOURCE_AUTHENTICITY_VERIFIED",
+      "kind": "counter_hypothesis",
+      "question": "Does independent metadata review reject unsupported source_authenticity_verified?",
+      "input_overrides": {
+        "candidate": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "as_of": "2026-09-01T00:00:00Z",
+          "applicability": "APPLICABLE",
+          "metadata_blockers": [],
+          "license_blockers": [],
+          "semantic_changes": [],
+          "provenance_changes": [
+            "record_id",
+            "retrieved_at"
+          ],
+          "impacted_requirement_ids": [],
+          "checks": [
+            {
+              "id": "DECLARED_SCOPE_APPLICABILITY",
+              "passed": true,
+              "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+            },
+            {
+              "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+              "passed": true,
+              "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+            },
+            {
+              "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+              "passed": true,
+              "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+            },
+            {
+              "id": "SEMANTIC_CHANGE_REVIEW",
+              "passed": true,
+              "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "live_verified": false,
+          "source_authenticity_verified": true,
+          "formal_conformance_verified": false,
+          "physical_measurement_verified": false,
+          "customer_approval": false,
+          "free_baseline_execution_allowed": true,
+          "counter_hypotheses": [
+            "Regional adoption or scope difference rather than contradictory standard",
+            "Retrieval refresh rather than semantic edition change"
+          ],
+          "next_discriminating_experiment": "VERIFY_EXACT_EDITION_SCOPE_AND_REQUIREMENT_IMPACT_WITH_AUTHORIZED_SOURCE",
+          "model_assumptions": [
+            "Supplied metadata declarations are not live-verified facts",
+            "Freshness uses pinned as-of time; content identity is not authenticity",
+            "Previous/current scope union preserves requirements removed from current scope"
+          ],
+          "unresolved": [
+            "Actual authoritative source verification",
+            "Normative access rights and qualified Human/customer review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-FORMAL_CONFORMANCE_VERIFIED",
+      "kind": "counter_hypothesis",
+      "question": "Does independent metadata review reject unsupported formal_conformance_verified?",
+      "input_overrides": {
+        "candidate": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "as_of": "2026-09-01T00:00:00Z",
+          "applicability": "APPLICABLE",
+          "metadata_blockers": [],
+          "license_blockers": [],
+          "semantic_changes": [],
+          "provenance_changes": [
+            "record_id",
+            "retrieved_at"
+          ],
+          "impacted_requirement_ids": [],
+          "checks": [
+            {
+              "id": "DECLARED_SCOPE_APPLICABILITY",
+              "passed": true,
+              "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+            },
+            {
+              "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+              "passed": true,
+              "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+            },
+            {
+              "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+              "passed": true,
+              "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+            },
+            {
+              "id": "SEMANTIC_CHANGE_REVIEW",
+              "passed": true,
+              "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "live_verified": false,
+          "source_authenticity_verified": false,
+          "formal_conformance_verified": true,
+          "physical_measurement_verified": false,
+          "customer_approval": false,
+          "free_baseline_execution_allowed": true,
+          "counter_hypotheses": [
+            "Regional adoption or scope difference rather than contradictory standard",
+            "Retrieval refresh rather than semantic edition change"
+          ],
+          "next_discriminating_experiment": "VERIFY_EXACT_EDITION_SCOPE_AND_REQUIREMENT_IMPACT_WITH_AUTHORIZED_SOURCE",
+          "model_assumptions": [
+            "Supplied metadata declarations are not live-verified facts",
+            "Freshness uses pinned as-of time; content identity is not authenticity",
+            "Previous/current scope union preserves requirements removed from current scope"
+          ],
+          "unresolved": [
+            "Actual authoritative source verification",
+            "Normative access rights and qualified Human/customer review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-CUSTOMER_APPROVAL",
+      "kind": "counter_hypothesis",
+      "question": "Does independent metadata review reject unsupported customer_approval?",
+      "input_overrides": {
+        "candidate": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "as_of": "2026-09-01T00:00:00Z",
+          "applicability": "APPLICABLE",
+          "metadata_blockers": [],
+          "license_blockers": [],
+          "semantic_changes": [],
+          "provenance_changes": [
+            "record_id",
+            "retrieved_at"
+          ],
+          "impacted_requirement_ids": [],
+          "checks": [
+            {
+              "id": "DECLARED_SCOPE_APPLICABILITY",
+              "passed": true,
+              "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+            },
+            {
+              "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+              "passed": true,
+              "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+            },
+            {
+              "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+              "passed": true,
+              "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+            },
+            {
+              "id": "SEMANTIC_CHANGE_REVIEW",
+              "passed": true,
+              "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "live_verified": false,
+          "source_authenticity_verified": false,
+          "formal_conformance_verified": false,
+          "physical_measurement_verified": false,
+          "customer_approval": true,
+          "free_baseline_execution_allowed": true,
+          "counter_hypotheses": [
+            "Regional adoption or scope difference rather than contradictory standard",
+            "Retrieval refresh rather than semantic edition change"
+          ],
+          "next_discriminating_experiment": "VERIFY_EXACT_EDITION_SCOPE_AND_REQUIREMENT_IMPACT_WITH_AUTHORIZED_SOURCE",
+          "model_assumptions": [
+            "Supplied metadata declarations are not live-verified facts",
+            "Freshness uses pinned as-of time; content identity is not authenticity",
+            "Previous/current scope union preserves requirements removed from current scope"
+          ],
+          "unresolved": [
+            "Actual authoritative source verification",
+            "Normative access rights and qualified Human/customer review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-EDITION",
+      "kind": "counter_hypothesis",
+      "question": "Does independent metadata review reject unsupported edition?",
+      "input_overrides": {
+        "candidate": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fabricated-edition",
+          "as_of": "2026-09-01T00:00:00Z",
+          "applicability": "APPLICABLE",
+          "metadata_blockers": [],
+          "license_blockers": [],
+          "semantic_changes": [],
+          "provenance_changes": [
+            "record_id",
+            "retrieved_at"
+          ],
+          "impacted_requirement_ids": [],
+          "checks": [
+            {
+              "id": "DECLARED_SCOPE_APPLICABILITY",
+              "passed": true,
+              "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+            },
+            {
+              "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+              "passed": true,
+              "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+            },
+            {
+              "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+              "passed": true,
+              "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+            },
+            {
+              "id": "SEMANTIC_CHANGE_REVIEW",
+              "passed": true,
+              "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "live_verified": false,
+          "source_authenticity_verified": false,
+          "formal_conformance_verified": false,
+          "physical_measurement_verified": false,
+          "customer_approval": false,
+          "free_baseline_execution_allowed": true,
+          "counter_hypotheses": [
+            "Regional adoption or scope difference rather than contradictory standard",
+            "Retrieval refresh rather than semantic edition change"
+          ],
+          "next_discriminating_experiment": "VERIFY_EXACT_EDITION_SCOPE_AND_REQUIREMENT_IMPACT_WITH_AUTHORIZED_SOURCE",
+          "model_assumptions": [
+            "Supplied metadata declarations are not live-verified facts",
+            "Freshness uses pinned as-of time; content identity is not authenticity",
+            "Previous/current scope union preserves requirements removed from current scope"
+          ],
+          "unresolved": [
+            "Actual authoritative source verification",
+            "Normative access rights and qualified Human/customer review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-NEXT_DISCRIMINATING_EXPERIMENT",
+      "kind": "counter_hypothesis",
+      "question": "Does independent metadata review reject unsupported next_discriminating_experiment?",
+      "input_overrides": {
+        "candidate": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "as_of": "2026-09-01T00:00:00Z",
+          "applicability": "APPLICABLE",
+          "metadata_blockers": [],
+          "license_blockers": [],
+          "semantic_changes": [],
+          "provenance_changes": [
+            "record_id",
+            "retrieved_at"
+          ],
+          "impacted_requirement_ids": [],
+          "checks": [
+            {
+              "id": "DECLARED_SCOPE_APPLICABILITY",
+              "passed": true,
+              "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+            },
+            {
+              "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+              "passed": true,
+              "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+            },
+            {
+              "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+              "passed": true,
+              "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+            },
+            {
+              "id": "SEMANTIC_CHANGE_REVIEW",
+              "passed": true,
+              "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "live_verified": false,
+          "source_authenticity_verified": false,
+          "formal_conformance_verified": false,
+          "physical_measurement_verified": false,
+          "customer_approval": false,
+          "free_baseline_execution_allowed": true,
+          "counter_hypotheses": [
+            "Regional adoption or scope difference rather than contradictory standard",
+            "Retrieval refresh rather than semantic edition change"
+          ],
+          "next_discriminating_experiment": "AUTO_CERTIFY",
+          "model_assumptions": [
+            "Supplied metadata declarations are not live-verified facts",
+            "Freshness uses pinned as-of time; content identity is not authenticity",
+            "Previous/current scope union preserves requirements removed from current scope"
+          ],
+          "unresolved": [
+            "Actual authoritative source verification",
+            "Normative access rights and qualified Human/customer review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-UNRESOLVED",
+      "kind": "counter_hypothesis",
+      "question": "Does independent metadata review reject unsupported unresolved?",
+      "input_overrides": {
+        "candidate": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "as_of": "2026-09-01T00:00:00Z",
+          "applicability": "APPLICABLE",
+          "metadata_blockers": [],
+          "license_blockers": [],
+          "semantic_changes": [],
+          "provenance_changes": [
+            "record_id",
+            "retrieved_at"
+          ],
+          "impacted_requirement_ids": [],
+          "checks": [
+            {
+              "id": "DECLARED_SCOPE_APPLICABILITY",
+              "passed": true,
+              "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+            },
+            {
+              "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+              "passed": true,
+              "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+            },
+            {
+              "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+              "passed": true,
+              "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+            },
+            {
+              "id": "SEMANTIC_CHANGE_REVIEW",
+              "passed": true,
+              "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "live_verified": false,
+          "source_authenticity_verified": false,
+          "formal_conformance_verified": false,
+          "physical_measurement_verified": false,
+          "customer_approval": false,
+          "free_baseline_execution_allowed": true,
+          "counter_hypotheses": [
+            "Regional adoption or scope difference rather than contradictory standard",
+            "Retrieval refresh rather than semantic edition change"
+          ],
+          "next_discriminating_experiment": "VERIFY_EXACT_EDITION_SCOPE_AND_REQUIREMENT_IMPACT_WITH_AUTHORIZED_SOURCE",
+          "model_assumptions": [
+            "Supplied metadata declarations are not live-verified facts",
+            "Freshness uses pinned as-of time; content identity is not authenticity",
+            "Previous/current scope union preserves requirements removed from current scope"
+          ],
+          "unresolved": []
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-FRESHNESS-BOUNDARY",
+      "kind": "boundary",
+      "question": "Does the exact inclusive freshness boundary remain consistent without live verification?",
+      "input_overrides": {
+        "parameters": {
+          "as_of": "2026-09-01T00:00:00Z",
+          "freshness_days": 180,
+          "intended_use": "METADATA_ONLY",
+          "region": "TW",
+          "domain_tags": [
+            "speaker"
+          ],
+          "requirements": [
+            {
+              "id": "REQ-SPL",
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "region": "TW",
+              "domain_tags": [
+                "speaker"
+              ]
+            }
+          ],
+          "previous": {
+            "metadata": {
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "edition": "fixture-2",
+              "status": "CURRENT",
+              "superseded_by": null,
+              "regions": [
+                "TW"
+              ],
+              "domain_tags": [
+                "speaker"
+              ],
+              "normative_informative": "NORMATIVE",
+              "license_access": "METADATA_ONLY",
+              "requirement_ids": [
+                "REQ-SPL"
+              ]
+            },
+            "source": {
+              "record_id": "SYN-PREVIOUS",
+              "publisher": "Synthetic fixture publisher",
+              "url": "https://example.invalid/fixture-metadata",
+              "retrieved_at": "2024-01-01T00:00:00Z",
+              "source_kind": "SYNTHETIC",
+              "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+            }
+          },
+          "current": {
+            "metadata": {
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "edition": "fixture-2",
+              "status": "CURRENT",
+              "superseded_by": null,
+              "regions": [
+                "TW"
+              ],
+              "domain_tags": [
+                "speaker"
+              ],
+              "normative_informative": "NORMATIVE",
+              "license_access": "METADATA_ONLY",
+              "requirement_ids": [
+                "REQ-SPL"
+              ]
+            },
+            "source": {
+              "record_id": "SYN-NEW",
+              "publisher": "Synthetic fixture publisher",
+              "url": "https://example.invalid/fixture-metadata",
+              "retrieved_at": "2026-03-05T00:00:00+00:00",
+              "source_kind": "SYNTHETIC",
+              "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+            }
+          }
+        },
+        "candidate": {
+          "family": "SYNTHETIC-SPEAKER-STANDARD",
+          "edition": "fixture-2",
+          "as_of": "2026-09-01T00:00:00Z",
+          "applicability": "APPLICABLE",
+          "metadata_blockers": [],
+          "license_blockers": [],
+          "semantic_changes": [],
+          "provenance_changes": [
+            "record_id",
+            "retrieved_at"
+          ],
+          "impacted_requirement_ids": [],
+          "checks": [
+            {
+              "id": "DECLARED_SCOPE_APPLICABILITY",
+              "passed": true,
+              "on_failure": "RESOLVE_SCOPE_OR_SELECT_APPLICABLE_FAMILY"
+            },
+            {
+              "id": "METADATA_COMPLETENESS_AND_FRESHNESS",
+              "passed": true,
+              "on_failure": "OBTAIN_CURRENT_SOURCE_METADATA_WITH_PROVENANCE"
+            },
+            {
+              "id": "DECLARED_ACCESS_FOR_INTENDED_USE",
+              "passed": true,
+              "on_failure": "CONFIRM_AUTHORIZED_ACCESS_WITH_HUMAN"
+            },
+            {
+              "id": "SEMANTIC_CHANGE_REVIEW",
+              "passed": true,
+              "on_failure": "REVIEW_ALL_OLD_AND_NEW_SCOPE_REQUIREMENT_IMPACTS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "live_verified": false,
+          "source_authenticity_verified": false,
+          "formal_conformance_verified": false,
+          "physical_measurement_verified": false,
+          "customer_approval": false,
+          "free_baseline_execution_allowed": true,
+          "counter_hypotheses": [
+            "Regional adoption or scope difference rather than contradictory standard",
+            "Retrieval refresh rather than semantic edition change"
+          ],
+          "next_discriminating_experiment": "VERIFY_EXACT_EDITION_SCOPE_AND_REQUIREMENT_IMPACT_WITH_AUTHORIZED_SOURCE",
+          "model_assumptions": [
+            "Supplied metadata declarations are not live-verified facts",
+            "Freshness uses pinned as-of time; content identity is not authenticity",
+            "Previous/current scope union preserves requirements removed from current scope"
+          ],
+          "unresolved": [
+            "Actual authoritative source verification",
+            "Normative access rights and qualified Human/customer review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REVIEW-CREDENTIAL-URL",
+      "kind": "negative",
+      "question": "Does a credential-bearing source URL fail before review?",
+      "input_overrides": {
+        "parameters": {
+          "as_of": "2026-09-01T00:00:00Z",
+          "freshness_days": 180,
+          "intended_use": "METADATA_ONLY",
+          "region": "TW",
+          "domain_tags": [
+            "speaker"
+          ],
+          "requirements": [
+            {
+              "id": "REQ-SPL",
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "region": "TW",
+              "domain_tags": [
+                "speaker"
+              ]
+            }
+          ],
+          "previous": {
+            "metadata": {
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "edition": "fixture-2",
+              "status": "CURRENT",
+              "superseded_by": null,
+              "regions": [
+                "TW"
+              ],
+              "domain_tags": [
+                "speaker"
+              ],
+              "normative_informative": "NORMATIVE",
+              "license_access": "METADATA_ONLY",
+              "requirement_ids": [
+                "REQ-SPL"
+              ]
+            },
+            "source": {
+              "record_id": "SYN-PREVIOUS",
+              "publisher": "Synthetic fixture publisher",
+              "url": "https://example.invalid/fixture-metadata",
+              "retrieved_at": "2024-01-01T00:00:00Z",
+              "source_kind": "SYNTHETIC",
+              "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+            }
+          },
+          "current": {
+            "metadata": {
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "edition": "fixture-2",
+              "status": "CURRENT",
+              "superseded_by": null,
+              "regions": [
+                "TW"
+              ],
+              "domain_tags": [
+                "speaker"
+              ],
+              "normative_informative": "NORMATIVE",
+              "license_access": "METADATA_ONLY",
+              "requirement_ids": [
+                "REQ-SPL"
+              ]
+            },
+            "source": {
+              "record_id": "SYN-NEW",
+              "publisher": "Synthetic fixture publisher",
+              "url": "https://user:secret@example.invalid/source",
+              "retrieved_at": "2026-08-01T00:00:00Z",
+              "source_kind": "SYNTHETIC",
+              "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+            }
+          }
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "STANDARD-REVIEW-BAD-HASH",
+      "kind": "negative",
+      "question": "Must reviewer independently enforce payload identity?",
+      "input_overrides": {
+        "parameters": {
+          "as_of": "2026-09-01T00:00:00Z",
+          "freshness_days": 180,
+          "intended_use": "METADATA_ONLY",
+          "region": "TW",
+          "domain_tags": [
+            "speaker"
+          ],
+          "requirements": [
+            {
+              "id": "REQ-SPL",
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "region": "TW",
+              "domain_tags": [
+                "speaker"
+              ]
+            }
+          ],
+          "previous": {
+            "metadata": {
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "edition": "fixture-2",
+              "status": "CURRENT",
+              "superseded_by": null,
+              "regions": [
+                "TW"
+              ],
+              "domain_tags": [
+                "speaker"
+              ],
+              "normative_informative": "NORMATIVE",
+              "license_access": "METADATA_ONLY",
+              "requirement_ids": [
+                "REQ-SPL"
+              ]
+            },
+            "source": {
+              "record_id": "SYN-PREVIOUS",
+              "publisher": "Synthetic fixture publisher",
+              "url": "https://example.invalid/fixture-metadata",
+              "retrieved_at": "2024-01-01T00:00:00Z",
+              "source_kind": "SYNTHETIC",
+              "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+            }
+          },
+          "current": {
+            "metadata": {
+              "family": "SYNTHETIC-SPEAKER-STANDARD",
+              "edition": "fixture-2",
+              "status": "CURRENT",
+              "superseded_by": null,
+              "regions": [
+                "TW"
+              ],
+              "domain_tags": [
+                "speaker"
+              ],
+              "normative_informative": "NORMATIVE",
+              "license_access": "METADATA_ONLY",
+              "requirement_ids": [
+                "REQ-SPL"
+              ]
+            },
+            "source": {
+              "record_id": "SYN-NEW",
+              "publisher": "Synthetic fixture publisher",
+              "url": "https://example.invalid/fixture-metadata",
+              "retrieved_at": "2026-08-01T00:00:00Z",
+              "source_kind": "SYNTHETIC",
+              "content_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            }
+          }
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "STANDARD-REVIEW-HIGH-RISK",
+      "kind": "negative",
+      "question": "Does bounded automatic review refuse R4?",
+      "input_overrides": {
+        "context": {
+          "product": "Metadata review",
+          "transducer": "Both",
+          "lifecycle": "EVT",
+          "risk": "R4",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

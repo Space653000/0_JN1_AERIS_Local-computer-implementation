@@ -543,3 +543,32 @@ The next standalone standards module/tests were added after discovery and are
 not covered by this checkpoint result. Browser rerun is separate and pending.
 Broader role depth, final standards workflow, live rollout, clean Windows/Ubuntu
 CI and H0001 handoff remain unfinished. No GitHub write or Core change occurred.
+
+## Twelfth construction checkpoint — standards metadata and change impact
+
+R089 now evaluates declared edition/status, regional and domain applicability,
+metadata freshness, normative classification, declared access and requirement
+linkage independently. R090 recomputes decisions using an independent condition
+table. Public metadata is not standards conformance or authenticated retrieval.
+Missing metadata remains unknown; synthetic example.invalid sources are explicit.
+
+Review corrected normative-use classification and a revision that could reuse
+the initial previous source record ID. New receipts must use a distinct source
+record and bind the same attempt's original sealed input/output. The intentionally
+aborted regression is preserved locally and is not counted as passing.
+
+R089 has 14 role cases and R090 has 12: source total 19 suites / 222 cases,
+19 domain/review plus 42 shared engineering Skills. Qualifications remain bounded
+L2, not whole-role L3. STANDARDS_PROVENANCE completes implementation of the eight
+specified company challenge families, but does not complete H0001 role depth.
+
+Fixed-source full regression passed 335 tests in 328.784 s, finished
+2026-09-04T09:37:26.052926+00:00. Complete local-only transcript:
+`.aeris/evidence/H0001-standards-full-tests.log`, SHA-256
+`76f9f8ddcad2a537e5c39cd26e66839c51bff48dc2b1806e75072ce7848922c6`.
+The next standalone sealed-alignment module/tests were added after discovery;
+this result does not cover them. Isolated six-page semantic tests passed before
+the source-ID correction. Live routes returned 6/6 HTTP 200, but the old running
+supervisor is not evidence that current construction code has been deployed.
+Broader role/product depth, live rollout, clean Windows/Ubuntu CI and sanitized
+H0001 Draft PR handoff remain unfinished. No GitHub write or Core change occurred.
