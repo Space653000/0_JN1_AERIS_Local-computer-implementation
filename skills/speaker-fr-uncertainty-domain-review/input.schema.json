@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "parameters",
+    "candidate",
+    "context"
+  ],
+  "properties": {
+    "parameters": {
+      "type": "object"
+    },
+    "candidate": {
+      "type": "object"
+    },
+    "context": {
+      "type": "object"
+    }
+  }
+}

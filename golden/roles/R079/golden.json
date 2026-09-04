@@ -1,0 +1,605 @@
+{
+  "suite_id": "R079-FR-INTERVAL-REVIEW-V1",
+  "role_id": "R079",
+  "skill_id": "speaker-fr-uncertainty-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Separately authored assertions: exact reference cancellation, 1.8/2.2 monotone interval extrema, omitted uncertainty and false full-band claims. No executor-generated candidate.",
+  "scope": "Bounded reference/interval review, not full metrology qualification",
+  "base_input": {
+    "parameters": {
+      "frequency_hz": [
+        100,
+        200,
+        1000
+      ],
+      "spl_db": [
+        80,
+        80,
+        80
+      ],
+      "lower_mask_db": [
+        78,
+        78,
+        78
+      ],
+      "upper_mask_db": [
+        82,
+        82,
+        82
+      ],
+      "distance_m": 2,
+      "distance_lower_m": 2,
+      "distance_upper_m": 2,
+      "reference_distance_m": 1,
+      "drive_voltage_v": 2,
+      "drive_lower_v": 2,
+      "drive_upper_v": 2,
+      "reference_voltage_v": 1,
+      "level_bound_db": 1,
+      "gate_seconds": 0.02,
+      "minimum_cycles": 2,
+      "propagation_model": "FREE_FIELD_FAR_FIELD",
+      "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+    },
+    "candidate": {
+      "normalized_spl_db": [
+        80,
+        80,
+        80
+      ],
+      "lower_interval_db": [
+        79,
+        79,
+        79
+      ],
+      "upper_interval_db": [
+        81,
+        81,
+        81
+      ],
+      "sample_decisions": [
+        "WITHIN_SAMPLED_ENVELOPE",
+        "WITHIN_SAMPLED_ENVELOPE",
+        "WITHIN_SAMPLED_ENVELOPE"
+      ],
+      "checks": [
+        {
+          "id": "WINDOW_VALIDITY",
+          "passed": true,
+          "on_failure": "EXTEND_WINDOW_OR_REVISE_MEASUREMENT_METHOD"
+        },
+        {
+          "id": "SAMPLED_INTERVAL_MASK",
+          "passed": true,
+          "on_failure": "RESOLVE_REFERENCE_UNCERTAINTY_OR_SAMPLED_RESPONSE"
+        }
+      ],
+      "full_band_conformance_verified": false,
+      "linearity_measured": false,
+      "calibration_verified": false,
+      "physical_measurement_verified": false,
+      "counter_hypotheses": [
+        "time-window truncation rather than product bass deficit",
+        "distance or drive-reference mismatch rather than response change",
+        "fixture or room contribution rather than transducer response"
+      ]
+    },
+    "context": {
+      "product": "",
+      "transducer": "Speaker",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "FR-REVIEW-NOMINAL",
+      "kind": "positive",
+      "question": "Are complete supplied reference bounds consistent without any physical certification?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-OMISSION",
+      "kind": "counter_hypothesis",
+      "question": "Does a nominally passing candidate hide distance and voltage interval uncertainty?",
+      "input_overrides": {
+        "parameters": {
+          "frequency_hz": [
+            100,
+            200,
+            1000
+          ],
+          "spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_mask_db": [
+            78,
+            78,
+            78
+          ],
+          "upper_mask_db": [
+            82,
+            82,
+            82
+          ],
+          "distance_m": 2,
+          "distance_lower_m": 1.8,
+          "distance_upper_m": 2.2,
+          "reference_distance_m": 1,
+          "drive_voltage_v": 2,
+          "drive_lower_v": 1.8,
+          "drive_upper_v": 2.2,
+          "reference_voltage_v": 1,
+          "level_bound_db": 1,
+          "gate_seconds": 0.02,
+          "minimum_cycles": 2,
+          "propagation_model": "FREE_FIELD_FAR_FIELD",
+          "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-CORRECTED",
+      "kind": "positive",
+      "question": "Does the independently calculated 77.257..82.743 interval properly reject nominal-mask certainty?",
+      "input_overrides": {
+        "parameters": {
+          "frequency_hz": [
+            100,
+            200,
+            1000
+          ],
+          "spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_mask_db": [
+            78,
+            78,
+            78
+          ],
+          "upper_mask_db": [
+            82,
+            82,
+            82
+          ],
+          "distance_m": 2,
+          "distance_lower_m": 1.8,
+          "distance_upper_m": 2.2,
+          "reference_distance_m": 1,
+          "drive_voltage_v": 2,
+          "drive_lower_v": 1.8,
+          "drive_upper_v": 2.2,
+          "reference_voltage_v": 1,
+          "level_bound_db": 1,
+          "gate_seconds": 0.02,
+          "minimum_cycles": 2,
+          "propagation_model": "FREE_FIELD_FAR_FIELD",
+          "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+        },
+        "candidate": {
+          "normalized_spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_interval_db": [
+            77.256996485622,
+            77.256996485622,
+            77.256996485622
+          ],
+          "upper_interval_db": [
+            82.743003514378,
+            82.743003514378,
+            82.743003514378
+          ],
+          "sample_decisions": [
+            "UNCERTAINTY_CROSSING",
+            "UNCERTAINTY_CROSSING",
+            "UNCERTAINTY_CROSSING"
+          ],
+          "checks": [
+            {
+              "id": "WINDOW_VALIDITY",
+              "passed": true,
+              "on_failure": "EXTEND_WINDOW_OR_REVISE_MEASUREMENT_METHOD"
+            },
+            {
+              "id": "SAMPLED_INTERVAL_MASK",
+              "passed": false,
+              "on_failure": "RESOLVE_REFERENCE_UNCERTAINTY_OR_SAMPLED_RESPONSE"
+            }
+          ],
+          "full_band_conformance_verified": false,
+          "linearity_measured": false,
+          "calibration_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "time-window truncation rather than product bass deficit",
+            "distance or drive-reference mismatch rather than response change",
+            "fixture or room contribution rather than transducer response"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-WINDOW",
+      "kind": "counter_hypothesis",
+      "question": "Must a too-short window challenge a falsely complete measurement verdict?",
+      "input_overrides": {
+        "parameters": {
+          "frequency_hz": [
+            100,
+            200,
+            1000
+          ],
+          "spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_mask_db": [
+            78,
+            78,
+            78
+          ],
+          "upper_mask_db": [
+            82,
+            82,
+            82
+          ],
+          "distance_m": 2,
+          "distance_lower_m": 2,
+          "distance_upper_m": 2,
+          "reference_distance_m": 1,
+          "drive_voltage_v": 2,
+          "drive_lower_v": 2,
+          "drive_upper_v": 2,
+          "reference_voltage_v": 1,
+          "level_bound_db": 1,
+          "gate_seconds": 0.005,
+          "minimum_cycles": 2,
+          "propagation_model": "FREE_FIELD_FAR_FIELD",
+          "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-SIGN",
+      "kind": "counter_hypothesis",
+      "question": "Must a mismatched voltage reference invalidate unchanged claimed SPL?",
+      "input_overrides": {
+        "parameters": {
+          "frequency_hz": [
+            100,
+            200,
+            1000
+          ],
+          "spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_mask_db": [
+            78,
+            78,
+            78
+          ],
+          "upper_mask_db": [
+            82,
+            82,
+            82
+          ],
+          "distance_m": 2,
+          "distance_lower_m": 2,
+          "distance_upper_m": 2,
+          "reference_distance_m": 1,
+          "drive_voltage_v": 2,
+          "drive_lower_v": 2,
+          "drive_upper_v": 2,
+          "reference_voltage_v": 2,
+          "level_bound_db": 1,
+          "gate_seconds": 0.02,
+          "minimum_cycles": 2,
+          "propagation_model": "FREE_FIELD_FAR_FIELD",
+          "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-BOUNDARY",
+      "kind": "boundary",
+      "question": "Does the exact upper bound meet an inclusive mask?",
+      "input_overrides": {
+        "parameters": {
+          "frequency_hz": [
+            100,
+            200,
+            1000
+          ],
+          "spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_mask_db": [
+            78,
+            78,
+            78
+          ],
+          "upper_mask_db": [
+            81,
+            81,
+            81
+          ],
+          "distance_m": 2,
+          "distance_lower_m": 2,
+          "distance_upper_m": 2,
+          "reference_distance_m": 1,
+          "drive_voltage_v": 2,
+          "drive_lower_v": 2,
+          "drive_upper_v": 2,
+          "reference_voltage_v": 1,
+          "level_bound_db": 1,
+          "gate_seconds": 0.02,
+          "minimum_cycles": 2,
+          "propagation_model": "FREE_FIELD_FAR_FIELD",
+          "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-CERTIFICATION",
+      "kind": "positive",
+      "question": "Must full-band certification and measured-linearity claims be challenged?",
+      "input_overrides": {
+        "candidate": {
+          "normalized_spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_interval_db": [
+            79,
+            79,
+            79
+          ],
+          "upper_interval_db": [
+            81,
+            81,
+            81
+          ],
+          "sample_decisions": [
+            "WITHIN_SAMPLED_ENVELOPE",
+            "WITHIN_SAMPLED_ENVELOPE",
+            "WITHIN_SAMPLED_ENVELOPE"
+          ],
+          "checks": [
+            {
+              "id": "WINDOW_VALIDITY",
+              "passed": true,
+              "on_failure": "EXTEND_WINDOW_OR_REVISE_MEASUREMENT_METHOD"
+            },
+            {
+              "id": "SAMPLED_INTERVAL_MASK",
+              "passed": true,
+              "on_failure": "RESOLVE_REFERENCE_UNCERTAINTY_OR_SAMPLED_RESPONSE"
+            }
+          ],
+          "full_band_conformance_verified": true,
+          "linearity_measured": true,
+          "calibration_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "time-window truncation rather than product bass deficit",
+            "distance or drive-reference mismatch rather than response change",
+            "fixture or room contribution rather than transducer response"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-NEG-BOUNDS",
+      "kind": "negative",
+      "question": "Must inverted drive bounds reject before numerical review?",
+      "input_overrides": {
+        "parameters": {
+          "frequency_hz": [
+            100,
+            200,
+            1000
+          ],
+          "spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_mask_db": [
+            78,
+            78,
+            78
+          ],
+          "upper_mask_db": [
+            82,
+            82,
+            82
+          ],
+          "distance_m": 2,
+          "distance_lower_m": 2,
+          "distance_upper_m": 2,
+          "reference_distance_m": 1,
+          "drive_voltage_v": 2,
+          "drive_lower_v": 3,
+          "drive_upper_v": 2,
+          "reference_voltage_v": 1,
+          "level_bound_db": 1,
+          "gate_seconds": 0.02,
+          "minimum_cycles": 2,
+          "propagation_model": "FREE_FIELD_FAR_FIELD",
+          "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FR-REVIEW-NEG-LINEARITY",
+      "kind": "negative",
+      "question": "Must unknown compression behavior block normalized review?",
+      "input_overrides": {
+        "parameters": {
+          "frequency_hz": [
+            100,
+            200,
+            1000
+          ],
+          "spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_mask_db": [
+            78,
+            78,
+            78
+          ],
+          "upper_mask_db": [
+            82,
+            82,
+            82
+          ],
+          "distance_m": 2,
+          "distance_lower_m": 2,
+          "distance_upper_m": 2,
+          "reference_distance_m": 1,
+          "drive_voltage_v": 2,
+          "drive_lower_v": 2,
+          "drive_upper_v": 2,
+          "reference_voltage_v": 1,
+          "level_bound_db": 1,
+          "gate_seconds": 0.02,
+          "minimum_cycles": 2,
+          "propagation_model": "FREE_FIELD_FAR_FIELD",
+          "drive_model": "UNKNOWN"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FR-REVIEW-NEG-ROLE",
+      "kind": "negative",
+      "question": "Must high-risk physical acceptance remain outside the bounded reviewer?",
+      "input_overrides": {
+        "context": {
+          "product": "",
+          "transducer": "Speaker",
+          "lifecycle": "EVT",
+          "risk": "R4",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FR-REVIEW-NUMERIC-CYCLE-BOUNDARY",
+      "kind": "boundary",
+      "question": "Does review accept the declared cycle-resolution boundary while preserving the uncalibrated sampled-only scope?",
+      "input_overrides": {
+        "parameters": {
+          "frequency_hz": [
+            1.9,
+            200,
+            1000
+          ],
+          "spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_mask_db": [
+            78,
+            78,
+            78
+          ],
+          "upper_mask_db": [
+            82,
+            82,
+            82
+          ],
+          "distance_m": 2,
+          "distance_lower_m": 2,
+          "distance_upper_m": 2,
+          "reference_distance_m": 1,
+          "drive_voltage_v": 2,
+          "drive_lower_v": 2,
+          "drive_upper_v": 2,
+          "reference_voltage_v": 1,
+          "level_bound_db": 1,
+          "gate_seconds": 1.0526315789473684,
+          "minimum_cycles": 2,
+          "propagation_model": "FREE_FIELD_FAR_FIELD",
+          "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    }
+  ]
+}

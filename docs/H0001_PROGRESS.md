@@ -354,3 +354,34 @@ non-verbose console output remains local in
 Isolated six-page browser semantic E2E passed at 26a24cb, not deployed-runtime
 acceptance. Read-only remote main remains 32ca69baa778959d01c10a72bba1a8f0c0ac7eb5;
 Core cache remained clean. No GitHub write, PR32 mutation or main merge occurred.
+
+## Eighth construction checkpoint — sampled speaker FR validity
+
+R015 now evaluates supplied SPL samples with explicit distance/voltage reference
+normalization, separate conservative distance/voltage/level bounds and a declared
+time-window validity threshold. R079 has a different bounded review suite with
+independent interval equations and false-reference/uncertainty/conformance
+assertions. Both remain scoped L2; no physical measurement, measured linearity,
+whole-role L3 or full-band conformance is claimed.
+
+The plan's P1 incomplete uncertainty budget and P2 missing linear-drive
+applicability were fixed before implementation. Strict invalid-model/reference
+negatives were added. A numerical two-cycle boundary then reproduced a sub-ULP
+error; the Method declares 1e-12-cycle representation resolution separately from
+physical uncertainty and model validity. R015 and R079 each have 11 authored
+cases, bringing source totals to 11 suites / 113 cases.
+
+SPEAKER_FR is now the fourth implemented company Challenge: change only a
+hypothetical gate duration from 5ms to 20ms, keeping mask, uncertainty, signal
+values and cycle threshold unchanged. Array/DOA, FACA, requirements/traceability
+and standards/provenance challenges remain SOFTWARE_LOCAL_FIXABLE. The initial
+short-window observation is invalid, not a proven low-frequency product defect.
+
+Focused FR/role acceptance rerun passed 12 tests in 11.576 s before the two
+additional suite boundary cases. Full rerun and code review are in progress;
+live runtime remains unchanged and six-route spot checks remained HTTP 200.
+
+Full local rerun after FR workflow/Challenge and numerical boundary integration:
+283 tests passed in 132.773 s. Console output remains local at
+`.aeris/evidence/H0001-speaker-fr-full-tests.log`. Independent implementation
+review and continuous availability results are still separate gates.

@@ -24,7 +24,8 @@ def _canonical(value):
 
 def _fingerprint():
     paths=[Path(__file__),ROOT/'aeris_runtime/engineering/domain_review.py',ROOT/'aeris_runtime/engineering/microphone_domain.py',
-           ROOT/'aeris_runtime/engineering/numerical_policy.py']
+           ROOT/'aeris_runtime/engineering/numerical_policy.py',ROOT/'aeris_runtime/engineering/speaker_fr.py',
+           ROOT/'aeris_runtime/engineering/speaker_fr_review.py']
     for skill in HANDLERS:
         paths.append(ROOT/f'methods/roles/{skill}.json')
         paths.extend(ROOT/f'skills/{skill}/{name}' for name in ('manifest.json','input.schema.json','output.schema.json','SKILL.md'))
@@ -126,9 +127,11 @@ def speaker_power_distortion(params):
 
 
 from .microphone_domain import analyze as microphone_measurement
+from .speaker_fr import analyze as speaker_fr_measurement
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
-          'microphone-reference-noise-headroom-baseline':microphone_measurement}
+          'microphone-reference-noise-headroom-baseline':microphone_measurement,
+          'speaker-fr-reference-baseline':speaker_fr_measurement}
 
 
 def _review_handler(domain):
@@ -138,7 +141,7 @@ def _review_handler(domain):
     return run
 
 
-for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom'):
+for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty'):
     HANDLERS[_domain+'-domain-review']=_review_handler(_domain)
 
 

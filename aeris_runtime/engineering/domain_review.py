@@ -9,6 +9,7 @@ from ..config import ROOT
 from .numerical_policy import db_at_least,db_at_most,MIN_IDENTIFIABLE_VARIANCE_FRACTION
 
 REQUIRED_DOMAINS={
+    'speaker-fr-reference-baseline':['speaker-fr-uncertainty'],
     'speaker-power-distortion-baseline':['speaker-nonlinear','speaker-thermal'],
     'tws-fit-anc-call-baseline':['tws-anc','tws-fit-capture'],
     'microphone-reference-noise-headroom-baseline':['microphone-reference','microphone-noise-headroom'],
@@ -103,6 +104,9 @@ def review(domain,request):
     microphone=domain.startswith('microphone-')
     if not applicable(domain,context):
         raise ValueError('outside evidenced bounded review applicability')
+    if domain=='speaker-fr-uncertainty':
+        from .speaker_fr_review import review as review_fr
+        return review_fr(p,candidate)
     expected={}; observations={}
     if speaker:
         if p['drive_voltage_rms_v']<p['reference_voltage_rms_v'] or p['max_coil_temperature_c']<p['ambient_temperature_c']:
@@ -236,6 +240,10 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
+    if domain=='speaker-fr-uncertainty':
+        return {**{k:v[k] for k in ('normalized_spl_db','lower_interval_db','upper_interval_db','sample_decisions',
+                'checks','full_band_conformance_verified','linearity_measured','calibration_verified','counter_hypotheses')},
+                'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
            'lifetime_verified':v.get('lifetime_verified',False),'counter_hypotheses':v.get('counter_hypotheses')}
     if domain=='speaker-thermal':
@@ -333,6 +341,9 @@ def _checks_coherent(skill,params,values):
     a caller-supplied set with itself cannot prove coverage or correct actions.
     """
     from .catalog import digest
+    if skill=='speaker-fr-reference-baseline':
+        # Every check/value is independently recomputed by the dedicated reviewer.
+        return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']
     if skill=='speaker-power-distortion-baseline':
         rows=[
             ('THD_PERCENT',values['thd_percent'],params['max_thd_percent'],'<=','LOWER_DRIVE_AND_DISCRIMINATE_TRANSDUCER_FROM_AMPLIFIER_NONLINEARITY'),

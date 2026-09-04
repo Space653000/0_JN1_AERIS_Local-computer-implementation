@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": [
+    "skill_id",
+    "values",
+    "input_sha256",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "values": {
+      "type": "object",
+      "required": [
+        "normalized_spl_db",
+        "lower_interval_db",
+        "upper_interval_db",
+        "checks",
+        "sample_decisions",
+        "disposition",
+        "counter_hypotheses"
+      ]
+    },
+    "physical_measurement_verified": {
+      "const": false
+    }
+  }
+}

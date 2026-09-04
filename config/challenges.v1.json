@@ -3,7 +3,12 @@
   "source_kind": "SYNTHETIC",
   "scope": "Hypothetical analytical revisions; no physical improvement, whole-role L3 or company acceptance",
   "challenges": [
-    {"id":"SPEAKER_FR","implemented":false},
+    {"id":"SPEAKER_FR","implemented":true,"role_id":"R015",
+     "allowed_revision_fields":["gate_seconds"],"initial":{"gate_seconds":0.005},"revised":{"gate_seconds":0.02},
+     "requirements":{"lower_mask_db":[78,78,78],"upper_mask_db":[82,82,82],"minimum_cycles":2,"level_bound_db":1},
+     "initial_failures":["WINDOW_VALIDITY"],
+     "oracles":{"initial":[{"path":"observable_cycles.0","expected":0.5,"absolute_tolerance":1e-7},{"path":"sample_decisions.0","expected":"INSUFFICIENT_MEASUREMENT_VALIDITY","absolute_tolerance":0}],
+                "revised":[{"path":"observable_cycles.0","expected":2,"absolute_tolerance":1e-7},{"path":"lower_interval_db.0","expected":79,"absolute_tolerance":1e-7},{"path":"upper_interval_db.0","expected":81,"absolute_tolerance":1e-7}]}},
     {"id":"SPEAKER_POWER","implemented":true,"role_id":"R016",
      "allowed_revision_fields":["fundamental_rms_pa","input_power_w"],
      "initial":{"fundamental_rms_pa":0.5,"input_power_w":20},

@@ -1,0 +1,224 @@
+{
+  "suite_id": "R015-SAMPLED-FR-REFERENCE-V1",
+  "role_id": "R015",
+  "skill_id": "speaker-fr-reference-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored 2m/2V cancelling reference example, monotone interval worked bounds and time-window sample questions; no acquired measurements.",
+  "scope": "Sampled reference and measurement validity only",
+  "base_input": {
+    "frequency_hz": [
+      100,
+      200,
+      1000
+    ],
+    "spl_db": [
+      80,
+      80,
+      80
+    ],
+    "lower_mask_db": [
+      78,
+      78,
+      78
+    ],
+    "upper_mask_db": [
+      82,
+      82,
+      82
+    ],
+    "distance_m": 2,
+    "distance_lower_m": 2,
+    "distance_upper_m": 2,
+    "reference_distance_m": 1,
+    "drive_voltage_v": 2,
+    "drive_lower_v": 2,
+    "drive_upper_v": 2,
+    "reference_voltage_v": 1,
+    "level_bound_db": 1,
+    "gate_seconds": 0.02,
+    "minimum_cycles": 2,
+    "propagation_model": "FREE_FIELD_FAR_FIELD",
+    "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+  },
+  "cases": [
+    {
+      "id": "FR-REFERENCE",
+      "kind": "positive",
+      "question": "Do distance and voltage normalization cancel at 2m/2V to the 1m/1V target?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "normalized_spl_db",
+          "expected": [
+            80,
+            80,
+            80
+          ],
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-BOUNDARY",
+      "kind": "boundary",
+      "question": "Is a propagated upper interval exactly on the mask included?",
+      "input_overrides": {
+        "upper_mask_db": [
+          81,
+          81,
+          81
+        ]
+      },
+      "checks": [
+        {
+          "path": "checks.1.passed",
+          "expected": true,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-WINDOW",
+      "kind": "counter_hypothesis",
+      "question": "Does a short window invalidate low-frequency judgment before blaming the product?",
+      "input_overrides": {
+        "gate_seconds": 0.005
+      },
+      "checks": [
+        {
+          "path": "sample_decisions.0",
+          "expected": "INSUFFICIENT_MEASUREMENT_VALIDITY",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.0.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-UNCERTAINTY",
+      "kind": "counter_hypothesis",
+      "question": "Can nominal 80dB pass while distance/drive bounds cross both envelope limits?",
+      "input_overrides": {
+        "distance_lower_m": 1.8,
+        "distance_upper_m": 2.2,
+        "drive_lower_v": 1.8,
+        "drive_upper_v": 2.2
+      },
+      "checks": [
+        {
+          "path": "lower_interval_db.0",
+          "expected": 77.256996485622,
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "upper_interval_db.0",
+          "expected": 82.743003514378,
+          "absolute_tolerance": 1e-7
+        },
+        {
+          "path": "sample_decisions.0",
+          "expected": "UNCERTAINTY_CROSSING",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-DISTANCE",
+      "kind": "positive",
+      "question": "Does correcting a 2m observation to 1m raise rather than lower the supplied SPL?",
+      "input_overrides": {
+        "reference_voltage_v": 2
+      },
+      "checks": [
+        {
+          "path": "normalized_spl_db.0",
+          "expected": 86.02059991327963,
+          "absolute_tolerance": 1e-7
+        }
+      ]
+    },
+    {
+      "id": "FR-DRIVE",
+      "kind": "positive",
+      "question": "Does reducing reference drive by two lower rather than raise SPL?",
+      "input_overrides": {
+        "reference_distance_m": 2
+      },
+      "checks": [
+        {
+          "path": "normalized_spl_db.0",
+          "expected": 73.97940008672037,
+          "absolute_tolerance": 1e-7
+        }
+      ]
+    },
+    {
+      "id": "FR-NEG-BOUNDS",
+      "kind": "negative",
+      "question": "Must bounds contain the measured distance?",
+      "input_overrides": {
+        "distance_lower_m": 2.1
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FR-NEG-ORDER",
+      "kind": "negative",
+      "question": "Must repeated frequency points fail rather than interpolate an invented curve?",
+      "input_overrides": {
+        "frequency_hz": [
+          100,
+          100,
+          1000
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FR-NEG-LINEARITY",
+      "kind": "negative",
+      "question": "Does valid free-field distance alone fail to authorize nonlinear drive scaling?",
+      "input_overrides": {
+        "drive_model": "LIMITER_ACTIVE"
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FR-NEG-UNITS",
+      "kind": "negative",
+      "question": "Must undeclared voltage dBV be rejected?",
+      "input_overrides": {
+        "voltage_dbv": 6
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FR-NUMERIC-CYCLE-BOUNDARY",
+      "kind": "boundary",
+      "question": "Does the exact two-cycle gate survive sub-ULP multiplication error without granting physical tolerance?",
+      "input_overrides": {
+        "frequency_hz": [
+          1.9,
+          200,
+          1000
+        ],
+        "gate_seconds": 1.0526315789473684
+      },
+      "checks": [
+        {
+          "path": "checks.0.passed",
+          "expected": true,
+          "absolute_tolerance": 0
+        }
+      ]
+    }
+  ]
+}

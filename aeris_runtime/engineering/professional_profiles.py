@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R015':{'skill_id':'speaker-fr-reference-baseline','method':'methods/roles/speaker-fr-reference-baseline.json',
+            'suite':'golden/roles/R015/golden.json','scope':'Supplied sampled FR reference, interval and window validity; not calibrated acquisition or full-band conformance.'},
+    'R079':{'skill_id':'speaker-fr-uncertainty-domain-review','method':'methods/roles/speaker-fr-uncertainty-domain-review.json',
+            'suite':'golden/roles/R079/golden.json','scope':'Bounded monotone reference-interval review; not full uncertainty metrology or physical qualification.'},
     'R028':{'skill_id':'microphone-reference-domain-review','method':'methods/roles/microphone-reference-domain-review.json',
             'suite':'golden/roles/R028/golden.json','scope':'Bounded pressure/voltage/gain sensitivity review; not physical capsule characterization.'},
     'R030':{'skill_id':'microphone-noise-headroom-domain-review','method':'methods/roles/microphone-noise-headroom-domain-review.json',
