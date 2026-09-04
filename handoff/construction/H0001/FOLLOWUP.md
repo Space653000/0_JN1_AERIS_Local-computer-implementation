@@ -34,3 +34,41 @@ preserves both failed images locally and reports only DOM element IDs and hashes
 to distinguish asynchronous data/render changes. Exact screenshot equality is
 unchanged; no retry discards a failed image. Two privacy-aware diagnostic tests
 pass. Raw screenshots/runtime text are not uploaded by these changes.
+
+## Array-domain and installer-dependency checkpoint
+
+See `docs/H0001_ARRAY_BEAM_CHECKPOINT.md` and
+`docs/H0001_DEPENDENCY_BOOTSTRAP.md` for implemented scope and known limits.
+R034/R037 add 30 bounded role cases; source inventory is 23 suites / 280 cases,
+65 engineering Skills/Methods. This is not whole-role L3 or H0001 completion.
+
+Full local regression: 359 tests PASS in 377.014 seconds, completed
+2026-09-04T15:01:32.306164+00:00. Private transcript
+`.aeris/evidence/H0001-array-installer-full-tests.log`, SHA-256
+`ada7ca00eeaf02cb6d1fd7ca8b2c0027ed91639220da132b8248df9462d0d360`.
+That discovery preceded the additional PYTHONOPTIMIZE dependency-probe regression;
+the final probe fix and all seven installer-helper tests separately pass. Do not
+describe this 359-test transcript as covering the later-added regression.
+
+An actual clean root-contained virtualenv rejected absent offline wheels, then
+installed pinned free dependencies online and passed offline import. Private log
+`.aeris/evidence/H0001-dependency-install-proof.log`, SHA-256
+`f31b788345d381f73ca2b3e5fbf36cddb0e2571e39c418015a2e5581e8f6a420`.
+That install proof preceded the optimization guard fix; the final helper was then
+copied into the same isolated venv and passed offline with PYTHONOPTIMIZE=1.
+No live venv replacement or full real-machine installer was performed.
+
+Six local semantic browser routes and six exact-repeatability screenshots pass.
+The running port-8765 six routes still return HTTP 200, but the old supervisor
+has not been replaced and is not proof of current-source deployment.
+
+CI run 200 localized the Ubuntu screenshot mismatch to identical DOM with
+different PNGs, not demonstrated API-content divergence. The capture harness now
+requests reduced motion and disables threaded animation/scrolling and the early
+new-content rendering timeout; it also freezes the knowledge GET response. Exact
+PNG equality remains mandatory. These render controls still require new Ubuntu
+CI confirmation; a local Windows pass does not close that defect.
+
+No Core/main/PR32 mutation, raw evidence, SQLite or binary upload is included.
+Remaining 77 missing domain suites, broader product depth, external-source
+knowledge and final clean-machine/live acceptance are still software work.

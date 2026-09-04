@@ -88,6 +88,7 @@ if ! "$PY" -m venv .venv 2>/dev/null && [ ! -x .venv/bin/python ]; then
   "$PY" -m venv .venv
 fi
 PY="$ROOT/.venv/bin/python"
+"$PY" -B "$ROOT/scripts/bootstrap-engineering.py" --mode "$MODE"
 [ -f .env ] || cp .env.example .env
 set_env_value AERIS_LOCAL_MODEL "$MODEL"
 mkdir -p .aeris/state .aeris/knowledge .aeris/ingress .aeris/installers data logs

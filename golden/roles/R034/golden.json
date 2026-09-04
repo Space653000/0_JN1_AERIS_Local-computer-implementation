@@ -1,0 +1,1597 @@
+{
+  "suite_id": "R034-ULA-TAPER-V1",
+  "role_id": "R034",
+  "skill_id": "microphone-array-pattern-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored two-element half-wavelength broadside oracle H=cos(pi*sin(theta)/2) up to phase; WNG=2 for equal uncorrelated inputs, WNG=1 for a single active element. Nonzero-steering delay examples yield unity versus sqrt(1/2). Candidate constants are analytic authored fixtures, not executor output.",
+  "scope": "Independent sampled directional response and mismatch/model-validity report consistency",
+  "base_input": {
+    "parameters": {
+      "model": "FAR_FIELD_ULA_TRUE_TIME_DELAY",
+      "noise_model": "UNCORRELATED_EQUAL_VARIANCE_BEFORE_GAIN",
+      "weights": [
+        1,
+        1
+      ],
+      "channel_gains": [
+        1,
+        1
+      ],
+      "channel_delays_s": [
+        0,
+        0
+      ],
+      "gain_bounds": [
+        0,
+        0
+      ],
+      "delay_bounds_s": [
+        0,
+        0
+      ],
+      "position_bounds_m": [
+        0,
+        0
+      ],
+      "spacing_m": 0.085,
+      "frequencies_hz": [
+        2000
+      ],
+      "angles_deg": [
+        -90,
+        -60,
+        -30,
+        0,
+        30,
+        60,
+        90
+      ],
+      "steering_deg": 0,
+      "sound_speed_m_s": 340,
+      "source_range_m": 10,
+      "minimum_range_aperture_ratio": 5,
+      "minimum_fraunhofer_ratio": 1,
+      "main_lobe_exclusion_deg": 30,
+      "maximum_grid_gap_deg": 30,
+      "minimum_desired_amplitude": 0.8,
+      "maximum_sampled_sidelobe_amplitude": 0.8,
+      "minimum_white_noise_gain": 1.5
+    },
+    "candidate": {
+      "angles_deg": [
+        -90,
+        -60,
+        -30,
+        0,
+        30,
+        60,
+        90
+      ],
+      "bands": [
+        {
+          "frequency_hz": 2000,
+          "sample_amplitudes": [
+            0,
+            0.2088968667761942,
+            0.7071067811865476,
+            1,
+            0.7071067811865476,
+            0.2088968667761942,
+            0
+          ],
+          "sample_lower": [
+            0,
+            0.2088968667761942,
+            0.7071067811865476,
+            1,
+            0.7071067811865476,
+            0.2088968667761942,
+            0
+          ],
+          "sample_upper": [
+            0,
+            0.2088968667761942,
+            0.7071067811865476,
+            1,
+            0.7071067811865476,
+            0.2088968667761942,
+            0
+          ],
+          "desired_amplitude": 1,
+          "desired_lower": 1,
+          "desired_upper": 1,
+          "sampled_sidelobe_upper": 0.2088968667761942,
+          "white_noise_gain": 2,
+          "white_noise_gain_lower": 2
+        }
+      ],
+      "output_noise_variance_ratio": 0.5,
+      "output_noise_variance_upper_ratio": 0.5,
+      "worst_aperture_m": 0.085,
+      "worst_adjacent_spacing_m": 0.085,
+      "alias_spacing_limit_m": 0.085,
+      "fraunhofer_distance_m": 0.085,
+      "required_source_range_m": 0.425,
+      "maximum_angular_gap_deg": 30,
+      "checks": [
+        {
+          "id": "SPATIAL_SAMPLING_GUARD",
+          "actual": 0.085,
+          "limit": 0.085,
+          "passed": true,
+          "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+        },
+        {
+          "id": "FAR_FIELD_HEURISTIC",
+          "actual": 10,
+          "limit": 0.425,
+          "passed": true,
+          "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+        },
+        {
+          "id": "ANGULAR_SAMPLING",
+          "actual": 30,
+          "limit": 30,
+          "passed": true,
+          "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+        },
+        {
+          "id": "DESIRED_GAIN_BOUND",
+          "actual": 1,
+          "limit": 0.8,
+          "passed": true,
+          "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+        },
+        {
+          "id": "SAMPLED_SIDELOBE_BOUND",
+          "actual": 0.2088968667761942,
+          "limit": 0.8,
+          "passed": true,
+          "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+        },
+        {
+          "id": "WHITE_NOISE_GAIN_BOUND",
+          "actual": 2,
+          "limit": 1.5,
+          "passed": true,
+          "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+        }
+      ],
+      "required_revisions": [],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "physical_measurement_verified": false,
+      "continuous_angle_verified": false,
+      "speech_quality_verified": false,
+      "counter_hypotheses": [
+        "Channel delay bias rather than incorrect taper",
+        "Gain or position mismatch rather than a steering algorithm defect",
+        "Unsampled spatial lobe rather than full-angle rejection"
+      ],
+      "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+      "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+      "model_assumptions": [
+        "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+        "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+        "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+        "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+      ],
+      "unresolved": [
+        "Actual array calibration and correlated or diffuse noise",
+        "Near-field, room reflections and full-angle/frequency behavior",
+        "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+      ]
+    },
+    "context": {
+      "product": "Uniform linear capture array",
+      "transducer": "Microphone",
+      "lifecycle": "Prototype",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "ULA-SCALE-INVARIANCE",
+      "kind": "boundary",
+      "question": "Must common tiny positive taper scaling preserve transfer and independent review without underflow?",
+      "input_overrides": {
+        "parameters": {
+          "model": "FAR_FIELD_ULA_TRUE_TIME_DELAY",
+          "noise_model": "UNCORRELATED_EQUAL_VARIANCE_BEFORE_GAIN",
+          "weights": [
+            1e-200,
+            1e-200
+          ],
+          "channel_gains": [
+            1,
+            1
+          ],
+          "channel_delays_s": [
+            0,
+            0
+          ],
+          "gain_bounds": [
+            0,
+            0
+          ],
+          "delay_bounds_s": [
+            0,
+            0
+          ],
+          "position_bounds_m": [
+            0,
+            0
+          ],
+          "spacing_m": 0.085,
+          "frequencies_hz": [
+            2000
+          ],
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "steering_deg": 0,
+          "sound_speed_m_s": 340,
+          "source_range_m": 10,
+          "minimum_range_aperture_ratio": 5,
+          "minimum_fraunhofer_ratio": 1,
+          "main_lobe_exclusion_deg": 30,
+          "maximum_grid_gap_deg": 30,
+          "minimum_desired_amplitude": 0.8,
+          "maximum_sampled_sidelobe_amplitude": 0.8,
+          "minimum_white_noise_gain": 1.5
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-CONSISTENT",
+      "kind": "positive",
+      "question": "Can independent trigonometric sums confirm a pair report while withholding Human approval?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "role_l3_awarded",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-TAIL",
+      "kind": "boundary",
+      "question": "Can numeric representation tails be tolerated without changing any engineering verdict?",
+      "input_overrides": {
+        "candidate": {
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "bands": [
+            {
+              "frequency_hz": 2000,
+              "sample_amplitudes": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_lower": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_upper": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "desired_amplitude": 1.000000000001,
+              "desired_lower": 1,
+              "desired_upper": 1,
+              "sampled_sidelobe_upper": 0.2088968667761942,
+              "white_noise_gain": 2,
+              "white_noise_gain_lower": 2
+            }
+          ],
+          "output_noise_variance_ratio": 0.5,
+          "output_noise_variance_upper_ratio": 0.5,
+          "worst_aperture_m": 0.085,
+          "worst_adjacent_spacing_m": 0.085,
+          "alias_spacing_limit_m": 0.085,
+          "fraunhofer_distance_m": 0.085,
+          "required_source_range_m": 0.425,
+          "maximum_angular_gap_deg": 30,
+          "checks": [
+            {
+              "id": "SPATIAL_SAMPLING_GUARD",
+              "actual": 0.085,
+              "limit": 0.085,
+              "passed": true,
+              "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+            },
+            {
+              "id": "FAR_FIELD_HEURISTIC",
+              "actual": 10,
+              "limit": 0.425,
+              "passed": true,
+              "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+            },
+            {
+              "id": "ANGULAR_SAMPLING",
+              "actual": 30,
+              "limit": 30,
+              "passed": true,
+              "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+            },
+            {
+              "id": "DESIRED_GAIN_BOUND",
+              "actual": 1,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+            },
+            {
+              "id": "SAMPLED_SIDELOBE_BOUND",
+              "actual": 0.2088968667761942,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+            },
+            {
+              "id": "WHITE_NOISE_GAIN_BOUND",
+              "actual": 2,
+              "limit": 1.5,
+              "passed": true,
+              "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "physical_measurement_verified": false,
+          "continuous_angle_verified": false,
+          "speech_quality_verified": false,
+          "counter_hypotheses": [
+            "Channel delay bias rather than incorrect taper",
+            "Gain or position mismatch rather than a steering algorithm defect",
+            "Unsampled spatial lobe rather than full-angle rejection"
+          ],
+          "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+          "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+          "model_assumptions": [
+            "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+            "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+            "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+            "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+          ],
+          "unresolved": [
+            "Actual array calibration and correlated or diffuse noise",
+            "Near-field, room reflections and full-angle/frequency behavior",
+            "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-NULL",
+      "kind": "counter_hypothesis",
+      "question": "Does an invented endfire upper amplitude fail despite correct target WNG?",
+      "input_overrides": {
+        "candidate": {
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "bands": [
+            {
+              "frequency_hz": 2000,
+              "sample_amplitudes": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_lower": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_upper": [
+                0.5,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "desired_amplitude": 1,
+              "desired_lower": 1,
+              "desired_upper": 1,
+              "sampled_sidelobe_upper": 0.2088968667761942,
+              "white_noise_gain": 2,
+              "white_noise_gain_lower": 2
+            }
+          ],
+          "output_noise_variance_ratio": 0.5,
+          "output_noise_variance_upper_ratio": 0.5,
+          "worst_aperture_m": 0.085,
+          "worst_adjacent_spacing_m": 0.085,
+          "alias_spacing_limit_m": 0.085,
+          "fraunhofer_distance_m": 0.085,
+          "required_source_range_m": 0.425,
+          "maximum_angular_gap_deg": 30,
+          "checks": [
+            {
+              "id": "SPATIAL_SAMPLING_GUARD",
+              "actual": 0.085,
+              "limit": 0.085,
+              "passed": true,
+              "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+            },
+            {
+              "id": "FAR_FIELD_HEURISTIC",
+              "actual": 10,
+              "limit": 0.425,
+              "passed": true,
+              "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+            },
+            {
+              "id": "ANGULAR_SAMPLING",
+              "actual": 30,
+              "limit": 30,
+              "passed": true,
+              "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+            },
+            {
+              "id": "DESIRED_GAIN_BOUND",
+              "actual": 1,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+            },
+            {
+              "id": "SAMPLED_SIDELOBE_BOUND",
+              "actual": 0.2088968667761942,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+            },
+            {
+              "id": "WHITE_NOISE_GAIN_BOUND",
+              "actual": 2,
+              "limit": 1.5,
+              "passed": true,
+              "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "physical_measurement_verified": false,
+          "continuous_angle_verified": false,
+          "speech_quality_verified": false,
+          "counter_hypotheses": [
+            "Channel delay bias rather than incorrect taper",
+            "Gain or position mismatch rather than a steering algorithm defect",
+            "Unsampled spatial lobe rather than full-angle rejection"
+          ],
+          "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+          "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+          "model_assumptions": [
+            "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+            "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+            "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+            "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+          ],
+          "unresolved": [
+            "Actual array calibration and correlated or diffuse noise",
+            "Near-field, room reflections and full-angle/frequency behavior",
+            "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-WNG",
+      "kind": "counter_hypothesis",
+      "question": "Can the covariance-derived variance denominator be replaced by zero?",
+      "input_overrides": {
+        "candidate": {
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "bands": [
+            {
+              "frequency_hz": 2000,
+              "sample_amplitudes": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_lower": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_upper": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "desired_amplitude": 1,
+              "desired_lower": 1,
+              "desired_upper": 1,
+              "sampled_sidelobe_upper": 0.2088968667761942,
+              "white_noise_gain": 2,
+              "white_noise_gain_lower": 2
+            }
+          ],
+          "output_noise_variance_ratio": 0,
+          "output_noise_variance_upper_ratio": 0.5,
+          "worst_aperture_m": 0.085,
+          "worst_adjacent_spacing_m": 0.085,
+          "alias_spacing_limit_m": 0.085,
+          "fraunhofer_distance_m": 0.085,
+          "required_source_range_m": 0.425,
+          "maximum_angular_gap_deg": 30,
+          "checks": [
+            {
+              "id": "SPATIAL_SAMPLING_GUARD",
+              "actual": 0.085,
+              "limit": 0.085,
+              "passed": true,
+              "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+            },
+            {
+              "id": "FAR_FIELD_HEURISTIC",
+              "actual": 10,
+              "limit": 0.425,
+              "passed": true,
+              "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+            },
+            {
+              "id": "ANGULAR_SAMPLING",
+              "actual": 30,
+              "limit": 30,
+              "passed": true,
+              "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+            },
+            {
+              "id": "DESIRED_GAIN_BOUND",
+              "actual": 1,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+            },
+            {
+              "id": "SAMPLED_SIDELOBE_BOUND",
+              "actual": 0.2088968667761942,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+            },
+            {
+              "id": "WHITE_NOISE_GAIN_BOUND",
+              "actual": 2,
+              "limit": 1.5,
+              "passed": true,
+              "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "physical_measurement_verified": false,
+          "continuous_angle_verified": false,
+          "speech_quality_verified": false,
+          "counter_hypotheses": [
+            "Channel delay bias rather than incorrect taper",
+            "Gain or position mismatch rather than a steering algorithm defect",
+            "Unsampled spatial lobe rather than full-angle rejection"
+          ],
+          "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+          "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+          "model_assumptions": [
+            "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+            "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+            "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+            "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+          ],
+          "unresolved": [
+            "Actual array calibration and correlated or diffuse noise",
+            "Near-field, room reflections and full-angle/frequency behavior",
+            "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-GAIN-BOUND",
+      "kind": "counter_hypothesis",
+      "question": "Does adding supplied gain uncertainty invalidate the old unbounded report?",
+      "input_overrides": {
+        "parameters": {
+          "model": "FAR_FIELD_ULA_TRUE_TIME_DELAY",
+          "noise_model": "UNCORRELATED_EQUAL_VARIANCE_BEFORE_GAIN",
+          "weights": [
+            1,
+            1
+          ],
+          "channel_gains": [
+            1,
+            1
+          ],
+          "channel_delays_s": [
+            0,
+            0
+          ],
+          "gain_bounds": [
+            0.1,
+            0.1
+          ],
+          "delay_bounds_s": [
+            0,
+            0
+          ],
+          "position_bounds_m": [
+            0,
+            0
+          ],
+          "spacing_m": 0.085,
+          "frequencies_hz": [
+            2000
+          ],
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "steering_deg": 0,
+          "sound_speed_m_s": 340,
+          "source_range_m": 10,
+          "minimum_range_aperture_ratio": 5,
+          "minimum_fraunhofer_ratio": 1,
+          "main_lobe_exclusion_deg": 30,
+          "maximum_grid_gap_deg": 30,
+          "minimum_desired_amplitude": 0.8,
+          "maximum_sampled_sidelobe_amplitude": 0.8,
+          "minimum_white_noise_gain": 1.5
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-POSITION",
+      "kind": "counter_hypothesis",
+      "question": "Can a changed element position uncertainty leave all model guards unchanged?",
+      "input_overrides": {
+        "parameters": {
+          "model": "FAR_FIELD_ULA_TRUE_TIME_DELAY",
+          "noise_model": "UNCORRELATED_EQUAL_VARIANCE_BEFORE_GAIN",
+          "weights": [
+            1,
+            1
+          ],
+          "channel_gains": [
+            1,
+            1
+          ],
+          "channel_delays_s": [
+            0,
+            0
+          ],
+          "gain_bounds": [
+            0,
+            0
+          ],
+          "delay_bounds_s": [
+            0,
+            0
+          ],
+          "position_bounds_m": [
+            0.001,
+            0.001
+          ],
+          "spacing_m": 0.085,
+          "frequencies_hz": [
+            2000
+          ],
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "steering_deg": 0,
+          "sound_speed_m_s": 340,
+          "source_range_m": 10,
+          "minimum_range_aperture_ratio": 5,
+          "minimum_fraunhofer_ratio": 1,
+          "main_lobe_exclusion_deg": 30,
+          "maximum_grid_gap_deg": 30,
+          "minimum_desired_amplitude": 0.8,
+          "maximum_sampled_sidelobe_amplitude": 0.8,
+          "minimum_white_noise_gain": 1.5
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-PHYSICAL",
+      "kind": "counter_hypothesis",
+      "question": "Does sampled software agreement prove physical calibration?",
+      "input_overrides": {
+        "candidate": {
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "bands": [
+            {
+              "frequency_hz": 2000,
+              "sample_amplitudes": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_lower": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_upper": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "desired_amplitude": 1,
+              "desired_lower": 1,
+              "desired_upper": 1,
+              "sampled_sidelobe_upper": 0.2088968667761942,
+              "white_noise_gain": 2,
+              "white_noise_gain_lower": 2
+            }
+          ],
+          "output_noise_variance_ratio": 0.5,
+          "output_noise_variance_upper_ratio": 0.5,
+          "worst_aperture_m": 0.085,
+          "worst_adjacent_spacing_m": 0.085,
+          "alias_spacing_limit_m": 0.085,
+          "fraunhofer_distance_m": 0.085,
+          "required_source_range_m": 0.425,
+          "maximum_angular_gap_deg": 30,
+          "checks": [
+            {
+              "id": "SPATIAL_SAMPLING_GUARD",
+              "actual": 0.085,
+              "limit": 0.085,
+              "passed": true,
+              "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+            },
+            {
+              "id": "FAR_FIELD_HEURISTIC",
+              "actual": 10,
+              "limit": 0.425,
+              "passed": true,
+              "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+            },
+            {
+              "id": "ANGULAR_SAMPLING",
+              "actual": 30,
+              "limit": 30,
+              "passed": true,
+              "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+            },
+            {
+              "id": "DESIRED_GAIN_BOUND",
+              "actual": 1,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+            },
+            {
+              "id": "SAMPLED_SIDELOBE_BOUND",
+              "actual": 0.2088968667761942,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+            },
+            {
+              "id": "WHITE_NOISE_GAIN_BOUND",
+              "actual": 2,
+              "limit": 1.5,
+              "passed": true,
+              "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "physical_measurement_verified": true,
+          "continuous_angle_verified": false,
+          "speech_quality_verified": false,
+          "counter_hypotheses": [
+            "Channel delay bias rather than incorrect taper",
+            "Gain or position mismatch rather than a steering algorithm defect",
+            "Unsampled spatial lobe rather than full-angle rejection"
+          ],
+          "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+          "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+          "model_assumptions": [
+            "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+            "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+            "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+            "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+          ],
+          "unresolved": [
+            "Actual array calibration and correlated or diffuse noise",
+            "Near-field, room reflections and full-angle/frequency behavior",
+            "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-CONTINUOUS",
+      "kind": "counter_hypothesis",
+      "question": "Does a sampled hemisphere establish every angle?",
+      "input_overrides": {
+        "candidate": {
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "bands": [
+            {
+              "frequency_hz": 2000,
+              "sample_amplitudes": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_lower": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_upper": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "desired_amplitude": 1,
+              "desired_lower": 1,
+              "desired_upper": 1,
+              "sampled_sidelobe_upper": 0.2088968667761942,
+              "white_noise_gain": 2,
+              "white_noise_gain_lower": 2
+            }
+          ],
+          "output_noise_variance_ratio": 0.5,
+          "output_noise_variance_upper_ratio": 0.5,
+          "worst_aperture_m": 0.085,
+          "worst_adjacent_spacing_m": 0.085,
+          "alias_spacing_limit_m": 0.085,
+          "fraunhofer_distance_m": 0.085,
+          "required_source_range_m": 0.425,
+          "maximum_angular_gap_deg": 30,
+          "checks": [
+            {
+              "id": "SPATIAL_SAMPLING_GUARD",
+              "actual": 0.085,
+              "limit": 0.085,
+              "passed": true,
+              "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+            },
+            {
+              "id": "FAR_FIELD_HEURISTIC",
+              "actual": 10,
+              "limit": 0.425,
+              "passed": true,
+              "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+            },
+            {
+              "id": "ANGULAR_SAMPLING",
+              "actual": 30,
+              "limit": 30,
+              "passed": true,
+              "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+            },
+            {
+              "id": "DESIRED_GAIN_BOUND",
+              "actual": 1,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+            },
+            {
+              "id": "SAMPLED_SIDELOBE_BOUND",
+              "actual": 0.2088968667761942,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+            },
+            {
+              "id": "WHITE_NOISE_GAIN_BOUND",
+              "actual": 2,
+              "limit": 1.5,
+              "passed": true,
+              "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "physical_measurement_verified": false,
+          "continuous_angle_verified": true,
+          "speech_quality_verified": false,
+          "counter_hypotheses": [
+            "Channel delay bias rather than incorrect taper",
+            "Gain or position mismatch rather than a steering algorithm defect",
+            "Unsampled spatial lobe rather than full-angle rejection"
+          ],
+          "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+          "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+          "model_assumptions": [
+            "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+            "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+            "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+            "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+          ],
+          "unresolved": [
+            "Actual array calibration and correlated or diffuse noise",
+            "Near-field, room reflections and full-angle/frequency behavior",
+            "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-SPEECH",
+      "kind": "counter_hypothesis",
+      "question": "Can array WNG certify speech intelligibility?",
+      "input_overrides": {
+        "candidate": {
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "bands": [
+            {
+              "frequency_hz": 2000,
+              "sample_amplitudes": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_lower": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_upper": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "desired_amplitude": 1,
+              "desired_lower": 1,
+              "desired_upper": 1,
+              "sampled_sidelobe_upper": 0.2088968667761942,
+              "white_noise_gain": 2,
+              "white_noise_gain_lower": 2
+            }
+          ],
+          "output_noise_variance_ratio": 0.5,
+          "output_noise_variance_upper_ratio": 0.5,
+          "worst_aperture_m": 0.085,
+          "worst_adjacent_spacing_m": 0.085,
+          "alias_spacing_limit_m": 0.085,
+          "fraunhofer_distance_m": 0.085,
+          "required_source_range_m": 0.425,
+          "maximum_angular_gap_deg": 30,
+          "checks": [
+            {
+              "id": "SPATIAL_SAMPLING_GUARD",
+              "actual": 0.085,
+              "limit": 0.085,
+              "passed": true,
+              "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+            },
+            {
+              "id": "FAR_FIELD_HEURISTIC",
+              "actual": 10,
+              "limit": 0.425,
+              "passed": true,
+              "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+            },
+            {
+              "id": "ANGULAR_SAMPLING",
+              "actual": 30,
+              "limit": 30,
+              "passed": true,
+              "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+            },
+            {
+              "id": "DESIRED_GAIN_BOUND",
+              "actual": 1,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+            },
+            {
+              "id": "SAMPLED_SIDELOBE_BOUND",
+              "actual": 0.2088968667761942,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+            },
+            {
+              "id": "WHITE_NOISE_GAIN_BOUND",
+              "actual": 2,
+              "limit": 1.5,
+              "passed": true,
+              "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "physical_measurement_verified": false,
+          "continuous_angle_verified": false,
+          "speech_quality_verified": true,
+          "counter_hypotheses": [
+            "Channel delay bias rather than incorrect taper",
+            "Gain or position mismatch rather than a steering algorithm defect",
+            "Unsampled spatial lobe rather than full-angle rejection"
+          ],
+          "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+          "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+          "model_assumptions": [
+            "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+            "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+            "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+            "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+          ],
+          "unresolved": [
+            "Actual array calibration and correlated or diffuse noise",
+            "Near-field, room reflections and full-angle/frequency behavior",
+            "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-POLICY",
+      "kind": "boundary",
+      "question": "Must a false guard result fail review even when its actual and limit numbers agree?",
+      "input_overrides": {
+        "candidate": {
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "bands": [
+            {
+              "frequency_hz": 2000,
+              "sample_amplitudes": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_lower": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_upper": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "desired_amplitude": 1,
+              "desired_lower": 1,
+              "desired_upper": 1,
+              "sampled_sidelobe_upper": 0.2088968667761942,
+              "white_noise_gain": 2,
+              "white_noise_gain_lower": 2
+            }
+          ],
+          "output_noise_variance_ratio": 0.5,
+          "output_noise_variance_upper_ratio": 0.5,
+          "worst_aperture_m": 0.085,
+          "worst_adjacent_spacing_m": 0.085,
+          "alias_spacing_limit_m": 0.085,
+          "fraunhofer_distance_m": 0.085,
+          "required_source_range_m": 0.425,
+          "maximum_angular_gap_deg": 30,
+          "checks": [
+            {
+              "id": "SPATIAL_SAMPLING_GUARD",
+              "actual": 0.085,
+              "limit": 0.085,
+              "passed": false,
+              "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+            },
+            {
+              "id": "FAR_FIELD_HEURISTIC",
+              "actual": 10,
+              "limit": 0.425,
+              "passed": true,
+              "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+            },
+            {
+              "id": "ANGULAR_SAMPLING",
+              "actual": 30,
+              "limit": 30,
+              "passed": true,
+              "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+            },
+            {
+              "id": "DESIRED_GAIN_BOUND",
+              "actual": 1,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+            },
+            {
+              "id": "SAMPLED_SIDELOBE_BOUND",
+              "actual": 0.2088968667761942,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+            },
+            {
+              "id": "WHITE_NOISE_GAIN_BOUND",
+              "actual": 2,
+              "limit": 1.5,
+              "passed": true,
+              "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "physical_measurement_verified": false,
+          "continuous_angle_verified": false,
+          "speech_quality_verified": false,
+          "counter_hypotheses": [
+            "Channel delay bias rather than incorrect taper",
+            "Gain or position mismatch rather than a steering algorithm defect",
+            "Unsampled spatial lobe rather than full-angle rejection"
+          ],
+          "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+          "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+          "model_assumptions": [
+            "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+            "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+            "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+            "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+          ],
+          "unresolved": [
+            "Actual array calibration and correlated or diffuse noise",
+            "Near-field, room reflections and full-angle/frequency behavior",
+            "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-ALTERNATIVES",
+      "kind": "counter_hypothesis",
+      "question": "Must the report preserve channel bias and unsampled lobes as alternative explanations?",
+      "input_overrides": {
+        "candidate": {
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "bands": [
+            {
+              "frequency_hz": 2000,
+              "sample_amplitudes": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_lower": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "sample_upper": [
+                0,
+                0.2088968667761942,
+                0.7071067811865476,
+                1,
+                0.7071067811865476,
+                0.2088968667761942,
+                0
+              ],
+              "desired_amplitude": 1,
+              "desired_lower": 1,
+              "desired_upper": 1,
+              "sampled_sidelobe_upper": 0.2088968667761942,
+              "white_noise_gain": 2,
+              "white_noise_gain_lower": 2
+            }
+          ],
+          "output_noise_variance_ratio": 0.5,
+          "output_noise_variance_upper_ratio": 0.5,
+          "worst_aperture_m": 0.085,
+          "worst_adjacent_spacing_m": 0.085,
+          "alias_spacing_limit_m": 0.085,
+          "fraunhofer_distance_m": 0.085,
+          "required_source_range_m": 0.425,
+          "maximum_angular_gap_deg": 30,
+          "checks": [
+            {
+              "id": "SPATIAL_SAMPLING_GUARD",
+              "actual": 0.085,
+              "limit": 0.085,
+              "passed": true,
+              "on_failure": "REDUCE_SPACING_OR_DECLARED_BAND"
+            },
+            {
+              "id": "FAR_FIELD_HEURISTIC",
+              "actual": 10,
+              "limit": 0.425,
+              "passed": true,
+              "on_failure": "USE_NEAR_FIELD_PROPAGATION_OR_INCREASE_RANGE"
+            },
+            {
+              "id": "ANGULAR_SAMPLING",
+              "actual": 30,
+              "limit": 30,
+              "passed": true,
+              "on_failure": "REFINE_ANGULAR_GRID_WITHOUT_CLAIMING_CONTINUOUS_COVERAGE"
+            },
+            {
+              "id": "DESIRED_GAIN_BOUND",
+              "actual": 1,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "RECALIBRATE_CHANNEL_GAIN_DELAY_OR_REVISE_STEERING"
+            },
+            {
+              "id": "SAMPLED_SIDELOBE_BOUND",
+              "actual": 0.2088968667761942,
+              "limit": 0.8,
+              "passed": true,
+              "on_failure": "REVISE_TAPER_GEOMETRY_OR_INTERFERENCE_DIRECTION"
+            },
+            {
+              "id": "WHITE_NOISE_GAIN_BOUND",
+              "actual": 2,
+              "limit": 1.5,
+              "passed": true,
+              "on_failure": "TRADE_DIRECTIVITY_AGAINST_CHANNEL_MISMATCH_ROBUSTNESS"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "physical_measurement_verified": false,
+          "continuous_angle_verified": false,
+          "speech_quality_verified": false,
+          "counter_hypotheses": [],
+          "next_discriminating_experiment": "MEASURE_COMPLEX_CHANNEL_CALIBRATION_AND_DENSE_ANGULAR_RESPONSE_AT_FIXED_RANGE",
+          "scope": "Supplied frequencies and hemisphere samples; fixed nominal true-time steering; independent interval bounds, not confidence intervals",
+          "model_assumptions": [
+            "exp(j*omega*t); positive channel delay retards phase; positive angle advances signal at positive x",
+            "Noise covariance sigma^2 I before nominal channel gains; WNG is not ambient SNR",
+            "Far-field and half-wavelength guards are declared heuristics, not measured model validity",
+            "12-decimal dimensionless comparison resolution is separate from supplied uncertainty"
+          ],
+          "unresolved": [
+            "Actual array calibration and correlated or diffuse noise",
+            "Near-field, room reflections and full-angle/frequency behavior",
+            "Speech corpus, perceptual quality, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PATTERN-NEG-RISK",
+      "kind": "negative",
+      "question": "Must R4 require authority outside this bounded review?",
+      "input_overrides": {
+        "context": {
+          "product": "Uniform linear capture array",
+          "transducer": "Microphone",
+          "lifecycle": "Prototype",
+          "risk": "R4",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "PATTERN-NEG-COVARIANCE",
+      "kind": "negative",
+      "question": "Must correlated noise reject rather than inherit WNG=N?",
+      "input_overrides": {
+        "parameters": {
+          "model": "FAR_FIELD_ULA_TRUE_TIME_DELAY",
+          "noise_model": "CORRELATED",
+          "weights": [
+            1,
+            1
+          ],
+          "channel_gains": [
+            1,
+            1
+          ],
+          "channel_delays_s": [
+            0,
+            0
+          ],
+          "gain_bounds": [
+            0,
+            0
+          ],
+          "delay_bounds_s": [
+            0,
+            0
+          ],
+          "position_bounds_m": [
+            0,
+            0
+          ],
+          "spacing_m": 0.085,
+          "frequencies_hz": [
+            2000
+          ],
+          "angles_deg": [
+            -90,
+            -60,
+            -30,
+            0,
+            30,
+            60,
+            90
+          ],
+          "steering_deg": 0,
+          "sound_speed_m_s": 340,
+          "source_range_m": 10,
+          "minimum_range_aperture_ratio": 5,
+          "minimum_fraunhofer_ratio": 1,
+          "main_lobe_exclusion_deg": 30,
+          "maximum_grid_gap_deg": 30,
+          "minimum_desired_amplitude": 0.8,
+          "maximum_sampled_sidelobe_amplitude": 0.8,
+          "minimum_white_noise_gain": 1.5
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "PATTERN-NEG-MISSING",
+      "kind": "negative",
+      "question": "Must incomplete candidate assertions fail closed?",
+      "input_overrides": {
+        "candidate": {
+          "bands": []
+        }
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

@@ -85,6 +85,10 @@ def _capture(browser: str, profile: str, url: str, output: Path) -> dict[str, ob
         "--disable-sync",
         "--metrics-recording-only",
         "--run-all-compositor-stages-before-draw",
+        "--force-prefers-reduced-motion",
+        "--disable-threaded-animation",
+        "--disable-threaded-scrolling",
+        "--disable-new-content-rendering-timeout",
         "--dump-dom",
         "--virtual-time-budget=2500",
         f"--window-size={VIEWPORT[0]},{VIEWPORT[1]}",
@@ -145,7 +149,7 @@ def run() -> int:
             # Snapshot actual GET responses once: otherwise new workflow runs and
             # telemetry between captures make pixel equality an invalid assertion.
             for endpoint in ('status','services','machine','roles','workflows','audit?limit=12',
-                             'maturity','standards?q=','projects','tasks','capabilities','capabilities/roles/R001'):
+                             'maturity','standards?q=','projects','tasks','capabilities','capabilities/knowledge','capabilities/roles/R001'):
                 path='/api/v1/'+endpoint
                 with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path, timeout=30) as response:
                     value=json.load(response)

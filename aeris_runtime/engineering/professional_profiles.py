@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R037':{'skill_id':'microphone-array-taper-baseline','method':'methods/roles/microphone-array-taper-baseline.json',
+            'suite':'golden/roles/R037/golden.json','scope':'ULA taper/steering sampled transfer and conservative mismatch WNG; no full-angle, speech-quality or measured verification.'},
+    'R034':{'skill_id':'microphone-array-pattern-domain-review','method':'methods/roles/microphone-array-pattern-domain-review.json',
+            'suite':'golden/roles/R034/golden.json','scope':'Independent directional sample, channel uncertainty and model-guard consistency; no actual array calibration or continuous-angle acceptance.'},
     'R009':{'skill_id':'speaker-sealed-alignment-baseline','method':'methods/roles/speaker-sealed-alignment-baseline.json',
             'suite':'golden/roles/R009/golden.json','scope':'Ideal sealed T/S alignment with independent parameter bounds and model geometry; no vented, nonlinear or measured acceptance.'},
     'R021':{'skill_id':'speaker-sealed-lumped-domain-review','method':'methods/roles/speaker-sealed-lumped-domain-review.json',

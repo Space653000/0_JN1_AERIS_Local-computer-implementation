@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
-    "delay-sum-beamforming": "skills/delay-sum-beamforming/input.schema.json"
+    "delay-sum-beamforming": "skills/delay-sum-beamforming/input.schema.json",
+    "microphone-array-taper-baseline": "skills/microphone-array-taper-baseline/input.schema.json"
   },
   "outputs": {
     "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
-    "delay-sum-beamforming": "skills/delay-sum-beamforming/output.schema.json"
+    "delay-sum-beamforming": "skills/delay-sum-beamforming/output.schema.json",
+    "microphone-array-taper-baseline": "skills/microphone-array-taper-baseline/output.schema.json"
   },
   "required_skills": [
     "linear-array-pattern",
-    "delay-sum-beamforming"
+    "delay-sum-beamforming",
+    "microphone-array-taper-baseline"
   ],
   "required_methods": [
     "methods/engineering/linear-array-pattern.json",
-    "methods/engineering/delay-sum-beamforming.json"
+    "methods/engineering/delay-sum-beamforming.json",
+    "methods/roles/microphone-array-taper-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/linear-array-pattern.json",
@@ -153,11 +157,13 @@
     "question": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
     "required_methods": [
       "methods/engineering/linear-array-pattern.json",
-      "methods/engineering/delay-sum-beamforming.json"
+      "methods/engineering/delay-sum-beamforming.json",
+      "methods/roles/microphone-array-taper-baseline.json"
     ],
     "required_skills": [
       "linear-array-pattern",
-      "delay-sum-beamforming"
+      "delay-sum-beamforming",
+      "microphone-array-taper-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -189,7 +195,8 @@
     ],
     "calculation_schemas": {
       "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
-      "delay-sum-beamforming": "skills/delay-sum-beamforming/input.schema.json"
+      "delay-sum-beamforming": "skills/delay-sum-beamforming/input.schema.json",
+      "microphone-array-taper-baseline": "skills/microphone-array-taper-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -203,7 +210,8 @@
     ],
     "calculation_schemas": {
       "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
-      "delay-sum-beamforming": "skills/delay-sum-beamforming/output.schema.json"
+      "delay-sum-beamforming": "skills/delay-sum-beamforming/output.schema.json",
+      "microphone-array-taper-baseline": "skills/microphone-array-taper-baseline/output.schema.json"
     }
   },
   "report_sections": [
@@ -213,5 +221,11 @@
     "gain mismatch rather than taper choice",
     "wrong geometry rather than bad optimization",
     "sensor phase spread and diffuse-field assumptions"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "microphone-array-taper-baseline",
+    "method": "methods/roles/microphone-array-taper-baseline.json",
+    "suite": "golden/roles/R037/golden.json",
+    "scope": "ULA taper/steering sampled transfer and conservative mismatch WNG; no full-angle, speech-quality or measured verification."
+  }
 }

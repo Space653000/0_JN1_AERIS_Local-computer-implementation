@@ -85,6 +85,8 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Python virtual environment creation failed.' }
   $Py=Join-Path $Root '.venv\Scripts\python.exe'
   if (-not (Test-Path $Py -PathType Leaf)) { throw "AERIS virtualenv interpreter missing after creation: $Py" }
+  & $Py -B (Join-Path $PSScriptRoot 'bootstrap-engineering.py') --mode $Mode
+  if ($LASTEXITCODE -ne 0) { throw 'Pinned free engineering dependency bootstrap failed.' }
   if (-not (Test-Path '.env') -and (Test-Path '.env.example')) { Copy-Item '.env.example' '.env' }
   Set-DotEnvValue '.env' 'AERIS_LOCAL_MODEL' $LocalModel
   New-Item -ItemType Directory -Force -Path '.aeris\state','.aeris\knowledge','.aeris\ingress','.aeris\installers','data','logs' | Out-Null
