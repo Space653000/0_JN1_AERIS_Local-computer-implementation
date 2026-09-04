@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R043':{'skill_id':'microphone-array-tdoa-baseline','method':'methods/roles/microphone-array-tdoa-baseline.json',
+            'suite':'golden/roles/R043/golden.json','scope':'Supplied two-channel GCC-PHAT, peak and direction-cosine ambiguity; not complete beamforming or calibrated DOA.'},
+    'R040':{'skill_id':'microphone-array-geometry-domain-review','method':'methods/roles/microphone-array-geometry-domain-review.json',
+            'suite':'golden/roles/R040/golden.json','scope':'Independent two-channel signal/geometry/ambiguity review; not unique 3D direction or physical array calibration.'},
     'R015':{'skill_id':'speaker-fr-reference-baseline','method':'methods/roles/speaker-fr-reference-baseline.json',
             'suite':'golden/roles/R015/golden.json','scope':'Supplied sampled FR reference, interval and window validity; not calibrated acquisition or full-band conformance.'},
     'R079':{'skill_id':'speaker-fr-uncertainty-domain-review','method':'methods/roles/speaker-fr-uncertainty-domain-review.json',

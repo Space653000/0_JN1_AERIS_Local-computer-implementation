@@ -1,5 +1,6 @@
 import unittest
 import copy
+from unittest.mock import patch
 
 from aeris_runtime.engineering import challenges
 from aeris_runtime.engineering import factory
@@ -17,7 +18,7 @@ class CompanyChallengeContractTests(unittest.TestCase):
     def test_inventory_separates_implemented_challenges_from_remaining_software(self):
         items=challenges.inventory()
         self.assertEqual(len(items),8)
-        self.assertEqual({x['id'] for x in items if x['implemented']},{'SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','TWS_FIT'})
+        self.assertEqual({x['id'] for x in items if x['implemented']},{'SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','ARRAY_DOA','TWS_FIT'})
 
     def test_noop_and_requirement_relaxation_are_not_engineering_revisions(self):
         initial={'max_thd':5,'drive':2}
@@ -27,13 +28,19 @@ class CompanyChallengeContractTests(unittest.TestCase):
                 challenges.validate_revision(initial,revised,{'max_thd':5},['drive'])
         with self.assertRaises(ValueError): challenges.load_challenge('../../private')
 
+    def test_role_scenario_reference_cannot_use_missing_or_invalid_input_case(self):
+        definition=challenges.load_challenge('ARRAY_DOA')
+        for case in ('MISSING','ARRAY-NEG-SILENCE'):
+            with patch.object(challenges,'load_challenge',return_value={**definition,'initial_case_id':case}):
+                with self.subTest(case=case),self.assertRaises(ValueError): challenges.run('ARRAY_DOA')
+
     def test_real_challenges_require_qualifications_and_reject_tampered_receipts(self):
         with isolated_engineering_state():
             blocked=challenges.run('SPEAKER_POWER')
             self.assertEqual(blocked['result'],'BLOCKED')
             self.assertEqual(controlplane.ControlStore().list_tasks(),[])
-            with self.assertRaises(ValueError): challenges.run('ARRAY_DOA')
-            for identifier in ('SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','TWS_FIT'):
+            with self.assertRaises(ValueError): challenges.run('FAILURE_FACA')
+            for identifier in ('SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','ARRAY_DOA','TWS_FIT'):
                 result=challenges.run(identifier,prepare_qualifications=True)
                 run_id=result['run_id']
                 self.assertTrue(challenges.status(run_id)['valid'])

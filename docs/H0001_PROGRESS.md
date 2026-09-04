@@ -409,3 +409,44 @@ non-verbose console capture is retained locally at
 `.aeris/evidence/H0001-fr-claim-review-full-tests.log`. H0001 remains unfinished:
 there are only four implemented company challenge families and eleven bounded
 role suites; no automatic whole-role L3 or new-runtime acceptance was awarded.
+
+## Ninth construction checkpoint — supplied array TDOA and geometry
+
+R043 now executes zero-padded, declared-band GCC-PHAT from real supplied sample
+arrays. It preserves the full-domain dominant lag instead of selecting a merely
+plausible in-aperture substitute. Polarity, tied/competing peaks, contiguous peak
+support width, worst-case spatial aliasing and direction-cosine intervals are
+separate checks. The interval includes lobe support, timing quantization and an
+explicit supplied estimator-error bound; no unique 3D direction or confidence
+claim is permitted. R040 recomputes via full-complex scipy FFT and independent
+geometry extrema, checking the complete output/assertion object.
+
+Plan review fixed peak/polarity/tie rules and incomplete delay-uncertainty scope
+before coding. Direct trigonometric fixture oracles were corrected to include
+finite-window demeaning before zero-padding, without copying estimator output.
+An exact peak-ratio boundary reproduced an FFT representation mismatch; the
+Method now declares 1e-10 dimensionless ratio resolution separately from model
+uncertainty. Role suites cover reversed channels, out-of-aperture arrival,
+separated arrivals, exact symmetric ties, broad peaks, aliasing, endfire interval
+crossing, silence/model negatives and false review assertions. Source total is
+13 suites / 142 cases, still bounded L2 and no whole-role L3 award.
+
+ARRAY_DOA is the fifth company Challenge. Its initial mixed-arrival data is
+rejected; revised hypothetical samples isolate one arrival with unchanged
+geometry, band and thresholds. The registry references a canonical role scenario
+instead of duplicating its sample arrays; unknown or invalid-input scenario refs
+are rejected. Actual SQLite/workflow/review/reproduction tests pass.
+
+Array plus role/profile focused tests passed 16 tests in 10.533 s; array plus
+four existing company challenges passed 12 tests in 87.303 s before the final
+boundary additions. Eight focused array tests then passed in 3.532 s. Full
+rerun and independent implementation review are still pending for this batch.
+The three remaining company families and the broader role-depth/live/CI/handoff
+work remain software gaps, not external gates. Core and PR32 remain untouched.
+
+Full local suite after array qualification, symmetric-tie/ratio boundary and
+canonical scenario-reference integration passed 293 tests in 166.216 s. Complete
+console output remains local at `.aeris/evidence/H0001-array-full-tests.log`.
+Six-route availability spot checks remained 6/6 HTTP 200 and Core status clean;
+independent code review, new-runtime rollout and clean Windows/Ubuntu CI remain
+separate unfinished gates.

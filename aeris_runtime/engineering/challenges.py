@@ -65,8 +65,14 @@ def _definition(identifier):
     if not definition['implemented']:
         raise ValueError('SOFTWARE_LOCAL_FIXABLE: challenge not implemented')
     _, suite = role_acceptance.load_contract(definition['role_id'])
-    inputs = {stage: {**copy.deepcopy(suite['base_input']), **definition[stage]}
-              for stage in ('initial', 'revised')}
+    inputs = {}
+    for stage in ('initial','revised'):
+        case_id=definition.get(stage+'_case_id')
+        cases=[case for case in suite['cases'] if case['id']==case_id] if case_id else []
+        if case_id and (len(cases)!=1 or cases[0]['kind']=='negative'):
+            raise ValueError('challenge must reference one non-negative canonical role scenario')
+        scenario=cases[0]['input_overrides'] if cases else {}
+        inputs[stage]={**copy.deepcopy(suite['base_input']),**copy.deepcopy(scenario),**definition[stage]}
     validate_revision(inputs['initial'], inputs['revised'], definition['requirements'],
                       definition['allowed_revision_fields'])
     return definition, suite['skill_id'], inputs

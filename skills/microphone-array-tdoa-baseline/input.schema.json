@@ -1,0 +1,140 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sample_rate_hz",
+    "band_low_hz",
+    "band_high_hz",
+    "spacing_m",
+    "spacing_lower_m",
+    "spacing_upper_m",
+    "sound_speed_m_s",
+    "sound_speed_lower_m_s",
+    "sound_speed_upper_m_s",
+    "timing_bound_samples",
+    "estimator_error_bound_samples",
+    "minimum_active_bins",
+    "minimum_peak_ratio",
+    "support_fraction",
+    "peak_exclusion_samples",
+    "maximum_support_width_samples",
+    "array_model",
+    "channel_polarity",
+    "channel_1",
+    "channel_2"
+  ],
+  "properties": {
+    "sample_rate_hz": {
+      "type": "number",
+      "minimum": 4000,
+      "maximum": 192000
+    },
+    "band_low_hz": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 90000
+    },
+    "band_high_hz": {
+      "type": "number",
+      "minimum": 2,
+      "maximum": 95000
+    },
+    "spacing_m": {
+      "type": "number",
+      "minimum": 0.001,
+      "maximum": 2
+    },
+    "spacing_lower_m": {
+      "type": "number",
+      "minimum": 0.001,
+      "maximum": 2
+    },
+    "spacing_upper_m": {
+      "type": "number",
+      "minimum": 0.001,
+      "maximum": 2
+    },
+    "sound_speed_m_s": {
+      "type": "number",
+      "minimum": 250,
+      "maximum": 450
+    },
+    "sound_speed_lower_m_s": {
+      "type": "number",
+      "minimum": 250,
+      "maximum": 450
+    },
+    "sound_speed_upper_m_s": {
+      "type": "number",
+      "minimum": 250,
+      "maximum": 450
+    },
+    "timing_bound_samples": {
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 64
+    },
+    "estimator_error_bound_samples": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 64
+    },
+    "minimum_active_bins": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 2048
+    },
+    "minimum_peak_ratio": {
+      "type": "number",
+      "minimum": 1.01,
+      "maximum": 100
+    },
+    "support_fraction": {
+      "type": "number",
+      "minimum": 0.5,
+      "maximum": 0.99
+    },
+    "peak_exclusion_samples": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64
+    },
+    "maximum_support_width_samples": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 129
+    },
+    "array_model": {
+      "type": "string",
+      "enum": [
+        "SYNCHRONIZED_LINEAR_PAIR_FAR_FIELD"
+      ]
+    },
+    "channel_polarity": {
+      "type": "string",
+      "enum": [
+        "SAME_POLARITY"
+      ]
+    },
+    "channel_1": {
+      "type": "array",
+      "minItems": 64,
+      "maxItems": 4096,
+      "items": {
+        "type": "number",
+        "minimum": -1000,
+        "maximum": 1000
+      }
+    },
+    "channel_2": {
+      "type": "array",
+      "minItems": 64,
+      "maxItems": 4096,
+      "items": {
+        "type": "number",
+        "minimum": -1000,
+        "maximum": 1000
+      }
+    }
+  }
+}
