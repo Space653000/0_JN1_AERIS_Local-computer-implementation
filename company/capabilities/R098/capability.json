@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "evidence-counterreview": "skills/evidence-counterreview/input.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+    "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/input.schema.json"
   },
   "outputs": {
     "evidence-counterreview": "skills/evidence-counterreview/output.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+    "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/output.schema.json"
   },
   "required_skills": [
     "evidence-counterreview",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "failure-hypothesis-domain-review"
   ],
   "required_methods": [
     "methods/engineering/evidence-counterreview.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/failure-hypothesis-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/evidence-counterreview.json",
@@ -153,11 +157,13 @@
     "question": "Challenge DFMEA and evidence claims with explicit counterhypotheses and authority boundaries",
     "required_methods": [
       "methods/engineering/evidence-counterreview.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/failure-hypothesis-domain-review.json"
     ],
     "required_skills": [
       "evidence-counterreview",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "failure-hypothesis-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -189,7 +195,8 @@
     ],
     "calculation_schemas": {
       "evidence-counterreview": "skills/evidence-counterreview/input.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+      "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -203,7 +210,8 @@
     ],
     "calculation_schemas": {
       "evidence-counterreview": "skills/evidence-counterreview/output.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+      "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/output.schema.json"
     }
   },
   "report_sections": [
@@ -213,5 +221,11 @@
     "measurement artifact rather than design mechanism",
     "shared oracle rather than corroboration",
     "failure-mode coverage and reviewer independence limits"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "failure-hypothesis-domain-review",
+    "method": "methods/roles/failure-hypothesis-domain-review.json",
+    "suite": "golden/roles/R098/golden.json",
+    "scope": "Independent FACA model/experiment assertion challenge; no physical root-cause or universal-reviewer authority."
+  }
 }

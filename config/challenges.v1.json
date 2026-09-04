@@ -36,7 +36,13 @@
      "initial_failures":["SEAL_LEAK_LOSS_DB"],
      "oracles":{"initial":[{"path":"leak_loss_db","expected":6.989700043360188,"absolute_tolerance":1e-7}],
                 "revised":[{"path":"leak_loss_db","expected":0.17033339298780367,"absolute_tolerance":1e-7}]}},
-    {"id":"FAILURE_FACA","implemented":false},
+    {"id":"FAILURE_FACA","implemented":true,"role_id":"R094","revised_case_id":"FACA-HYPOTHETICAL-PERSISTS",
+     "context":{"product":"Amplifier and test fixture"},
+     "allowed_revision_fields":["observations"],"initial":{},"revised":{},
+     "requirements":{"minimum_leading_posterior":0.8,"minimum_leading_margin":0.5},
+     "initial_failures":["LEADING_MODEL_POSTERIOR","MODEL_SEPARATION_MARGIN"],
+     "oracles":{"initial":[{"path":"posterior.FIXTURE","expected":0.5,"absolute_tolerance":1e-10},{"path":"selected_experiment_id","expected":"ISOLATE","absolute_tolerance":0}],
+                "revised":[{"path":"posterior.AMPLIFIER","expected":0.9,"absolute_tolerance":1e-10},{"path":"root_cause_verified","expected":false,"absolute_tolerance":0},{"path":"recurrence_validated","expected":false,"absolute_tolerance":0}]}},
     {"id":"REQUIREMENT_TRACEABILITY","implemented":false},
     {"id":"STANDARDS_PROVENANCE","implemented":false}
   ]

@@ -462,3 +462,47 @@ the reviewer confirmed the original P2 resolved with no new scoped blocker.
 Full local regression passed 294 tests in 172.708 s (before FACA tests were
 discovered). Isolated six-page browser semantic E2E at 539fdd1 also passed.
 This does not establish clean Windows/Ubuntu CI or current live deployment.
+
+## Tenth construction checkpoint — FACA model and experiment origin
+
+R094 executes explicit product/test-system failure hypotheses with supplied
+likelihoods, log-space inference and controlled experiment information/cost
+ranking. R098 independently recomputes using Decimal products and joint entropy.
+Unique observation/source IDs, full mechanism coverage and declared conditional
+independence are required. A concentrated model posterior cannot grant causal
+closure, recurrence validation, physical evidence or calibrated confidence.
+
+Four numerical review findings were reproduced and corrected: tiny gain/cost
+cancellation, posterior ranking tie disagreement, raw-margin acceptance of
+quantized ties, and non-normalized outcome roundoff manufacturing information.
+Both paths declare 12-decimal decision representation, 60-digit entropy work,
+explicit tie rejection for separation, and per-hypothesis outcome normalization
+within the accepted representation tolerance. Review follow-ups found original
+defects resolved; these are software checks, not Human professional approval.
+
+Role suites now include R094 14 cases and R098 12 cases, bringing source coverage
+to 15 suites / 171 cases. The two added Skills bring domain/review handlers to 15
+(42 shared plus 15 domain/review = 57 engineering Skills); no whole-role L3 is
+awarded. FAILURE_FACA becomes the sixth of eight implemented company challenge
+families. It executes two real SQLite/workflow/review/reproduction stages and
+requires exactly one appended hypothetical observation from the first sealed
+selected experiment. Original observations, model, policy, cost and availability
+stay fixed; attempt/execution/input/output/experiment/outcome hashes are linked.
+Cross-attempt and resealed-origin substitutions are rejected.
+
+Focused FACA tests passed 15 tests in 22.198 s, including actual workflow and
+origin mutations. Full fixed-source regression passed 309 tests in 220.845 s,
+finished 2026-09-04T09:02:39.607562+00:00. The complete local-only transcript is
+`.aeris/evidence/H0001-faca-full-tests.log`, SHA-256
+`b0164aa04c601b615f2dc868eac8a8b3bb9abbea0c298eed03065c244b2b550b`.
+This run discovered tests before the next unregistered requirement-trace module
+was added; it is the FACA checkpoint, not acceptance of that next module.
+Isolated Dashboard/Workspace/Services dark/light semantic browser tests passed.
+Core remained clean. Live supervisor rollout, clean Windows/Ubuntu CI, broader
+role depth and H0001 handoff remain unfinished. No GitHub write was performed.
+
+One earlier test invocation was invalidated by a Method update during execution;
+another full run was intentionally stopped after review found numeric defects.
+Neither is counted as passing. An interrupted tool session's result was not
+recoverable, so the full fixed-source run above was executed again with a durable
+local transcript. Temporary reviewer usage failures were retried successfully.

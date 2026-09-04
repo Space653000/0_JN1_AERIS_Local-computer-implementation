@@ -127,9 +127,11 @@ def run(identifier, *, prepare_qualifications=False):
               'source_kind': 'SYNTHETIC', 'scope': 'Hypothetical analytical revision; not acquired measurement or physical improvement',
               'role_l3_awarded': False, 'human_approval': False, 'stages': []}
     for stage in ('initial', 'revised'):
+        if stage=='revised' and identifier=='FAILURE_FACA':
+            record['revision_origin']=_faca_origin(inputs,record['stages'][0]['report'],attempt)
         objective = f'{attempt}/{stage}: {identifier}'
         report = run_role(definition['role_id'], skill, inputs[stage], objective=objective,
-                          project_id=project, source_kind='SYNTHETIC')
+                          project_id=project, source_kind='SYNTHETIC',context=definition.get('context'))
         checks = _oracles(definition, stage, report)
         replay = reproduction.reproduce_run(report['evidence_run_id'])
         if replay['result'] != 'PASS':
@@ -155,6 +157,23 @@ def _object(value):
     if not isinstance(value, dict):
         raise ValueError('receipt must be a JSON object')
     return value
+
+
+def _faca_origin(inputs, first_report, attempt):
+    """Read the actual sealed first execution, not caller-authored candidate JSON."""
+    from .faca import revision_receipt
+    execution_id=first_report['evidence_run_id']
+    if not evidence.validate_bundle(execution_id)['valid']:
+        raise ValueError('FACA initial execution integrity failed')
+    root=evidence.bundle_dir(execution_id)
+    context=_object(factory.read(root/'raw/engineering-context.json'))
+    output=_object(factory.read(root/'processed/skill_result.json'))
+    initial=factory.read(root/'raw/engineering-input.json')
+    if (context.get('objective')!=attempt+'/initial: FAILURE_FACA'
+            or initial!=inputs['initial'] or output!=first_report['numerical_result']
+            or context.get('role_id')!='R094' or context.get('skill_id')!='failure-hypothesis-experiment-baseline'):
+        raise ValueError('FACA sealed source belongs to another attempt or model')
+    return revision_receipt(initial,inputs['revised'],output['values'],attempt,execution_id)
 
 
 def _objects(value):
@@ -273,6 +292,10 @@ def status(run_id):
                     or replay['actual_sha256'] != replay['expected_sha256']):
                 raise ValueError('reproduction receipt mismatch')
             _memory_linkage(record['memory']['events'], report, record['project_id'])
+        if record['challenge_id']=='FAILURE_FACA':
+            origin=_faca_origin(inputs,record['stages'][0]['report'],run_id)
+            if record.get('revision_origin')!=origin:
+                raise ValueError('FACA revision origin receipt mismatch')
         memory = Harness()
         if (record['memory']['memory_is_evidence'] is not False or not memory.verify()['valid']
                 or record['memory']['events'] != memory.events(record['project_id'], limit=10000)):

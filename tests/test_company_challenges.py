@@ -18,7 +18,7 @@ class CompanyChallengeContractTests(unittest.TestCase):
     def test_inventory_separates_implemented_challenges_from_remaining_software(self):
         items=challenges.inventory()
         self.assertEqual(len(items),8)
-        self.assertEqual({x['id'] for x in items if x['implemented']},{'SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','ARRAY_DOA','TWS_FIT'})
+        self.assertEqual({x['id'] for x in items if x['implemented']},{'SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','ARRAY_DOA','TWS_FIT','FAILURE_FACA'})
 
     def test_noop_and_requirement_relaxation_are_not_engineering_revisions(self):
         initial={'max_thd':5,'drive':2}
@@ -39,8 +39,8 @@ class CompanyChallengeContractTests(unittest.TestCase):
             blocked=challenges.run('SPEAKER_POWER')
             self.assertEqual(blocked['result'],'BLOCKED')
             self.assertEqual(controlplane.ControlStore().list_tasks(),[])
-            with self.assertRaises(ValueError): challenges.run('FAILURE_FACA')
-            for identifier in ('SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','ARRAY_DOA','TWS_FIT'):
+            with self.assertRaises(ValueError): challenges.run('REQUIREMENT_TRACEABILITY')
+            for identifier in ('SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','ARRAY_DOA','TWS_FIT','FAILURE_FACA'):
                 result=challenges.run(identifier,prepare_qualifications=True)
                 run_id=result['run_id']
                 self.assertTrue(challenges.status(run_id)['valid'])

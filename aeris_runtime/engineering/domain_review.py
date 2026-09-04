@@ -9,6 +9,7 @@ from ..config import ROOT
 from .numerical_policy import db_at_least,db_at_most,MIN_IDENTIFIABLE_VARIANCE_FRACTION
 
 REQUIRED_DOMAINS={
+    'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
     'microphone-array-tdoa-baseline':['microphone-array-geometry'],
     'speaker-fr-reference-baseline':['speaker-fr-uncertainty'],
     'speaker-power-distortion-baseline':['speaker-nonlinear','speaker-thermal'],
@@ -19,6 +20,11 @@ DOMAIN_SKILLS={domain:skill for skill,domains in REQUIRED_DOMAINS.items() for do
 
 
 def applicable(domain,context):
+    if domain=='failure-hypothesis':
+        return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
+                and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
+                and context.get('transducer') in {'Speaker','Microphone','Both'}
+                and isinstance(context.get('product'),str) and bool(context['product'].strip()))
     speaker=domain.startswith('speaker-')
     microphone=domain.startswith('microphone-')
     return (domain in DOMAIN_SKILLS and context.get('risk') in {'R0','R1'}
@@ -111,6 +117,9 @@ def review(domain,request):
     if domain=='microphone-array-geometry':
         from .array_doa_review import review as review_array
         return review_array(p,candidate)
+    if domain=='failure-hypothesis':
+        from .faca_review import review as review_failure
+        return review_failure(p,candidate)
     expected={}; observations={}
     if speaker:
         if p['drive_voltage_rms_v']<p['reference_voltage_rms_v'] or p['max_coil_temperature_c']<p['ambient_temperature_c']:
@@ -244,7 +253,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -349,6 +358,8 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']
     if skill=='microphone-array-tdoa-baseline':
         return [c.get('id') for c in values['checks']]==['POLARITY_CONSISTENCY','PEAK_IDENTIFIABILITY','ALIAS_FREE_DECLARED_BAND','DIRECTION_INTERVAL_VALIDITY']
+    if skill=='failure-hypothesis-experiment-baseline':
+        return [c.get('id') for c in values['checks']]==['LEADING_MODEL_POSTERIOR','MODEL_SEPARATION_MARGIN']
     if skill=='speaker-power-distortion-baseline':
         rows=[
             ('THD_PERCENT',values['thd_percent'],params['max_thd_percent'],'<=','LOWER_DRIVE_AND_DISCRIMINATE_TRANSDUCER_FROM_AMPLIFIER_NONLINEARITY'),

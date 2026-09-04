@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R094':{'skill_id':'failure-hypothesis-experiment-baseline','method':'methods/roles/failure-hypothesis-experiment-baseline.json',
+            'suite':'golden/roles/R094/golden.json','scope':'Supplied failure-model probabilities and controlled experiment selection; not causal proof or recurrence closure.'},
+    'R098':{'skill_id':'failure-hypothesis-domain-review','method':'methods/roles/failure-hypothesis-domain-review.json',
+            'suite':'golden/roles/R098/golden.json','scope':'Independent FACA model/experiment assertion challenge; no physical root-cause or universal-reviewer authority.'},
     'R043':{'skill_id':'microphone-array-tdoa-baseline','method':'methods/roles/microphone-array-tdoa-baseline.json',
             'suite':'golden/roles/R043/golden.json','scope':'Supplied two-channel GCC-PHAT, peak and direction-cosine ambiguity; not complete beamforming or calibrated DOA.'},
     'R040':{'skill_id':'microphone-array-geometry-domain-review','method':'methods/roles/microphone-array-geometry-domain-review.json',
