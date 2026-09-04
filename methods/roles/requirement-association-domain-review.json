@@ -1,0 +1,15 @@
+{
+  "method_id": "requirement-association-domain-review",
+  "version": "1.0.0",
+  "role": "R099",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.requirement_trace_review:review",
+  "applicability": "R0/R1 exact quantitative ALL-association traceability with synthetic or supplied-unverified payloads",
+  "numerical_path": "Independent expected-association traversal and exact rational center-to-limit margins",
+  "scope": "Immutable required test IDs/revisions independent of supplied links. Unit, measurand, reference and configuration must match exactly; no implicit conversion.",
+  "provenance": "SHA-256 validates canonical embedded content identity only. No signature, physical acquisition, calibration, customer approval or source authenticity is inferred.",
+  "interval_policy": "Fraction of decimal input spelling; exact endpoint rational strings are truth and numeric interval is approximate presentation. Never round nonzero uncertainty into acceptance.",
+  "revision_policy": "Append exactly one expected link; requirement/test/result/configuration and all old links immutable",
+  "golden_tests": "golden/roles/R099/golden.json"
+}

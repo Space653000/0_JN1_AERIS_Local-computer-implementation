@@ -27,7 +27,8 @@ def _fingerprint():
            ROOT/'aeris_runtime/engineering/numerical_policy.py',ROOT/'aeris_runtime/engineering/speaker_fr.py',
            ROOT/'aeris_runtime/engineering/speaker_fr_review.py',ROOT/'aeris_runtime/engineering/array_doa.py',
            ROOT/'aeris_runtime/engineering/array_doa_review.py',ROOT/'aeris_runtime/engineering/faca.py',
-           ROOT/'aeris_runtime/engineering/faca_review.py']
+           ROOT/'aeris_runtime/engineering/faca_review.py',ROOT/'aeris_runtime/engineering/requirement_trace.py',
+           ROOT/'aeris_runtime/engineering/requirement_trace_review.py']
     for skill in HANDLERS:
         paths.append(ROOT/f'methods/roles/{skill}.json')
         paths.extend(ROOT/f'skills/{skill}/{name}' for name in ('manifest.json','input.schema.json','output.schema.json','SKILL.md'))
@@ -132,12 +133,14 @@ from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
 from .faca import analyze as failure_hypothesis_model
+from .requirement_trace import analyze as requirement_association_model
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,
-          'failure-hypothesis-experiment-baseline':failure_hypothesis_model}
+          'failure-hypothesis-experiment-baseline':failure_hypothesis_model,
+          'requirement-association-baseline':requirement_association_model}
 
 
 def _review_handler(domain):
@@ -147,7 +150,7 @@ def _review_handler(domain):
     return run
 
 
-for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis'):
+for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association'):
     HANDLERS[_domain+'-domain-review']=_review_handler(_domain)
 
 

@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-    "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "requirement-association-baseline": "skills/requirement-association-baseline/input.schema.json"
   },
   "outputs": {
     "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-    "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "requirement-association-baseline": "skills/requirement-association-baseline/output.schema.json"
   },
   "required_skills": [
     "requirement-traceability",
-    "engineering-requirements"
+    "engineering-requirements",
+    "requirement-association-baseline"
   ],
   "required_methods": [
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/engineering-requirements.json"
+    "methods/engineering/engineering-requirements.json",
+    "methods/roles/requirement-association-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/requirement-traceability.json",
@@ -153,11 +157,13 @@
     "question": "Maintain requirement-test-evidence and configuration links across revisions",
     "required_methods": [
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/engineering-requirements.json"
+      "methods/engineering/engineering-requirements.json",
+      "methods/roles/requirement-association-baseline.json"
     ],
     "required_skills": [
       "requirement-traceability",
-      "engineering-requirements"
+      "engineering-requirements",
+      "requirement-association-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -189,7 +195,8 @@
     ],
     "calculation_schemas": {
       "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-      "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-association-baseline": "skills/requirement-association-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -203,7 +210,8 @@
     ],
     "calculation_schemas": {
       "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-      "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-association-baseline": "skills/requirement-association-baseline/output.schema.json"
     }
   },
   "report_sections": [
@@ -213,5 +221,11 @@
     "configuration drift rather than test regression",
     "missing evidence rather than failed requirement",
     "revision ambiguity and incomplete provenance"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "requirement-association-baseline",
+    "method": "methods/roles/requirement-association-baseline.json",
+    "suite": "golden/roles/R097/golden.json",
+    "scope": "Exact required association/version/reference and supplied interval coverage; no physical/customer acceptance."
+  }
 }

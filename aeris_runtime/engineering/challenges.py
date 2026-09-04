@@ -129,6 +129,8 @@ def run(identifier, *, prepare_qualifications=False):
     for stage in ('initial', 'revised'):
         if stage=='revised' and identifier=='FAILURE_FACA':
             record['revision_origin']=_faca_origin(inputs,record['stages'][0]['report'],attempt)
+        if stage=='revised' and identifier=='REQUIREMENT_TRACEABILITY':
+            record['revision_origin']=_trace_origin(inputs,record['stages'][0]['report'],attempt)
         objective = f'{attempt}/{stage}: {identifier}'
         report = run_role(definition['role_id'], skill, inputs[stage], objective=objective,
                           project_id=project, source_kind='SYNTHETIC',context=definition.get('context'))
@@ -174,6 +176,25 @@ def _faca_origin(inputs, first_report, attempt):
             or context.get('role_id')!='R094' or context.get('skill_id')!='failure-hypothesis-experiment-baseline'):
         raise ValueError('FACA sealed source belongs to another attempt or model')
     return revision_receipt(initial,inputs['revised'],output['values'],attempt,execution_id)
+
+
+def _trace_origin(inputs, first_report, attempt):
+    from .requirement_trace import validate_revision
+    execution=first_report['evidence_run_id']
+    if not evidence.validate_bundle(execution)['valid']:raise ValueError('trace initial execution integrity failed')
+    root=evidence.bundle_dir(execution)
+    context=_object(factory.read(root/'raw/engineering-context.json'))
+    initial=factory.read(root/'raw/engineering-input.json')
+    output=factory.read(root/'processed/skill_result.json')
+    if (context.get('objective')!=attempt+'/initial: REQUIREMENT_TRACEABILITY'
+            or context.get('role_id')!='R097' or context.get('skill_id')!='requirement-association-baseline'
+            or initial!=inputs['initial'] or output!=first_report['numerical_result']):
+        raise ValueError('trace source belongs to another attempt or definition')
+    validate_revision(initial,inputs['revised'])
+    return {'attempt_id':attempt,'initial_execution_id':execution,'initial_input_sha256':catalog.digest(initial),
+            'new_link_sha256':catalog.digest(inputs['revised']['links'][-1]),
+            'immutable_contract_sha256':catalog.digest({k:v for k,v in initial.items() if k!='links'}),
+            'classification':'SYNTHETIC_LINK_REVISION_NOT_PHYSICAL_MEASUREMENT'}
 
 
 def _objects(value):
@@ -296,6 +317,9 @@ def status(run_id):
             origin=_faca_origin(inputs,record['stages'][0]['report'],run_id)
             if record.get('revision_origin')!=origin:
                 raise ValueError('FACA revision origin receipt mismatch')
+        if record['challenge_id']=='REQUIREMENT_TRACEABILITY':
+            if record.get('revision_origin')!=_trace_origin(inputs,record['stages'][0]['report'],run_id):
+                raise ValueError('trace revision origin receipt mismatch')
         memory = Harness()
         if (record['memory']['memory_is_evidence'] is not False or not memory.verify()['valid']
                 or record['memory']['events'] != memory.events(record['project_id'], limit=10000)):

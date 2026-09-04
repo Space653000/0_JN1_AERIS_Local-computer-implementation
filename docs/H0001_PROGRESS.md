@@ -506,3 +506,40 @@ another full run was intentionally stopped after review found numeric defects.
 Neither is counted as passing. An interrupted tool session's result was not
 recoverable, so the full fixed-source run above was executed again with a durable
 local transcript. Temporary reviewer usage failures were retried successfully.
+
+## Eleventh construction checkpoint — versioned requirement associations
+
+R097 now evaluates required test/revision associations from an immutable expected
+set, independent of actual links. Link completeness, current revision/configuration
+and exact measurand/reference/units, and supplied uncertainty-interval satisfaction
+are separate counts. R099 independently traverses associations and checks exact
+center-to-limit margins plus every output assertion. Embedded payload hashes
+prove only content identity; real evidence, source authenticity and customer
+approval remain unverified.
+
+Plan review corrected missing independent association denominators and missing
+requirement-side measurand/reference semantics. Implementation review found that
+default Decimal precision could erase a tiny nonzero uncertainty at a zero-width
+limit. Exact Fraction input arithmetic and retained rational endpoints resolve
+the reproduced 1e-30 regression without loosening numerical acceptance. Review
+follow-ups found the original defect resolved and no new scoped blocker.
+
+R097 has 13 role cases and R099 has 12; source total is 17 suites / 196 cases,
+with 17 domain/review plus 42 shared engineering Skills. All new qualification
+remains bounded L2, never whole-role L3. REQUIREMENT_TRACEABILITY is the seventh
+implemented company family: it appends one previously missing link to an existing
+result without changing requirements/tests/results/configuration or old links.
+The same attempt's sealed first input/output and new-link hash are revalidated
+before second execution and during aggregate status. Cross-attempt and resealed
+origin substitutions are rejected.
+
+Trace/role tests passed 17 in 12.786 s, then 12 trace tests including real
+workflow/reproduction and two-attempt origin checks passed in 21.977 s. Full
+fixed-source regression passed 321 tests in 267.970 s, finished
+2026-09-04T09:16:58.285929+00:00. Complete local-only transcript:
+`.aeris/evidence/H0001-trace-full-tests.log`, SHA-256
+`0125d02a494692f20830c798d74c21cae0689da6a6fb1659dc58c19ea8369451`.
+The next standalone standards module/tests were added after discovery and are
+not covered by this checkpoint result. Browser rerun is separate and pending.
+Broader role depth, final standards workflow, live rollout, clean Windows/Ubuntu
+CI and H0001 handoff remain unfinished. No GitHub write or Core change occurred.

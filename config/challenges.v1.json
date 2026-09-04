@@ -43,7 +43,13 @@
      "initial_failures":["LEADING_MODEL_POSTERIOR","MODEL_SEPARATION_MARGIN"],
      "oracles":{"initial":[{"path":"posterior.FIXTURE","expected":0.5,"absolute_tolerance":1e-10},{"path":"selected_experiment_id","expected":"ISOLATE","absolute_tolerance":0}],
                 "revised":[{"path":"posterior.AMPLIFIER","expected":0.9,"absolute_tolerance":1e-10},{"path":"root_cause_verified","expected":false,"absolute_tolerance":0},{"path":"recurrence_validated","expected":false,"absolute_tolerance":0}]}},
-    {"id":"REQUIREMENT_TRACEABILITY","implemented":false},
+    {"id":"REQUIREMENT_TRACEABILITY","implemented":true,"role_id":"R097","initial_case_id":"TRACE-MISSING-ASSOCIATION",
+     "context":{"product":"SYNTHETIC_SPEAKER","transducer":"Speaker"},
+     "allowed_revision_fields":["links"],"initial":{},"revised":{},
+     "requirements":{"configuration":{"product":"SYNTHETIC_SPEAKER","revision":"A"}},
+     "initial_failures":["REQUIRED_ASSOCIATION_COVERAGE","CURRENT_REVISION_AND_SEMANTICS","BOUNDED_REQUIREMENT_INTERVALS"],
+     "oracles":{"initial":[{"path":"required_associations","expected":2,"absolute_tolerance":0},{"path":"linked_associations","expected":1,"absolute_tolerance":0},{"path":"complete_requirements","expected":0,"absolute_tolerance":0}],
+                "revised":[{"path":"required_associations","expected":2,"absolute_tolerance":0},{"path":"bounded_associations","expected":2,"absolute_tolerance":0},{"path":"real_evidence_count","expected":0,"absolute_tolerance":0}]}},
     {"id":"STANDARDS_PROVENANCE","implemented":false}
   ]
 }

@@ -21,22 +21,26 @@
   "inputs": {
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
     "provenance-research": "skills/provenance-research/input.schema.json",
-    "evidence-counterreview": "skills/evidence-counterreview/input.schema.json"
+    "evidence-counterreview": "skills/evidence-counterreview/input.schema.json",
+    "requirement-association-domain-review": "skills/requirement-association-domain-review/input.schema.json"
   },
   "outputs": {
     "requirement-traceability": "skills/requirement-traceability/output.schema.json",
     "provenance-research": "skills/provenance-research/output.schema.json",
-    "evidence-counterreview": "skills/evidence-counterreview/output.schema.json"
+    "evidence-counterreview": "skills/evidence-counterreview/output.schema.json",
+    "requirement-association-domain-review": "skills/requirement-association-domain-review/output.schema.json"
   },
   "required_skills": [
     "requirement-traceability",
     "provenance-research",
-    "evidence-counterreview"
+    "evidence-counterreview",
+    "requirement-association-domain-review"
   ],
   "required_methods": [
     "methods/engineering/requirement-traceability.json",
     "methods/engineering/provenance-research.json",
-    "methods/engineering/evidence-counterreview.json"
+    "methods/engineering/evidence-counterreview.json",
+    "methods/roles/requirement-association-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/requirement-traceability.json",
@@ -175,12 +179,14 @@
     "required_methods": [
       "methods/engineering/requirement-traceability.json",
       "methods/engineering/provenance-research.json",
-      "methods/engineering/evidence-counterreview.json"
+      "methods/engineering/evidence-counterreview.json",
+      "methods/roles/requirement-association-domain-review.json"
     ],
     "required_skills": [
       "requirement-traceability",
       "provenance-research",
-      "evidence-counterreview"
+      "evidence-counterreview",
+      "requirement-association-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -213,7 +219,8 @@
     "calculation_schemas": {
       "requirement-traceability": "skills/requirement-traceability/input.schema.json",
       "provenance-research": "skills/provenance-research/input.schema.json",
-      "evidence-counterreview": "skills/evidence-counterreview/input.schema.json"
+      "evidence-counterreview": "skills/evidence-counterreview/input.schema.json",
+      "requirement-association-domain-review": "skills/requirement-association-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -228,7 +235,8 @@
     "calculation_schemas": {
       "requirement-traceability": "skills/requirement-traceability/output.schema.json",
       "provenance-research": "skills/provenance-research/output.schema.json",
-      "evidence-counterreview": "skills/evidence-counterreview/output.schema.json"
+      "evidence-counterreview": "skills/evidence-counterreview/output.schema.json",
+      "requirement-association-domain-review": "skills/requirement-association-domain-review/output.schema.json"
     }
   },
   "report_sections": [
@@ -238,5 +246,11 @@
     "provenance mismatch rather than conflicting result",
     "stale report rather than changed product",
     "source completeness and unresolved reviewer disagreement"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "requirement-association-domain-review",
+    "method": "methods/roles/requirement-association-domain-review.json",
+    "suite": "golden/roles/R099/golden.json",
+    "scope": "Independent required-association and evidence-content claim challenge; no source authenticity or universal domain authority."
+  }
 }

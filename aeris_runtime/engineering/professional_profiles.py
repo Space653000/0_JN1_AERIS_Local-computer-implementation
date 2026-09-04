@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R097':{'skill_id':'requirement-association-baseline','method':'methods/roles/requirement-association-baseline.json',
+            'suite':'golden/roles/R097/golden.json','scope':'Exact required association/version/reference and supplied interval coverage; no physical/customer acceptance.'},
+    'R099':{'skill_id':'requirement-association-domain-review','method':'methods/roles/requirement-association-domain-review.json',
+            'suite':'golden/roles/R099/golden.json','scope':'Independent required-association and evidence-content claim challenge; no source authenticity or universal domain authority.'},
     'R094':{'skill_id':'failure-hypothesis-experiment-baseline','method':'methods/roles/failure-hypothesis-experiment-baseline.json',
             'suite':'golden/roles/R094/golden.json','scope':'Supplied failure-model probabilities and controlled experiment selection; not causal proof or recurrence closure.'},
     'R098':{'skill_id':'failure-hypothesis-domain-review','method':'methods/roles/failure-hypothesis-domain-review.json',
