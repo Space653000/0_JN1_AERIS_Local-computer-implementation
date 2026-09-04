@@ -42,7 +42,13 @@ class MaturityBoundaryTests(unittest.TestCase):
             matrix={r['id']:r for r in factory.matrix()['roles']}
             self.assertEqual(matrix['R009']['level'],'L1')
             self.assertEqual(matrix['R010']['level'],'L1')
-            self.assertEqual(matrix['R009']['coverage']['evaluated'],len(factory.load_pack('R009')['required_skills']))
+            pack=factory.load_pack('R009')
+            # This path seals shared Skill evidence only. Domain execution has
+            # its own suite/source/reviewer contract and cannot enter this count.
+            self.assertEqual(matrix['R009']['coverage']['evaluated'],len(factory.shared_skills(pack)))
+            self.assertEqual(matrix['R009']['coverage']['skills'],len(pack['required_skills']))
+            self.assertNotIn(pack['domain_execution_contract']['skill_id'],matrix['R009']['executable_skills'])
+            self.assertFalse(matrix['R009']['domain_execution']['execution_passed'])
             # A valid but different role's seal must not satisfy the target.
             index=state/'evaluations/R009.json'
             factory.write(index,{**first,'run_id':second['run_id'],'level':'L4'})
@@ -61,13 +67,25 @@ class MaturityBoundaryTests(unittest.TestCase):
 
     def test_no_empty_checks_or_missing_negative_evidence_can_grant_execution(self):
         pack=factory.load_pack('R009'); runs=[]
-        for skill in pack['required_skills']:
+        for skill in factory.shared_skills(pack):
             fixture=factory.fixture_for('R009',skill)
             runs.append({'skill_id':skill,'input':fixture['input'],
                          'output':factory.catalog.execute(skill,fixture['input']),
                          'evaluation':factory.catalog.evaluate(skill)})
         self.assertTrue(factory.valid_skill_runs(runs,pack))
         self.assertFalse(factory.valid_skill_runs([],pack))
+        self.assertFalse(factory.valid_skill_runs(runs[:-1],pack))
+        self.assertFalse(factory.valid_skill_runs(runs+[copy.deepcopy(runs[0])],pack))
+        # A domain Skill output cannot be smuggled into shared qualification,
+        # even if the actual domain runtime completed a valid calculation.
+        from aeris_runtime.skills_runtime import run_skill
+        domain=pack['domain_execution_contract']['skill_id']
+        fixture=factory.fixture_for('R009',domain)
+        domain_run={'skill_id':domain,'input':fixture['input'],
+                    'output':run_skill(domain,fixture['input']),
+                    'evaluation':copy.deepcopy(runs[0]['evaluation'])}
+        self.assertFalse(factory.valid_skill_runs(runs+[domain_run],pack))
+        self.assertFalse(factory.valid_skill_runs([domain_run]+runs[1:],pack))
         for field,value in (('checks',[]),('negative_pass',False),('case_sha256','0'*64)):
             altered=copy.deepcopy(runs); altered[0]['evaluation'][field]=value
             self.assertFalse(factory.valid_skill_runs(altered,pack))

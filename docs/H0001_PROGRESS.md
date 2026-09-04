@@ -601,3 +601,16 @@ supervision before H0001 completion. This changes the handoff timing only: a new
 Draft PR, no Core writes, no historical PR32 overwrite, no main push or merge.
 H0001 and P02 remain NOT ACCEPTED. Public source/metadata and sanitized evidence
 hashes are in scope; raw local state and sensitive content remain excluded.
+
+## Fourteenth checkpoint — shared/domain regression corrected
+
+Both maturity failures were reproduced and traced to legacy test assumptions,
+not an unregistered runtime Skill. Shared factory qualification intentionally
+does not execute domain Skills. Tests now distinguish total contract from shared
+evaluated coverage, preserve the absent-domain/no-L2/no-L3 checks, and reject
+missing, duplicate and mixed-domain shared evidence.
+Focused 17 tests passed; full fixed-source 342 tests passed in 345.565 seconds.
+Transcript SHA-256 and scope are in handoff/construction/H0001/FOLLOWUP.md.
+Independent spec and standards reviews found no scoped blocker. This checkpoint
+does not cover the next standalone array-beam modules added after test discovery.
+H0001 remains in progress; no Core write or main merge is authorized.
