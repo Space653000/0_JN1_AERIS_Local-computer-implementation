@@ -337,3 +337,20 @@ the new H0001 Draft PR are not represented as completed by this checkpoint.
 Full local unit rerun for this implementation passed 277 tests in 111.518 s.
 The local console excerpt retains the final outcome but contains one truncated
 tool-output chunk; it is not represented as an unabridged transcript.
+
+### Challenge independent review corrections
+
+Spec P1 was reproduced with two real attempts: relabelling mutable SQLite/report
+links and resealing the aggregate could incorrectly accept another attempt's
+sealed execution. Status now checks the original sealed objective/role/Skill/
+input, plus Memory project/task/workflow/execution/review linkage. Standards P2
+was reproduced as nine malformed-container exceptions across the three flows;
+explicit receipt shape validation now returns controlled FAIL responses.
+Both reviewers confirmed their original findings resolved. Five focused tests
+passed in 46.635 s; full local suite passed 277 tests in 120.161 s. Complete
+non-verbose console output remains local in
+`.aeris/evidence/H0001-challenge-repair-full-tests.log`.
+
+Isolated six-page browser semantic E2E passed at 26a24cb, not deployed-runtime
+acceptance. Read-only remote main remains 32ca69baa778959d01c10a72bba1a8f0c0ac7eb5;
+Core cache remained clean. No GitHub write, PR32 mutation or main merge occurred.

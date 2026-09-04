@@ -44,12 +44,16 @@ class CompanyChallengeContractTests(unittest.TestCase):
                 self.assertEqual(len(controlplane.ControlStore().list_tasks(result['project_id'])),2)
                 path=evidence.bundle_dir(run_id)/'processed/challenge.json'
                 original=factory.read(path)
-                for mutation in ('source','replay','stage','input'):
+                for mutation in ('source','replay','stage','input','qualifications-array','report-array','review-array','root-array'):
                     altered=copy.deepcopy(original)
                     if mutation=='source': altered['bindings']['domain_source']='0'*64
                     elif mutation=='replay': altered['stages'][1]['reproduction']=altered['stages'][0]['reproduction']
                     elif mutation=='stage': altered['stages'][1]=altered['stages'][0]
-                    else: altered['inputs']['revised']['invented']=1
+                    elif mutation=='input': altered['inputs']['revised']['invented']=1
+                    elif mutation=='qualifications-array': altered['qualifications']=list(altered['qualifications'])
+                    elif mutation=='report-array': altered['stages'][0]['report']=[]
+                    elif mutation=='review-array': altered['stages'][0]['report']['review']=[]
+                    else: altered=[]
                     factory.write(path,altered)
                     evidence.seal_bundle(run_id,'negative test reseal')
                     with self.subTest(identifier=identifier,mutation=mutation):
@@ -77,6 +81,20 @@ class CompanyChallengeContractTests(unittest.TestCase):
             factory.write(path,altered)
             evidence.seal_bundle(first['run_id'],'wrong-attempt test reseal')
             self.assertTrue(challenges.status(second['run_id'])['valid'])
+            self.assertFalse(challenges.status(first['run_id'])['valid'])
+            # A mutable SQLite/report relabel must not transplant sealed evidence.
+            transplanted=copy.deepcopy(original)
+            item=copy.deepcopy(second['stages'][1])
+            item['objective']=first['stages'][1]['objective']
+            item['report']['project_id']=first['project_id']
+            item['report_sha256']=catalog.digest(item['report'])
+            with controlplane.ControlStore()._connect() as conn:
+                conn.execute('UPDATE tasks SET project_id=?, title=? WHERE id=?',
+                             (first['project_id'],item['objective'],item['report']['task_id']))
+            factory.write(factory.STATE/'reports'/(item['report']['workflow_id']+'.json'),item['report'])
+            transplanted['stages'][1]=item
+            factory.write(path,transplanted)
+            evidence.seal_bundle(first['run_id'],'relabelled wrong-attempt test reseal')
             self.assertFalse(challenges.status(first['run_id'])['valid'])
             factory.write(path,original)
             evidence.seal_bundle(first['run_id'],'restore test fixture')

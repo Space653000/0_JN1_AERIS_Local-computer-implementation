@@ -54,3 +54,12 @@ Both P1 findings accepted before implementation:
   original execution run, review run and every qualification reference. Status
   validates all linkage and review_status, with wrong-attempt substitution and
   report-content tamper regressions. Mutable latest indices have no authority.
+
+Post-implementation review at 26a24cb found an additional P1: matching mutable
+task titles and report links is insufficient. The attempt/stage objective must
+also match the original sealed execution context, with role/Skill/input bindings
+and project Memory events referring to those same execution/review receipts.
+A real two-attempt regression reproduced the relabelled transplant before repair.
+Standards also found malformed JSON containers can escape the status response;
+receipt shape validation and controlled failure are required. Both are accepted
+as repair work, not dismissed because the original 277-test suite passed.

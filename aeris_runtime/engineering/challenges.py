@@ -145,6 +145,35 @@ def run(identifier, *, prepare_qualifications=False):
     return {**record, 'run_id': attempt}
 
 
+def _object(value):
+    if not isinstance(value, dict):
+        raise ValueError('receipt must be a JSON object')
+    return value
+
+
+def _objects(value):
+    if not isinstance(value, list) or any(not isinstance(item, dict) for item in value):
+        raise ValueError('receipt must be a JSON object array')
+    return value
+
+
+def _memory_linkage(events, report, project):
+    """Memory witnesses the same task/run; it does not independently prove them."""
+    entries = _objects(events)
+    if any(event.get('project') != project for event in entries):
+        raise ValueError('Memory project mismatch')
+    execution = report['evidence_run_id']
+    required = {
+        'PROJECT_MEMORY': {'task_id': report['task_id'], 'workflow_id': report['workflow_id'], 'role_id': report['role_id']},
+        'EXPERIMENT_MEMORY': {'workflow_id': report['workflow_id'], 'evidence_run_ids': [execution]},
+        'SKILL_USAGE': {'role_id': report['role_id'], 'skill_id': report['numerical_result']['skill_id'], 'evidence_run_ids': [execution]},
+        'CROSS_ROLE_REVIEW': {'review': report['review'], 'evidence_run_ids': [execution, report['review']['review_run_id']]},
+    }
+    for kind, fields in required.items():
+        if not any(event.get('kind') == kind and all(_object(event.get('payload')).get(k) == v for k,v in fields.items()) for event in entries):
+            raise ValueError('Memory missing stage linkage: ' + kind)
+
+
 def status(run_id):
     """Validate receipts against the same attempt, source and live local records."""
     try:
@@ -153,7 +182,10 @@ def status(run_id):
         if not evidence.validate_bundle(run_id)['valid']:
             raise ValueError('challenge evidence integrity failed')
         root = evidence.bundle_dir(run_id)
-        record = factory.read(root/'processed/challenge.json')
+        record = _object(factory.read(root/'processed/challenge.json'))
+        _object(record['qualifications'])
+        _object(record['memory'])
+        _objects(record['stages'])
         definition, skill, inputs = _definition(record['challenge_id'])
         if record['attempt_id'] != run_id or record['bindings'] != _bindings() or record['definition_sha256'] != catalog.digest(definition):
             raise ValueError('attempt/source/definition binding mismatch')
@@ -174,7 +206,11 @@ def status(run_id):
             raise ValueError('two distinct ordered stages required')
         seen = set()
         for item in record['stages']:
-            stage, report = item['stage'], item['report']
+            stage, report = item['stage'], _object(item['report'])
+            _object(report['review'])
+            _object(report['pod'])
+            _object(report['numerical_result'])
+            _object(item['reproduction'])
             for key, pattern in (('task_id', r'TASK-[A-F0-9]{12}'), ('workflow_id', r'WF-[A-F0-9]{12}'),
                                  ('evidence_run_id', r'RUN-[0-9TZ]+-[a-f0-9]{8}')):
                 if not isinstance(report.get(key), str) or not re.fullmatch(pattern, report[key]):
@@ -200,6 +236,12 @@ def status(run_id):
             if not evidence.validate_bundle(execution_id)['valid']:
                 raise ValueError('child execution integrity failed')
             child = evidence.bundle_dir(execution_id)
+            context = _object(factory.read(child/'raw/engineering-context.json'))
+            if (context.get('objective') != objective or context.get('role_id') != definition['role_id']
+                    or context.get('skill_id') != skill or context.get('source_kind') != 'SYNTHETIC'
+                    or context.get('physical_verification') is not False
+                    or report['numerical_result'].get('input_sha256') != item['input_sha256']):
+                raise ValueError('sealed execution attempt/context mismatch')
             if (wf['execution']['run_id'] != execution_id or factory.read(child/'run_manifest.json')['task_id'] != wf['task_id']
                     or factory.read(child/'raw/engineering-input.json') != inputs[stage]
                     or factory.read(child/'processed/skill_result.json') != report['numerical_result']):
@@ -224,6 +266,7 @@ def status(run_id):
                     or replay['expected_sha256'] != catalog.digest(report['numerical_result'])
                     or replay['actual_sha256'] != replay['expected_sha256']):
                 raise ValueError('reproduction receipt mismatch')
+            _memory_linkage(record['memory']['events'], report, record['project_id'])
         memory = Harness()
         if (record['memory']['memory_is_evidence'] is not False or not memory.verify()['valid']
                 or record['memory']['events'] != memory.events(record['project_id'], limit=10000)):
