@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R032':{'skill_id':'microphone-capture-continuity-baseline','method':'methods/roles/microphone-capture-continuity-baseline.json',
+            'suite':'golden/roles/R032/golden.json','scope':'First-sample capture metadata continuity, slot mapping, relative reference-rate and delivery bounds; no physical driver capture or absolute clock accuracy.'},
+    'R031':{'skill_id':'microphone-capture-clock-domain-review','method':'methods/roles/microphone-capture-clock-domain-review.json',
+            'suite':'golden/roles/R031/golden.json','scope':'Independent timing/counter/rate interval contract review on an unverified shared reference; no ADC ENOB, PDM filtering or whole-role L3.'},
     'R037':{'skill_id':'microphone-array-taper-baseline','method':'methods/roles/microphone-array-taper-baseline.json',
             'suite':'golden/roles/R037/golden.json','scope':'ULA taper/steering sampled transfer and conservative mismatch WNG; no full-angle, speech-quality or measured verification.'},
     'R034':{'skill_id':'microphone-array-pattern-domain-review','method':'methods/roles/microphone-array-pattern-domain-review.json',

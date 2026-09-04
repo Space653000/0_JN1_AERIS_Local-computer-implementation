@@ -1,0 +1,673 @@
+{
+  "suite_id": "R031-CAPTURE-CLOCK-REVIEW-V1",
+  "role_id": "R031",
+  "skill_id": "microphone-capture-clock-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored integer sample/counter scenarios: 480 samples / 10 ms = 48 kHz; PDM 3072000 / 64 = 48000. Missing-frame cases preserve endpoint sample/time rate. Timestamp endpoint quantization gives difference +/- resolution. Expected dispositions and review candidates are authored from these equations, not captured executor results.",
+  "scope": "Independent reference-clock/counter assertion review only; no absolute clock/ADC noise expertise",
+  "base_input": {
+    "parameters": {
+      "model": "FIRST_SAMPLE_CAPTURE_TIMESTAMP_V1",
+      "reference_rate_assumption": "UNVERIFIED_REFERENCE_TIMESCALE",
+      "capture_clock_id": "reference-A",
+      "delivery_clock_id": "reference-A",
+      "timestamp_kind": "FIRST_SAMPLE_ACQUISITION",
+      "clock_mode": "PDM_INTEGER_DECIMATION",
+      "pdm_clock_hz": 3072000,
+      "decimation_ratio": 64,
+      "sample_rate_hz": 48000,
+      "frame_samples": 480,
+      "sample_width_bits": 24,
+      "slot_width_bits": 32,
+      "expected_channel_ids": [
+        "left",
+        "right"
+      ],
+      "observed_slot_order": [
+        "left",
+        "right"
+      ],
+      "timestamp_resolution_ns": 1,
+      "allowed_rate_error_ppm": 50,
+      "allowed_alignment_skew_samples": 0.1,
+      "maximum_delivery_latency_ms": 5,
+      "maximum_nominal_rate_timing_residual_ns": 1000,
+      "channels": [
+        {
+          "channel_id": "left",
+          "frames": [
+            {
+              "frame_seq": 0,
+              "first_sample_index": 0,
+              "sample_count": 480,
+              "capture_timestamp_ns": 0,
+              "delivery_timestamp_ns": 1000000
+            },
+            {
+              "frame_seq": 1,
+              "first_sample_index": 480,
+              "sample_count": 480,
+              "capture_timestamp_ns": 10000000,
+              "delivery_timestamp_ns": 11000000
+            },
+            {
+              "frame_seq": 2,
+              "first_sample_index": 960,
+              "sample_count": 480,
+              "capture_timestamp_ns": 20000000,
+              "delivery_timestamp_ns": 21000000
+            }
+          ]
+        },
+        {
+          "channel_id": "right",
+          "frames": [
+            {
+              "frame_seq": 0,
+              "first_sample_index": 0,
+              "sample_count": 480,
+              "capture_timestamp_ns": 0,
+              "delivery_timestamp_ns": 1000000
+            },
+            {
+              "frame_seq": 1,
+              "first_sample_index": 480,
+              "sample_count": 480,
+              "capture_timestamp_ns": 10000000,
+              "delivery_timestamp_ns": 11000000
+            },
+            {
+              "frame_seq": 2,
+              "first_sample_index": 960,
+              "sample_count": 480,
+              "capture_timestamp_ns": 20000000,
+              "delivery_timestamp_ns": 21000000
+            }
+          ]
+        }
+      ]
+    },
+    "candidate": {
+      "model": "FIRST_SAMPLE_CAPTURE_TIMESTAMP_V1",
+      "reference_rate_assumption": "UNVERIFIED_REFERENCE_TIMESCALE",
+      "capture_clock_id": "reference-A",
+      "channels": [
+        {
+          "channel_id": "left",
+          "observed_reference_rate_hz": 48000,
+          "relative_rate_error_ppm": 0,
+          "relative_rate_interval_ppm": [
+            -0.049999998,
+            0.050000003
+          ],
+          "continuity_issues": [],
+          "absolute_timing_residual_intervals_ns": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "delivery_latency_intervals_ms": [
+            [
+              0.999999,
+              1.0000010000000001
+            ],
+            [
+              0.999999,
+              1.0000010000000001
+            ],
+            [
+              0.999999,
+              1.0000010000000001
+            ]
+          ]
+        },
+        {
+          "channel_id": "right",
+          "observed_reference_rate_hz": 48000,
+          "relative_rate_error_ppm": 0,
+          "relative_rate_interval_ppm": [
+            -0.049999998,
+            0.050000003
+          ],
+          "continuity_issues": [],
+          "absolute_timing_residual_intervals_ns": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "delivery_latency_intervals_ms": [
+            [
+              0.999999,
+              1.0000010000000001
+            ],
+            [
+              0.999999,
+              1.0000010000000001
+            ],
+            [
+              0.999999,
+              1.0000010000000001
+            ]
+          ]
+        }
+      ],
+      "alignment_intervals_samples": [
+        [
+          0,
+          0.000048
+        ],
+        [
+          0,
+          0.000048
+        ],
+        [
+          0,
+          0.000048
+        ]
+      ],
+      "checks": [
+        {
+          "id": "CONTINUITY",
+          "state": "PASS",
+          "passed": true,
+          "actual": [
+            "PASS",
+            "PASS"
+          ],
+          "limit": "ALL_BOUNDED_INTERVALS_PASS",
+          "on_failure": "Repair frame counters and sample continuity without padding away losses"
+        },
+        {
+          "id": "RELATIVE_RATE",
+          "state": "PASS",
+          "passed": true,
+          "actual": [
+            "PASS",
+            "PASS"
+          ],
+          "limit": "ALL_BOUNDED_INTERVALS_PASS",
+          "on_failure": "Establish a sufficient observation interval and relative clock-rate budget"
+        },
+        {
+          "id": "NOMINAL_RATE_TIMING_RESIDUAL",
+          "state": "PASS",
+          "passed": true,
+          "actual": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "PASS"
+          ],
+          "limit": "ALL_BOUNDED_INTERVALS_PASS",
+          "on_failure": "Resolve nominal-rate timing residual and timestamp quantization"
+        },
+        {
+          "id": "CHANNEL_ALIGNMENT",
+          "state": "PASS",
+          "passed": true,
+          "actual": [
+            "PASS",
+            "PASS",
+            "PASS"
+          ],
+          "limit": "ALL_BOUNDED_INTERVALS_PASS",
+          "on_failure": "Align equal sample indices on the shared capture reference"
+        },
+        {
+          "id": "DELIVERY_LATENCY",
+          "state": "PASS",
+          "passed": true,
+          "actual": [
+            "PASS",
+            "PASS",
+            "PASS",
+            "PASS",
+            "PASS",
+            "PASS"
+          ],
+          "limit": "ALL_BOUNDED_INTERVALS_PASS",
+          "on_failure": "Repair delivery scheduling separately from acquisition alignment"
+        },
+        {
+          "id": "CHANNEL_MAPPING",
+          "state": "PASS",
+          "passed": true,
+          "actual": [
+            "PASS"
+          ],
+          "limit": "ALL_BOUNDED_INTERVALS_PASS",
+          "on_failure": "Correct explicit slot-to-channel ordering and verify physical wiring separately"
+        },
+        {
+          "id": "PCM_PACKING",
+          "state": "PASS",
+          "passed": true,
+          "actual": [
+            "PASS"
+          ],
+          "limit": "ALL_BOUNDED_INTERVALS_PASS",
+          "on_failure": "Provide a slot wide enough for the declared sample word"
+        },
+        {
+          "id": "PDM_RATE_RELATION",
+          "state": "PASS",
+          "passed": true,
+          "actual": [
+            "PASS"
+          ],
+          "limit": "ALL_BOUNDED_INTERVALS_PASS",
+          "on_failure": "Reconcile PDM clock and integer decimation with PCM rate"
+        }
+      ],
+      "unresolved": [],
+      "required_revisions": [],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "physical_capture_verified": false,
+      "bitstream_filter_verified": false,
+      "clock_phase_noise_verified": false,
+      "absolute_oscillator_accuracy_verified": false,
+      "role_l3_accepted": false,
+      "counter_hypotheses": [
+        "Missing transport frames rather than sample oscillator drift",
+        "Callback scheduling delay rather than acquisition skew",
+        "Slot labels or packing rather than acoustic DOA instability",
+        "Reference timescale frequency error rather than absolute sample clock error"
+      ],
+      "next_discriminating_experiment": "Capture independent frame/sample counters and first-sample timestamps on one documented reference; compare scheduling timestamps separately.",
+      "limitations": [
+        "Unverified shared reference timescale; no absolute frequency accuracy",
+        "Metadata channel labels do not prove wiring or analog group delay",
+        "Integer decimation rate does not verify PDM filtering or ADC noise",
+        "Nominal-rate timing residual includes steady rate offset; it is not aperture jitter"
+      ],
+      "physical_measurement_verified": false
+    },
+    "context": {
+      "product": "R068",
+      "transducer": "Microphone",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "CLOCK-REFERENCE-ORACLE",
+      "kind": "positive",
+      "question": "Does the independent endpoint/counter oracle accept only the authored nominal reference-clock report?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "CLOCK-BOUNDARY-CORRECT",
+      "kind": "boundary",
+      "question": "Can independent review accept a correct report whose nominal latency crosses its uncertainty budget?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "parameters.maximum_delivery_latency_ms",
+          "value": 1
+        },
+        {
+          "path": "candidate.checks.4.state",
+          "value": "INCONCLUSIVE"
+        },
+        {
+          "path": "candidate.checks.4.passed",
+          "value": false
+        },
+        {
+          "path": "candidate.checks.4.actual.0",
+          "value": "INCONCLUSIVE"
+        },
+        {
+          "path": "candidate.checks.4.actual.1",
+          "value": "INCONCLUSIVE"
+        },
+        {
+          "path": "candidate.checks.4.actual.2",
+          "value": "INCONCLUSIVE"
+        },
+        {
+          "path": "candidate.checks.4.actual.3",
+          "value": "INCONCLUSIVE"
+        },
+        {
+          "path": "candidate.checks.4.actual.4",
+          "value": "INCONCLUSIVE"
+        },
+        {
+          "path": "candidate.checks.4.actual.5",
+          "value": "INCONCLUSIVE"
+        },
+        {
+          "path": "candidate.unresolved",
+          "value": [
+            "DELIVERY_LATENCY"
+          ]
+        },
+        {
+          "path": "candidate.required_revisions",
+          "value": [
+            "Repair delivery scheduling separately from acquisition alignment"
+          ]
+        },
+        {
+          "path": "candidate.disposition",
+          "value": "DESIGN_REVISION_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "SUPPRESSED-RATE-BOUND",
+      "kind": "positive",
+      "question": "Does a fabricated zero-width relative-rate interval lose acceptance?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.channels.0.relative_rate_interval_ppm.0",
+          "value": 0
+        },
+        {
+          "path": "candidate.channels.0.relative_rate_interval_ppm.1",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "SUPPRESSED-RESIDUAL-BOUND",
+      "kind": "positive",
+      "question": "Must timestamp resolution remain in nominal-zero timing residual bounds?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.channels.0.absolute_timing_residual_intervals_ns.0.1",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "SUPPRESSED-SKEW-BOUND",
+      "kind": "positive",
+      "question": "Must zero observed skew retain its resolution bound?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.alignment_intervals_samples.0.1",
+          "value": 0
+        },
+        {
+          "path": "candidate.alignment_intervals_samples.1.1",
+          "value": 0
+        },
+        {
+          "path": "candidate.alignment_intervals_samples.2.1",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "PHYSICAL-CLAIM",
+      "kind": "counter_hypothesis",
+      "question": "Must metadata review reject physical capture certification?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.physical_capture_verified",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "ABSOLUTE-CLOCK-CLAIM",
+      "kind": "positive",
+      "question": "Must shared monotonic reference not become absolute oscillator calibration?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.absolute_oscillator_accuracy_verified",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "PDM-FILTER-CLAIM",
+      "kind": "positive",
+      "question": "Does a correct integer rate fail to justify PDM filter verification?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.bitstream_filter_verified",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "PHASE-NOISE-CLAIM",
+      "kind": "positive",
+      "question": "Must nominal-rate residual not certify aperture jitter?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.clock_phase_noise_verified",
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "DROPPED-LIMITATIONS",
+      "kind": "positive",
+      "question": "Must the report preserve reference and physical limitations?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.limitations",
+          "value": []
+        }
+      ]
+    },
+    {
+      "id": "INVENTED-RATE",
+      "kind": "positive",
+      "question": "Does review reject a rate scalar inconsistent with counters?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "candidate.channels.0.observed_reference_rate_hz",
+          "value": 47900
+        }
+      ]
+    },
+    {
+      "id": "LATENCY-IS-NOT-EXACT",
+      "kind": "counter_hypothesis",
+      "question": "Must an old nominal PASS report be challenged when the delivery budget becomes an interval crossing?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ],
+      "input_mutations": [
+        {
+          "path": "parameters.maximum_delivery_latency_ms",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "CALLBACK-REVIEW-REFUSAL",
+      "kind": "negative",
+      "question": "Can independent review refuse callback time even with a plausible candidate?",
+      "input_overrides": {},
+      "expected_error": "ValueError",
+      "input_mutations": [
+        {
+          "path": "parameters.timestamp_kind",
+          "value": "CALLBACK_ARRIVAL"
+        }
+      ]
+    },
+    {
+      "id": "CLOCK-IDENTITY-REFUSAL",
+      "kind": "negative",
+      "question": "Can unrelated reference clocks be rejected before arithmetic?",
+      "input_overrides": {},
+      "expected_error": "ValueError",
+      "input_mutations": [
+        {
+          "path": "parameters.delivery_clock_id",
+          "value": "other"
+        }
+      ]
+    }
+  ]
+}

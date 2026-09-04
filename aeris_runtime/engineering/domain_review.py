@@ -9,6 +9,7 @@ from ..config import ROOT
 from .numerical_policy import db_at_least,db_at_most,MIN_IDENTIFIABLE_VARIANCE_FRACTION
 
 REQUIRED_DOMAINS={
+    'microphone-capture-continuity-baseline':['microphone-capture-clock'],
     'microphone-array-taper-baseline':['microphone-array-pattern'],
     'speaker-sealed-alignment-baseline':['speaker-sealed-lumped'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
@@ -124,6 +125,9 @@ def review(domain,request):
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
+    if domain=='microphone-capture-clock':
+        from .capture_clock_review import review as review_clock
+        return review_clock(p,candidate)
     if domain=='microphone-array-geometry':
         from .array_doa_review import review as review_array
         return review_array(p,candidate)
@@ -269,7 +273,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','microphone-array-pattern'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -369,6 +373,8 @@ def _checks_coherent(skill,params,values):
     a caller-supplied set with itself cannot prove coverage or correct actions.
     """
     from .catalog import digest
+    if skill=='microphone-capture-continuity-baseline':
+        return [c.get('id') for c in values['checks']]==['CONTINUITY','RELATIVE_RATE','NOMINAL_RATE_TIMING_RESIDUAL','CHANNEL_ALIGNMENT','DELIVERY_LATENCY','CHANNEL_MAPPING','PCM_PACKING','PDM_RATE_RELATION']
     if skill=='microphone-array-taper-baseline':
         return [c.get('id') for c in values['checks']]==['SPATIAL_SAMPLING_GUARD','FAR_FIELD_HEURISTIC','ANGULAR_SAMPLING','DESIRED_GAIN_BOUND','SAMPLED_SIDELOBE_BOUND','WHITE_NOISE_GAIN_BOUND']
     if skill=='speaker-sealed-alignment-baseline':

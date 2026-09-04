@@ -12,7 +12,9 @@ permissions:
 
 jobs:
   test:
-    timeout-minutes: 35
+    # Four intentionally distinct full entrypoint paths each retain their own
+    # fail-closed test run. H0001 role suites exceed the historical 35m budget.
+    timeout-minutes: 50
     strategy:
       fail-fast: false
       matrix:

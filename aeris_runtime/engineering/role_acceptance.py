@@ -22,6 +22,31 @@ REVIEW_POLICY={'version':'H0001-domain-execution-v1','required':'separately evid
 STATE=ROOT/'.aeris/role-acceptance'
 
 
+def _mutation_path_valid(path):
+    return (isinstance(path,str) and bool(path)
+            and all(part.isdigit() or re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*',part) for part in path.split('.')))
+
+
+def apply_case_mutations(target,mutations):
+    if (not isinstance(mutations,list) or len(mutations)>40
+            or any(not isinstance(m,dict) or set(m)!={'path','value'} or not _mutation_path_valid(m['path']) for m in mutations)
+            or len({m['path'] for m in mutations})!=len(mutations)):
+        raise ValueError('bounded unique input mutation paths required')
+    for mutation in mutations:
+        parts=mutation['path'].split('.');current=target
+        for part in parts[:-1]:
+            current=current[int(part)] if isinstance(current,list) and part.isdigit() else current[part]
+        final=parts[-1]
+        if isinstance(current,list) and final.isdigit():
+            index=int(final)
+            if not 0<=index<len(current):raise ValueError('mutation list index outside fixture')
+            current[index]=copy.deepcopy(mutation['value'])
+        else:
+            if not isinstance(current,dict) or final not in current:raise ValueError('mutation field outside fixture')
+            current[final]=copy.deepcopy(mutation['value'])
+    return target
+
+
 def engine_digest():
     paths=(Path(__file__),Path(factory.__file__),Path(catalog.__file__),
            ROOT/'aeris_runtime/skills_runtime.py',ROOT/'aeris_runtime/evidence.py',
@@ -53,6 +78,11 @@ def load_contract(role_id):
     for case in cases:
         if not case.get('question') or not isinstance(case.get('input_overrides'),dict):
             raise ValueError('role decision question and declared input patch required')
+        mutations=case.get('input_mutations',[])
+        if (not isinstance(mutations,list) or len(mutations)>40
+                or any(not isinstance(m,dict) or set(m)!={'path','value'} or not _mutation_path_valid(m['path']) for m in mutations)
+                or len({m['path'] for m in mutations})!=len(mutations)):
+            raise ValueError('bounded unique input mutation paths required')
         if case['kind']=='negative':
             if case.get('expected_error')!='ValueError' or case.get('checks'):
                 raise ValueError('negative case must declare invalid-input rejection')
@@ -67,6 +97,7 @@ def execute_cases(suite):
     results=[]
     for case in suite['cases']:
         params={**copy.deepcopy(suite['base_input']),**copy.deepcopy(case['input_overrides'])}
+        apply_case_mutations(params,case.get('input_mutations',[]))
         outcomes=[]
         for _ in range(2):
             try:

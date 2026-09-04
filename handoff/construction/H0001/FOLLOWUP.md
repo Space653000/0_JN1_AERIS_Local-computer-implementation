@@ -72,3 +72,28 @@ CI confirmation; a local Windows pass does not close that defect.
 No Core/main/PR32 mutation, raw evidence, SQLite or binary upload is included.
 Remaining 77 missing domain suites, broader product depth, external-source
 knowledge and final clean-machine/live acceptance are still software work.
+
+## Capture-clock depth and CI timeout follow-up
+
+R032 now separates capture counter continuity, slot mapping, reference-relative
+rate/timing intervals, channel alignment and callback delivery. R031 independently
+reconstructs every counter and interval. Details and review dispositions are in
+`docs/H0001_CAPTURE_CLOCK_PLAN.md`. The two roles add 31 cases; current source is
+67 executable Skills/Methods, 25 role suites and 311 role cases. Seventy-five
+roles still lack domain suites. No L3/L4 or absolute/physical clock claim is made.
+
+Pre-compaction local regression: 371 PASS / 403.908 seconds; transcript SHA-256
+`685be254f92dcb8fc0e4d89323e8e0b019704fa75dba5aa26b2f1b681cf13dea`.
+Six browser semantics and six exact-repeatability screenshots PASS locally.
+The finalized compact fixture engine and exact-path negative gate then completed
+372 PASS / 396.918 seconds; local transcript SHA-256
+`c9b8c9ee99f36629ebc2204851e8f56893427216185a4d7a14732c061773a9a9`.
+Installed truth remains L1=100 because current source invalidates old receipts.
+
+CI run 201 on ff9a7f5: Ubuntu completed SUCCESS, including screenshot, installer,
+Autopilot, optional-wrapper and package gates. Windows passed unit, semantic,
+screenshot, one-click installer and Autopilot, then was cancelled at the exact
+35-minute job budget while the next retained wrapper test was running. No test
+failure preceded cancellation. The matrix budget is now 50 minutes with a
+regression that also requires every original acceptance path to remain present;
+this change still needs the next Windows CI result.

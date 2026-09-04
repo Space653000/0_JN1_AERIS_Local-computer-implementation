@@ -1,0 +1,31 @@
+{
+  "method_id": "microphone-capture-clock-domain-review",
+  "version": "1.0.0",
+  "role": "R031",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.capture_clock_review:review",
+  "applicability": "Independent counter/timestamp/rate-bound consistency; not absolute clock accuracy, PDM filtering or ADC noise",
+  "equations": {
+    "relative_rate": "(delta_samples*1e9/delta_reference_ns / nominal_rate - 1)*1e6; endpoint interval uses elapsed +/- resolution",
+    "residual": "abs(delta_reference_ns - delta_samples*1e9/nominal_rate) +/- resolution, lower clipped at 0",
+    "alignment": "Spread of equal sample-index timestamps +/- resolution, converted to samples",
+    "latency": "Delivery minus first-sample capture timestamp +/- resolution on the same unverified reference"
+  },
+  "assumptions": [
+    "Shared explicitly unverified reference timescale, integer relative ns/counters, no wrap adapter",
+    "Conservative interval entirely inside limit required; crossing is INCONCLUSIVE",
+    "PDM integer rate equality is metadata, not filtering/noise evidence"
+  ],
+  "excluded": [
+    "Physical capture/driver IO and analog group delay",
+    "Absolute calibrated oscillator accuracy or aperture jitter",
+    "ADC ENOB, PDM decimator noise/filter response",
+    "Human approval or whole-role L3"
+  ],
+  "golden_tests": "golden/roles/R031/golden.json",
+  "numerical_policy": {
+    "display_decimals": 9,
+    "decision": "Exact rational interval comparisons before display rounding"
+  }
+}

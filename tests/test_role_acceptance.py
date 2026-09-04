@@ -12,6 +12,21 @@ from aeris_runtime.config import ROOT
 
 
 class RoleAcceptanceTests(unittest.TestCase):
+    def test_compact_role_fixture_mutations_are_bounded_existing_and_non_aliasing(self):
+        from aeris_runtime.engineering.role_acceptance import apply_case_mutations
+        target={'parameters':{'channels':[{'counter':1}]}}
+        patch_value={'counter':7}
+        apply_case_mutations(target,[{'path':'parameters.channels.0','value':patch_value}])
+        patch_value['counter']=9
+        self.assertEqual(target['parameters']['channels'][0]['counter'],7)
+        for mutations in ([{'path':'parameters.channels.1','value':{}}],
+                          [{'path':'parameters.missing','value':0}],
+                          [{'path':'parameters..channels','value':0}],
+                          [{'path':'parameters.channels','value':[]},{'path':'parameters.channels','value':[]}],
+                          [{'path':'parameters','value':0}]*41):
+            with self.subTest(mutations=mutations),self.assertRaises((ValueError,KeyError)):
+                apply_case_mutations({'parameters':{'channels':[{}]}},mutations)
+
     def setUp(self):
         self.stack=ExitStack(); self.addCleanup(self.stack.close)
         base=ROOT/'.aeris/test-temp'; base.mkdir(parents=True,exist_ok=True)
@@ -104,8 +119,8 @@ class RoleAcceptanceTests(unittest.TestCase):
             self.assertEqual(row['executable_skills'],['tws-fit-anc-call-baseline'])
             self.assertEqual(row['coverage']['role_domain_cases'],8)
             self.assertEqual(row['coverage']['role_acceptance'],0)
-            self.assertEqual(matrix['total_role_golden_cases'],280)
-            self.assertEqual(matrix['total_role_golden_suites'],23)
+            self.assertEqual(matrix['total_role_golden_cases'],311)
+            self.assertEqual(matrix['total_role_golden_suites'],25)
             fixture=api.get('/api/v1/capabilities/fixture/R048?skill=tws-fit-anc-call-baseline')
             self.assertEqual(fixture['source_kind'],'SYNTHETIC')
             self.assertEqual(fixture['fixture']['input']['feedback_delay_ms'],0.5)

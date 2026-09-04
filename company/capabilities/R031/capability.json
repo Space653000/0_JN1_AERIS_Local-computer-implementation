@@ -21,22 +21,26 @@
   "inputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
     "spectral-analysis": "skills/spectral-analysis/input.schema.json",
-    "latency-budget": "skills/latency-budget/input.schema.json"
+    "latency-budget": "skills/latency-budget/input.schema.json",
+    "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/input.schema.json"
   },
   "outputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
     "spectral-analysis": "skills/spectral-analysis/output.schema.json",
-    "latency-budget": "skills/latency-budget/output.schema.json"
+    "latency-budget": "skills/latency-budget/output.schema.json",
+    "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/output.schema.json"
   },
   "required_skills": [
     "circuit-noise-budget",
     "spectral-analysis",
-    "latency-budget"
+    "latency-budget",
+    "microphone-capture-clock-domain-review"
   ],
   "required_methods": [
     "methods/engineering/circuit-noise-budget.json",
     "methods/engineering/spectral-analysis.json",
-    "methods/engineering/latency-budget.json"
+    "methods/engineering/latency-budget.json",
+    "methods/roles/microphone-capture-clock-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/circuit-noise-budget.json",
@@ -175,12 +179,14 @@
     "required_methods": [
       "methods/engineering/circuit-noise-budget.json",
       "methods/engineering/spectral-analysis.json",
-      "methods/engineering/latency-budget.json"
+      "methods/engineering/latency-budget.json",
+      "methods/roles/microphone-capture-clock-domain-review.json"
     ],
     "required_skills": [
       "circuit-noise-budget",
       "spectral-analysis",
-      "latency-budget"
+      "latency-budget",
+      "microphone-capture-clock-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -213,7 +219,8 @@
     "calculation_schemas": {
       "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
       "spectral-analysis": "skills/spectral-analysis/input.schema.json",
-      "latency-budget": "skills/latency-budget/input.schema.json"
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -228,7 +235,8 @@
     "calculation_schemas": {
       "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
       "spectral-analysis": "skills/spectral-analysis/output.schema.json",
-      "latency-budget": "skills/latency-budget/output.schema.json"
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/output.schema.json"
     }
   },
   "report_sections": [
@@ -238,5 +246,11 @@
     "clock spur rather than acoustic tone",
     "ADC input clipping rather than mic saturation",
     "ENOB assumptions, clock phase noise and decimator response"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "microphone-capture-clock-domain-review",
+    "method": "methods/roles/microphone-capture-clock-domain-review.json",
+    "suite": "golden/roles/R031/golden.json",
+    "scope": "Independent timing/counter/rate interval contract review on an unverified shared reference; no ADC ENOB, PDM filtering or whole-role L3."
+  }
 }

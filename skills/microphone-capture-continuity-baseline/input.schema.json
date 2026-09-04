@@ -1,0 +1,200 @@
+{
+  "type": "object",
+  "required": [
+    "model",
+    "reference_rate_assumption",
+    "timestamp_kind",
+    "clock_mode",
+    "capture_clock_id",
+    "delivery_clock_id",
+    "pdm_clock_hz",
+    "decimation_ratio",
+    "sample_rate_hz",
+    "frame_samples",
+    "timestamp_resolution_ns",
+    "sample_width_bits",
+    "slot_width_bits",
+    "expected_channel_ids",
+    "observed_slot_order",
+    "allowed_rate_error_ppm",
+    "allowed_alignment_skew_samples",
+    "maximum_delivery_latency_ms",
+    "maximum_nominal_rate_timing_residual_ns",
+    "channels"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "model": {
+      "type": "string",
+      "const": "FIRST_SAMPLE_CAPTURE_TIMESTAMP_V1"
+    },
+    "reference_rate_assumption": {
+      "type": "string",
+      "const": "UNVERIFIED_REFERENCE_TIMESCALE"
+    },
+    "timestamp_kind": {
+      "type": "string",
+      "const": "FIRST_SAMPLE_ACQUISITION"
+    },
+    "clock_mode": {
+      "type": "string",
+      "const": "PDM_INTEGER_DECIMATION"
+    },
+    "capture_clock_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "delivery_clock_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "pdm_clock_hz": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100000000
+    },
+    "decimation_ratio": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4096
+    },
+    "sample_rate_hz": {
+      "type": "integer",
+      "minimum": 8000,
+      "maximum": 192000
+    },
+    "frame_samples": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8192
+    },
+    "timestamp_resolution_ns": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000000
+    },
+    "sample_width_bits": {
+      "type": "integer",
+      "enum": [
+        16,
+        24,
+        32
+      ]
+    },
+    "slot_width_bits": {
+      "type": "integer",
+      "enum": [
+        16,
+        24,
+        32
+      ]
+    },
+    "expected_channel_ids": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      }
+    },
+    "observed_slot_order": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 80
+      }
+    },
+    "allowed_rate_error_ppm": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000000
+    },
+    "allowed_alignment_skew_samples": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000000
+    },
+    "maximum_delivery_latency_ms": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000000
+    },
+    "maximum_nominal_rate_timing_residual_ns": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1000000000
+    },
+    "channels": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "required": [
+          "channel_id",
+          "frames"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "channel_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "frames": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 128,
+            "items": {
+              "type": "object",
+              "required": [
+                "frame_seq",
+                "first_sample_index",
+                "sample_count",
+                "capture_timestamp_ns",
+                "delivery_timestamp_ns"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "frame_seq": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "first_sample_index": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "sample_count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 8192
+                },
+                "capture_timestamp_ns": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "delivery_timestamp_ns": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
