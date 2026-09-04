@@ -22,6 +22,24 @@ BASE={'channel_1':impulse(100),'channel_2':impulse(101),'sample_rate_hz':16000,
 
 
 class ArrayDoaDomainTests(unittest.TestCase):
+    def test_alias_and_direction_boundaries_agree_without_clipping_real_excess(self):
+        alias={**BASE,'band_high_hz':2561.3984716092446,
+               **{k:0.06877070170915545 for k in ('spacing_m','spacing_lower_m','spacing_upper_m')},
+               **{k:352.298340498652 for k in ('sound_speed_m_s','sound_speed_lower_m_s','sound_speed_upper_m_s')}}
+        output=array_doa.analyze(alias)
+        self.assertTrue(output['checks'][2]['passed'])
+        self.assertEqual(array_doa_review.review(alias,{**output,'physical_measurement_verified':False})['decision'],'BOUNDED_REVIEW_ACCEPT')
+        boundary={**BASE,**{k:343*1.75/16000 for k in ('spacing_m','spacing_lower_m','spacing_upper_m')},
+                  **{k:343 for k in ('sound_speed_m_s','sound_speed_lower_m_s','sound_speed_upper_m_s')}}
+        result=array_doa.analyze(boundary)
+        self.assertTrue(result['checks'][3]['passed'])
+        self.assertEqual(array_doa_review.review(boundary,{**result,'physical_measurement_verified':False})['decision'],'BOUNDED_REVIEW_ACCEPT')
+        excess={**boundary,**{k:boundary[k]*(1-1e-6) for k in ('spacing_m','spacing_lower_m','spacing_upper_m')}}
+        result=array_doa.analyze(excess)
+        self.assertFalse(result['checks'][3]['passed'])
+        self.assertIsNone(result['planar_angle_interval_deg'])
+        self.assertEqual(array_doa_review.review(excess,{**result,'physical_measurement_verified':False})['decision'],'BOUNDED_REVIEW_ACCEPT')
+
     def test_peak_ratio_boundary_agrees_across_independent_fft_paths(self):
         ratio=array_doa.analyze(BASE)['peak_ratio']
         parameters={**BASE,'minimum_peak_ratio':ratio}

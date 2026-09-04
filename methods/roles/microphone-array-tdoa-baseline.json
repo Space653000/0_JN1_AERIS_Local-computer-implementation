@@ -21,6 +21,8 @@
   },
   "delay_interval": "full selected support plus timing_bound_samples and supplied estimator_error_bound_samples",
   "geometry": "extrema of tau*c/d over interval endpoints; no clipping or unique 3D angle claim",
+  "geometry_comparison_resolution": 1e-12,
+  "geometry_numerical_truth": "Round dimensionless direction-cosine endpoints and worst-case alias ratio to 12 decimals before comparison; representation only, separate from physical bounds. Never clip a resolved exceedance to [-1,1].",
   "assumptions": [
     "Model and error bounds are not measured or statistical confidence",
     "Front/back and 3D cone ambiguity remain",

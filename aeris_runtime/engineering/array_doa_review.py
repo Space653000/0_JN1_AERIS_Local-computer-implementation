@@ -2,7 +2,7 @@
 import math
 from scipy import fft
 from .array_doa import validate
-from .numerical_policy import ratio_at_least
+from .numerical_policy import ratio_at_least, geometry_value
 
 
 def review(parameters, candidate):
@@ -39,9 +39,9 @@ def review(parameters, candidate):
     speed_spacing=[c/d for c in (p['sound_speed_lower_m_s'],p['sound_speed_upper_m_s'])
                    for d in (p['spacing_lower_m'],p['spacing_upper_m'])]
     directions=[bound/p['sample_rate_hz']*factor for bound in samples for factor in speed_spacing]
-    interval=[min(directions),max(directions)]
+    interval=[geometry_value(min(directions)),geometry_value(max(directions))]
     physical=all(-1<=value<=1 for value in interval)
-    alias=p['spacing_upper_m']<=p['sound_speed_lower_m_s']/(2*p['band_high_hz'])
+    alias=geometry_value(p['spacing_upper_m']/(p['sound_speed_lower_m_s']/(2*p['band_high_hz'])))<=1
     angle=[math.asin(value)*180/math.pi for value in interval] if physical and alias and polarity and qualified else None
     checks=[{'id':'POLARITY_CONSISTENCY','passed':polarity,'on_failure':'CHECK_CHANNEL_WIRING_AND_POLARITY'},
             {'id':'PEAK_IDENTIFIABILITY','passed':qualified,'on_failure':'ISOLATE_ARRIVAL_OR_IMPROVE_BAND_EXCITATION'},

@@ -450,3 +450,15 @@ console output remains local at `.aeris/evidence/H0001-array-full-tests.log`.
 Six-route availability spot checks remained 6/6 HTTP 200 and Core status clean;
 independent code review, new-runtime rollout and clean Windows/Ubuntu CI remain
 separate unfinished gates.
+
+### Array geometry boundary correction
+
+Independent review reproduced equivalent alias formulas disagreeing at exactly
+spacing = speed/(2*band). Both paths now declare 1e-12 dimensionless geometry
+resolution, separate from physical/model uncertainty; genuinely resolved endfire
+or alias exceedance remains rejected rather than clipped. Three R043 scenarios
+raise source suite cases to 145. Focused tests passed 15 tests in 11.785 s and
+the reviewer confirmed the original P2 resolved with no new scoped blocker.
+Full local regression passed 294 tests in 172.708 s (before FACA tests were
+discovered). Isolated six-page browser semantic E2E at 539fdd1 also passed.
+This does not establish clean Windows/Ubuntu CI or current live deployment.

@@ -3082,6 +3082,49 @@
       ]
     },
     {
+      "id": "ARRAY-ALIAS-EXACT-BOUNDARY",
+      "kind": "boundary",
+      "question": "Does spacing=c/(2*f) remain inclusive despite equivalent floating-point expressions?",
+      "input_overrides": {
+        "band_high_hz": 2561.3984716092446,
+        "spacing_m": 0.06877070170915545,
+        "spacing_lower_m": 0.06877070170915545,
+        "spacing_upper_m": 0.06877070170915545,
+        "sound_speed_m_s": 352.298340498652,
+        "sound_speed_lower_m_s": 352.298340498652,
+        "sound_speed_upper_m_s": 352.298340498652
+      },
+      "checks": [{"path":"checks.2.passed","expected":true,"absolute_tolerance":0}]
+    },
+    {
+      "id": "ARRAY-DIRECTION-EXACT-BOUNDARY",
+      "kind": "boundary",
+      "question": "Does d=c*maximum_delay place the upper cosine exactly at one without rejecting representational roundoff?",
+      "input_overrides": {
+        "spacing_m": 0.037515625,
+        "spacing_lower_m": 0.037515625,
+        "spacing_upper_m": 0.037515625,
+        "sound_speed_m_s": 343,
+        "sound_speed_lower_m_s": 343,
+        "sound_speed_upper_m_s": 343
+      },
+      "checks": [{"path":"checks.3.passed","expected":true,"absolute_tolerance":0}]
+    },
+    {
+      "id": "ARRAY-DIRECTION-REAL-EXCESS",
+      "kind": "counter_hypothesis",
+      "question": "Does a physically resolved endfire exceedance stay rejected rather than clipping the angle?",
+      "input_overrides": {
+        "spacing_m": 0.037515587484375,
+        "spacing_lower_m": 0.037515587484375,
+        "spacing_upper_m": 0.037515587484375,
+        "sound_speed_m_s": 343,
+        "sound_speed_lower_m_s": 343,
+        "sound_speed_upper_m_s": 343
+      },
+      "checks": [{"path":"planar_angle_interval_deg","expected":null,"absolute_tolerance":0}]
+    },
+    {
       "id": "ARRAY-RATIO-BOUNDARY",
       "kind": "boundary",
       "question": "Does the declared peak-ratio numerical resolution retain an inclusive independently worked boundary?",

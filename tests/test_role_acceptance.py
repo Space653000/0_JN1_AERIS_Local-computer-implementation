@@ -104,7 +104,7 @@ class RoleAcceptanceTests(unittest.TestCase):
             self.assertEqual(row['executable_skills'],['tws-fit-anc-call-baseline'])
             self.assertEqual(row['coverage']['role_domain_cases'],8)
             self.assertEqual(row['coverage']['role_acceptance'],0)
-            self.assertEqual(matrix['total_role_golden_cases'],142)
+            self.assertEqual(matrix['total_role_golden_cases'],145)
             self.assertEqual(matrix['total_role_golden_suites'],13)
             fixture=api.get('/api/v1/capabilities/fixture/R048?skill=tws-fit-anc-call-baseline')
             self.assertEqual(fixture['source_kind'],'SYNTHETIC')

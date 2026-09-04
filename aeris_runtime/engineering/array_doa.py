@@ -1,7 +1,7 @@
 """Bounded GCC-PHAT observations with explicit peak and geometry ambiguity."""
 import math
 import numpy as np
-from .numerical_policy import ratio_at_least
+from .numerical_policy import ratio_at_least, geometry_value
 
 SCALARS={
     'sample_rate_hz':(4000,192000),'band_low_hz':(1,90000),'band_high_hz':(2,95000),
@@ -75,9 +75,9 @@ def analyze(p):
     seconds=[bound/p['sample_rate_hz'] for bound in support]
     cosine_bounds=[t*c/d for t in seconds for c in (p['sound_speed_lower_m_s'],p['sound_speed_upper_m_s'])
                    for d in (p['spacing_lower_m'],p['spacing_upper_m'])]
-    interval=[min(cosine_bounds),max(cosine_bounds)]
+    interval=[geometry_value(min(cosine_bounds)),geometry_value(max(cosine_bounds))]
     physical=interval[0]>=-1 and interval[1]<=1
-    alias=2*p['band_high_hz']*p['spacing_upper_m']<=p['sound_speed_lower_m_s']
+    alias=geometry_value(2*p['band_high_hz']*p['spacing_upper_m']/p['sound_speed_lower_m_s'])<=1
     angle=[math.degrees(math.asin(v)) for v in interval] if physical and qualified and polarity and alias else None
     checks=[{'id':'POLARITY_CONSISTENCY','passed':polarity,'on_failure':'CHECK_CHANNEL_WIRING_AND_POLARITY'},
             {'id':'PEAK_IDENTIFIABILITY','passed':qualified,'on_failure':'ISOLATE_ARRIVAL_OR_IMPROVE_BAND_EXCITATION'},
