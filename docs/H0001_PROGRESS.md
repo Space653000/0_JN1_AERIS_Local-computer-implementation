@@ -385,3 +385,27 @@ Full local rerun after FR workflow/Challenge and numerical boundary integration:
 283 tests passed in 132.773 s. Console output remains local at
 `.aeris/evidence/H0001-speaker-fr-full-tests.log`. Independent implementation
 review and continuous availability results are still separate gates.
+
+### FR review coverage correction
+
+Both review axes found omitted output assertions: next experiment, observable
+cycles and model/scope language could contradict otherwise correct numbers.
+Five mutation failures were reproduced before correction. The dedicated FR
+reviewer now independently checks the complete values object, including numeric
+cycles, consequential advice, stated assumptions, unresolved scope and all false
+certification flags. R079 adds false-advice and false-confidence scenarios;
+source total becomes 115 cases across eleven suites. Focused rerun passed
+13 tests in 11.411 s; full rerun and review follow-up remain in progress.
+
+Six-page semantic E2E passed at d3fabc8. The concurrent existing-runtime soak
+completed 1080/1080 HTTP/application-shell checks without failures over 180
+cycles (2026-09-04 04:06:23Z to 04:09:46Z). Its implementation_sha identifies
+the checker checkout, not the old supervisor's loaded code; it proves only
+continued page availability during this construction interval.
+
+Both independent review axes confirmed the FR claim-coverage finding resolved.
+Full local suite passed 284 tests in 136.742 s after the correction; the complete
+non-verbose console capture is retained locally at
+`.aeris/evidence/H0001-fr-claim-review-full-tests.log`. H0001 remains unfinished:
+there are only four implemented company challenge families and eleven bounded
+role suites; no automatic whole-role L3 or new-runtime acceptance was awarded.

@@ -241,8 +241,7 @@ def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
     if domain=='speaker-fr-uncertainty':
-        return {**{k:v[k] for k in ('normalized_spl_db','lower_interval_db','upper_interval_db','sample_decisions',
-                'checks','full_band_conformance_verified','linearity_measured','calibration_verified','counter_hypotheses')},
+        return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
            'lifetime_verified':v.get('lifetime_verified',False),'counter_hypotheses':v.get('counter_hypotheses')}

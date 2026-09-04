@@ -37,6 +37,21 @@ def review(p, candidate):
               'counter_hypotheses':['time-window truncation rather than product bass deficit',
                                     'distance or drive-reference mismatch rather than response change',
                                     'fixture or room contribution rather than transducer response']}
+    expected.update(
+        normalization_offset_db=20*math.log10(scale*p['distance_m']/p['drive_voltage_v']),
+        observable_cycles=[frequency*p['gate_seconds'] for frequency in f],
+        disposition='BOUNDED_BASELINE_ACCEPT' if all(c['passed'] for c in checks) else 'DESIGN_REVISION_REQUIRED',
+        required_revisions=[c['on_failure'] for c in checks if not c['passed']],
+        next_discriminating_experiment=('EXTEND_VALID_WINDOW_OR_USE_A_DIFFERENT_MEASUREMENT_METHOD' if not all(valid) else
+                'RECHECK_DISTANCE_DRIVE_AND_LEVEL_UNCERTAINTY' if all(central) and not all(covered) else
+                'REPEAT_MATCHED_FIXTURE_AND_REFERENCE_BEFORE_ATTRIBUTING_RESPONSE_TO_PRODUCT'),
+        model_assumptions=['FREE_FIELD_FAR_FIELD','LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER',
+            'level bound excludes separately propagated distance and voltage bounds',
+            'reference distance and voltage are exact target coordinates',
+            'cycle threshold is a declared validity heuristic, not a universal accuracy guarantee'],
+        scope='Supplied frequency samples only; no interpolation, full-band or physical conformance',
+        unresolved=['actual calibrated acquisition and environment','unobserved frequencies and spatial response',
+                    'actual small-signal validity and qualified Human review'])
     if not isinstance(candidate,dict) or set(candidate) != set(expected):
         raise ValueError('exact FR reference assertions required')
     from .domain_review import _same_assertion

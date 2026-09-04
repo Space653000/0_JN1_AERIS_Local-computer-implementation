@@ -1,5 +1,6 @@
 """Speaker measurement decisions, not interpolation or a full-band certificate."""
 import unittest
+import copy
 from aeris_runtime.engineering import speaker_fr
 from aeris_runtime.engineering import role_acceptance,domain_review
 from aeris_runtime.skills_runtime import run_skill
@@ -19,6 +20,21 @@ BASE={
 
 
 class SpeakerFrDomainTests(unittest.TestCase):
+    def test_review_rejects_false_experiment_cycles_and_statistical_claims(self):
+        params={**BASE,'gate_seconds':0.005}
+        original=run_skill('speaker-fr-reference-baseline',params)
+        context={'product':'','transducer':'Speaker','lifecycle':'EVT','risk':'R1','source_kind':'SYNTHETIC'}
+        for field,value in (
+            ('next_discriminating_experiment','APPLY_BASS_EQ_TO_FIX_PROVEN_PRODUCT_DEFICIT'),
+            ('observable_cycles',[999,999,999]),
+            ('model_assumptions',['95% statistical confidence interval; normalization proves measured linearity']),
+            ('scope','Full-band certified product measurement'),
+            ('unresolved',[])):
+            output=copy.deepcopy(original); output['values'][field]=value
+            reviewed=run_skill('speaker-fr-uncertainty-domain-review',{
+                'parameters':params,'candidate':domain_review._candidate('speaker-fr-uncertainty',output),'context':context})
+            with self.subTest(field=field): self.assertEqual(reviewed['values']['decision'],'CHANGES_REQUIRED')
+
     def test_exact_cycle_boundary_survives_float_representation(self):
         params={**BASE,'frequency_hz':[1.9,200,1000],'gate_seconds':2/1.9}
         output=run_skill('speaker-fr-reference-baseline',params)

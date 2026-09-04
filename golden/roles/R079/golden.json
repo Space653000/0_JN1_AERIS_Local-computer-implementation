@@ -82,6 +82,28 @@
         "time-window truncation rather than product bass deficit",
         "distance or drive-reference mismatch rather than response change",
         "fixture or room contribution rather than transducer response"
+      ],
+      "normalization_offset_db": 0,
+      "observable_cycles": [
+        2,
+        4,
+        20
+      ],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "required_revisions": [],
+      "next_discriminating_experiment": "REPEAT_MATCHED_FIXTURE_AND_REFERENCE_BEFORE_ATTRIBUTING_RESPONSE_TO_PRODUCT",
+      "model_assumptions": [
+        "FREE_FIELD_FAR_FIELD",
+        "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER",
+        "level bound excludes separately propagated distance and voltage bounds",
+        "reference distance and voltage are exact target coordinates",
+        "cycle threshold is a declared validity heuristic, not a universal accuracy guarantee"
+      ],
+      "scope": "Supplied frequency samples only; no interpolation, full-band or physical conformance",
+      "unresolved": [
+        "actual calibrated acquisition and environment",
+        "unobserved frequencies and spatial response",
+        "actual small-signal validity and qualified Human review"
       ]
     },
     "context": {
@@ -196,6 +218,30 @@
           "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
         },
         "candidate": {
+          "normalization_offset_db": 0,
+          "observable_cycles": [
+            2,
+            4,
+            20
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "required_revisions": [
+            "RESOLVE_REFERENCE_UNCERTAINTY_OR_SAMPLED_RESPONSE"
+          ],
+          "next_discriminating_experiment": "RECHECK_DISTANCE_DRIVE_AND_LEVEL_UNCERTAINTY",
+          "model_assumptions": [
+            "FREE_FIELD_FAR_FIELD",
+            "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER",
+            "level bound excludes separately propagated distance and voltage bounds",
+            "reference distance and voltage are exact target coordinates",
+            "cycle threshold is a declared validity heuristic, not a universal accuracy guarantee"
+          ],
+          "scope": "Supplied frequency samples only; no interpolation, full-band or physical conformance",
+          "unresolved": [
+            "actual calibrated acquisition and environment",
+            "unobserved frequencies and spatial response",
+            "actual small-signal validity and qualified Human review"
+          ],
           "normalized_spl_db": [
             80,
             80,
@@ -400,6 +446,28 @@
       "question": "Must full-band certification and measured-linearity claims be challenged?",
       "input_overrides": {
         "candidate": {
+          "normalization_offset_db": 0,
+          "observable_cycles": [
+            2,
+            4,
+            20
+          ],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "required_revisions": [],
+          "next_discriminating_experiment": "REPEAT_MATCHED_FIXTURE_AND_REFERENCE_BEFORE_ATTRIBUTING_RESPONSE_TO_PRODUCT",
+          "model_assumptions": [
+            "FREE_FIELD_FAR_FIELD",
+            "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER",
+            "level bound excludes separately propagated distance and voltage bounds",
+            "reference distance and voltage are exact target coordinates",
+            "cycle threshold is a declared validity heuristic, not a universal accuracy guarantee"
+          ],
+          "scope": "Supplied frequency samples only; no interpolation, full-band or physical conformance",
+          "unresolved": [
+            "actual calibrated acquisition and environment",
+            "unobserved frequencies and spatial response",
+            "actual small-signal validity and qualified Human review"
+          ],
           "normalized_spl_db": [
             80,
             80,
@@ -591,12 +659,231 @@
           "minimum_cycles": 2,
           "propagation_model": "FREE_FIELD_FAR_FIELD",
           "drive_model": "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+        },
+        "candidate": {
+          "normalized_spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_interval_db": [
+            79,
+            79,
+            79
+          ],
+          "upper_interval_db": [
+            81,
+            81,
+            81
+          ],
+          "sample_decisions": [
+            "WITHIN_SAMPLED_ENVELOPE",
+            "WITHIN_SAMPLED_ENVELOPE",
+            "WITHIN_SAMPLED_ENVELOPE"
+          ],
+          "checks": [
+            {
+              "id": "WINDOW_VALIDITY",
+              "passed": true,
+              "on_failure": "EXTEND_WINDOW_OR_REVISE_MEASUREMENT_METHOD"
+            },
+            {
+              "id": "SAMPLED_INTERVAL_MASK",
+              "passed": true,
+              "on_failure": "RESOLVE_REFERENCE_UNCERTAINTY_OR_SAMPLED_RESPONSE"
+            }
+          ],
+          "full_band_conformance_verified": false,
+          "linearity_measured": false,
+          "calibration_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "time-window truncation rather than product bass deficit",
+            "distance or drive-reference mismatch rather than response change",
+            "fixture or room contribution rather than transducer response"
+          ],
+          "normalization_offset_db": 0,
+          "observable_cycles": [
+            2,
+            210.5263157894737,
+            1052.6315789473686
+          ],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "required_revisions": [],
+          "next_discriminating_experiment": "REPEAT_MATCHED_FIXTURE_AND_REFERENCE_BEFORE_ATTRIBUTING_RESPONSE_TO_PRODUCT",
+          "model_assumptions": [
+            "FREE_FIELD_FAR_FIELD",
+            "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER",
+            "level bound excludes separately propagated distance and voltage bounds",
+            "reference distance and voltage are exact target coordinates",
+            "cycle threshold is a declared validity heuristic, not a universal accuracy guarantee"
+          ],
+          "scope": "Supplied frequency samples only; no interpolation, full-band or physical conformance",
+          "unresolved": [
+            "actual calibrated acquisition and environment",
+            "unobserved frequencies and spatial response",
+            "actual small-signal validity and qualified Human review"
+          ]
         }
       },
       "checks": [
         {
           "path": "decision",
           "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-FALSE-EXPERIMENT",
+      "kind": "counter_hypothesis",
+      "question": "Must an automatic EQ instruction implying proven product failure be challenged?",
+      "input_overrides": {
+        "candidate": {
+          "normalized_spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_interval_db": [
+            79,
+            79,
+            79
+          ],
+          "upper_interval_db": [
+            81,
+            81,
+            81
+          ],
+          "sample_decisions": [
+            "WITHIN_SAMPLED_ENVELOPE",
+            "WITHIN_SAMPLED_ENVELOPE",
+            "WITHIN_SAMPLED_ENVELOPE"
+          ],
+          "checks": [
+            {
+              "id": "WINDOW_VALIDITY",
+              "passed": true,
+              "on_failure": "EXTEND_WINDOW_OR_REVISE_MEASUREMENT_METHOD"
+            },
+            {
+              "id": "SAMPLED_INTERVAL_MASK",
+              "passed": true,
+              "on_failure": "RESOLVE_REFERENCE_UNCERTAINTY_OR_SAMPLED_RESPONSE"
+            }
+          ],
+          "full_band_conformance_verified": false,
+          "linearity_measured": false,
+          "calibration_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "time-window truncation rather than product bass deficit",
+            "distance or drive-reference mismatch rather than response change",
+            "fixture or room contribution rather than transducer response"
+          ],
+          "normalization_offset_db": 0,
+          "observable_cycles": [
+            2,
+            4,
+            20
+          ],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "required_revisions": [],
+          "next_discriminating_experiment": "APPLY_BASS_EQ_TO_FIX_PROVEN_PRODUCT_DEFICIT",
+          "model_assumptions": [
+            "FREE_FIELD_FAR_FIELD",
+            "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER",
+            "level bound excludes separately propagated distance and voltage bounds",
+            "reference distance and voltage are exact target coordinates",
+            "cycle threshold is a declared validity heuristic, not a universal accuracy guarantee"
+          ],
+          "scope": "Supplied frequency samples only; no interpolation, full-band or physical conformance",
+          "unresolved": [
+            "actual calibrated acquisition and environment",
+            "unobserved frequencies and spatial response",
+            "actual small-signal validity and qualified Human review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FR-REVIEW-FALSE-CONFIDENCE",
+      "kind": "counter_hypothesis",
+      "question": "Must worst-case intervals not be relabelled statistical confidence or measured linearity?",
+      "input_overrides": {
+        "candidate": {
+          "normalized_spl_db": [
+            80,
+            80,
+            80
+          ],
+          "lower_interval_db": [
+            79,
+            79,
+            79
+          ],
+          "upper_interval_db": [
+            81,
+            81,
+            81
+          ],
+          "sample_decisions": [
+            "WITHIN_SAMPLED_ENVELOPE",
+            "WITHIN_SAMPLED_ENVELOPE",
+            "WITHIN_SAMPLED_ENVELOPE"
+          ],
+          "checks": [
+            {
+              "id": "WINDOW_VALIDITY",
+              "passed": true,
+              "on_failure": "EXTEND_WINDOW_OR_REVISE_MEASUREMENT_METHOD"
+            },
+            {
+              "id": "SAMPLED_INTERVAL_MASK",
+              "passed": true,
+              "on_failure": "RESOLVE_REFERENCE_UNCERTAINTY_OR_SAMPLED_RESPONSE"
+            }
+          ],
+          "full_band_conformance_verified": false,
+          "linearity_measured": false,
+          "calibration_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "time-window truncation rather than product bass deficit",
+            "distance or drive-reference mismatch rather than response change",
+            "fixture or room contribution rather than transducer response"
+          ],
+          "normalization_offset_db": 0,
+          "observable_cycles": [
+            2,
+            4,
+            20
+          ],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "required_revisions": [],
+          "next_discriminating_experiment": "REPEAT_MATCHED_FIXTURE_AND_REFERENCE_BEFORE_ATTRIBUTING_RESPONSE_TO_PRODUCT",
+          "model_assumptions": [
+            "95% statistical confidence interval; measured linearity"
+          ],
+          "scope": "Supplied frequency samples only; no interpolation, full-band or physical conformance",
+          "unresolved": [
+            "actual calibrated acquisition and environment",
+            "unobserved frequencies and spatial response",
+            "actual small-signal validity and qualified Human review"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
           "absolute_tolerance": 0
         }
       ]
