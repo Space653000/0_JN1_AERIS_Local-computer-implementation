@@ -18,6 +18,7 @@ import tempfile
 import threading
 import urllib.request
 from http.server import ThreadingHTTPServer
+from html.parser import HTMLParser
 from pathlib import Path
 from unittest.mock import patch
 
@@ -26,7 +27,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import aeris_runtime.operations as operations
-from browser_e2e import find_browser
+from tests.browser_e2e import find_browser
 
 VIEWPORT = (1440, 1000)
 ARTIFACT_ROOT = ROOT / ".aeris" / "evidence" / "browser-visual" / "latest"
@@ -38,6 +39,31 @@ ROUTES = (
     "/workspace?theme=light&visual_baseline=1",
     "/services?theme=light&visual_baseline=1",
 )
+
+
+def _dom_fingerprints(html: str) -> dict[str,str]:
+    """Report only DOM element IDs and digests; never publish runtime text."""
+    class Fingerprints(HTMLParser):
+        def __init__(self):
+            super().__init__();self.stack=[];self.parts={}
+        def handle_starttag(self,tag,attrs):
+            identifier=dict(attrs).get('id')
+            if identifier:self.parts.setdefault(identifier,[])
+            self.stack.append((tag,identifier))
+            token=json.dumps([tag,sorted(attrs)],ensure_ascii=False)
+            for _,key in self.stack:
+                if key:self.parts[key].append(token)
+            if tag in {'area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr'}:
+                self.stack.pop()
+        def handle_endtag(self,tag):
+            for i in range(len(self.stack)-1,-1,-1):
+                if self.stack[i][0]==tag:
+                    del self.stack[i:];break
+        def handle_data(self,data):
+            for _,key in self.stack:
+                if key:self.parts[key].append(data)
+    parser=Fingerprints();parser.feed(html)
+    return {key:hashlib.sha256(''.join(parts).encode('utf-8')).hexdigest() for key,parts in parser.parts.items()}
 
 
 def _png_size(path: Path) -> tuple[int, int]:
@@ -59,6 +85,7 @@ def _capture(browser: str, profile: str, url: str, output: Path) -> dict[str, ob
         "--disable-sync",
         "--metrics-recording-only",
         "--run-all-compositor-stages-before-draw",
+        "--dump-dom",
         "--virtual-time-budget=2500",
         f"--window-size={VIEWPORT[0]},{VIEWPORT[1]}",
         f"--user-data-dir={profile}",
@@ -79,7 +106,9 @@ def _capture(browser: str, profile: str, url: str, output: Path) -> dict[str, ob
     if (width, height) != VIEWPORT:
         raise AssertionError(f"unexpected screenshot dimensions {(width, height)} != {VIEWPORT}")
     digest = hashlib.sha256(output.read_bytes()).hexdigest()
-    return {"bytes": size, "sha256": digest, "width": width, "height": height}
+    return {"bytes": size, "sha256": digest, "width": width, "height": height,
+            "dom_sha256":hashlib.sha256(proc.stdout.encode('utf-8')).hexdigest(),
+            "element_digests":_dom_fingerprints(proc.stdout)}
 
 
 def _check_accessibility_contract() -> list[str]:
@@ -144,6 +173,14 @@ def run() -> int:
                     first = _capture(browser, str(profile), url, temp_path / f"route-{index}-a.png")
                     second = _capture(browser, str(profile), url, temp_path / f"route-{index}-b.png")
                     if first["sha256"] != second["sha256"]:
+                        # Preserve the actual failures locally. Never replace the
+                        # failed capture with a later passing image or relax equality.
+                        for suffix in ('a','b'):
+                            shutil.copy2(temp_path/f'route-{index}-{suffix}.png',ARTIFACT_ROOT/f'failure-route-{index}-{suffix}.png')
+                        keys=set(first['element_digests'])|set(second['element_digests'])
+                        print(json.dumps({'visual_mismatch_route':route,'first_sha256':first['sha256'],
+                            'second_sha256':second['sha256'],'same_dom':first['dom_sha256']==second['dom_sha256'],
+                            'changed_element_ids':sorted(k for k in keys if first['element_digests'].get(k)!=second['element_digests'].get(k))}),flush=True)
                         raise AssertionError(f"same-route render is not bit-exact repeatable in one CI environment: {route}")
                     route_hashes.add(str(first["sha256"]))
                     theme="light" if "theme=light" in route else "dark"

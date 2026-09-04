@@ -24,3 +24,13 @@ the actual pushed follow-up commit. The original SNAPSHOT remains a historical
 record; its failed test transcript is not overwritten. H0001 broader role depth,
 live rollout and final acceptance are still unfinished. Do not merge or claim
 P02 accepted.
+
+## New CI visual-repeatability failure under investigation
+
+CI run 199 on Ubuntu passed unit tests and browser semantics, then failed exact
+same-route screenshot equality for Dashboard Dark. The same visual gate passed
+locally on Windows. This is not yet diagnosed or fixed. Instrumentation now
+preserves both failed images locally and reports only DOM element IDs and hashes
+to distinguish asynchronous data/render changes. Exact screenshot equality is
+unchanged; no retry discards a failed image. Two privacy-aware diagnostic tests
+pass. Raw screenshots/runtime text are not uploaded by these changes.
