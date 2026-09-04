@@ -1,0 +1,304 @@
+{
+  "suite_id": "R009-SEALED-BASELINE-V1",
+  "role_id": "R009",
+  "skill_id": "speaker-sealed-alignment-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored alpha=3 case: Fc=50sqrt(3), Qtc=.4sqrt(3), positive root of y^2-.25y-9=0 gives F3=88.42515249302765. Alpha=2..5 interval minimum at 3.125 gives 88.38834764831844; maximum at 5 gives 93.07258378308104. Candidate constants and contradictions authored independently; not copied from executor output.",
+  "scope": "Ideal sealed T/S alignment, supplied independent tolerance and model-geometry checks",
+  "base_input": {
+    "model": "IDEAL_SEALED_SMALL_SIGNAL",
+    "fs_hz": 50,
+    "fs_lower_hz": 50,
+    "fs_upper_hz": 50,
+    "qts": 0.4,
+    "qts_lower": 0.4,
+    "qts_upper": 0.4,
+    "vas_m3": 0.02,
+    "vas_lower_m3": 0.02,
+    "vas_upper_m3": 0.02,
+    "box_m3": 0.01,
+    "box_lower_m3": 0.01,
+    "box_upper_m3": 0.01,
+    "maximum_f3_hz": 100,
+    "minimum_qtc": 0.5,
+    "maximum_qtc": 1,
+    "maximum_box_m3": 0.025,
+    "largest_dimension_m": 0.3,
+    "analysis_max_hz": 150,
+    "sound_speed_lower_m_s": 340,
+    "maximum_dimension_wavelength_ratio": 0.2
+  },
+  "cases": [
+    {
+      "id": "SEALED-NOMINAL",
+      "kind": "positive",
+      "question": "Does the sealed compliance yield Fc=50sqrt(3), Qtc=.4sqrt(3) and an independently derived F3 distinct from Fc?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "fc_hz",
+          "expected": 86.60254037844386,
+          "absolute_tolerance": 1e-8
+        },
+        {
+          "path": "qtc",
+          "expected": 0.6928203230275509,
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "f3_hz",
+          "expected": 88.42515249302765,
+          "absolute_tolerance": 1e-8
+        },
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SEALED-BUTTERWORTH",
+      "kind": "boundary",
+      "question": "Does F3 coincide with Fc only at Qtc=1/sqrt(2)?",
+      "input_overrides": {
+        "qts": 0.5,
+        "qts_lower": 0.5,
+        "qts_upper": 0.5,
+        "vas_m3": 0.01,
+        "vas_lower_m3": 0.01,
+        "vas_upper_m3": 0.01
+      },
+      "checks": [
+        {
+          "path": "f3_hz",
+          "expected": 70.71067811865476,
+          "absolute_tolerance": 1e-8
+        },
+        {
+          "path": "qtc",
+          "expected": 0.7071067811865476,
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "SEALED-INTERIOR",
+      "kind": "boundary",
+      "question": "Does the conservative F3 interval include the stationary minimum inside alpha=2..5?",
+      "input_overrides": {
+        "box_lower_m3": 0.005,
+        "box_upper_m3": 0.02
+      },
+      "checks": [
+        {
+          "path": "f3_interval_hz.0",
+          "expected": 88.38834764831844,
+          "absolute_tolerance": 1e-8
+        },
+        {
+          "path": "f3_interval_hz.1",
+          "expected": 93.07258378308104,
+          "absolute_tolerance": 1e-8
+        }
+      ]
+    },
+    {
+      "id": "SEALED-TOLERANCE",
+      "kind": "counter_hypothesis",
+      "question": "Can nominal alignment meet 90Hz while supplied volume uncertainty crosses the requirement?",
+      "input_overrides": {
+        "box_lower_m3": 0.005,
+        "box_upper_m3": 0.02,
+        "maximum_f3_hz": 90
+      },
+      "checks": [
+        {
+          "path": "checks.0.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SEALED-GEOMETRY",
+      "kind": "counter_hypothesis",
+      "question": "Does acceptable bass alignment fail to prove validity of a spatially large lumped box?",
+      "input_overrides": {
+        "largest_dimension_m": 1
+      },
+      "checks": [
+        {
+          "path": "checks.0.passed",
+          "expected": true,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.4.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SEALED-FREQUENCY-BYPASS",
+      "kind": "counter_hypothesis",
+      "question": "Must lowering analysis frequency to conceal spatial-model invalidity fail coverage?",
+      "input_overrides": {
+        "largest_dimension_m": 1,
+        "analysis_max_hz": 10
+      },
+      "checks": [
+        {
+          "path": "checks.3.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.4.passed",
+          "expected": true,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SEALED-VOLUME",
+      "kind": "positive",
+      "question": "Does insufficient allowed effective box volume require a real architecture revision?",
+      "input_overrides": {
+        "maximum_box_m3": 0.009
+      },
+      "checks": [
+        {
+          "path": "checks.2.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "required_revisions.0",
+          "expected": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SEALED-OVERDAMPED",
+      "kind": "positive",
+      "question": "Does very low Qts reveal the high F3 penalty rather than pretending Fc is the bass cutoff?",
+      "input_overrides": {
+        "qts": 0.01,
+        "qts_lower": 0.01,
+        "qts_upper": 0.01
+      },
+      "checks": [
+        {
+          "path": "checks.0.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.1.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.3.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SEALED-UNDERDAMPED",
+      "kind": "positive",
+      "question": "Can high-Q compliance have low half-power frequency yet violate the damping requirement?",
+      "input_overrides": {
+        "qts": 5,
+        "qts_lower": 5,
+        "qts_upper": 5
+      },
+      "checks": [
+        {
+          "path": "checks.0.passed",
+          "expected": true,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.1.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SEALED-NO-PHYSICAL",
+      "kind": "counter_hypothesis",
+      "question": "Does a successful linear alignment avoid inferring excursion, a ported model or measured performance?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "excursion_verified",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "ported_alignment_verified",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "physical_measurement_verified",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SEALED-NEG-PORTED",
+      "kind": "negative",
+      "question": "Must a vented model be rejected instead of evaluated with sealed equations?",
+      "input_overrides": {
+        "model": "VENTED"
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "SEALED-NEG-BOUNDS",
+      "kind": "negative",
+      "question": "Must the nominal be contained by supplied volume bounds?",
+      "input_overrides": {
+        "box_lower_m3": 0.02
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "SEALED-NEG-UNITS",
+      "kind": "negative",
+      "question": "Must undeclared litres be rejected rather than interpreted as cubic metres?",
+      "input_overrides": {
+        "box_litres": 10
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "SEALED-NEG-POLICY",
+      "kind": "negative",
+      "question": "Must reversed damping policy fail closed?",
+      "input_overrides": {
+        "minimum_qtc": 2,
+        "maximum_qtc": 1
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

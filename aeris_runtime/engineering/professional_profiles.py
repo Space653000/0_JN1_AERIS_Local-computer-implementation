@@ -116,6 +116,10 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
 ROLE_DOMAIN_CONTRACTS={
+    'R009':{'skill_id':'speaker-sealed-alignment-baseline','method':'methods/roles/speaker-sealed-alignment-baseline.json',
+            'suite':'golden/roles/R009/golden.json','scope':'Ideal sealed T/S alignment with independent parameter bounds and model geometry; no vented, nonlinear or measured acceptance.'},
+    'R021':{'skill_id':'speaker-sealed-lumped-domain-review','method':'methods/roles/speaker-sealed-lumped-domain-review.json',
+            'suite':'golden/roles/R021/golden.json','scope':'Independent sealed transfer polynomial, extrema and lumped geometry review; no FEM or actual model validation.'},
     'R089':{'skill_id':'standards-metadata-applicability-baseline','method':'methods/roles/standards-metadata-applicability-baseline.json',
             'suite':'golden/roles/R089/golden.json','scope':'Supplied standards metadata applicability/access/requirement-change reasoning; no authoritative current-edition or conformance verification.'},
     'R090':{'skill_id':'standards-metadata-domain-review','method':'methods/roles/standards-metadata-domain-review.json',

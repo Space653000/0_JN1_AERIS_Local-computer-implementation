@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "lumped-speaker": "skills/lumped-speaker/input.schema.json",
-    "helmholtz-port": "skills/helmholtz-port/input.schema.json"
+    "helmholtz-port": "skills/helmholtz-port/input.schema.json",
+    "speaker-sealed-lumped-domain-review": "skills/speaker-sealed-lumped-domain-review/input.schema.json"
   },
   "outputs": {
     "lumped-speaker": "skills/lumped-speaker/output.schema.json",
-    "helmholtz-port": "skills/helmholtz-port/output.schema.json"
+    "helmholtz-port": "skills/helmholtz-port/output.schema.json",
+    "speaker-sealed-lumped-domain-review": "skills/speaker-sealed-lumped-domain-review/output.schema.json"
   },
   "required_skills": [
     "lumped-speaker",
-    "helmholtz-port"
+    "helmholtz-port",
+    "speaker-sealed-lumped-domain-review"
   ],
   "required_methods": [
     "methods/engineering/lumped-speaker.json",
-    "methods/engineering/helmholtz-port.json"
+    "methods/engineering/helmholtz-port.json",
+    "methods/roles/speaker-sealed-lumped-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/lumped-speaker.json",
@@ -153,11 +157,13 @@
     "question": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
     "required_methods": [
       "methods/engineering/lumped-speaker.json",
-      "methods/engineering/helmholtz-port.json"
+      "methods/engineering/helmholtz-port.json",
+      "methods/roles/speaker-sealed-lumped-domain-review.json"
     ],
     "required_skills": [
       "lumped-speaker",
-      "helmholtz-port"
+      "helmholtz-port",
+      "speaker-sealed-lumped-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -189,7 +195,8 @@
     ],
     "calculation_schemas": {
       "lumped-speaker": "skills/lumped-speaker/input.schema.json",
-      "helmholtz-port": "skills/helmholtz-port/input.schema.json"
+      "helmholtz-port": "skills/helmholtz-port/input.schema.json",
+      "speaker-sealed-lumped-domain-review": "skills/speaker-sealed-lumped-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -203,7 +210,8 @@
     ],
     "calculation_schemas": {
       "lumped-speaker": "skills/lumped-speaker/output.schema.json",
-      "helmholtz-port": "skills/helmholtz-port/output.schema.json"
+      "helmholtz-port": "skills/helmholtz-port/output.schema.json",
+      "speaker-sealed-lumped-domain-review": "skills/speaker-sealed-lumped-domain-review/output.schema.json"
     }
   },
   "report_sections": [
@@ -213,5 +221,11 @@
     "wrong boundary condition rather than material model",
     "parameter non-identifiability rather than solver issue",
     "model-form error and parameter sensitivity"
-  ]
+  ],
+  "domain_execution_contract": {
+    "skill_id": "speaker-sealed-lumped-domain-review",
+    "method": "methods/roles/speaker-sealed-lumped-domain-review.json",
+    "suite": "golden/roles/R021/golden.json",
+    "scope": "Independent sealed transfer polynomial, extrema and lumped geometry review; no FEM or actual model validation."
+  }
 }

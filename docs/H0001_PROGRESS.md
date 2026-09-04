@@ -572,3 +572,32 @@ the source-ID correction. Live routes returned 6/6 HTTP 200, but the old running
 supervisor is not evidence that current construction code has been deployed.
 Broader role/product depth, live rollout, clean Windows/Ubuntu CI and sanitized
 H0001 Draft PR handoff remain unfinished. No GitHub write or Core change occurred.
+
+## Thirteenth checkpoint — unfinished snapshot for remote supervision
+
+R009 ideal sealed T/S alignment and R021 independent Decimal transfer-polynomial
+review are integrated with separate 14-case suites. Source coverage is now 21
+suites / 250 role cases and 21 domain/review plus 42 shared engineering Skills.
+This is bounded software execution, not complete-role L3 or physical acceptance.
+The next R037/R034 array-beam work has a reviewed plan only; it is NOT implemented.
+
+Focused sealed/workflow/role tests passed 13 tests in 16.001 seconds. Actual
+SQLite execution, R021 routing, sealed review and reproduction were exercised.
+Isolated browser Dashboard/Workspace/Services dark/light semantic E2E passed.
+Live six-route availability was 6/6 HTTP 200; the old running supervisor is not
+evidence of deployment of the new source.
+
+Full regression FAILED: 342 tests in 344.373 seconds, one failure and one error.
+The two pending issues are in test_h0001_maturity: a legacy shared-Skill catalog
+path raises KeyError for speaker-sealed-alignment-baseline, and its evaluated
+coverage assertion expects four required Skills while the shared factory reports
+three. These tests and their failures are retained; no acceptance is weakened.
+Local transcript: .aeris/evidence/H0001-sealed-full-tests.log, SHA-256
+81651a9df6076f51880ab9e81c78ba6b1fb6b404c0015e4800fb381cb1f6a7ee.
+The prior standards checkpoint passed 335 tests; it is not the current result.
+
+The Human requested an immediate GitHub-visible construction snapshot for web
+supervision before H0001 completion. This changes the handoff timing only: a new
+Draft PR, no Core writes, no historical PR32 overwrite, no main push or merge.
+H0001 and P02 remain NOT ACCEPTED. Public source/metadata and sanitized evidence
+hashes are in scope; raw local state and sensitive content remain excluded.

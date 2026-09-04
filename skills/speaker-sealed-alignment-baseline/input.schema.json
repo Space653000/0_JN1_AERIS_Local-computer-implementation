@@ -1,0 +1,133 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "model",
+    "fs_hz",
+    "fs_lower_hz",
+    "fs_upper_hz",
+    "qts",
+    "qts_lower",
+    "qts_upper",
+    "vas_m3",
+    "vas_lower_m3",
+    "vas_upper_m3",
+    "box_m3",
+    "box_lower_m3",
+    "box_upper_m3",
+    "maximum_f3_hz",
+    "minimum_qtc",
+    "maximum_qtc",
+    "maximum_box_m3",
+    "largest_dimension_m",
+    "analysis_max_hz",
+    "sound_speed_lower_m_s",
+    "maximum_dimension_wavelength_ratio"
+  ],
+  "properties": {
+    "model": {
+      "type": "string",
+      "const": "IDEAL_SEALED_SMALL_SIGNAL"
+    },
+    "fs_hz": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 10000
+    },
+    "fs_lower_hz": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 10000
+    },
+    "fs_upper_hz": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 10000
+    },
+    "qts": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 5
+    },
+    "qts_lower": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 5
+    },
+    "qts_upper": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 5
+    },
+    "vas_m3": {
+      "type": "number",
+      "minimum": 1e-9,
+      "maximum": 100
+    },
+    "vas_lower_m3": {
+      "type": "number",
+      "minimum": 1e-9,
+      "maximum": 100
+    },
+    "vas_upper_m3": {
+      "type": "number",
+      "minimum": 1e-9,
+      "maximum": 100
+    },
+    "box_m3": {
+      "type": "number",
+      "minimum": 1e-9,
+      "maximum": 100
+    },
+    "box_lower_m3": {
+      "type": "number",
+      "minimum": 1e-9,
+      "maximum": 100
+    },
+    "box_upper_m3": {
+      "type": "number",
+      "minimum": 1e-9,
+      "maximum": 100
+    },
+    "maximum_f3_hz": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 20000
+    },
+    "minimum_qtc": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 20
+    },
+    "maximum_qtc": {
+      "type": "number",
+      "minimum": 0.01,
+      "maximum": 20
+    },
+    "maximum_box_m3": {
+      "type": "number",
+      "minimum": 1e-9,
+      "maximum": 100
+    },
+    "largest_dimension_m": {
+      "type": "number",
+      "minimum": 0.000001,
+      "maximum": 100
+    },
+    "analysis_max_hz": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 200000
+    },
+    "sound_speed_lower_m_s": {
+      "type": "number",
+      "minimum": 100,
+      "maximum": 1000
+    },
+    "maximum_dimension_wavelength_ratio": {
+      "type": "number",
+      "minimum": 0.000001,
+      "maximum": 1
+    }
+  }
+}

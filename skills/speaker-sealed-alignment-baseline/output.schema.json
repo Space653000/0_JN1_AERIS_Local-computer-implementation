@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": [
+    "skill_id",
+    "values",
+    "input_sha256",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "values": {
+      "type": "object",
+      "required": [
+        "fc_hz",
+        "qtc",
+        "f3_hz",
+        "f3_interval_hz",
+        "checks",
+        "disposition",
+        "physical_measurement_verified"
+      ]
+    },
+    "physical_measurement_verified": {
+      "const": false
+    }
+  }
+}

@@ -9,6 +9,7 @@ from ..config import ROOT
 from .numerical_policy import db_at_least,db_at_most,MIN_IDENTIFIABLE_VARIANCE_FRACTION
 
 REQUIRED_DOMAINS={
+    'speaker-sealed-alignment-baseline':['speaker-sealed-lumped'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -116,6 +117,9 @@ def review(domain,request):
     if domain=='speaker-fr-uncertainty':
         from .speaker_fr_review import review as review_fr
         return review_fr(p,candidate)
+    if domain=='speaker-sealed-lumped':
+        from .sealed_alignment_review import review as review_sealed
+        return review_sealed(p,candidate)
     if domain=='microphone-array-geometry':
         from .array_doa_review import review as review_array
         return review_array(p,candidate)
@@ -261,7 +265,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -361,6 +365,8 @@ def _checks_coherent(skill,params,values):
     a caller-supplied set with itself cannot prove coverage or correct actions.
     """
     from .catalog import digest
+    if skill=='speaker-sealed-alignment-baseline':
+        return [c.get('id') for c in values['checks']]==['F3_UPPER_BOUND','QTC_INTERVAL','EFFECTIVE_BOX_VOLUME','ANALYSIS_FREQUENCY_COVERAGE','LUMPED_GEOMETRY_VALIDITY']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']
