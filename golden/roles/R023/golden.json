@@ -1,0 +1,52 @@
+{
+  "suite_id": "R023-ROOM-DECAY-V1", "role_id": "R023", "skill_id": "room-decay-spatial-baseline",
+  "source_kind": "SYNTHETIC", "oracle_provenance": "Authored three-position 500 Hz linear decay-fit fixture with one intentionally invalid low-span/noise/R2 position; no acquired impulse response.",
+  "scope": "Supplied multi-position room decay-fit and spatial screening only",
+  "base_input": {
+    "model": "SUPPLIED_ROOM_DECAY_POSITION_FITS", "frequency_band_hz": 500.0,
+    "position_ids": ["front", "center", "rear"], "decay_rate_db_per_s": [40.0, 30.0, 20.0],
+    "fit_span_db": [35.0, 30.0, 20.0], "noise_margin_db": [12.0, 8.0, 3.0], "fit_r_squared": [0.98, 0.95, 0.8],
+    "minimum_fit_span_db": 25.0, "minimum_noise_margin_db": 6.0, "minimum_fit_r_squared": 0.9,
+    "minimum_valid_position_fraction": 0.6666666666666666, "maximum_valid_rt60_s": 2.5,
+    "maximum_valid_rt60_spread_s": 1.0, "window_duration_s": 2.2, "minimum_window_duration_s": 2.0
+  },
+  "cases": [
+    {
+      "id": "ROOM-VALID-POSITION-FITS", "kind": "positive",
+      "question": "Does the role extrapolate RT60 only after fit-span, noise-margin and fit-quality screening at each position?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "rt60_s", "expected": [1.5, 2.0, 3.0], "absolute_tolerance": 1e-12},
+        {"path": "valid_position_ids.0", "expected": "front", "absolute_tolerance": 0},
+        {"path": "valid_position_ids.1", "expected": "center", "absolute_tolerance": 0},
+        {"path": "valid_rt60_spread_s", "expected": 0.5, "absolute_tolerance": 1e-12},
+        {"path": "diffuse_field_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "ROOM-INCLUSIVE-FIT-LIMITS", "kind": "boundary",
+      "question": "Are exact fit and window limits inclusive without upgrading sampled positions to full-room acceptance?",
+      "input_overrides": {"fit_span_db": [25.0, 25.0, 20.0], "noise_margin_db": [6.0, 6.0, 3.0], "fit_r_squared": [0.9, 0.9, 0.8], "window_duration_s": 2.0},
+      "checks": [
+        {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "checks.3.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "full_room_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "ROOM-NOISE-FLOOR-ALTERNATIVE", "kind": "counter_hypothesis",
+      "question": "Does insufficient noise margin withhold decay interpretation instead of reporting a long reverberation tail?",
+      "input_overrides": {"noise_margin_db": [2.0, 2.0, 2.0]},
+      "checks": [
+        {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+        {"path": "required_revisions.0", "expected": "ADD_POSITIONS_WITH_VALID_DECAY_FITS", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "ROOM-DUPLICATE-POSITION-REJECTED", "kind": "negative",
+      "question": "Are duplicate position IDs rejected rather than counted as spatial coverage?",
+      "input_overrides": {"position_ids": ["front", "front", "rear"]}, "expected_error": "ValueError"
+    }
+  ]
+}

@@ -201,3 +201,21 @@ still L1=100 and H0001/P02 remains unfinished.
 
 Private transcript `.aeris/evidence/H0001-speaker-depth-full-tests.log`, SHA-256
 `07536fe7c5c92a894df7b821a4d0ed6fa1d6eddb9ee11787857213318efe258d`.
+
+## Room decay / correction spatial checkpoint
+
+R023/R072 add multi-position decay execution and independent spatial review.
+R026/R071 add bounded sampled room-correction execution and independent review.
+Positive, boundary, negative, counter-hypothesis, exact reviewer routing,
+sealed Evidence and reproduction coverage pass. These contracts do not claim a
+diffuse field, complete room model, realized filter, audibility, calibration,
+physical measurement, L3/L4 or Human acceptance.
+
+Focused regression: 30 PASS. Fixed-source regression: 410 PASS in 1011.760
+seconds. Six semantic routes and six dark/light fixed-environment screenshot/
+basic-accessibility routes pass. Inventory: 83 Skills, 83 Methods, 41 role
+suites, 375 cases, 39 roles with a suite and 61 without one. Installed truth is
+still L1=100 and H0001/P02 remains unfinished.
+
+Private transcript `.aeris/evidence/H0001-room-depth-full-tests.log`, SHA-256
+`bb2ae2065c119ee1f4c4514bd0749714881db8a2bb5baf8a8fecb522ac2e88aa`.

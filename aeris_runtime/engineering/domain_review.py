@@ -23,6 +23,8 @@ REQUIRED_DOMAINS={
     'speaker-signal-chain-noise-headroom-baseline':['speaker-signal-chain-headroom'],
     'speaker-bass-limiter-envelope-baseline':['speaker-bass-protection'],
     'structural-acoustic-transfer-baseline':['structural-acoustic-path'],
+    'room-decay-spatial-baseline':['room-decay-spatial'],
+    'room-correction-spatial-baseline':['room-correction-spatial'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -36,7 +38,7 @@ DOMAIN_SKILLS={domain:skill for skill,domains in REQUIRED_DOMAINS.items() for do
 
 
 def applicable(domain,context):
-    if domain=='structural-acoustic-path':
+    if domain in {'structural-acoustic-path','room-decay-spatial','room-correction-spatial'}:
         return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
                 and context.get('transducer') in {'Speaker','Both'}
@@ -175,6 +177,12 @@ def review(domain,request):
     if domain=='structural-acoustic-path':
         from .structural_acoustic_review import review as review_structural_acoustic
         return review_structural_acoustic(p,candidate)
+    if domain=='room-decay-spatial':
+        from .room_decay_review import review as review_room_decay
+        return review_room_decay(p,candidate)
+    if domain=='room-correction-spatial':
+        from .room_correction_review import review as review_room_correction
+        return review_room_correction(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -317,6 +325,8 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'speaker-signal-chain-headroom':('speaker_signal_chain_review.py','speaker_signal_chain.py'),
     'speaker-bass-protection':('speaker_bass_limiter_review.py','speaker_bass_limiter.py'),
     'structural-acoustic-path':('structural_acoustic_review.py','structural_acoustic.py'),
+    'room-decay-spatial':('room_decay_review.py','room_decay.py'),
+    'room-correction-spatial':('room_correction_review.py','room_correction.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -362,7 +372,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -480,6 +490,10 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['EXCURSION_ENVELOPE','THERMAL_ENVELOPE','AMPLIFIER_VOLTAGE_HEADROOM','ATTACK_TIME','RELEASE_MINIMUM','RELEASE_MAXIMUM','CONTENT_CREST_COVERAGE']
     if skill=='structural-acoustic-transfer-baseline':
         return [c.get('id') for c in values['checks']]==['IDENTIFIABLE_BAND_FRACTION','TRANSFER_SPREAD','IDENTIFIABLE_COHERENCE','FREQUENCY_ALIGNMENT']
+    if skill=='room-decay-spatial-baseline':
+        return [c.get('id') for c in values['checks']]==['VALID_POSITION_COVERAGE','VALID_RT60_MAXIMUM','SPATIAL_DECAY_SPREAD','WINDOW_DURATION']
+    if skill=='room-correction-spatial-baseline':
+        return [c.get('id') for c in values['checks']]==['POSITION_COVERAGE','SPATIAL_SPREAD','BOOST_BOUND','CUT_BOUND','DEEP_NOTCH_POLICY','FILTER_LATENCY','NONMINIMUM_PHASE_BANDS']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

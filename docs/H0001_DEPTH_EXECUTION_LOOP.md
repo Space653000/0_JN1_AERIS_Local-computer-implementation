@@ -15,28 +15,29 @@
   `main` mutation, physical/Human acceptance, or three consecutive blocked
   items. A test failure is repaired; it is never relabelled as acceptance.
 
-## Current batch: Speaker tonal decision and independent context review
+## Current batch: room decay and correction spatial review
 
-### 1. R018 bounded tonal-EQ decision
+### 1. R023/R072 bounded room-decay decision and review
 
-- Status: complete for this bounded capability
-- Change: implement a role-specific sampled correction/headroom/spatial spread,
-  smoothing and room-notch decision contract.
-- Acceptance: positive, inclusive-boundary, negative and counter-hypothesis
-  cases pass; peak hiding, deep-null boosting and unsupported normalization fail
-  closed; no listening or physical claim is emitted.
+- Status: complete for this bounded capability.
+- Change: implement a role-specific multi-position room-decay contract and an
+  independently reconstructed spatial reviewer contract.
+- Acceptance: positive, boundary, negative and counter-hypothesis cases pass;
+  insufficient position coverage, altered assertions and unsupported physical
+  interpretation fail closed.
 - Verification: direct unit tests plus Role Acceptance suite replay.
 - Evidence: local sealed role-domain execution receipt.
-- Checkpoint: 4 direct/domain tests, sealed suite replay and routed workflow PASS.
+- Checkpoint: sealed suite replay, capability routing and reproduction PASS.
 
-### 2. R020 independent tonal-context review
+### 2. R026/R071 bounded room-correction decision and review
 
 - Status: complete for this bounded capability
 - Blocked by: none.
-- Change: independently recompute candidate assertions and reject altered
-  headroom, smoothing, spatial or causal claims.
+- Change: check multi-position spatial spread, boost/cut bounds, deep-notch
+  policy, latency and non-minimum-phase exceptions, with independent review.
 - Acceptance: exact reviewer Skill is selected by capability, review Evidence is
-  sealed, and reproduction passes while aggregate maturity remains fail-closed.
+  sealed, and reproduction passes while unsupported realized-filter and
+  physical room claims remain fail-closed.
 - Verification: end-to-end workflow, reviewer and Evidence tests.
 - Evidence: local sealed reviewer qualification and review bundle.
 - Checkpoint: exact-schema independent reconstruction rejects hidden headroom;
@@ -86,3 +87,20 @@
   359 role cases; 35 roles have at least one suite and 65 do not.
 - Local-only transcript: `.aeris/evidence/H0001-speaker-depth-full-tests.log`,
   SHA-256 `07536fe7c5c92a894df7b821a4d0ed6fa1d6eddb9ee11787857213318efe258d`.
+
+## Room spatial continuation checkpoint
+
+- R023/R072: multi-position decay coverage and an independent spatial review;
+  no diffuse-field, full-room or physical-measurement claim.
+- R026/R071: sampled room-correction bounds and independent review; no realized
+  filter, audibility, calibration or physical acceptance claim.
+- Focused regression: 30/30 PASS.
+- Fixed-source regression: 410/410 PASS in 1011.760 seconds.
+- Six semantic routes and six fixed-environment dark/light screenshot/basic
+  accessibility routes: PASS.
+- Source inventory: 83 executable Skills, 83 Methods, 41 role-specific suites,
+  375 role cases; 39 roles have at least one suite and 61 do not.
+- Installed company truth remains L0=0, L1=100, L2=0, L3=0, L4=0; H0001/P02
+  remains unfinished.
+- Local-only transcript: `.aeris/evidence/H0001-room-depth-full-tests.log`,
+  SHA-256 `bb2ae2065c119ee1f4c4514bd0749714881db8a2bb5baf8a8fecb522ac2e88aa`.

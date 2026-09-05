@@ -21,22 +21,26 @@
   "inputs": {
     "room-ir-decay": "skills/room-ir-decay/input.schema.json",
     "response-phase-delay": "skills/response-phase-delay/input.schema.json",
-    "butterworth-filter": "skills/butterworth-filter/input.schema.json"
+    "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+    "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/input.schema.json"
   },
   "outputs": {
     "room-ir-decay": "skills/room-ir-decay/output.schema.json",
     "response-phase-delay": "skills/response-phase-delay/output.schema.json",
-    "butterworth-filter": "skills/butterworth-filter/output.schema.json"
+    "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+    "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/output.schema.json"
   },
   "required_skills": [
     "room-ir-decay",
     "response-phase-delay",
-    "butterworth-filter"
+    "butterworth-filter",
+    "room-correction-spatial-baseline"
   ],
   "required_methods": [
     "methods/engineering/room-ir-decay.json",
     "methods/engineering/response-phase-delay.json",
-    "methods/engineering/butterworth-filter.json"
+    "methods/engineering/butterworth-filter.json",
+    "methods/roles/room-correction-spatial-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/room-ir-decay.json",
@@ -173,12 +177,14 @@
     "required_methods": [
       "methods/engineering/room-ir-decay.json",
       "methods/engineering/response-phase-delay.json",
-      "methods/engineering/butterworth-filter.json"
+      "methods/engineering/butterworth-filter.json",
+      "methods/roles/room-correction-spatial-baseline.json"
     ],
     "required_skills": [
       "room-ir-decay",
       "response-phase-delay",
-      "butterworth-filter"
+      "butterworth-filter",
+      "room-correction-spatial-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -194,7 +200,14 @@
       "neighbor_owns": "Choose binaural/spatial rendering assumptions from HRTF, head pose and temporal alignment"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "room-correction-spatial-baseline",
+      "method": "methods/roles/room-correction-spatial-baseline.json",
+      "suite": "golden/roles/R026/golden.json",
+      "scope": "Supplied multi-position response mean/spread, correction, notch, latency and nonminimum-phase screening; no complex inversion, realized filter or physical acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
@@ -212,7 +225,8 @@
     "calculation_schemas": {
       "room-ir-decay": "skills/room-ir-decay/input.schema.json",
       "response-phase-delay": "skills/response-phase-delay/input.schema.json",
-      "butterworth-filter": "skills/butterworth-filter/input.schema.json"
+      "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+      "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -227,7 +241,8 @@
     "calculation_schemas": {
       "room-ir-decay": "skills/room-ir-decay/output.schema.json",
       "response-phase-delay": "skills/response-phase-delay/output.schema.json",
-      "butterworth-filter": "skills/butterworth-filter/output.schema.json"
+      "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+      "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/output.schema.json"
     }
   },
   "report_sections": [

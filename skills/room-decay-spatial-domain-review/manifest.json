@@ -1,0 +1,10 @@
+{
+  "schema_version": 1, "skill_id": "room-decay-spatial-domain-review", "version": "1.0.0",
+  "domain_factory_contract": true, "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/room-decay-spatial-domain-review.json",
+  "input_schema": "skills/room-decay-spatial-domain-review/input.schema.json",
+  "output_schema": "skills/room-decay-spatial-domain-review/output.schema.json",
+  "role_mappings": ["R072"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Independent multi-position room decay-fit, RT60, noise-floor and spatial-spread assertion review",
+  "review_domain": "room-decay-spatial"
+}
