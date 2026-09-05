@@ -126,6 +126,8 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS={
             'suite':'golden/roles/R034/golden.json','scope':'Independent directional sample, channel uncertainty and model-guard consistency; no actual array calibration or continuous-angle acceptance.'},
     'R009':{'skill_id':'speaker-sealed-alignment-baseline','method':'methods/roles/speaker-sealed-alignment-baseline.json',
             'suite':'golden/roles/R009/golden.json','scope':'Ideal sealed T/S alignment with independent parameter bounds and model geometry; no vented, nonlinear or measured acceptance.'},
+    'R011':{'skill_id':'speaker-ported-alignment-baseline','method':'methods/roles/speaker-ported-alignment-baseline.json',
+            'suite':'golden/roles/R011/golden.json','scope':'Ideal Helmholtz port tuning, velocity, longitudinal-mode and lumped-geometry bounds; no turbulence, waveguide or measured acceptance.'},
     'R021':{'skill_id':'speaker-sealed-lumped-domain-review','method':'methods/roles/speaker-sealed-lumped-domain-review.json',
             'suite':'golden/roles/R021/golden.json','scope':'Independent sealed transfer polynomial, extrema and lumped geometry review; no FEM or actual model validation.'},
     'R089':{'skill_id':'standards-metadata-applicability-baseline','method':'methods/roles/standards-metadata-applicability-baseline.json',
@@ -175,6 +177,11 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS={
 # ordered list is authored source truth; aggregate maturity must never hide a
 # missing member or let one shared receipt qualify its neighbors.
 ROLE_DOMAIN_CONTRACTS={role:[contract] for role,contract in _SINGLE_ROLE_DOMAIN_CONTRACTS.items()}
+ROLE_DOMAIN_CONTRACTS['R021'].append({
+    'skill_id':'speaker-port-lumped-domain-review',
+    'method':'methods/roles/speaker-port-lumped-domain-review.json',
+    'suite':'golden/roles/R021/ported.json',
+    'scope':'Independent port interval, velocity and compact-model assertion review; no CFD/BEM or physical model validation.'})
 
 
 def standards_families(value):

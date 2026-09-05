@@ -128,3 +128,23 @@ accessibility captures pass locally. Source coverage remains 67 executable
 Skills/Methods, 25 role suites and 311 role cases; 75 roles still lack a domain
 suite. This is prerequisite architecture, not P02/H0001 acceptance or L3/L4.
 New Windows/Ubuntu CI is required on the pushed checkpoint.
+
+## R011 ported-alignment construction checkpoint
+
+R011 adds an ideal bounded Helmholtz port execution contract; R021 adds a second
+exact reviewer qualification. The executor checks independent tuning bounds,
+Q/S screening velocity, half-wave longitudinal-mode separation and compact
+geometry. The independent reviewer recomputes the assertions through Decimal
+arithmetic and rejects suppressed velocity or undeclared fields. Neither path
+claims CFD/BEM, chuffing, waveguide directivity, calibration, L3/L4 or Human
+approval.
+
+Focused unit, Role Acceptance, capability-factory, reviewer-routing, sealed
+Evidence and reproduction coverage passed 26 tests. Source inventory is now
+69 executable Skills/Methods, 27 role suites and 319 role cases. Twenty-six
+unique roles have at least one role-domain suite; 74 still lack one. Current
+installed truth remains L1=100. H0001/P02 remains unfinished.
+
+Fixed-source full regression: 382 PASS in 705.645 seconds. Private transcript
+`.aeris/evidence/H0001-ported-full-tests.log`, SHA-256
+`95de4cafd02e098b760f9a5c7ddcbab5d8cdd79e4daea3f2fa137fa613f1d16d`.

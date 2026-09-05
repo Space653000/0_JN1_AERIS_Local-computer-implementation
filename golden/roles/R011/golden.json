@@ -1,0 +1,55 @@
+{
+  "suite_id": "R011-PORTED-ALIGNMENT-V1",
+  "role_id": "R011",
+  "skill_id": "speaker-ported-alignment-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored Helmholtz c/(2*pi)*sqrt(S/(V*Leff)), Q/S, half-wave port-mode and compact-geometry examples with independently supplied bounds; no acquired measurement.",
+  "scope": "Ideal lumped port tuning, velocity and validity screening only",
+  "base_input": {
+    "model": "IDEAL_LUMPED_HELMHOLTZ_PORT",
+    "sound_speed_m_s": 343.0, "sound_speed_lower_m_s": 340.0, "sound_speed_upper_m_s": 346.0,
+    "cavity_volume_m3": 0.020, "cavity_volume_lower_m3": 0.019, "cavity_volume_upper_m3": 0.021,
+    "port_area_m2": 0.003, "port_area_lower_m2": 0.0028, "port_area_upper_m2": 0.0032,
+    "physical_length_m": 0.20, "end_correction_m": 0.04,
+    "effective_length_lower_m": 0.23, "effective_length_upper_m": 0.25,
+    "volume_velocity_peak_m3_s": 0.020, "volume_velocity_upper_m3_s": 0.022,
+    "minimum_tuning_hz": 35.0, "maximum_tuning_hz": 50.0, "maximum_port_velocity_m_s": 8.0,
+    "analysis_max_hz": 300.0, "minimum_longitudinal_mode_ratio": 2.0,
+    "largest_dimension_m": 0.20, "maximum_dimension_wavelength_ratio": 0.20
+  },
+  "cases": [
+    {
+      "id": "PORT-REFERENCE", "kind": "positive",
+      "question": "Does the bounded Helmholtz calculation preserve effective-length correction and accept the reference port?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "tuning_hz", "expected": 43.15729937959763, "absolute_tolerance": 1e-10},
+        {"path": "port_velocity_upper_m_s", "expected": 7.857142857142857, "absolute_tolerance": 1e-12},
+        {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+        {"path": "physical_measurement_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "PORT-VELOCITY-BOUNDARY", "kind": "boundary",
+      "question": "Is an upper screening velocity exactly on the declared inclusive limit accepted?",
+      "input_overrides": {"maximum_port_velocity_m_s": 7.857142857142857},
+      "checks": [{"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0}]
+    },
+    {
+      "id": "PORT-TURBULENCE-ALTERNATIVE", "kind": "counter_hypothesis",
+      "question": "Does excessive predicted mean port velocity force revision before attributing noise to driver THD?",
+      "input_overrides": {"maximum_port_velocity_m_s": 7.0},
+      "checks": [
+        {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0},
+        {"path": "required_revisions.0", "expected": "INCREASE_PORT_AREA_OR_REDUCE_VOLUME_VELOCITY", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "PORT-END-CORRECTION-INVALID", "kind": "negative",
+      "question": "Is a physical-plus-end-correction length outside its supplied interval rejected?",
+      "input_overrides": {"effective_length_lower_m": 0.25},
+      "expected_error": "ValueError"
+    }
+  ]
+}

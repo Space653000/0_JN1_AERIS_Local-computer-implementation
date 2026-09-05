@@ -87,8 +87,10 @@ class SealedAlignmentTests(unittest.TestCase):
     def test_distinct_sealed_suites_route_to_lumped_reviewer_and_reproduce(self):
         with isolated_engineering_state():
             runner=role_acceptance.RoleAcceptanceFactory()
-            for role in ('R009','R021'):
-                result=runner.evaluate(role)
+            for role,skill in (
+                    ('R009','speaker-sealed-alignment-baseline'),
+                    ('R021','speaker-sealed-lumped-domain-review')):
+                result=runner.evaluate(role,skill)
                 self.assertTrue(result['execution_passed'],result)
                 self.assertEqual(result['case_count'],14)
                 self.assertEqual(result['level'],'L2')

@@ -33,7 +33,8 @@ def _fingerprint():
            ROOT/'aeris_runtime/engineering/standard_metadata_review.py',ROOT/'aeris_runtime/engineering/sealed_alignment.py',
            ROOT/'aeris_runtime/engineering/sealed_alignment_review.py',ROOT/'aeris_runtime/engineering/array_beam.py',
            ROOT/'aeris_runtime/engineering/array_beam_review.py',ROOT/'aeris_runtime/engineering/capture_clock.py',
-           ROOT/'aeris_runtime/engineering/capture_clock_review.py']
+           ROOT/'aeris_runtime/engineering/capture_clock_review.py',ROOT/'aeris_runtime/engineering/ported_alignment.py',
+           ROOT/'aeris_runtime/engineering/ported_alignment_review.py']
     for skill in HANDLERS:
         paths.append(ROOT/f'methods/roles/{skill}.json')
         paths.extend(ROOT/f'skills/{skill}/{name}' for name in ('manifest.json','input.schema.json','output.schema.json','SKILL.md'))
@@ -143,6 +144,7 @@ from .standard_metadata import analyze as standards_metadata_model
 from .sealed_alignment import analyze as sealed_alignment_model
 from .array_beam import analyze as array_beam_model
 from .capture_clock import analyze as capture_clock_model
+from .ported_alignment import analyze as ported_alignment_model
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
@@ -152,6 +154,7 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'requirement-association-baseline':requirement_association_model,
           'standards-metadata-applicability-baseline':standards_metadata_model,
           'speaker-sealed-alignment-baseline':sealed_alignment_model,
+          'speaker-ported-alignment-baseline':ported_alignment_model,
           'microphone-array-taper-baseline':array_beam_model,
           'microphone-capture-continuity-baseline':capture_clock_model}
 
@@ -186,7 +189,7 @@ def _review_handler(domain):
     return run
 
 
-for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','microphone-array-pattern','microphone-capture-clock'):
+for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','microphone-array-pattern','microphone-capture-clock'):
     HANDLERS[_domain+'-domain-review']=_review_handler(_domain)
 
 

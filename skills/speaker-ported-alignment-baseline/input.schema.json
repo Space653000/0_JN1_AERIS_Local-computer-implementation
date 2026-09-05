@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "model", "sound_speed_m_s", "sound_speed_lower_m_s", "sound_speed_upper_m_s",
+    "cavity_volume_m3", "cavity_volume_lower_m3", "cavity_volume_upper_m3",
+    "port_area_m2", "port_area_lower_m2", "port_area_upper_m2", "physical_length_m",
+    "end_correction_m", "effective_length_lower_m", "effective_length_upper_m",
+    "volume_velocity_peak_m3_s", "volume_velocity_upper_m3_s", "minimum_tuning_hz",
+    "maximum_tuning_hz", "maximum_port_velocity_m_s", "analysis_max_hz",
+    "minimum_longitudinal_mode_ratio", "largest_dimension_m", "maximum_dimension_wavelength_ratio"
+  ],
+  "properties": {
+    "model": {"type": "string", "const": "IDEAL_LUMPED_HELMHOLTZ_PORT"},
+    "sound_speed_m_s": {"type": "number"}, "sound_speed_lower_m_s": {"type": "number"}, "sound_speed_upper_m_s": {"type": "number"},
+    "cavity_volume_m3": {"type": "number"}, "cavity_volume_lower_m3": {"type": "number"}, "cavity_volume_upper_m3": {"type": "number"},
+    "port_area_m2": {"type": "number"}, "port_area_lower_m2": {"type": "number"}, "port_area_upper_m2": {"type": "number"},
+    "physical_length_m": {"type": "number"}, "end_correction_m": {"type": "number"},
+    "effective_length_lower_m": {"type": "number"}, "effective_length_upper_m": {"type": "number"},
+    "volume_velocity_peak_m3_s": {"type": "number"}, "volume_velocity_upper_m3_s": {"type": "number"},
+    "minimum_tuning_hz": {"type": "number"}, "maximum_tuning_hz": {"type": "number"},
+    "maximum_port_velocity_m_s": {"type": "number"}, "analysis_max_hz": {"type": "number"},
+    "minimum_longitudinal_mode_ratio": {"type": "number"}, "largest_dimension_m": {"type": "number"},
+    "maximum_dimension_wavelength_ratio": {"type": "number"}
+  }
+}

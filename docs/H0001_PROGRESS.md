@@ -637,3 +637,27 @@ both final review axes report no open P0/P1/P2. The final source ran 378 tests i
 Six semantic pages and six exact dark/light screenshot/accessibility checks PASS.
 Coverage remains 67 Skills/Methods, 25 role suites and 311 role cases. Seventy-five
 roles still need role-domain suites, so H0001 and P02 remain unfinished.
+
+## Sixteenth checkpoint — R011 ported alignment and R021 second qualification
+
+R011 now owns a bounded ideal Helmholtz port capability that separately checks
+tuning intervals, mean port-velocity limits, first longitudinal-mode separation
+and compact-geometry validity. It explicitly leaves viscous/turbulent loss,
+chuffing, leakage, higher modes, waveguide directivity and physical acceptance
+unverified. R021 gained a second independently versioned reviewer capability;
+its Decimal recomputation does not call the R011 executor.
+
+Positive, inclusive-boundary, invalid-model/end-correction, counter-hypothesis,
+false-candidate, exact Skill routing, Evidence seal and reproduction tests pass.
+The end-to-end test also proves that R021's valid port qualification remains
+selectable while its aggregate role is L1 because another declared capability
+is absent from that isolated state. Source inventory is now 69 executable
+Skills/Methods, 27 role suites and 319 role cases. Twenty-six unique roles have
+at least one domain suite; 74 roles still lack one. Installed truth remains
+L0=0, L1=100, L2=0, L3=0, L4=0 until current receipts are executed and reviewed.
+This is a Speaker-depth increment, not H0001/P02 completion.
+
+Fixed-source full regression passed 382 tests in 705.645 seconds, finished
+2026-09-05T05:06:22Z. Local-only transcript:
+`.aeris/evidence/H0001-ported-full-tests.log`, SHA-256
+`95de4cafd02e098b760f9a5c7ddcbab5d8cdd79e4daea3f2fa137fa613f1d16d`.
