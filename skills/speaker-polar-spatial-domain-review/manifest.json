@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill_id": "speaker-polar-spatial-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/speaker-polar-spatial-domain-review.json",
+  "input_schema": "skills/speaker-polar-spatial-domain-review/input.schema.json",
+  "output_schema": "skills/speaker-polar-spatial-domain-review/output.schema.json",
+  "role_mappings": ["R034"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Independent sampled polar coordinate, absolute-reference, symmetry and uncertainty assertion review",
+  "review_domain": "speaker-polar-spatial"
+}

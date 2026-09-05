@@ -128,6 +128,8 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS={
             'suite':'golden/roles/R009/golden.json','scope':'Ideal sealed T/S alignment with independent parameter bounds and model geometry; no vented, nonlinear or measured acceptance.'},
     'R011':{'skill_id':'speaker-ported-alignment-baseline','method':'methods/roles/speaker-ported-alignment-baseline.json',
             'suite':'golden/roles/R011/golden.json','scope':'Ideal Helmholtz port tuning, velocity, longitudinal-mode and lumped-geometry bounds; no turbulence, waveguide or measured acceptance.'},
+    'R017':{'skill_id':'speaker-polar-spatial-baseline','method':'methods/roles/speaker-polar-spatial-baseline.json',
+            'suite':'golden/roles/R017/golden.json','scope':'Supplied absolute horizontal polar coverage, sampling, edge and symmetry bounds; no continuous/full-sphere or measured acceptance.'},
     'R021':{'skill_id':'speaker-sealed-lumped-domain-review','method':'methods/roles/speaker-sealed-lumped-domain-review.json',
             'suite':'golden/roles/R021/golden.json','scope':'Independent sealed transfer polynomial, extrema and lumped geometry review; no FEM or actual model validation.'},
     'R089':{'skill_id':'standards-metadata-applicability-baseline','method':'methods/roles/standards-metadata-applicability-baseline.json',
@@ -182,6 +184,11 @@ ROLE_DOMAIN_CONTRACTS['R021'].append({
     'method':'methods/roles/speaker-port-lumped-domain-review.json',
     'suite':'golden/roles/R021/ported.json',
     'scope':'Independent port interval, velocity and compact-model assertion review; no CFD/BEM or physical model validation.'})
+ROLE_DOMAIN_CONTRACTS['R034'].append({
+    'skill_id':'speaker-polar-spatial-domain-review',
+    'method':'methods/roles/speaker-polar-spatial-domain-review.json',
+    'suite':'golden/roles/R034/speaker-polar.json',
+    'scope':'Independent discrete absolute speaker polar sampling and uncertainty review; no continuous/full-sphere or physical acceptance.'})
 
 
 def standards_families(value):

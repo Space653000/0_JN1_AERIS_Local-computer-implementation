@@ -148,3 +148,17 @@ installed truth remains L1=100. H0001/P02 remains unfinished.
 Fixed-source full regression: 382 PASS in 705.645 seconds. Private transcript
 `.aeris/evidence/H0001-ported-full-tests.log`, SHA-256
 `95de4cafd02e098b760f9a5c7ddcbab5d8cdd79e4daea3f2fa137fa613f1d16d`.
+
+## R017 sampled speaker-polar construction checkpoint
+
+R017 adds absolute horizontal polar coverage/sampling/reference/edge/symmetry
+checks. R034 adds a second exact spatial reviewer capability with an independent
+coordinate reconstruction. Thirty-five focused tests pass, including sealed
+workflow review and reproduction plus sparse-grid, normalization, asymmetry and
+R4 fail-closed cases. Source inventory is 71 executable Skills/Methods, 29 role
+suites and 327 role cases; 27 unique roles have a suite and 73 still do not.
+No continuous/full-sphere, calibration, L3/L4 or Human acceptance is claimed.
+
+Fixed-source full regression: 386 PASS in 747.086 seconds. Private transcript
+`.aeris/evidence/H0001-speaker-polar-full-tests.log`, SHA-256
+`c7375c7af30ce64a2d4265b8ed04e917aa8540e1db7b0193944a4bc642709455`.

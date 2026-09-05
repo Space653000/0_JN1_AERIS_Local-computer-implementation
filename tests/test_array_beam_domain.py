@@ -91,8 +91,10 @@ class ArrayBeamTests(unittest.TestCase):
     def test_role_suites_execute_real_workflow_with_pattern_specialist_and_reproduction(self):
         with isolated_engineering_state():
             runner=role_acceptance.RoleAcceptanceFactory()
-            for role in ('R037','R034'):
-                result=runner.evaluate(role)
+            for role,skill in (
+                    ('R037','microphone-array-taper-baseline'),
+                    ('R034','microphone-array-pattern-domain-review')):
+                result=runner.evaluate(role,skill)
                 self.assertTrue(result['execution_passed'],result)
                 self.assertEqual(result['case_count'],15)
                 self.assertEqual(result['level'],'L2')

@@ -661,3 +661,25 @@ Fixed-source full regression passed 382 tests in 705.645 seconds, finished
 2026-09-05T05:06:22Z. Local-only transcript:
 `.aeris/evidence/H0001-ported-full-tests.log`, SHA-256
 `95de4cafd02e098b760f9a5c7ddcbab5d8cdd79e4daea3f2fa137fa613f1d16d`.
+
+## Seventeenth checkpoint — R017 absolute polar and R034 spatial review
+
+R017 now validates supplied absolute horizontal speaker polar samples without
+peak normalization. Its role contract checks angular coverage, largest sample
+gap, absolute reference, uncertainty-bounded edge attenuation, paired symmetry
+and angle-alignment uncertainty. It explicitly cannot infer continuous-angle,
+vertical/full-sphere, waveguide-cause or calibrated physical acceptance.
+
+R034 gained a second exact reviewer qualification that reconstructs the angle
+map and assertions without calling the executor. Focused domain, multi-capability,
+factory, reviewer-routing, Evidence and reproduction tests passed 35 tests.
+Sparse grids, peak-normalized input, hidden asymmetry, extra assertions and R4
+applicability fail closed. Source inventory is now 71 executable Skills/Methods,
+29 role suites and 327 role cases. Twenty-seven unique roles have at least one
+domain suite; 73 roles still lack one. Current installed truth remains L1=100;
+H0001/P02 remains unfinished.
+
+Fixed-source full regression passed 386 tests in 747.086 seconds, finished
+2026-09-05T05:27:43Z. Local-only transcript:
+`.aeris/evidence/H0001-speaker-polar-full-tests.log`, SHA-256
+`c7375c7af30ce64a2d4265b8ed04e917aa8540e1db7b0193944a4bc642709455`.

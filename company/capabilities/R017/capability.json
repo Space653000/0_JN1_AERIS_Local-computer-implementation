@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
-    "response-phase-delay": "skills/response-phase-delay/input.schema.json"
+    "response-phase-delay": "skills/response-phase-delay/input.schema.json",
+    "speaker-polar-spatial-baseline": "skills/speaker-polar-spatial-baseline/input.schema.json"
   },
   "outputs": {
     "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
-    "response-phase-delay": "skills/response-phase-delay/output.schema.json"
+    "response-phase-delay": "skills/response-phase-delay/output.schema.json",
+    "speaker-polar-spatial-baseline": "skills/speaker-polar-spatial-baseline/output.schema.json"
   },
   "required_skills": [
     "linear-array-pattern",
-    "response-phase-delay"
+    "response-phase-delay",
+    "speaker-polar-spatial-baseline"
   ],
   "required_methods": [
     "methods/engineering/linear-array-pattern.json",
-    "methods/engineering/response-phase-delay.json"
+    "methods/engineering/response-phase-delay.json",
+    "methods/roles/speaker-polar-spatial-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/linear-array-pattern.json",
@@ -153,11 +157,13 @@
     "question": "Validate directivity and spatial response across angles rather than a single on-axis trace",
     "required_methods": [
       "methods/engineering/linear-array-pattern.json",
-      "methods/engineering/response-phase-delay.json"
+      "methods/engineering/response-phase-delay.json",
+      "methods/roles/speaker-polar-spatial-baseline.json"
     ],
     "required_skills": [
       "linear-array-pattern",
-      "response-phase-delay"
+      "response-phase-delay",
+      "speaker-polar-spatial-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -173,7 +179,14 @@
       "neighbor_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-polar-spatial-baseline",
+      "method": "methods/roles/speaker-polar-spatial-baseline.json",
+      "suite": "golden/roles/R017/golden.json",
+      "scope": "Supplied absolute horizontal polar coverage, sampling, edge and symmetry bounds; no continuous/full-sphere or measured acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Validate directivity and spatial response across angles rather than a single on-axis trace",
@@ -190,7 +203,8 @@
     ],
     "calculation_schemas": {
       "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
-      "response-phase-delay": "skills/response-phase-delay/input.schema.json"
+      "response-phase-delay": "skills/response-phase-delay/input.schema.json",
+      "speaker-polar-spatial-baseline": "skills/speaker-polar-spatial-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -204,7 +218,8 @@
     ],
     "calculation_schemas": {
       "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
-      "response-phase-delay": "skills/response-phase-delay/output.schema.json"
+      "response-phase-delay": "skills/response-phase-delay/output.schema.json",
+      "speaker-polar-spatial-baseline": "skills/speaker-polar-spatial-baseline/output.schema.json"
     }
   },
   "report_sections": [
