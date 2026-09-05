@@ -15,29 +15,30 @@
   `main` mutation, physical/Human acceptance, or three consecutive blocked
   items. A test failure is repaired; it is never relabelled as acceptance.
 
-## Current batch: room decay and correction spatial review
+## Current batch: Speaker CoE digital transport and filter realization
 
-### 1. R023/R072 bounded room-decay decision and review
+### 1. R014/R032 bounded digital-transport decision and review
 
 - Status: complete for this bounded capability.
-- Change: implement a role-specific multi-position room-decay contract and an
-  independently reconstructed spatial reviewer contract.
+- Change: implement role-specific I2S/TDM word/slot, BCLK/frame-sync,
+  active-slot, service-margin and buffer-latency contracts with an independent
+  capture-pipeline reviewer capability.
 - Acceptance: positive, boundary, negative and counter-hypothesis cases pass;
-  insufficient position coverage, altered assertions and unsupported physical
-  interpretation fail closed.
+  clock mismatch, duplicate slots, altered assertions and unsupported physical
+  continuity claims fail closed.
 - Verification: direct unit tests plus Role Acceptance suite replay.
 - Evidence: local sealed role-domain execution receipt.
 - Checkpoint: sealed suite replay, capability routing and reproduction PASS.
 
-### 2. R026/R071 bounded room-correction decision and review
+### 2. R024/R005 bounded filter-realization decision and review
 
 - Status: complete for this bounded capability
 - Blocked by: none.
-- Change: check multi-position spatial spread, boost/cut bounds, deep-notch
-  policy, latency and non-minimum-phase exceptions, with independent review.
+- Change: check biquad pole radii, coefficient quantization, crossover sum and
+  phase, peak headroom and group delay, with independent DSP review.
 - Acceptance: exact reviewer Skill is selected by capability, review Evidence is
-  sealed, and reproduction passes while unsupported realized-filter and
-  physical room claims remain fail-closed.
+  sealed, and reproduction passes while unsupported full-band fixed-point,
+  physical playback and Human claims remain fail-closed.
 - Verification: end-to-end workflow, reviewer and Evidence tests.
 - Evidence: local sealed reviewer qualification and review bundle.
 - Checkpoint: exact-schema independent reconstruction rejects hidden headroom;
@@ -104,3 +105,23 @@
   remains unfinished.
 - Local-only transcript: `.aeris/evidence/H0001-room-depth-full-tests.log`,
   SHA-256 `bb2ae2065c119ee1f4c4514bd0749714881db8a2bb5baf8a8fecb522ac2e88aa`.
+
+## Speaker CoE completion checkpoint
+
+- R014/R032: declared serial-audio format, clock, slot and buffer execution plus
+  independent exact-assertion review; no electrical or physical continuity.
+- R024/R005: declared biquad/crossover realization screening plus independent
+  review; no full-band fixed-point runtime, playback or calibrated response.
+- Focused regression: 30/30 PASS; affected exact-Skill regression: 30/30 PASS.
+- Fixed-source regression: 418/418 PASS in 1091.297 seconds.
+- Six semantic routes and six fixed-environment dark/light screenshot/basic
+  accessibility routes: PASS. The first cold telemetry capture remained
+  CHECKING at its fail-closed deadline; the unchanged gate passed after that
+  assessment completed.
+- Source inventory: 87 executable Skills, 87 Methods, 45 role-specific suites,
+  391 role cases; 41 roles have at least one suite and 59 do not. Speaker CoE
+  coverage is 18/18; Microphone CoE remains 10/18.
+- Installed company truth remains L0=0, L1=100, L2=0, L3=0, L4=0; H0001/P02
+  remains unfinished.
+- Local-only transcript: `.aeris/evidence/H0001-speaker-completion-full-tests.log`,
+  SHA-256 `5d5fa635b478bffeb546bded9f533de016bcfe63c4303f1c7ab7c91f4180ef91`.

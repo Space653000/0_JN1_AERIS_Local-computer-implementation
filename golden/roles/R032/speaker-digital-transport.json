@@ -1,0 +1,32 @@
+{
+  "suite_id": "R032-DIGITAL-TRANSPORT-REVIEW-V1", "role_id": "R032", "skill_id": "speaker-digital-transport-domain-review", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored independent arithmetic reconstruction for the R014 48 kHz stereo transport fixture; no executor result or physical capture is treated as Evidence.",
+  "scope": "Independent serial-audio format, clock, slot and service-buffer report consistency",
+  "base_input": {
+    "parameters": {"model": "SUPPLIED_I2S_TDM_TRANSPORT", "sample_rate_hz": 48000.0, "slot_width_bits": 32, "word_length_bits": 24, "slots_per_frame": 2, "bit_clock_hz": 3072000.0, "bit_clock_relative_tolerance": 0.000001, "frame_sync_hz": 48000.0, "frame_sync_relative_tolerance": 0.000001, "buffer_capacity_frames": 256, "worst_case_service_interval_ms": 2.0, "minimum_buffer_margin_frames": 128, "maximum_buffer_latency_ms": 6.0, "expected_channel_count": 2, "active_slot_indices": [0, 1], "packing": "I2S_ONE_BIT_DELAY"},
+    "candidate": {
+      "expected_bit_clock_hz": 3072000.0, "bit_clock_relative_error": 0.0, "frame_sync_relative_error": 0.0, "service_interval_frames": 96.0, "buffer_margin_frames": 160.0, "buffer_latency_ms": 5.333333333333333,
+      "active_slot_indices": [0, 1], "packing": "I2S_ONE_BIT_DELAY",
+      "checks": [
+        {"id": "WORD_FITS_SLOT", "actual": 24, "limit": 32, "operator": "<=", "passed": true, "on_failure": "INCREASE_SLOT_WIDTH_OR_REDUCE_WORD_LENGTH"},
+        {"id": "BIT_CLOCK_RELATION", "actual": 0.0, "limit": 0.000001, "operator": "<=", "passed": true, "on_failure": "RECONCILE_SAMPLE_RATE_SLOT_WIDTH_AND_TDM_SLOT_COUNT"},
+        {"id": "FRAME_SYNC_RELATION", "actual": 0.0, "limit": 0.000001, "operator": "<=", "passed": true, "on_failure": "RECONCILE_FRAME_SYNC_AND_SAMPLE_RATE"},
+        {"id": "SERVICE_BUFFER_MARGIN", "actual": 160.0, "limit": 128, "operator": ">=", "passed": true, "on_failure": "INCREASE_BUFFER_OR_REDUCE_WORST_CASE_SERVICE_INTERVAL"},
+        {"id": "BUFFER_LATENCY", "actual": 5.333333333333333, "limit": 6.0, "operator": "<=", "passed": true, "on_failure": "REDUCE_BUFFER_CAPACITY_OR_REVISE_LATENCY_BUDGET"},
+        {"id": "ACTIVE_SLOT_COVERAGE", "actual": 2, "limit": 2, "operator": "==", "passed": true, "on_failure": "REPAIR_CHANNEL_TO_SLOT_MAPPING"}
+      ],
+      "required_revisions": [], "disposition": "BOUNDED_BASELINE_ACCEPT", "glitch_free_playback_verified": false, "physical_interface_verified": false, "physical_measurement_verified": false,
+      "counter_hypotheses": ["Clock-domain slip rather than DSP overload", "Serial packing mismatch rather than acoustic fault", "Scheduler service tail rather than average processing latency"],
+      "next_discriminating_experiment": "CAPTURE_BCLK_FRAME_SYNC_DATA_AND_BUFFER_WATERMARKS_WITH_DECLARED_PACKING",
+      "model_assumptions": ["One frame is produced per declared sample period", "Worst-case service interval is a supplied deterministic bound", "No electrical timing, jitter spectrum or driver execution is measured"],
+      "unresolved": ["Electrical setup/hold and jitter", "DMA/driver scheduling tails and underrun telemetry", "Physical playback continuity and qualified Human acceptance"]
+    },
+    "context": {"product": "Speaker digital interface", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {"id": "DIGITAL-TRANSPORT-REVIEW-INDEPENDENT", "kind": "positive", "question": "Can R032 reconstruct every serial-audio relation while withholding continuity and Human approval?", "input_overrides": {}, "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}, {"path": "human_approval", "expected": false, "absolute_tolerance": 0}, {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}]},
+    {"id": "DIGITAL-TRANSPORT-REVIEW-TAIL", "kind": "boundary", "question": "Can a representation-scale latency tail pass without changing the transport verdict?", "input_overrides": {}, "input_mutations": [{"path": "candidate.buffer_latency_ms", "value": 5.333333333334}], "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]},
+    {"id": "DIGITAL-TRANSPORT-REVIEW-CONTINUITY", "kind": "counter_hypothesis", "question": "Does review reject a synthetic claim of glitch-free physical playback?", "input_overrides": {}, "input_mutations": [{"path": "candidate.glitch_free_playback_verified", "value": true}], "checks": [{"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0}, {"path": "disagreements.0.field", "expected": "glitch_free_playback_verified", "absolute_tolerance": 0}]},
+    {"id": "DIGITAL-TRANSPORT-REVIEW-R4", "kind": "negative", "question": "Must R4 require authority outside bounded automated transport review?", "input_overrides": {}, "input_mutations": [{"path": "context.risk", "value": "R4"}], "expected_error": "ValueError"}
+  ]
+}

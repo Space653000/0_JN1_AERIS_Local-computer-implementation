@@ -712,29 +712,6 @@ The private transcript remains local at
 No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
 this checkpoint.
 
-## Twentieth checkpoint — room decay and correction spatial depth
-
-Four additional seats now have bounded role-specific domain suites. R023 checks
-multi-position room-decay coverage and declared spatial variation. R072
-independently reconstructs those assertions and rejects altered or unsupported
-room-wide interpretation. R026 checks sampled correction spread, boost/cut,
-deep-notch policy, latency and declared non-minimum-phase bands. R071 performs
-an independent correction review and cannot turn an analytical decision into a
-realized-filter, audibility, calibration or physical-room claim.
-
-Focused regression passed 30 tests. Fixed-source regression passed 410 tests
-in 1011.760 seconds. Six real-browser semantic routes and all six fixed-
-environment dark/light screenshot repeatability/basic-accessibility routes
-passed. Source inventory is now 83 executable Skills, 83 Methods, 41
-role-specific suites and 375 role cases. Thirty-nine unique roles have at least
-one suite; 61 still lack one. Installed truth remains L0=0, L1=100, L2=0,
-L3=0, L4=0; H0001/P02 remains unfinished.
-
-Private transcript `.aeris/evidence/H0001-room-depth-full-tests.log`, SHA-256
-`bb2ae2065c119ee1f4c4514bd0749714881db8a2bb5baf8a8fecb522ac2e88aa`.
-No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
-this checkpoint.
-
 ## Nineteenth checkpoint — signal chain, bass protection and structural path
 
 Six more seats now have bounded role-specific domain suites. R012 refers each
@@ -758,5 +735,53 @@ L3=0, L4=0; H0001/P02 remains unfinished.
 
 Private transcript `.aeris/evidence/H0001-speaker-depth-full-tests.log`, SHA-256
 `07536fe7c5c92a894df7b821a4d0ed6fa1d6eddb9ee11787857213318efe258d`.
+No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
+this checkpoint.
+
+## Twentieth checkpoint — room decay and correction spatial depth
+
+Four additional seats now have bounded role-specific domain suites. R023 checks
+multi-position room-decay coverage and declared spatial variation. R072
+independently reconstructs those assertions and rejects altered or unsupported
+room-wide interpretation. R026 checks sampled correction spread, boost/cut,
+deep-notch policy, latency and declared non-minimum-phase bands. R071 performs
+an independent correction review and cannot turn an analytical decision into a
+realized-filter, audibility, calibration or physical-room claim.
+
+Focused regression passed 30 tests. Fixed-source regression passed 410 tests
+in 1011.760 seconds. Six real-browser semantic routes and all six fixed-
+environment dark/light screenshot repeatability/basic-accessibility routes
+passed. Source inventory is now 83 executable Skills, 83 Methods, 41
+role-specific suites and 375 role cases. Thirty-nine unique roles have at least
+one suite; 61 still lack one. Installed truth remains L0=0, L1=100, L2=0,
+L3=0, L4=0; H0001/P02 remains unfinished.
+
+Private transcript `.aeris/evidence/H0001-room-depth-full-tests.log`, SHA-256
+`bb2ae2065c119ee1f4c4514bd0749714881db8a2bb5baf8a8fecb522ac2e88aa`.
+No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
+this checkpoint.
+
+## Twenty-first checkpoint — Speaker CoE suite coverage 18/18
+
+R014 now owns bounded I2S/TDM word/slot, BCLK/frame-sync, active-slot,
+worst-case service-margin and buffer-latency decisions. R032 gained an
+independent exact-assertion transport review. R024 now owns declared biquad pole
+and coefficient-quantization, crossover sum/phase, peak-headroom and delay
+screening. R005 gained an independent filter-realization review. These
+capabilities reject ambiguous multi-capability evaluation, duplicate slots,
+clock mismatch, altered assertions, phase cancellation and unsupported runtime
+or physical claims.
+
+Focused and affected regressions each passed 30 tests. Fixed-source regression
+passed 418 tests in 1091.297 seconds. Six semantic routes passed. The first
+visual attempt correctly refused to freeze a cold pending telemetry assessment;
+the unchanged six-route dark/light screenshot repeatability/basic-accessibility
+gate passed after collection completed. Inventory is 87 executable Skills, 87
+Methods, 45 role suites and 391 role cases. Forty-one roles have at least one
+suite and 59 do not. Speaker CoE is 18/18; Microphone CoE is 10/18.
+
+Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0. H0001/P02 is unfinished.
+Private transcript `.aeris/evidence/H0001-speaker-completion-full-tests.log`,
+SHA-256 `5d5fa635b478bffeb546bded9f533de016bcfe63c4303f1c7ab7c91f4180ef91`.
 No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
 this checkpoint.

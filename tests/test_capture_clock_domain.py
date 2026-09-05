@@ -73,8 +73,9 @@ class CaptureClockTests(unittest.TestCase):
                 'required_evidence':['sealed numerical run','independent counterreview']}
             self.assertFalse(domain_review.select_reviewers(request,['R032'])['complete'])
             runner=role_acceptance.RoleAcceptanceFactory()
-            for role,count in (('R031',14),('R032',17)):
-                status=runner.evaluate(role)
+            for role,skill,count in (('R031','microphone-capture-clock-domain-review',14),
+                                     ('R032','microphone-capture-continuity-baseline',17)):
+                status=runner.evaluate(role,skill)
                 self.assertTrue(status['execution_passed'],status)
                 self.assertEqual(status['case_count'],count)
                 self.assertEqual(status['level'],'L2')

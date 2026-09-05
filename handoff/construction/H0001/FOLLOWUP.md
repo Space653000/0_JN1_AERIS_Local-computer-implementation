@@ -219,3 +219,24 @@ still L1=100 and H0001/P02 remains unfinished.
 
 Private transcript `.aeris/evidence/H0001-room-depth-full-tests.log`, SHA-256
 `bb2ae2065c119ee1f4c4514bd0749714881db8a2bb5baf8a8fecb522ac2e88aa`.
+
+## Speaker digital transport / filter realization checkpoint
+
+R014/R032 add declared I2S/TDM format, clock, slot-map and service-buffer
+execution plus independent review. R024/R005 add declared biquad stability,
+quantization, crossover, headroom and delay execution plus independent review.
+Exact multi-capability Skill selection, sealed Evidence, reviewer routing and
+reproduction pass. No electrical timing, driver execution, full-band
+fixed-point behavior, physical playback, L3/L4 or Human acceptance is claimed.
+
+Focused regression and affected exact-Skill regression: 30 PASS each.
+Fixed-source regression: 418 PASS in 1091.297 seconds. Six semantic routes and
+six dark/light fixed-environment screenshot/basic-accessibility routes pass;
+the first cold visual capture failed closed on pending telemetry and the
+unchanged gate passed after collection completed. Inventory: 87 Skills, 87
+Methods, 45 role suites, 391 cases, 41 roles with a suite and 59 without one.
+Speaker CoE is 18/18; Microphone CoE remains 10/18. Installed truth is still
+L1=100 and H0001/P02 remains unfinished.
+
+Private transcript `.aeris/evidence/H0001-speaker-completion-full-tests.log`,
+SHA-256 `5d5fa635b478bffeb546bded9f533de016bcfe63c4303f1c7ab7c91f4180ef91`.

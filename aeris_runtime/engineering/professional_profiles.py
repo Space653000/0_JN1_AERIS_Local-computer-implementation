@@ -152,6 +152,10 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS={
             'suite':'golden/roles/R072/golden.json','scope':'Independent multi-position decay-fit and spatial assertion review; no room-wide, diffuse-field, calibrated IR or physical acceptance.'},
     'R026':{'skill_id':'room-correction-spatial-baseline','method':'methods/roles/room-correction-spatial-baseline.json',
             'suite':'golden/roles/R026/golden.json','scope':'Supplied multi-position response mean/spread, correction, notch, latency and nonminimum-phase screening; no complex inversion, realized filter or physical acceptance.'},
+    'R014':{'skill_id':'speaker-digital-transport-baseline','method':'methods/roles/speaker-digital-transport-baseline.json',
+            'suite':'golden/roles/R014/golden.json','scope':'Declared I2S/TDM word/slot, BCLK/frame-sync, active-slot and deterministic service-buffer screening; no electrical timing or glitch-free physical playback acceptance.'},
+    'R024':{'skill_id':'speaker-filter-realization-baseline','method':'methods/roles/speaker-filter-realization-baseline.json',
+            'suite':'golden/roles/R024/golden.json','scope':'Declared biquad pole/quantization, crossover-sum/phase, peak-headroom and group-delay screening; no full-band fixed-point or physical playback acceptance.'},
     'R071':{'skill_id':'room-correction-spatial-domain-review','method':'methods/roles/room-correction-spatial-domain-review.json',
             'suite':'golden/roles/R071/golden.json','scope':'Independent multi-position room-correction and spatial assertion review; no HRTF, complex-response, realized-filter or physical acceptance.'},
     'R021':{'skill_id':'speaker-sealed-lumped-domain-review','method':'methods/roles/speaker-sealed-lumped-domain-review.json',
@@ -213,6 +217,16 @@ ROLE_DOMAIN_CONTRACTS['R034'].append({
     'method':'methods/roles/speaker-polar-spatial-domain-review.json',
     'suite':'golden/roles/R034/speaker-polar.json',
     'scope':'Independent discrete absolute speaker polar sampling and uncertainty review; no continuous/full-sphere or physical acceptance.'})
+ROLE_DOMAIN_CONTRACTS['R032'].append({
+    'skill_id':'speaker-digital-transport-domain-review',
+    'method':'methods/roles/speaker-digital-transport-domain-review.json',
+    'suite':'golden/roles/R032/speaker-digital-transport.json',
+    'scope':'Independent serial-audio format, clock-relation, slot-map and service-buffer assertion review; no electrical interface or playback-continuity acceptance.'})
+ROLE_DOMAIN_CONTRACTS['R005'].append({
+    'skill_id':'speaker-filter-realization-domain-review',
+    'method':'methods/roles/speaker-filter-realization-domain-review.json',
+    'suite':'golden/roles/R005/speaker-filter-realization.json',
+    'scope':'Independent biquad stability, quantization, crossover, headroom and delay assertion review; no full-band fixed-point or physical playback acceptance.'})
 
 
 def standards_families(value):

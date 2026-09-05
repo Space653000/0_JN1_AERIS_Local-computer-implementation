@@ -75,8 +75,10 @@ class RoleWorkflowExecutionTests(unittest.TestCase):
             # Sealed review tampering and missing qualification fail closed.
             (evidence.bundle_dir(review_id)/'processed/domain-review.json').write_text('{}',encoding='utf-8')
             self.assertFalse(domain_review.review_status(review_id)['valid'])
-            for role in ('R048','R005','R029'):
-                self.assertTrue(role_acceptance.RoleAcceptanceFactory().evaluate(role)['execution_passed'])
+            qualifications=(('R048','tws-fit-anc-call-baseline'),('R005','tws-anc-domain-review'),
+                            ('R029','tws-fit-capture-domain-review'))
+            for role,skill in qualifications:
+                self.assertTrue(role_acceptance.RoleAcceptanceFactory().evaluate(role,skill)['execution_passed'])
             tws=run_role('R048','tws-fit-anc-call-baseline',TWS_BASE,objective='Review TWS fit and ANC',source_kind='SYNTHETIC')
             self.assertEqual(tws['review']['decision'],'BOUNDED_REVIEW_ACCEPT')
             self.assertEqual({r['role_id'] for r in tws['pod']['reviewers']},{'R005','R029'})

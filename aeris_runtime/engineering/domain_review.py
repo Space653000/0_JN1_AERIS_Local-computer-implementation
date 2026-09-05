@@ -25,6 +25,8 @@ REQUIRED_DOMAINS={
     'structural-acoustic-transfer-baseline':['structural-acoustic-path'],
     'room-decay-spatial-baseline':['room-decay-spatial'],
     'room-correction-spatial-baseline':['room-correction-spatial'],
+    'speaker-digital-transport-baseline':['speaker-digital-transport'],
+    'speaker-filter-realization-baseline':['speaker-filter-realization'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -183,6 +185,12 @@ def review(domain,request):
     if domain=='room-correction-spatial':
         from .room_correction_review import review as review_room_correction
         return review_room_correction(p,candidate)
+    if domain=='speaker-digital-transport':
+        from .speaker_digital_transport_review import review as review_transport
+        return review_transport(p,candidate)
+    if domain=='speaker-filter-realization':
+        from .speaker_filter_realization_review import review as review_filter
+        return review_filter(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -327,6 +335,8 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'structural-acoustic-path':('structural_acoustic_review.py','structural_acoustic.py'),
     'room-decay-spatial':('room_decay_review.py','room_decay.py'),
     'room-correction-spatial':('room_correction_review.py','room_correction.py'),
+    'speaker-digital-transport':('speaker_digital_transport_review.py','speaker_digital_transport.py'),
+    'speaker-filter-realization':('speaker_filter_realization_review.py','speaker_filter_realization.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -372,7 +382,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -494,6 +504,10 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['VALID_POSITION_COVERAGE','VALID_RT60_MAXIMUM','SPATIAL_DECAY_SPREAD','WINDOW_DURATION']
     if skill=='room-correction-spatial-baseline':
         return [c.get('id') for c in values['checks']]==['POSITION_COVERAGE','SPATIAL_SPREAD','BOOST_BOUND','CUT_BOUND','DEEP_NOTCH_POLICY','FILTER_LATENCY','NONMINIMUM_PHASE_BANDS']
+    if skill=='speaker-digital-transport-baseline':
+        return [c.get('id') for c in values['checks']]==['WORD_FITS_SLOT','BIT_CLOCK_RELATION','FRAME_SYNC_RELATION','SERVICE_BUFFER_MARGIN','BUFFER_LATENCY','ACTIVE_SLOT_COVERAGE']
+    if skill=='speaker-filter-realization-baseline':
+        return [c.get('id') for c in values['checks']]==['POLE_STABILITY','COEFFICIENT_QUANTIZATION','CROSSOVER_SUM','CROSSOVER_PHASE','OUTPUT_HEADROOM','GROUP_DELAY']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

@@ -22,25 +22,29 @@
     "latency-budget": "skills/latency-budget/input.schema.json",
     "spectral-analysis": "skills/spectral-analysis/input.schema.json",
     "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-    "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/input.schema.json"
+    "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/input.schema.json",
+    "speaker-digital-transport-domain-review": "skills/speaker-digital-transport-domain-review/input.schema.json"
   },
   "outputs": {
     "latency-budget": "skills/latency-budget/output.schema.json",
     "spectral-analysis": "skills/spectral-analysis/output.schema.json",
     "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-    "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/output.schema.json"
+    "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/output.schema.json",
+    "speaker-digital-transport-domain-review": "skills/speaker-digital-transport-domain-review/output.schema.json"
   },
   "required_skills": [
     "latency-budget",
     "spectral-analysis",
     "transfer-coherence",
-    "microphone-capture-continuity-baseline"
+    "microphone-capture-continuity-baseline",
+    "speaker-digital-transport-domain-review"
   ],
   "required_methods": [
     "methods/engineering/latency-budget.json",
     "methods/engineering/spectral-analysis.json",
     "methods/engineering/transfer-coherence.json",
-    "methods/roles/microphone-capture-continuity-baseline.json"
+    "methods/roles/microphone-capture-continuity-baseline.json",
+    "methods/roles/speaker-digital-transport-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/latency-budget.json",
@@ -178,13 +182,15 @@
       "methods/engineering/latency-budget.json",
       "methods/engineering/spectral-analysis.json",
       "methods/engineering/transfer-coherence.json",
-      "methods/roles/microphone-capture-continuity-baseline.json"
+      "methods/roles/microphone-capture-continuity-baseline.json",
+      "methods/roles/speaker-digital-transport-domain-review.json"
     ],
     "required_skills": [
       "latency-budget",
       "spectral-analysis",
       "transfer-coherence",
-      "microphone-capture-continuity-baseline"
+      "microphone-capture-continuity-baseline",
+      "speaker-digital-transport-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -206,6 +212,12 @@
       "method": "methods/roles/microphone-capture-continuity-baseline.json",
       "suite": "golden/roles/R032/golden.json",
       "scope": "First-sample capture metadata continuity, slot mapping, relative reference-rate and delivery bounds; no physical driver capture or absolute clock accuracy."
+    },
+    {
+      "skill_id": "speaker-digital-transport-domain-review",
+      "method": "methods/roles/speaker-digital-transport-domain-review.json",
+      "suite": "golden/roles/R032/speaker-digital-transport.json",
+      "scope": "Independent serial-audio format, clock-relation, slot-map and service-buffer assertion review; no electrical interface or playback-continuity acceptance."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -226,7 +238,8 @@
       "latency-budget": "skills/latency-budget/input.schema.json",
       "spectral-analysis": "skills/spectral-analysis/input.schema.json",
       "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-      "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/input.schema.json"
+      "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/input.schema.json",
+      "speaker-digital-transport-domain-review": "skills/speaker-digital-transport-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -242,7 +255,8 @@
       "latency-budget": "skills/latency-budget/output.schema.json",
       "spectral-analysis": "skills/spectral-analysis/output.schema.json",
       "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-      "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/output.schema.json"
+      "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/output.schema.json",
+      "speaker-digital-transport-domain-review": "skills/speaker-digital-transport-domain-review/output.schema.json"
     }
   },
   "report_sections": [
