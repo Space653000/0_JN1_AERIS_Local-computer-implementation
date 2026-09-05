@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {
+    "values": {"type": "object", "required": ["total_voltage_gain", "output_noise_upper_rms_v", "required_output_peak_v", "required_output_peak_a", "loading_ratio", "checks", "disposition"]},
+    "physical_measurement_verified": {"const": false}
+  }
+}

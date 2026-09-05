@@ -1,0 +1,10 @@
+{
+  "method_id": "speaker-bass-protection-domain-review", "version": "1.0.0", "role": "R025",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_bass_limiter_review:review",
+  "applicability": "Independent consistency review of supplied bass boost, excursion, thermal and limiter-envelope assertions",
+  "equations": {"excursion": "independent exp(log(10)*boost_db/20)", "temperature": "independent predicted plus bound", "decision": "exact assertion comparison"},
+  "assumptions": ["Same declared static envelope", "Independent arithmetic is not physical protection evidence"],
+  "excluded": ["dynamic observer and limiter", "durability", "calibration, physical and Human acceptance"],
+  "golden_tests": "golden/roles/R025/golden.json"
+}

@@ -64,3 +64,25 @@
   acceptance.
 - Local-only full-test transcript: `.aeris/evidence/H0001-tonal-full-tests.log`,
   SHA-256 `a407aab318c2814c02cea7e38ef3b4bcb6e6e6ecb62d8e5e8aeedfbfa171fb4b`.
+
+## Continuation batch checkpoint
+
+- R012: scalar gain-chain noise referral, source loading, minimum load and peak
+  voltage/current budget.
+- R013: independent reconstruction of all R012 assertions; no bench stability
+  claim.
+- R019: bass boost to excursion, temperature, amplifier and limiter-time
+  envelope.
+- R025: independent protection-envelope reconstruction; no smart-amplifier or
+  durability claim.
+- R022: synchronized structural/acoustic band transfer identifiability using
+  dual-SNR, coherence, spread and alignment gates.
+- R073: independent path review that explicitly rejects coherence-as-causality.
+- Focused regression: 34/34 PASS.
+- Fixed-source regression: 402/402 PASS in 918.149 seconds.
+- Six semantic routes and six fixed-environment dark/light screenshot/basic
+  accessibility routes: PASS.
+- Source inventory: 79 executable Skills, 79 Methods, 37 role-specific suites,
+  359 role cases; 35 roles have at least one suite and 65 do not.
+- Local-only transcript: `.aeris/evidence/H0001-speaker-depth-full-tests.log`,
+  SHA-256 `07536fe7c5c92a894df7b821a4d0ed6fa1d6eddb9ee11787857213318efe258d`.

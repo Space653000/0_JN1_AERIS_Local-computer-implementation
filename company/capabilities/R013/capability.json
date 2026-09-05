@@ -21,22 +21,26 @@
   "inputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
     "thermal-rc": "skills/thermal-rc/input.schema.json",
-    "lumped-speaker": "skills/lumped-speaker/input.schema.json"
+    "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+    "speaker-signal-chain-headroom-domain-review": "skills/speaker-signal-chain-headroom-domain-review/input.schema.json"
   },
   "outputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
     "thermal-rc": "skills/thermal-rc/output.schema.json",
-    "lumped-speaker": "skills/lumped-speaker/output.schema.json"
+    "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+    "speaker-signal-chain-headroom-domain-review": "skills/speaker-signal-chain-headroom-domain-review/output.schema.json"
   },
   "required_skills": [
     "circuit-noise-budget",
     "thermal-rc",
-    "lumped-speaker"
+    "lumped-speaker",
+    "speaker-signal-chain-headroom-domain-review"
   ],
   "required_methods": [
     "methods/engineering/circuit-noise-budget.json",
     "methods/engineering/thermal-rc.json",
-    "methods/engineering/lumped-speaker.json"
+    "methods/engineering/lumped-speaker.json",
+    "methods/roles/speaker-signal-chain-headroom-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/circuit-noise-budget.json",
@@ -173,12 +177,14 @@
     "required_methods": [
       "methods/engineering/circuit-noise-budget.json",
       "methods/engineering/thermal-rc.json",
-      "methods/engineering/lumped-speaker.json"
+      "methods/engineering/lumped-speaker.json",
+      "methods/roles/speaker-signal-chain-headroom-domain-review.json"
     ],
     "required_skills": [
       "circuit-noise-budget",
       "thermal-rc",
-      "lumped-speaker"
+      "lumped-speaker",
+      "speaker-signal-chain-headroom-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -194,7 +200,14 @@
       "neighbor_owns": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-signal-chain-headroom-domain-review",
+      "method": "methods/roles/speaker-signal-chain-headroom-domain-review.json",
+      "suite": "golden/roles/R013/golden.json",
+      "scope": "Independent signal-chain noise, loading and peak-headroom assertion review; no rail transient, thermal, complex-load or physical stability acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Bound amplifier rail, load current and temperature under speaker peak and duty-cycle demands",
@@ -212,7 +225,8 @@
     "calculation_schemas": {
       "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
       "thermal-rc": "skills/thermal-rc/input.schema.json",
-      "lumped-speaker": "skills/lumped-speaker/input.schema.json"
+      "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+      "speaker-signal-chain-headroom-domain-review": "skills/speaker-signal-chain-headroom-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -227,7 +241,8 @@
     "calculation_schemas": {
       "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
       "thermal-rc": "skills/thermal-rc/output.schema.json",
-      "lumped-speaker": "skills/lumped-speaker/output.schema.json"
+      "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+      "speaker-signal-chain-headroom-domain-review": "skills/speaker-signal-chain-headroom-domain-review/output.schema.json"
     }
   },
   "report_sections": [

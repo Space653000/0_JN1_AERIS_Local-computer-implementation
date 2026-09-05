@@ -1,0 +1,17 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "frequency_hz", "requested_boost_db", "baseline_peak_excursion_mm", "maximum_peak_excursion_mm", "excursion_relative_bound", "predicted_coil_temperature_c", "maximum_coil_temperature_c", "temperature_bound_c", "required_amplifier_peak_v", "available_amplifier_peak_v", "attack_ms", "maximum_attack_ms", "release_ms", "minimum_release_ms", "maximum_release_ms", "content_crest_factor", "minimum_crest_factor"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_BASS_LIMITER_ENVELOPE"},
+    "frequency_hz": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "requested_boost_db": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "baseline_peak_excursion_mm": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "maximum_peak_excursion_mm": {"type": "number"}, "excursion_relative_bound": {"type": "number"},
+    "predicted_coil_temperature_c": {"type": "number"}, "maximum_coil_temperature_c": {"type": "number"},
+    "temperature_bound_c": {"type": "number"}, "required_amplifier_peak_v": {"type": "number"},
+    "available_amplifier_peak_v": {"type": "number"}, "attack_ms": {"type": "number"},
+    "maximum_attack_ms": {"type": "number"}, "release_ms": {"type": "number"},
+    "minimum_release_ms": {"type": "number"}, "maximum_release_ms": {"type": "number"},
+    "content_crest_factor": {"type": "number"}, "minimum_crest_factor": {"type": "number"}
+  }
+}

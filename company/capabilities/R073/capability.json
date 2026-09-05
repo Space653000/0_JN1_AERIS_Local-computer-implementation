@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "nvh-integration": "skills/nvh-integration/input.schema.json",
-    "resonance-characterization": "skills/resonance-characterization/input.schema.json"
+    "resonance-characterization": "skills/resonance-characterization/input.schema.json",
+    "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/input.schema.json"
   },
   "outputs": {
     "nvh-integration": "skills/nvh-integration/output.schema.json",
-    "resonance-characterization": "skills/resonance-characterization/output.schema.json"
+    "resonance-characterization": "skills/resonance-characterization/output.schema.json",
+    "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/output.schema.json"
   },
   "required_skills": [
     "nvh-integration",
-    "resonance-characterization"
+    "resonance-characterization",
+    "structural-acoustic-path-domain-review"
   ],
   "required_methods": [
     "methods/engineering/nvh-integration.json",
-    "methods/engineering/resonance-characterization.json"
+    "methods/engineering/resonance-characterization.json",
+    "methods/roles/structural-acoustic-path-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/nvh-integration.json",
@@ -151,11 +155,13 @@
     "question": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
     "required_methods": [
       "methods/engineering/nvh-integration.json",
-      "methods/engineering/resonance-characterization.json"
+      "methods/engineering/resonance-characterization.json",
+      "methods/roles/structural-acoustic-path-domain-review.json"
     ],
     "required_skills": [
       "nvh-integration",
-      "resonance-characterization"
+      "resonance-characterization",
+      "structural-acoustic-path-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -171,7 +177,14 @@
       "neighbor_owns": "Separate wind, room and structure paths in microphone disturbance models"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "structural-acoustic-path-domain-review",
+      "method": "methods/roles/structural-acoustic-path-domain-review.json",
+      "suite": "golden/roles/R073/golden.json",
+      "scope": "Independent structural/acoustic transfer, SNR and coherence assertion review; no causality, calibrated sensor or physical path acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
@@ -188,7 +201,8 @@
     ],
     "calculation_schemas": {
       "nvh-integration": "skills/nvh-integration/input.schema.json",
-      "resonance-characterization": "skills/resonance-characterization/input.schema.json"
+      "resonance-characterization": "skills/resonance-characterization/input.schema.json",
+      "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -202,7 +216,8 @@
     ],
     "calculation_schemas": {
       "nvh-integration": "skills/nvh-integration/output.schema.json",
-      "resonance-characterization": "skills/resonance-characterization/output.schema.json"
+      "resonance-characterization": "skills/resonance-characterization/output.schema.json",
+      "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/output.schema.json"
     }
   },
   "report_sections": [

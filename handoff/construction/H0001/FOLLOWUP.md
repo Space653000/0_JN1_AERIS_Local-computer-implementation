@@ -182,3 +182,22 @@ H0001/P02 remains unfinished.
 
 Private transcript `.aeris/evidence/H0001-tonal-full-tests.log`, SHA-256
 `a407aab318c2814c02cea7e38ef3b4bcb6e6e6ecb62d8e5e8aeedfbfa171fb4b`.
+
+## Speaker signal-chain / protection / structural-path checkpoint
+
+R012/R013 add exact gain-chain noise/loading/headroom execution and independent
+review. R019/R025 add bass-boost excursion/thermal/limiter-envelope execution
+and independent protection review. R022/R073 add synchronized structural/
+acoustic transfer identifiability and a reviewer that rejects causal overclaim.
+Each pair has positive, inclusive-boundary, negative, counter-hypothesis, exact
+reviewer routing, sealed Evidence and reproduction coverage. None claims bench,
+calibration, listener, durability, causality, L3/L4 or Human acceptance.
+
+Focused regression: 34 PASS. Fixed-source regression: 402 PASS in 918.149
+seconds. Six semantic routes and six dark/light fixed-environment screenshot/
+basic-accessibility routes pass. Inventory: 79 Skills, 79 Methods, 37 role
+suites, 359 cases, 35 roles with a suite and 65 without one. Installed truth is
+still L1=100 and H0001/P02 remains unfinished.
+
+Private transcript `.aeris/evidence/H0001-speaker-depth-full-tests.log`, SHA-256
+`07536fe7c5c92a894df7b821a4d0ed6fa1d6eddb9ee11787857213318efe258d`.

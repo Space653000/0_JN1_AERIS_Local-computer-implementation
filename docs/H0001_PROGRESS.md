@@ -711,3 +711,29 @@ The private transcript remains local at
 `a407aab318c2814c02cea7e38ef3b4bcb6e6e6ecb62d8e5e8aeedfbfa171fb4b`.
 No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
 this checkpoint.
+
+## Nineteenth checkpoint — signal chain, bass protection and structural path
+
+Six more seats now have bounded role-specific domain suites. R012 refers each
+stage noise term through its actual downstream scalar gain and checks source
+loading plus peak voltage/current. R013 independently reconstructs those
+assertions and does not mistake declared phase margin for bench stability.
+R019 converts bass boost to excursion before checking deterministic thermal,
+rail, crest and attack/release envelopes. R025 independently challenges hidden
+excursion and cannot claim a smart-amplifier observer or durability result.
+R022 gates synchronized pressure/acceleration transfer by both SNRs, coherence,
+coverage, spread and alignment. R073 rejects coherence-as-causality and retains
+electrical pickup, mount stiffness and acoustic loading alternatives.
+
+Focused regression passed 34 tests. Fixed-source regression passed 402 tests
+in 918.149 seconds. Six real-browser semantic routes and all six fixed-
+environment dark/light screenshot repeatability/basic-accessibility routes
+passed. Source inventory is now 79 executable Skills, 79 Methods, 37
+role-specific suites and 359 role cases. Thirty-five unique roles have at least
+one suite; 65 still lack one. Installed truth remains L0=0, L1=100, L2=0,
+L3=0, L4=0; H0001/P02 remains unfinished.
+
+Private transcript `.aeris/evidence/H0001-speaker-depth-full-tests.log`, SHA-256
+`07536fe7c5c92a894df7b821a4d0ed6fa1d6eddb9ee11787857213318efe258d`.
+No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
+this checkpoint.

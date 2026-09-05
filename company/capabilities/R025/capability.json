@@ -21,22 +21,26 @@
   "inputs": {
     "lumped-speaker": "skills/lumped-speaker/input.schema.json",
     "thermal-rc": "skills/thermal-rc/input.schema.json",
-    "latency-budget": "skills/latency-budget/input.schema.json"
+    "latency-budget": "skills/latency-budget/input.schema.json",
+    "speaker-bass-protection-domain-review": "skills/speaker-bass-protection-domain-review/input.schema.json"
   },
   "outputs": {
     "lumped-speaker": "skills/lumped-speaker/output.schema.json",
     "thermal-rc": "skills/thermal-rc/output.schema.json",
-    "latency-budget": "skills/latency-budget/output.schema.json"
+    "latency-budget": "skills/latency-budget/output.schema.json",
+    "speaker-bass-protection-domain-review": "skills/speaker-bass-protection-domain-review/output.schema.json"
   },
   "required_skills": [
     "lumped-speaker",
     "thermal-rc",
-    "latency-budget"
+    "latency-budget",
+    "speaker-bass-protection-domain-review"
   ],
   "required_methods": [
     "methods/engineering/lumped-speaker.json",
     "methods/engineering/thermal-rc.json",
-    "methods/engineering/latency-budget.json"
+    "methods/engineering/latency-budget.json",
+    "methods/roles/speaker-bass-protection-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/lumped-speaker.json",
@@ -175,12 +179,14 @@
     "required_methods": [
       "methods/engineering/lumped-speaker.json",
       "methods/engineering/thermal-rc.json",
-      "methods/engineering/latency-budget.json"
+      "methods/engineering/latency-budget.json",
+      "methods/roles/speaker-bass-protection-domain-review.json"
     ],
     "required_skills": [
       "lumped-speaker",
       "thermal-rc",
-      "latency-budget"
+      "latency-budget",
+      "speaker-bass-protection-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -196,7 +202,14 @@
       "neighbor_owns": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-bass-protection-domain-review",
+      "method": "methods/roles/speaker-bass-protection-domain-review.json",
+      "suite": "golden/roles/R025/golden.json",
+      "scope": "Independent bass-excursion, thermal and limiter-envelope assertion review; no smart-amplifier observer, physical protection or lifetime acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay",
@@ -214,7 +227,8 @@
     "calculation_schemas": {
       "lumped-speaker": "skills/lumped-speaker/input.schema.json",
       "thermal-rc": "skills/thermal-rc/input.schema.json",
-      "latency-budget": "skills/latency-budget/input.schema.json"
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "speaker-bass-protection-domain-review": "skills/speaker-bass-protection-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -229,7 +243,8 @@
     "calculation_schemas": {
       "lumped-speaker": "skills/lumped-speaker/output.schema.json",
       "thermal-rc": "skills/thermal-rc/output.schema.json",
-      "latency-budget": "skills/latency-budget/output.schema.json"
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "speaker-bass-protection-domain-review": "skills/speaker-bass-protection-domain-review/output.schema.json"
     }
   },
   "report_sections": [

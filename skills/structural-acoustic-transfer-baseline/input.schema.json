@@ -1,0 +1,17 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "frequency_hz", "acceleration_rms_m_s2", "pressure_rms_pa", "coherence", "acceleration_noise_floor_m_s2", "pressure_noise_floor_pa", "minimum_acceleration_snr_ratio", "minimum_pressure_snr_ratio", "minimum_coherence", "minimum_identifiable_band_fraction", "maximum_transfer_spread_ratio", "frequency_alignment_bound_hz", "maximum_frequency_alignment_bound_hz"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_STRUCTURAL_ACOUSTIC_BANDS"},
+    "frequency_hz": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "acceleration_rms_m_s2": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "pressure_rms_pa": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "coherence": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "acceleration_noise_floor_m_s2": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "pressure_noise_floor_pa": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "minimum_acceleration_snr_ratio": {"type": "number"}, "minimum_pressure_snr_ratio": {"type": "number"},
+    "minimum_coherence": {"type": "number"}, "minimum_identifiable_band_fraction": {"type": "number"},
+    "maximum_transfer_spread_ratio": {"type": "number"}, "frequency_alignment_bound_hz": {"type": "number"},
+    "maximum_frequency_alignment_bound_hz": {"type": "number"}
+  }
+}

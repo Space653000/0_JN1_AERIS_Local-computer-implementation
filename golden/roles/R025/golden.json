@@ -1,0 +1,74 @@
+{
+  "suite_id": "R025-SPEAKER-BASS-PROTECTION-REVIEW-V1", "role_id": "R025",
+  "skill_id": "speaker-bass-protection-domain-review", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored independent reconstruction oracle for the R019 three-band static boost/excursion fixture. Candidate constants are analytic fixtures, not executor evidence.",
+  "scope": "Independent bass-excursion, thermal and static limiter-envelope report consistency",
+  "base_input": {
+    "parameters": {
+      "model": "SUPPLIED_BASS_LIMITER_ENVELOPE", "frequency_hz": [40.0, 60.0, 100.0],
+      "requested_boost_db": [0.0, 3.0, 0.0], "baseline_peak_excursion_mm": [2.0, 1.5, 0.8],
+      "maximum_peak_excursion_mm": 2.5, "excursion_relative_bound": 0.1,
+      "predicted_coil_temperature_c": 92.0, "maximum_coil_temperature_c": 100.0, "temperature_bound_c": 5.0,
+      "required_amplifier_peak_v": 8.0, "available_amplifier_peak_v": 10.0,
+      "attack_ms": 2.0, "maximum_attack_ms": 3.0, "release_ms": 120.0,
+      "minimum_release_ms": 80.0, "maximum_release_ms": 200.0,
+      "content_crest_factor": 3.0, "minimum_crest_factor": 2.5
+    },
+    "candidate": {
+      "boosted_peak_excursion_mm": [2.0, 2.1188063169341316, 0.8],
+      "worst_excursion_upper_mm": 2.330686948627545, "coil_temperature_upper_c": 97.0,
+      "checks": [
+        {"id": "EXCURSION_ENVELOPE", "actual": 2.330686948627545, "limit": 2.5, "operator": "<=", "passed": true, "on_failure": "REDUCE_BASS_BOOST_OR_DRIVE_BEFORE_XMAX"},
+        {"id": "THERMAL_ENVELOPE", "actual": 97.0, "limit": 100.0, "operator": "<=", "passed": true, "on_failure": "REDUCE_DUTY_OR_DRIVE_AND_REVALIDATE_THERMAL_STATE"},
+        {"id": "AMPLIFIER_VOLTAGE_HEADROOM", "actual": 8.0, "limit": 10.0, "operator": "<=", "passed": true, "on_failure": "REDUCE_BOOST_OR_INCREASE_RAIL_HEADROOM"},
+        {"id": "ATTACK_TIME", "actual": 2.0, "limit": 3.0, "operator": "<=", "passed": true, "on_failure": "SHORTEN_ATTACK_TO_INTERCEPT_DECLARED_PEAK"},
+        {"id": "RELEASE_MINIMUM", "actual": 120.0, "limit": 80.0, "operator": ">=", "passed": true, "on_failure": "LENGTHEN_RELEASE_TO_REDUCE_ENVELOPE_PUMPING"},
+        {"id": "RELEASE_MAXIMUM", "actual": 120.0, "limit": 200.0, "operator": "<=", "passed": true, "on_failure": "SHORTEN_RELEASE_TO_RESTORE_GAIN_WITHIN_DECLARED_USE_CASE"},
+        {"id": "CONTENT_CREST_COVERAGE", "actual": 3.0, "limit": 2.5, "operator": ">=", "passed": true, "on_failure": "EXPAND_CONTENT_CREST_FACTOR_ENVELOPE"}
+      ],
+      "required_revisions": [], "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "limiter_audio_quality_verified": false, "physical_measurement_verified": false,
+      "counter_hypotheses": ["Amplifier rail clipping rather than excursion limiting", "Thermal drift rather than static EQ mismatch", "Fixture leakage rather than insufficient low-frequency motor output"],
+      "next_discriminating_experiment": "REPLAY_DECLARED_CREST_FACTOR_SWEEP_WITH_EXCURSION_COIL_TEMPERATURE_RAIL_AND_GAIN_REDUCTION_LOGGING",
+      "model_assumptions": ["Excursion scales with requested linear voltage gain at each supplied frequency", "Relative excursion and absolute temperature bounds are deterministic screening limits", "Attack/release checks do not simulate program-dependent detector dynamics"],
+      "unresolved": ["Program-dependent limiter pumping and distortion", "Frequency-dependent impedance, rail droop and dynamic thermal feedback", "Calibrated excursion/temperature measurement, durability and qualified Human acceptance"]
+    },
+    "context": {"product": "Bass-limited loudspeaker", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {
+      "id": "BASS-REVIEW-INDEPENDENT", "kind": "positive",
+      "question": "Can the reviewer independently reconstruct excursion/thermal assertions while withholding physical protection approval?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0},
+        {"path": "human_approval", "expected": false, "absolute_tolerance": 0},
+        {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "BASS-REVIEW-NUMERIC-TAIL", "kind": "boundary",
+      "question": "Can a representation-scale excursion tail pass without changing the protection verdict?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.worst_excursion_upper_mm", "value": 2.330686948628}],
+      "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "BASS-REVIEW-HIDDEN-EXCURSION", "kind": "counter_hypothesis",
+      "question": "Does independent review reject a candidate that hides boost-derived excursion?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.worst_excursion_upper_mm", "value": 1.0}],
+      "checks": [
+        {"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0},
+        {"path": "disagreements.0.field", "expected": "worst_excursion_upper_mm", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "BASS-REVIEW-R4-REJECTED", "kind": "negative",
+      "question": "Must R4 require authority outside this bounded automated review?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "context.risk", "value": "R4"}],
+      "expected_error": "ValueError"
+    }
+  ]
+}

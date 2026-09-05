@@ -20,6 +20,9 @@ REQUIRED_DOMAINS={
     'speaker-ported-alignment-baseline':['speaker-port-lumped'],
     'speaker-polar-spatial-baseline':['speaker-polar-spatial'],
     'speaker-tonal-eq-baseline':['speaker-tonal-context'],
+    'speaker-signal-chain-noise-headroom-baseline':['speaker-signal-chain-headroom'],
+    'speaker-bass-limiter-envelope-baseline':['speaker-bass-protection'],
+    'structural-acoustic-transfer-baseline':['structural-acoustic-path'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -33,6 +36,11 @@ DOMAIN_SKILLS={domain:skill for skill,domains in REQUIRED_DOMAINS.items() for do
 
 
 def applicable(domain,context):
+    if domain=='structural-acoustic-path':
+        return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
+                and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
+                and context.get('transducer') in {'Speaker','Both'}
+                and isinstance(context.get('product'),str))
     if domain in {'failure-hypothesis','requirement-association','standards-metadata'}:
         return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
@@ -158,6 +166,15 @@ def review(domain,request):
     if domain=='speaker-tonal-context':
         from .speaker_tonal_review import review as review_tonal
         return review_tonal(p,candidate)
+    if domain=='speaker-signal-chain-headroom':
+        from .speaker_signal_chain_review import review as review_signal_chain
+        return review_signal_chain(p,candidate)
+    if domain=='speaker-bass-protection':
+        from .speaker_bass_limiter_review import review as review_bass_limiter
+        return review_bass_limiter(p,candidate)
+    if domain=='structural-acoustic-path':
+        from .structural_acoustic_review import review as review_structural_acoustic
+        return review_structural_acoustic(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -297,6 +314,9 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'speaker-port-lumped':('ported_alignment_review.py','ported_alignment.py'),
     'speaker-polar-spatial':('speaker_polar_review.py','speaker_polar.py'),
     'speaker-tonal-context':('speaker_tonal_review.py','speaker_tonal.py'),
+    'speaker-signal-chain-headroom':('speaker_signal_chain_review.py','speaker_signal_chain.py'),
+    'speaker-bass-protection':('speaker_bass_limiter_review.py','speaker_bass_limiter.py'),
+    'structural-acoustic-path':('structural_acoustic_review.py','structural_acoustic.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -342,7 +362,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -454,6 +474,12 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['ANGULAR_COVERAGE','ANGULAR_SAMPLING','ABSOLUTE_REFERENCE','EDGE_ATTENUATION','SYMMETRY','ANGLE_ALIGNMENT']
     if skill=='speaker-tonal-eq-baseline':
         return [c.get('id') for c in values['checks']]==['SMOOTHING_RESOLUTION','UNRESOLVED_RESONANCE','BOOST_BOUND','CUT_BOUND','HEADROOM','ROOM_NOTCH_POLICY','LOUDNESS_MATCH']
+    if skill=='speaker-signal-chain-noise-headroom-baseline':
+        return [c.get('id') for c in values['checks']]==['OUTPUT_NOISE_BUDGET','VOLTAGE_HEADROOM','CURRENT_HEADROOM','LOAD_STABILITY','SOURCE_LOADING','PHASE_MARGIN']
+    if skill=='speaker-bass-limiter-envelope-baseline':
+        return [c.get('id') for c in values['checks']]==['EXCURSION_ENVELOPE','THERMAL_ENVELOPE','AMPLIFIER_VOLTAGE_HEADROOM','ATTACK_TIME','RELEASE_MINIMUM','RELEASE_MAXIMUM','CONTENT_CREST_COVERAGE']
+    if skill=='structural-acoustic-transfer-baseline':
+        return [c.get('id') for c in values['checks']]==['IDENTIFIABLE_BAND_FRACTION','TRANSFER_SPREAD','IDENTIFIABLE_COHERENCE','FREQUENCY_ALIGNMENT']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

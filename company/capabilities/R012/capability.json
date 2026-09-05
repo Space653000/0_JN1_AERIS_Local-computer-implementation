@@ -21,22 +21,26 @@
   "inputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
     "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-    "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "speaker-signal-chain-noise-headroom-baseline": "skills/speaker-signal-chain-noise-headroom-baseline/input.schema.json"
   },
   "outputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
     "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-    "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "speaker-signal-chain-noise-headroom-baseline": "skills/speaker-signal-chain-noise-headroom-baseline/output.schema.json"
   },
   "required_skills": [
     "circuit-noise-budget",
     "transfer-coherence",
-    "engineering-requirements"
+    "engineering-requirements",
+    "speaker-signal-chain-noise-headroom-baseline"
   ],
   "required_methods": [
     "methods/engineering/circuit-noise-budget.json",
     "methods/engineering/transfer-coherence.json",
-    "methods/engineering/engineering-requirements.json"
+    "methods/engineering/engineering-requirements.json",
+    "methods/roles/speaker-signal-chain-noise-headroom-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/circuit-noise-budget.json",
@@ -173,12 +177,14 @@
     "required_methods": [
       "methods/engineering/circuit-noise-budget.json",
       "methods/engineering/transfer-coherence.json",
-      "methods/engineering/engineering-requirements.json"
+      "methods/engineering/engineering-requirements.json",
+      "methods/roles/speaker-signal-chain-noise-headroom-baseline.json"
     ],
     "required_skills": [
       "circuit-noise-budget",
       "transfer-coherence",
-      "engineering-requirements"
+      "engineering-requirements",
+      "speaker-signal-chain-noise-headroom-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -194,7 +200,14 @@
       "neighbor_owns": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-signal-chain-noise-headroom-baseline",
+      "method": "methods/roles/speaker-signal-chain-noise-headroom-baseline.json",
+      "suite": "golden/roles/R012/golden.json",
+      "scope": "Supplied scalar gain, uncorrelated referred-noise, loading, peak voltage/current and declared phase-margin screening; no complex-load or bench stability acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
@@ -212,7 +225,8 @@
     "calculation_schemas": {
       "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
       "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-      "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "speaker-signal-chain-noise-headroom-baseline": "skills/speaker-signal-chain-noise-headroom-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -227,7 +241,8 @@
     "calculation_schemas": {
       "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
       "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-      "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "speaker-signal-chain-noise-headroom-baseline": "skills/speaker-signal-chain-noise-headroom-baseline/output.schema.json"
     }
   },
   "report_sections": [
