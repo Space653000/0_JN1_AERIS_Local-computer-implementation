@@ -76,6 +76,20 @@ class CapabilityFactoryTests(unittest.TestCase):
         self.assertEqual(wrong_executor['state'],'BLOCKED')
         self.assertFalse(wrong_executor['software_execution_permitted'])
 
+    def test_partial_role_routes_only_its_exact_evidenced_skill(self):
+        request={"product":"","transducer":"Speaker","lifecycle":"EVT","risk":"R1",
+                 "requirement":"bounded execution","required_evidence":["sealed numerical run","independent counterreview"],
+                 "needed_skills":["speaker-power-distortion-baseline"],"available_tools":["FREE_LOCAL_BASELINE"],
+                 "execution_role_id":"R016","source_kind":"SYNTHETIC"}
+        partial={"id":"R016","name":"Speaker Power & Linearity","group":"Speaker CoE","level":"L1",
+                 "skills":["speaker-power-distortion-baseline","speaker-fr-reference-baseline"],
+                 "executable_skills":["speaker-power-distortion-baseline"]}
+        pod=route_pod(request,{"roles":[partial]})
+        self.assertTrue(pod['software_execution_permitted'])
+        self.assertEqual(pod['executors'],['R016'])
+        blocked=route_pod({**request,"needed_skills":["speaker-fr-reference-baseline"]},{"roles":[partial]})
+        self.assertFalse(blocked['software_execution_permitted'])
+
     def test_memory_is_append_only_and_cannot_mutate_evidence(self):
         temp_root=factory.ROOT/".aeris"/"test-temp"; temp_root.mkdir(parents=True,exist_ok=True)
         with tempfile.TemporaryDirectory(dir=temp_root) as directory:

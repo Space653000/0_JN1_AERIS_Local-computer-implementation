@@ -168,9 +168,7 @@
     "company/capabilities/R032/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070713Z-9a5a4194"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -200,6 +198,14 @@
       "neighbor_role": "R043",
       "this_seat_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
       "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-capture-continuity-baseline",
+      "method": "methods/roles/microphone-capture-continuity-baseline.json",
+      "suite": "golden/roles/R032/golden.json",
+      "scope": "First-sample capture metadata continuity, slot mapping, relative reference-rate and delivery bounds; no physical driver capture or absolute clock accuracy."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -246,11 +252,5 @@
     "scheduling gap rather than DOA instability",
     "format packing rather than microphone failure",
     "timestamp granularity and independent clock drift"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "microphone-capture-continuity-baseline",
-    "method": "methods/roles/microphone-capture-continuity-baseline.json",
-    "suite": "golden/roles/R032/golden.json",
-    "scope": "First-sample capture metadata continuity, slot mapping, relative reference-rate and delivery bounds; no physical driver capture or absolute clock accuracy."
-  }
+  ]
 }

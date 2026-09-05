@@ -64,7 +64,12 @@ def _definition(identifier):
     definition = load_challenge(identifier)
     if not definition['implemented']:
         raise ValueError('SOFTWARE_LOCAL_FIXABLE: challenge not implemented')
-    _, suite = role_acceptance.load_contract(definition['role_id'])
+    skill_id=definition.get('skill_id')
+    if not isinstance(skill_id,str) or not skill_id:
+        raise ValueError('challenge exact Skill ID required')
+    _, suite = role_acceptance.load_contract(definition['role_id'],skill_id)
+    if suite.get('skill_id')!=skill_id:
+        raise ValueError('challenge role/Skill/suite binding mismatch')
     inputs = {}
     for stage in ('initial','revised'):
         case_id=definition.get(stage+'_case_id')
@@ -75,18 +80,25 @@ def _definition(identifier):
         inputs[stage]={**copy.deepcopy(suite['base_input']),**copy.deepcopy(scenario),**definition[stage]}
     validate_revision(inputs['initial'], inputs['revised'], definition['requirements'],
                       definition['allowed_revision_fields'])
-    return definition, suite['skill_id'], inputs
+    return definition, skill_id, inputs
 
 
-def _qualification_roles(role, skill):
-    roles = [role]
+def _qualification_capabilities(role, skill):
+    qualifications = [(role,skill)]
     for domain in domain_review.REQUIRED_DOMAINS[skill]:
-        candidates = [rid for rid, contract in sorted(ROLE_DOMAIN_CONTRACTS.items())
-                      if rid != role and factory.read(ROOT/f"skills/{contract['skill_id']}/manifest.json").get('review_domain') == domain]
+        candidates = [(rid,contract['skill_id']) for rid,contracts in sorted(ROLE_DOMAIN_CONTRACTS.items())
+                      for contract in contracts if rid != role and
+                      factory.read(ROOT/f"skills/{contract['skill_id']}/manifest.json").get('review_domain') == domain]
         if not candidates:
             raise ValueError('missing reviewer implementation: ' + domain)
-        roles.append(candidates[0])
-    return roles
+        qualifications.append(candidates[0])
+    if len({role_id for role_id,_ in qualifications})!=len(qualifications):
+        raise ValueError('one role cannot occupy multiple qualification slots in a challenge')
+    return qualifications
+
+
+def _qualification_roles(role,skill):
+    return [role_id for role_id,_ in _qualification_capabilities(role,skill)]
 
 
 def _oracles(definition, stage, report):
@@ -106,13 +118,14 @@ def run(identifier, *, prepare_qualifications=False):
     _bindings()
     definition, skill, inputs = _definition(identifier)
     runner = role_acceptance.RoleAcceptanceFactory()
-    roles = _qualification_roles(definition['role_id'], skill)
-    before = {role: runner.status(role)['execution_passed'] for role in roles}
+    qualification_skills=dict(_qualification_capabilities(definition['role_id'],skill))
+    roles=list(qualification_skills)
+    before = {role: runner.status_for_skill(role,qualification_skills[role])['execution_passed'] for role in roles}
     if prepare_qualifications:
         for role, passed in before.items():
             if not passed:
-                runner.evaluate(role)
-    qualifications = {role: runner.status(role) for role in roles}
+                runner.evaluate(role,qualification_skills[role])
+    qualifications = {role: runner.status_for_skill(role,qualification_skills[role]) for role in roles}
     missing = [role for role, item in qualifications.items() if not item['execution_passed']]
     if missing:
         return {'result': 'BLOCKED', 'challenge_id': identifier, 'missing_qualifications': missing,
@@ -262,10 +275,11 @@ def status(run_id):
         if record['result'] != 'PASS' or record['role_l3_awarded'] is not False or record['human_approval'] is not False or record['source_kind'] != 'SYNTHETIC':
             raise ValueError('unsupported acceptance claim')
         runner = role_acceptance.RoleAcceptanceFactory()
-        if set(record['qualifications']) != set(_qualification_roles(definition['role_id'], skill)):
+        qualification_skills=dict(_qualification_capabilities(definition['role_id'],skill))
+        if set(record['qualifications']) != set(qualification_skills):
             raise ValueError('qualification seats mismatch')
         for role, receipt in record['qualifications'].items():
-            qualification = runner.status(role)
+            qualification = runner.status_for_skill(role,qualification_skills[role])
             if not qualification['execution_passed'] or receipt != {key: qualification[key] for key in ('run_id','evidence_ref')}:
                 raise ValueError('qualification receipt stale')
         if [item['stage'] for item in record['stages']] != ['initial', 'revised']:

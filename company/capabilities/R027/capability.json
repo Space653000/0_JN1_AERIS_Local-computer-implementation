@@ -166,9 +166,7 @@
     "company/capabilities/R027/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070712Z-618be0ff"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -198,6 +196,7 @@
       "neighbor_owns": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose microphone capsule, port and array architecture against sensitivity, noise and overload constraints",

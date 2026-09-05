@@ -143,9 +143,7 @@
     "company/capabilities/R038/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070714Z-f50a6f53"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -173,6 +171,7 @@
       "neighbor_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Tune speech capture for double-talk, spectral preservation and transient intelligibility",

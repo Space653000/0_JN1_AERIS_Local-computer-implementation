@@ -185,9 +185,7 @@
     "company/capabilities/R066/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070721Z-291c9f83"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "head/chest speech speaker",
@@ -270,6 +268,7 @@
       "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Coordinate humanoid self-speech echo, moving joints and conversational directionality",

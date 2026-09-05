@@ -115,7 +115,7 @@ R100|Select safe next experiments from informative coverage and observed loss wi
 
 
 STANDARD_FAMILIES=('IEC 60268-5','IEC 60268-4','CTA-2034','AES75','ITU-T P.1100','ITU-T P.1110')
-ROLE_DOMAIN_CONTRACTS={
+_SINGLE_ROLE_DOMAIN_CONTRACTS={
     'R032':{'skill_id':'microphone-capture-continuity-baseline','method':'methods/roles/microphone-capture-continuity-baseline.json',
             'suite':'golden/roles/R032/golden.json','scope':'First-sample capture metadata continuity, slot mapping, relative reference-rate and delivery bounds; no physical driver capture or absolute clock accuracy.'},
     'R031':{'skill_id':'microphone-capture-clock-domain-review','method':'methods/roles/microphone-capture-clock-domain-review.json',
@@ -171,6 +171,11 @@ ROLE_DOMAIN_CONTRACTS={
             'suite':'golden/roles/R048/golden.json',
             'scope':'Bounded TWS seal, FF/FB ANC, outward call noise, excursion and occlusion decisions; not complete product acceptance.'}}
 
+# A role may own several independently evidenced bounded capabilities.  The
+# ordered list is authored source truth; aggregate maturity must never hide a
+# missing member or let one shared receipt qualify its neighbors.
+ROLE_DOMAIN_CONTRACTS={role:[contract] for role,contract in _SINGLE_ROLE_DOMAIN_CONTRACTS.items()}
+
 
 def standards_families(value):
     """Accept complete declared identifiers, never substring approximations."""
@@ -189,9 +194,9 @@ def profiles():
         role,decision,failures,counters,uncertainty,neighbors,standards=line.split('|')
         if role in result: raise ValueError('duplicate authored role profile')
         skills=SEAT_SKILLS[int(role[1:])-1].split()
-        domain=ROLE_DOMAIN_CONTRACTS.get(role)
+        domains=ROLE_DOMAIN_CONTRACTS.get(role,[])
         methods=[f'methods/engineering/{s}.json' for s in skills]
-        if domain:
+        for domain in domains:
             skills.append(domain['skill_id']); methods.append(domain['method'])
         families=standards_families(standards)
         result[role]={'role_id':role,'mission':decision,'professional_decision':decision,
@@ -200,7 +205,7 @@ def profiles():
             'standards_metadata_references':families,
             'standards_strategy':'ROLE_SCOPED_METADATA' if families else 'NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH',
             'required_skills':skills,
-            'required_methods':methods,'domain_execution_contract':copy.deepcopy(domain),
+            'required_methods':methods,'domain_execution_contracts':copy.deepcopy(domains),
             'professional_decision_contract':{'decision_id':role+'-DOMAIN-DECISION','question':decision,
                 'required_methods':methods,
                 'required_skills':skills,'acceptance_oracle_source':'SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED'},
@@ -222,9 +227,10 @@ def enrich_pack(pack):
                   'standards_metadata_references','standards_strategy','professional_decision_contract','neighbor_distinctions',
                   'required_skills','required_methods'):
         result[field]=copy.deepcopy(profile[field])
-    domain=profile['domain_execution_contract']
-    if domain:
-        result['domain_execution_contract']=copy.deepcopy(domain)
+    domains=profile['domain_execution_contracts']
+    result.pop('domain_execution_contract',None)
+    result['domain_execution_contracts']=copy.deepcopy(domains)
+    for domain in domains:
         skill=domain['skill_id']
         result['inputs'][skill]=f'skills/{skill}/input.schema.json'
         result['outputs'][skill]=f'skills/{skill}/output.schema.json'

@@ -185,9 +185,7 @@
     "company/capabilities/R065/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070721Z-df8be993"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "rugged local interaction speaker",
@@ -270,6 +268,7 @@
       "neighbor_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Separate quadruped impact and actuator harmonics from field interaction speech",

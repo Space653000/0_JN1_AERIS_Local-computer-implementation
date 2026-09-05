@@ -170,9 +170,7 @@
     "company/capabilities/R015/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070709Z-b9ad83b2"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -202,6 +200,14 @@
       "neighbor_role": "R033",
       "this_seat_owns": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
       "neighbor_owns": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-fr-reference-baseline",
+      "method": "methods/roles/speaker-fr-reference-baseline.json",
+      "suite": "golden/roles/R015/golden.json",
+      "scope": "Supplied sampled FR reference, interval and window validity; not calibrated acquisition or full-band conformance."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -248,11 +254,5 @@
     "time-window artifact rather than resonance",
     "microphone alignment rather than phase defect",
     "distance, gate length, calibration and environmental variation"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "speaker-fr-reference-baseline",
-    "method": "methods/roles/speaker-fr-reference-baseline.json",
-    "suite": "golden/roles/R015/golden.json",
-    "scope": "Supplied sampled FR reference, interval and window validity; not calibrated acquisition or full-band conformance."
-  }
+  ]
 }

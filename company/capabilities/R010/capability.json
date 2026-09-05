@@ -170,9 +170,7 @@
     "company/capabilities/R010/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070708Z-4c7c9e2a"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -202,6 +200,14 @@
       "neighbor_role": "R016",
       "this_seat_owns": "Distinguish motor, suspension and inductance mechanisms behind level-dependent impedance and distortion",
       "neighbor_owns": "Derate speaker drive from distortion, compression, temperature and durability limits"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-nonlinear-domain-review",
+      "method": "methods/roles/speaker-nonlinear-domain-review.json",
+      "suite": "golden/roles/R010/golden.json",
+      "scope": "Bounded RMS distortion and unsupported mechanism attribution review; not whole-role acceptance."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -248,11 +254,5 @@
     "coil heating rather than Bl nonlinearity",
     "fixture rattling rather than suspension asymmetry",
     "level dependence and parameter-identifiability limits"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "speaker-nonlinear-domain-review",
-    "method": "methods/roles/speaker-nonlinear-domain-review.json",
-    "suite": "golden/roles/R010/golden.json",
-    "scope": "Bounded RMS distortion and unsupported mechanism attribution review; not whole-role acceptance."
-  }
+  ]
 }

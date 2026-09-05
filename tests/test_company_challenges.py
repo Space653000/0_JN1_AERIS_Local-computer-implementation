@@ -19,6 +19,14 @@ class CompanyChallengeContractTests(unittest.TestCase):
         items=challenges.inventory()
         self.assertEqual(len(items),8)
         self.assertEqual({x['id'] for x in items if x['implemented']},{'SPEAKER_FR','SPEAKER_POWER','MICROPHONE_NOISE','ARRAY_DOA','TWS_FIT','FAILURE_FACA','REQUIREMENT_TRACEABILITY','STANDARDS_PROVENANCE'})
+        self.assertTrue(all(isinstance(item.get('skill_id'),str) and item['skill_id'] for item in items))
+
+    def test_challenge_requires_exact_role_skill_suite_binding(self):
+        definition=challenges.load_challenge('SPEAKER_POWER')
+        for altered in ({k:v for k,v in definition.items() if k!='skill_id'},
+                        {**definition,'skill_id':'speaker-fr-reference-baseline'}):
+            with patch.object(challenges,'load_challenge',return_value=altered):
+                with self.assertRaises(ValueError): challenges._definition('SPEAKER_POWER')
 
     def test_noop_and_requirement_relaxation_are_not_engineering_revisions(self):
         initial={'max_thd':5,'drive':2}

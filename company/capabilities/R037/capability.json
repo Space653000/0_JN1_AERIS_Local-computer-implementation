@@ -147,9 +147,7 @@
     "company/capabilities/R037/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070714Z-749aad50"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -177,6 +175,14 @@
       "neighbor_role": "R043",
       "this_seat_owns": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
       "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-array-taper-baseline",
+      "method": "methods/roles/microphone-array-taper-baseline.json",
+      "suite": "golden/roles/R037/golden.json",
+      "scope": "ULA taper/steering sampled transfer and conservative mismatch WNG; no full-angle, speech-quality or measured verification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -221,11 +227,5 @@
     "gain mismatch rather than taper choice",
     "wrong geometry rather than bad optimization",
     "sensor phase spread and diffuse-field assumptions"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "microphone-array-taper-baseline",
-    "method": "methods/roles/microphone-array-taper-baseline.json",
-    "suite": "golden/roles/R037/golden.json",
-    "scope": "ULA taper/steering sampled transfer and conservative mismatch WNG; no full-angle, speech-quality or measured verification."
-  }
+  ]
 }

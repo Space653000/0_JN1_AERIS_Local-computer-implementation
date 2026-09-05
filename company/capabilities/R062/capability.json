@@ -185,9 +185,7 @@
     "company/capabilities/R062/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070720Z-473f6f38"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "near-ear/open-ear stereo",
@@ -270,6 +268,7 @@
       "neighbor_owns": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",

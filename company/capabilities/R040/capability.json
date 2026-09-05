@@ -168,9 +168,7 @@
     "company/capabilities/R040/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070715Z-c5739480"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -200,6 +198,14 @@
       "neighbor_role": "R043",
       "this_seat_owns": "Predict array propagation and aliasing with geometric delay and steering-vector checks",
       "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-array-geometry-domain-review",
+      "method": "methods/roles/microphone-array-geometry-domain-review.json",
+      "suite": "golden/roles/R040/golden.json",
+      "scope": "Independent two-channel signal/geometry/ambiguity review; not unique 3D direction or physical array calibration."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -246,11 +252,5 @@
     "speed-of-sound drift rather than clock error",
     "channel permutation rather than wave model failure",
     "source range, sound speed and element position"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "microphone-array-geometry-domain-review",
-    "method": "methods/roles/microphone-array-geometry-domain-review.json",
-    "suite": "golden/roles/R040/golden.json",
-    "scope": "Independent two-channel signal/geometry/ambiguity review; not unique 3D direction or physical array calibration."
-  }
+  ]
 }

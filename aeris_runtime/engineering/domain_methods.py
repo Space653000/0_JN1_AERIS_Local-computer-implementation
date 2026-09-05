@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
 import math
 from pathlib import Path
@@ -154,6 +155,29 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'microphone-array-taper-baseline':array_beam_model,
           'microphone-capture-continuity-baseline':capture_clock_model}
 
+_CAPABILITY_DEPENDENCIES={
+    'microphone-reference-noise-headroom-baseline':('numerical_policy.py',),
+    'speaker-fr-reference-baseline':('numerical_policy.py',),
+    'microphone-array-tdoa-baseline':('numerical_policy.py',),
+}
+
+
+def _runtime_dependency_payload(skill_id):
+    if skill_id=='microphone-reference-noise-headroom-baseline':
+        from . import microphone_domain as module
+        values=(module.db_at_least,module.db_at_most,module.MIN_IDENTIFIABLE_VARIANCE_FRACTION)
+    elif skill_id=='speaker-fr-reference-baseline':
+        from . import speaker_fr as module
+        values=(module.db_at_least,module.db_at_most,module.cycles_at_least)
+    elif skill_id=='microphone-array-tdoa-baseline':
+        from . import array_doa as module
+        values=(module.ratio_at_least,module.geometry_value)
+    else: values=()
+    result=[]
+    for value in values:
+        result.append(inspect.getsource(value) if callable(value) else value)
+    return result
+
 
 def _review_handler(domain):
     def run(params):
@@ -166,13 +190,43 @@ for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture
     HANDLERS[_domain+'-domain-review']=_review_handler(_domain)
 
 
+def capability_source_digest(skill_id):
+    """Fingerprint one handler and only the shared predicates it can invoke."""
+    if skill_id not in HANDLERS: raise KeyError(skill_id)
+    handler=HANDLERS[skill_id]; module=inspect.getmodule(handler)
+    try: source=inspect.getsource(handler)
+    except (OSError,TypeError) as exc: raise ValueError('inspectable capability source required') from exc
+    payload={'skill_id':skill_id,'handler_module':getattr(module,'__name__',None),'handler_source':source}
+    if module is not None and module.__name__!=__name__:
+        path=Path(inspect.getsourcefile(handler) or '')
+        if not path.is_file(): raise ValueError('capability implementation source missing')
+        payload['dedicated_module_sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
+        payload['shared_dependencies']={name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest()
+                                        for name in _CAPABILITY_DEPENDENCIES.get(skill_id,())}
+        payload['runtime_dependencies']=_runtime_dependency_payload(skill_id)
+    elif handler.__name__=='run':
+        # The closure value binds the exact review domain. Its current behavior
+        # is additionally replayed against every sealed suite case, so a changed
+        # relevant verdict stales the receipt without coupling unrelated review
+        # branches in the same policy module.
+        closure=list(inspect.getclosurevars(handler).nonlocals.values())
+        payload['closure']=closure
+        if len(closure)!=1 or not isinstance(closure[0],str): raise ValueError('exact review-domain closure required')
+        from . import domain_review
+        payload['domain_review_sha256']=domain_review.capability_source_digest(closure[0])
+    elif skill_id=='tws-fit-anc-call-baseline':
+        payload['field_contract']=TWS_FIELDS
+    return hashlib.sha256(_canonical(payload)).hexdigest()
+
+
 def execute(skill_id,params):
     if _fingerprint()!=LOADED_SHA256: raise RuntimeError('Role method source changed after load; restart required')
     if skill_id not in HANDLERS: raise KeyError(skill_id)
     values=HANDLERS[skill_id](params)
     _canonical(values)  # Nonfinite calculation results must never leave as PASS.
     return {'skill_id':skill_id,'version':'1.0.0','result':'PASS','values':values,
-            'input_sha256':hashlib.sha256(_canonical(params)).hexdigest(),'implementation_sha256':LOADED_SHA256,
+            'input_sha256':hashlib.sha256(_canonical(params)).hexdigest(),
+            'implementation_sha256':capability_source_digest(skill_id),
             'capability_maturity':'FREE_LOCAL_BASELINE','evidence_class':'DETERMINISTIC_ROLE_DOMAIN_CALCULATION',
             'uncertainty':'Supplied model parameters and limits are uncalibrated unless separately evidenced; see model assumptions.',
             'physical_measurement_verified':False,'professional_tool_verified':False,

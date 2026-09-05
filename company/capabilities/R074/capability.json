@@ -143,9 +143,7 @@
     "company/capabilities/R074/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070723Z-d33e69f5"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -173,6 +171,7 @@
       "neighbor_owns": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",

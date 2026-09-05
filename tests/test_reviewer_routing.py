@@ -25,5 +25,6 @@ class ReviewerRoutingTests(unittest.TestCase):
             self.assertFalse(domain_review.select_reviewers({**request,'lifecycle':'MP'},['R016'])['complete'])
             self.assertFalse(domain_review.select_reviewers({**request,'required_evidence':['calibrated physical measurement']},['R016'])['complete'])
             # A different role's intact bundle cannot qualify this seat.
-            (self.root/'qualification/R075.json').write_text(json.dumps({'run_id':nonlinear['run_id']}),encoding='utf-8')
+            index=self.root/'qualification/R075/speaker-thermal-domain-review.json'
+            index.write_text(json.dumps({'role_id':'R075','skill_id':'speaker-thermal-domain-review','run_id':nonlinear['run_id']}),encoding='utf-8')
             self.assertFalse(domain_review.select_reviewers(request,['R016'])['complete'])

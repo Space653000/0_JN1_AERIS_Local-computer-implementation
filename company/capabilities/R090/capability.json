@@ -147,9 +147,7 @@
     "company/capabilities/R090/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070725Z-cf4f7276"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -177,6 +175,14 @@
       "neighbor_role": "R097",
       "this_seat_owns": "Build OEM/customer certification traceability without implying ungranted customer approval",
       "neighbor_owns": "Maintain requirement-test-evidence and configuration links across revisions"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "standards-metadata-domain-review",
+      "method": "methods/roles/standards-metadata-domain-review.json",
+      "suite": "golden/roles/R090/golden.json",
+      "scope": "Independent metadata and requirement impact assertion review; no customer/regulatory certification or live source verification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -221,11 +227,5 @@
     "customer-specific limit rather than standards conflict",
     "configuration mismatch rather than test failure",
     "customer revision, fixture scope and approval authority"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "standards-metadata-domain-review",
-    "method": "methods/roles/standards-metadata-domain-review.json",
-    "suite": "golden/roles/R090/golden.json",
-    "scope": "Independent metadata and requirement impact assertion review; no customer/regulatory certification or live source verification."
-  }
+  ]
 }

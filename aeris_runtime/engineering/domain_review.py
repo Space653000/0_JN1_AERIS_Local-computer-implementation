@@ -1,9 +1,14 @@
 """Bounded software review policy; never Human approval or role-wide L3."""
 from __future__ import annotations
 
+import ast
 import copy
+import hashlib
+import inspect
 import json
 import math
+import textwrap
+from pathlib import Path
 
 from ..config import ROOT
 from .numerical_policy import db_at_least,db_at_most,MIN_IDENTIFIABLE_VARIANCE_FRACTION
@@ -60,16 +65,18 @@ def select_reviewers(request,executor_ids):
     for domain in needed:
         selected=None
         if evidence_supported and applicable(domain,context):
-            for role,contract in sorted(ROLE_DOMAIN_CONTRACTS.items()):
+            for role,contracts in sorted(ROLE_DOMAIN_CONTRACTS.items()):
                 if role in excluded: continue
-                manifest=factory.read(ROOT/f"skills/{contract['skill_id']}/manifest.json")
-                if manifest.get('review_domain')!=domain: continue
-                status=runner.status(role)
-                if not status['execution_passed']: continue
-                selected={'role_id':role,'domain':domain,'skill_id':contract['skill_id'],
-                          'qualification_run_id':status['run_id'],'qualification_evidence_ref':status['evidence_ref'],
-                          'reason':'current sealed domain review suite replayed; context in bounded scope; executor/conflict excluded'}
-                break
+                for contract in contracts:
+                    manifest=factory.read(ROOT/f"skills/{contract['skill_id']}/manifest.json")
+                    if manifest.get('review_domain')!=domain: continue
+                    status=runner.status_for_skill(role,contract['skill_id'])
+                    if not status['execution_passed']: continue
+                    selected={'role_id':role,'domain':domain,'skill_id':contract['skill_id'],
+                              'qualification_run_id':status['run_id'],'qualification_evidence_ref':status['evidence_ref'],
+                              'reason':'current sealed exact-Skill domain review suite replayed; context in bounded scope; executor/conflict excluded'}
+                    break
+                if selected: break
         if selected: found.append(selected)
         else: missing.append(domain)
     return {'reviewers':found,'uncovered_review_domains':missing,'unsupported_review_skills':unknown,
@@ -97,12 +104,7 @@ def _validate(value,schema):
             raise ValueError('finite declared-unit review input required')
 
 
-def review(domain,request):
-    """Challenge a scoped candidate; acceptance means report consistency only.
-
-    Candidate fields are assertions to check, not inputs to recomputation. These
-    independent equations never call domain_methods or use its decision output.
-    """
+def _review_envelope(domain,request):
     if domain not in DOMAIN_SKILLS: raise ValueError('unknown review domain')
     if not isinstance(request,dict) or set(request)!={'parameters','candidate','context'}:
         raise ValueError('exact review envelope required')
@@ -116,6 +118,28 @@ def review(domain,request):
     microphone=domain.startswith('microphone-')
     if not applicable(domain,context):
         raise ValueError('outside evidenced bounded review applicability')
+    return p,candidate,speaker,microphone
+
+
+def _validate_inline_family(p,speaker,microphone):
+    if speaker:
+        if p['drive_voltage_rms_v']<p['reference_voltage_rms_v'] or p['max_coil_temperature_c']<p['ambient_temperature_c']:
+            raise ValueError('inconsistent power review bounds')
+    if microphone:
+        if (p['minimum_sensitivity_dbv_per_pa']>p['maximum_sensitivity_dbv_per_pa']
+                or p['calibrator_output_rms_v']*math.sqrt(2)>=p['adc_peak_v']
+                or p['total_noise_rms_v']*(1+p['noise_relative_bound'])>=p['adc_peak_v']
+                or p['frontend_noise_rms_v']>p['total_noise_rms_v']):
+            raise ValueError('invalid common-frame microphone reference or bounds')
+
+
+def review(domain,request):
+    """Challenge a scoped candidate; acceptance means report consistency only.
+
+    Candidate fields are assertions to check, not inputs to recomputation. These
+    independent equations never call domain_methods or use its decision output.
+    """
+    p,candidate,speaker,microphone=_review_envelope(domain,request)
     if domain=='speaker-fr-uncertainty':
         from .speaker_fr_review import review as review_fr
         return review_fr(p,candidate)
@@ -141,15 +165,7 @@ def review(domain,request):
         from .standard_metadata_review import review as review_metadata
         return review_metadata(p,candidate)
     expected={}; observations={}
-    if speaker:
-        if p['drive_voltage_rms_v']<p['reference_voltage_rms_v'] or p['max_coil_temperature_c']<p['ambient_temperature_c']:
-            raise ValueError('inconsistent power review bounds')
-    if microphone:
-        if (p['minimum_sensitivity_dbv_per_pa']>p['maximum_sensitivity_dbv_per_pa']
-                or p['calibrator_output_rms_v']*math.sqrt(2)>=p['adc_peak_v']
-                or p['total_noise_rms_v']*(1+p['noise_relative_bound'])>=p['adc_peak_v']
-                or p['frontend_noise_rms_v']>p['total_noise_rms_v']):
-            raise ValueError('invalid common-frame microphone reference or bounds')
+    _validate_inline_family(p,speaker,microphone)
     if domain=='speaker-thermal':
         temperature=p['ambient_temperature_c']+p['input_power_w']*p['thermal_resistance_k_per_w']*(1-math.exp(-p['duration_s']/p['thermal_resistance_k_per_w']/p['thermal_capacity_j_per_k']))
         compression=20*math.log10(p['drive_voltage_rms_v']*p['reference_fundamental_rms_pa']/(p['reference_voltage_rms_v']*p['fundamental_rms_pa']))
@@ -231,6 +247,10 @@ def review(domain,request):
                       'limitation':'common-bandwidth uncorrelated subtraction; signal-only headroom is not capsule AOP or total peak immunity'}
     else:
         raise ValueError('domain reviewer not implemented')
+    return _finish_review(domain,candidate,expected,observations,microphone,speaker)
+
+
+def _finish_review(domain,candidate,expected,observations,microphone,speaker):
     expected.update(physical_measurement_verified=False,lifetime_verified=False)
     expected['counter_hypotheses']=(['room noise rather than capsule self-noise','frontend noise rather than capsule noise',
         'calibrator coupling or gain-reference error rather than capsule sensitivity drift'] if microphone else
@@ -257,6 +277,40 @@ def _same_assertion(actual,wanted):
     if isinstance(wanted,list):
         return isinstance(actual,list) and len(actual)==len(wanted) and all(_same_assertion(a,b) for a,b in zip(actual,wanted))
     return actual==wanted
+
+
+_DELEGATED_REVIEW_DEPENDENCIES={
+    'speaker-fr-uncertainty':('speaker_fr_review.py','speaker_fr.py','numerical_policy.py'),
+    'speaker-sealed-lumped':('sealed_alignment_review.py','sealed_alignment.py'),
+    'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
+    'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
+    'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
+    'failure-hypothesis':('faca_review.py','faca.py'),
+    'requirement-association':('requirement_trace_review.py','requirement_trace.py'),
+    'standards-metadata':('standard_metadata_review.py','standard_metadata.py'),
+}
+
+
+def capability_source_digest(domain):
+    """Hash the exact domain branch, declared dependencies and shared predicates."""
+    if domain not in DOMAIN_SKILLS: raise ValueError('unknown review domain')
+    source=textwrap.dedent(inspect.getsource(review)); tree=ast.parse(source)
+    fragments=[]
+    for node in ast.walk(tree):
+        if isinstance(node,ast.If):
+            names={item.id for item in ast.walk(node.test) if isinstance(item,ast.Name)}
+            constants={item.value for item in ast.walk(node.test) if isinstance(item,ast.Constant)}
+            if 'domain' in names and domain in constants:
+                fragments.append(ast.dump(ast.Module(body=node.body,type_ignores=[]),include_attributes=False))
+    if not fragments: raise ValueError('domain review branch source missing')
+    files=list(_DELEGATED_REVIEW_DEPENDENCIES.get(domain,('numerical_policy.py',)))
+    folder=Path(__file__).parent
+    shared=(applicable,_validate,_review_envelope) if domain in _DELEGATED_REVIEW_DEPENDENCIES else \
+           (applicable,_validate,_review_envelope,_validate_inline_family,_finish_review,_same_assertion)
+    payload={'domain':domain,'branch_ast':fragments,
+             'shared':{fn.__name__:inspect.getsource(fn) for fn in shared},
+             'dependencies':{name:hashlib.sha256((folder/name).read_bytes()).hexdigest() for name in files}}
+    return hashlib.sha256(json.dumps(payload,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
 
 
 def execution_context(request,role_id,skill_id,source_kind):
@@ -336,7 +390,7 @@ def _assess_execution(run_id):
             or context.get('review_policy_version')!='H0001-bounded-software-review-v1'
             or method['skill_id']!=skill or output['skill_id']!=skill
             or output['input_sha256']!=catalog.digest(params)
-            or output['implementation_sha256']!=domain_methods.LOADED_SHA256
+            or output['implementation_sha256']!=domain_methods.capability_source_digest(skill)
             or output.get('evidence_class')!='DETERMINISTIC_ROLE_DOMAIN_CALCULATION'
             or output.get('professional_tool_verified') is not False
             or context.get('physical_verification') is not False):

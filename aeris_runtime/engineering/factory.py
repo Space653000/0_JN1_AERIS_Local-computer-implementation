@@ -51,6 +51,18 @@ def pack_digest(pack):
     return catalog.digest({k:v for k,v in pack.items() if k not in {"current_maturity_level","maturity_evidence"}})
 
 
+def domain_contracts(pack):
+    contracts=pack.get('domain_execution_contracts',[])
+    if not isinstance(contracts,list):
+        raise ValueError('domain_execution_contracts must be an ordered list')
+    return contracts
+
+
+def contract_set_digest(pack):
+    """Aggregate-composition digest; never used to stale an unrelated receipt."""
+    return catalog.digest(domain_contracts(pack))
+
+
 def _disk_acceptance_engine_digest():
     names=('factory.py','canonical_registry.py','professional_profiles.py')
     return catalog.digest({name:hashlib.sha256((Path(__file__).parent/name).read_bytes()).hexdigest() for name in names})
@@ -69,7 +81,7 @@ def artifact_digest(pack, cache=None):
     for skill in pack["required_skills"]:
         paths.extend(f"skills/{skill}/{name}" for name in ("SKILL.md","manifest.json","input.schema.json","output.schema.json"))
         paths.append(read(ROOT/f'skills/{skill}/manifest.json')['implementation'])
-    if pack.get('domain_execution_contract'): paths.append(pack['domain_execution_contract']['suite'])
+    paths.extend(contract['suite'] for contract in domain_contracts(pack))
     for key in ("required_methods","required_knowledge","golden_cases","negative_cases","regression_cases","report_templates"):
         paths.extend(pack[key])
     hashes={}
@@ -87,10 +99,11 @@ def load_pack(role_id: str):
 
 
 def fixture_for(role_id: str, skill_id: str):
-    domain=load_pack(role_id).get('domain_execution_contract')
-    if domain and skill_id==domain['skill_id']:
+    domains=[contract for contract in domain_contracts(load_pack(role_id)) if contract.get('skill_id')==skill_id]
+    if len(domains)>1: raise ValueError('duplicate role-domain Skill contract')
+    if domains:
         from .role_acceptance import load_contract
-        _,suite=load_contract(role_id)
+        _,suite=load_contract(role_id,skill_id)
         case=next(c for c in suite['cases'] if c['kind']=='positive')
         return {'skill_id':skill_id,'input':{**copy.deepcopy(suite['base_input']),**copy.deepcopy(case['input_overrides'])},
                 'checks':copy.deepcopy(case['checks']),'reason':case['question'],
@@ -220,8 +233,18 @@ def contract_errors(pack):
             if pack.get(key)!=profile[key]: errors.append('professional contract mismatch: '+key)
         if pack.get('required_methods')!=profile['professional_decision_contract']['required_methods']:
             errors.append('professional contract mismatch: required_methods')
-        if pack.get('domain_execution_contract')!=profile['domain_execution_contract']:
-            errors.append('professional contract mismatch: domain_execution_contract')
+        if pack.get('domain_execution_contracts')!=profile['domain_execution_contracts']:
+            errors.append('professional contract mismatch: domain_execution_contracts')
+    try:
+        domains=domain_contracts(pack)
+        skill_ids=[contract.get('skill_id') for contract in domains if isinstance(contract,dict)]
+        suites=[contract.get('suite') for contract in domains if isinstance(contract,dict)]
+        if any(not isinstance(contract,dict) or set(contract)!={'skill_id','method','suite','scope'} for contract in domains):
+            errors.append('invalid role-domain contract object')
+        if len(skill_ids)!=len(set(skill_ids)) or len(suites)!=len(set(suites)):
+            errors.append('duplicate role-domain Skill or suite')
+    except ValueError as exc:
+        domains=[]; errors.append(str(exc))
     definitions=catalog.definitions()
     from .domain_methods import HANDLERS
     for skill in pack.get("required_skills",[]):
@@ -231,8 +254,9 @@ def contract_errors(pack):
             if not (directory/name).is_file(): errors.append("missing skill asset "+skill+"/"+name)
         if (directory/'manifest.json').is_file():
             manifest=read(directory/'manifest.json'); method=manifest.get('method')
-            expected_method=(profile or {}).get('domain_execution_contract') or {}
-            expected_method=expected_method.get('method') if skill in HANDLERS else f'methods/engineering/{skill}.json'
+            expected_domains=(profile or {}).get('domain_execution_contracts',[])
+            expected_domain=next((item for item in expected_domains if item.get('skill_id')==skill),None)
+            expected_method=expected_domain.get('method') if skill in HANDLERS and expected_domain else f'methods/engineering/{skill}.json'
             if method!=expected_method or method not in pack.get('required_methods',[]):
                 errors.append('Skill/Method contract mismatch: '+skill)
             implementation='aeris_runtime/engineering/domain_methods.py' if skill in HANDLERS else f'skills/{skill}/implementation.py'
@@ -312,12 +336,12 @@ def matrix() -> dict:
                         refs=[str(sealed_path.parent.parent.relative_to(ROOT))]
                     else: weaknesses.append("sealed role/source/contract/predicate mismatch or incomplete Skill/negative evidence")
                 else: weaknesses.append("missing or tampered executable evaluation evidence")
-            if level=='L1' and pack.get('domain_execution_contract'):
+            if level=='L1' and domain_contracts(pack):
                 domain_status=role_factory.status(role['id'])
+                executable.extend(domain_status.get('passed_skill_ids',[]))
+                refs.extend(item['evidence_ref'] for item in domain_status.get('capabilities',[]) if item.get('execution_passed'))
                 if domain_status['execution_passed']:
                     level=domain_status['level']
-                    executable.append(pack['domain_execution_contract']['skill_id'])
-                    refs.append(domain_status['evidence_ref'])
                 weaknesses.append(domain_status['reason'])
             if level=='L1': weaknesses.append("professional positive/negative/boundary execution not established; shared Skill Golden alone is not role L2 or L3")
             if level in {'L1','L2'}: weaknesses.append('independent role-specific domain acceptance not established')
@@ -326,14 +350,20 @@ def matrix() -> dict:
         group=groups.setdefault(role["group"],{"total":0,"L2_or_higher":0,"L3":0})
         group["total"]+=1; group["L2_or_higher"]+=int(level in {"L2","L3","L4"}); group["L3"]+=int(level=="L3")
         rows.append({**role,"level":level,"skills":skills,"executable_skills":sorted(set(executable)),
-                     "evidence":refs,"shared_skill_execution_evidenced":shared_evaluated,'domain_execution':domain_status,
+                      "evidence":refs,"shared_skill_execution_evidenced":shared_evaluated,'domain_execution':domain_status,
+                      'domain_capabilities':domain_status.get('capabilities',[]),
                      "coverage":{"skills":len(skills),"methods":len(pack.get('required_methods',[])),
                                  "knowledge":len(pack.get('required_knowledge',[])),"golden":len(pack.get('golden_cases',[])),
                                  "evaluated":len(shared_skills(pack)) if shared_evaluated else 0,
-                                 "role_domain_cases":domain_status['case_count'],"role_acceptance":0},
+                                  "role_domain_cases":domain_status['case_count'],"role_acceptance":0,
+                                  'domain_declared':domain_status.get('declared_capability_count',0),
+                                  'domain_passed':domain_status.get('passed_capability_count',0),
+                                  'domain_missing':len(domain_status.get('missing_skill_ids',[]))},
                      "known_weaknesses":weaknesses+["no physical/calibrated expert-accepted L4 evidence"]})
     definitions=catalog.definitions(); unresolved=[r["id"] for r in rows if r["level"] in {"L0","L1"}]
-    role_suites=[read(path) for path in (ROOT/'golden/roles').glob('R*/golden.json')]
+    from .professional_profiles import ROLE_DOMAIN_CONTRACTS
+    suite_paths=sorted({contract['suite'] for contracts in ROLE_DOMAIN_CONTRACTS.values() for contract in contracts})
+    role_suites=[read(ROOT/path) for path in suite_paths]
     return {"assessed_at_utc":now(),"total_roles":100,"maturity_counts":counts,"100_role_L2":100-len(unresolved),
             "total_executable_skills":len(definitions)+len(HANDLERS),"total_methods":len(definitions)+len(HANDLERS),"total_golden_cases":len(definitions),
             "total_role_golden_cases":sum(len(s['cases']) for s in role_suites),'total_role_golden_suites':len(role_suites),

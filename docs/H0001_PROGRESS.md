@@ -614,3 +614,26 @@ Transcript SHA-256 and scope are in handoff/construction/H0001/FOLLOWUP.md.
 Independent spec and standards reviews found no scoped blocker. This checkpoint
 does not cover the next standalone array-beam modules added after test discovery.
 H0001 remains in progress; no Core write or main merge is authorized.
+
+## Fifteenth checkpoint — independently versioned role capabilities
+
+Role Acceptance no longer collapses each seat to one domain contract. Exact
+role/Skill receipts, capability-scoped implementation fingerprints, Skill-aware
+execution/reviewer routing, exact Challenge bindings and partial aggregate truth
+are implemented. Adding an unevidenced B lowers aggregate completeness without
+revoking an intact A; adjacent Skills remain blocked.
+
+Composition changes use a serialized append-only local SQLite ledger plus one
+external sealed Evidence anchor per row. Negative tests reject payload rewrite,
+concurrent/duplicate sequencing, trigger removal and truncation, missing anchors,
+legacy locators, ambiguous Skill requests, cross-Skill receipts and deletion of
+ledger/anchor authorities beside a surviving capability locator. These private
+runtime artifacts remain under `.aeris`.
+
+Independent plan, Spec and Standards review findings were reproduced and closed;
+both final review axes report no open P0/P1/P2. The final source ran 378 tests in
+650.176 seconds, all PASS; transcript SHA-256
+`10edb0cc3aceb93dfdef3ba162e463a98cb6311764da8da65bb190b1e402071e`.
+Six semantic pages and six exact dark/light screenshot/accessibility checks PASS.
+Coverage remains 67 Skills/Methods, 25 role suites and 311 role cases. Seventy-five
+roles still need role-domain suites, so H0001 and P02 remain unfinished.

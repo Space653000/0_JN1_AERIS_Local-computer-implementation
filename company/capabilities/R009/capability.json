@@ -170,9 +170,7 @@
     "company/capabilities/R009/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070708Z-2a299003"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -202,6 +200,14 @@
       "neighbor_role": "R011",
       "this_seat_owns": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
       "neighbor_owns": "Size enclosure port and waveguide tradeoffs for tuning, velocity and directivity"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-sealed-alignment-baseline",
+      "method": "methods/roles/speaker-sealed-alignment-baseline.json",
+      "suite": "golden/roles/R009/golden.json",
+      "scope": "Ideal sealed T/S alignment with independent parameter bounds and model geometry; no vented, nonlinear or measured acceptance."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -248,11 +254,5 @@
     "leakage rather than T-S drift",
     "voltage droop rather than acoustic roll-off",
     "small-signal T-S tolerances and enclosure effective volume"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "speaker-sealed-alignment-baseline",
-    "method": "methods/roles/speaker-sealed-alignment-baseline.json",
-    "suite": "golden/roles/R009/golden.json",
-    "scope": "Ideal sealed T/S alignment with independent parameter bounds and model geometry; no vented, nonlinear or measured acceptance."
-  }
+  ]
 }

@@ -147,9 +147,7 @@
     "company/capabilities/R097/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070727Z-084e129d"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -177,6 +175,14 @@
       "neighbor_role": "R099",
       "this_seat_owns": "Maintain requirement-test-evidence and configuration links across revisions",
       "neighbor_owns": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "requirement-association-baseline",
+      "method": "methods/roles/requirement-association-baseline.json",
+      "suite": "golden/roles/R097/golden.json",
+      "scope": "Exact required association/version/reference and supplied interval coverage; no physical/customer acceptance."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -221,11 +227,5 @@
     "configuration drift rather than test regression",
     "missing evidence rather than failed requirement",
     "revision ambiguity and incomplete provenance"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "requirement-association-baseline",
-    "method": "methods/roles/requirement-association-baseline.json",
-    "suite": "golden/roles/R097/golden.json",
-    "scope": "Exact required association/version/reference and supplied interval coverage; no physical/customer acceptance."
-  }
+  ]
 }

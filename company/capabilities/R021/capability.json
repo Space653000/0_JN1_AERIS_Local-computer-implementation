@@ -147,9 +147,7 @@
     "company/capabilities/R021/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070711Z-ec82b80b"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -177,6 +175,14 @@
       "neighbor_role": "R022",
       "this_seat_owns": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
       "neighbor_owns": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-sealed-lumped-domain-review",
+      "method": "methods/roles/speaker-sealed-lumped-domain-review.json",
+      "suite": "golden/roles/R021/golden.json",
+      "scope": "Independent sealed transfer polynomial, extrema and lumped geometry review; no FEM or actual model validation."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -221,11 +227,5 @@
     "wrong boundary condition rather than material model",
     "parameter non-identifiability rather than solver issue",
     "model-form error and parameter sensitivity"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "speaker-sealed-lumped-domain-review",
-    "method": "methods/roles/speaker-sealed-lumped-domain-review.json",
-    "suite": "golden/roles/R021/golden.json",
-    "scope": "Independent sealed transfer polynomial, extrema and lumped geometry review; no FEM or actual model validation."
-  }
+  ]
 }

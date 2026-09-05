@@ -185,9 +185,7 @@
     "company/capabilities/R047/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070717Z-b9840b66"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "ear-level receiver or neckloop interface",
@@ -270,6 +268,7 @@
       "neighbor_owns": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose Auracast assistive-listening latency and level budgets across broadcast and receiver paths",

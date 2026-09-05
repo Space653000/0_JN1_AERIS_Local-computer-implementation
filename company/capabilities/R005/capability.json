@@ -168,9 +168,7 @@
     "company/capabilities/R005/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070707Z-277faa15"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -200,6 +198,14 @@
       "neighbor_role": "R044",
       "this_seat_owns": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints",
       "neighbor_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "tws-anc-domain-review",
+      "method": "methods/roles/tws-anc-domain-review.json",
+      "suite": "golden/roles/R005/golden.json",
+      "scope": "Bounded FF/FB delay, margin and topology review; not full-loop stability verification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -246,11 +252,5 @@
     "clipping before DSP rather than filter defect",
     "reference misalignment rather than adaptation failure",
     "finite-window estimates and algorithm operating domain"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "tws-anc-domain-review",
-    "method": "methods/roles/tws-anc-domain-review.json",
-    "suite": "golden/roles/R005/golden.json",
-    "scope": "Bounded FF/FB delay, margin and topology review; not full-loop stability verification."
-  }
+  ]
 }

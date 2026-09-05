@@ -187,9 +187,7 @@
     "company/capabilities/R058/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070719Z-728d6feb"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "down/back-firing thin display drivers",
@@ -272,6 +270,7 @@
       "neighbor_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Select thin-TV driver and dialogue processing limits under panel buzz and wall placement",

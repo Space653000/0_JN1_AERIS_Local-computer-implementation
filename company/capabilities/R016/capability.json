@@ -171,9 +171,7 @@
     "company/capabilities/R016/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070710Z-9ef1f16f"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -203,6 +201,14 @@
       "neighbor_role": "R075",
       "this_seat_owns": "Derate speaker drive from distortion, compression, temperature and durability limits",
       "neighbor_owns": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-power-distortion-baseline",
+      "method": "methods/roles/speaker-power-distortion-baseline.json",
+      "suite": "golden/roles/R016/golden.json",
+      "scope": "Bounded distortion, power compression and thermal-limit discrimination; not physical reliability qualification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -249,11 +255,5 @@
     "thermal compression rather than motor nonlinearity",
     "fixture buzz rather than cone breakup",
     "test duration, duty cycle and failure censoring"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "speaker-power-distortion-baseline",
-    "method": "methods/roles/speaker-power-distortion-baseline.json",
-    "suite": "golden/roles/R016/golden.json",
-    "scope": "Bounded distortion, power compression and thermal-limit discrimination; not physical reliability qualification."
-  }
+  ]
 }

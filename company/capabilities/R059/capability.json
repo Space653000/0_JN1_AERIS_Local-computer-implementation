@@ -185,9 +185,7 @@
     "company/capabilities/R059/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070719Z-7e405bc3"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "weather-protected small loudspeaker",
@@ -271,6 +269,7 @@
       "neighbor_owns": "Choose echo-control alignment and adaptation constraints across delay and double-talk"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Balance doorbell two-way audio against wind, water membrane and feedback paths",

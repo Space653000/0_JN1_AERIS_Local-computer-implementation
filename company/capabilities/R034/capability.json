@@ -170,9 +170,7 @@
     "company/capabilities/R034/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070714Z-6240b9d0"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -202,6 +200,14 @@
       "neighbor_role": "R040",
       "this_seat_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty",
       "neighbor_owns": "Predict array propagation and aliasing with geometric delay and steering-vector checks"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-array-pattern-domain-review",
+      "method": "methods/roles/microphone-array-pattern-domain-review.json",
+      "suite": "golden/roles/R034/golden.json",
+      "scope": "Independent directional sample, channel uncertainty and model-guard consistency; no actual array calibration or continuous-angle acceptance."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -248,11 +254,5 @@
     "channel delay bias rather than steering error",
     "spatial aliasing rather than poor estimator",
     "aperture tolerance, phase mismatch and angular sampling"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "microphone-array-pattern-domain-review",
-    "method": "methods/roles/microphone-array-pattern-domain-review.json",
-    "suite": "golden/roles/R034/golden.json",
-    "scope": "Independent directional sample, channel uncertainty and model-guard consistency; no actual array calibration or continuous-angle acceptance."
-  }
+  ]
 }

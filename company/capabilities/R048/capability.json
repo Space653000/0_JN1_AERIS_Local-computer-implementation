@@ -189,9 +189,7 @@
     "company/capabilities/R048/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070717Z-1cd00b7d"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "sealed miniature dynamic/BA driver",
@@ -277,6 +275,14 @@
       "neighbor_owns": "Balance circumaural cushion seal, driver output and hybrid ANC stability across head shapes"
     }
   ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "tws-fit-anc-call-baseline",
+      "method": "methods/roles/tws-fit-anc-call-baseline.json",
+      "suite": "golden/roles/R048/golden.json",
+      "scope": "Bounded TWS seal, FF/FB ANC, outward call noise, excursion and occlusion decisions; not complete product acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Resolve TWS seal, FF/FB ANC, inward/outward mic and call-capture tradeoffs across user fit",
@@ -323,11 +329,5 @@
     "tip-fit change rather than driver defect",
     "feedback-path shift rather than feedforward tuning",
     "ear-canal volume, miniature-driver excursion and fit spread"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "tws-fit-anc-call-baseline",
-    "method": "methods/roles/tws-fit-anc-call-baseline.json",
-    "suite": "golden/roles/R048/golden.json",
-    "scope": "Bounded TWS seal, FF/FB ANC, outward call noise, excursion and occlusion decisions; not complete product acceptance."
-  }
+  ]
 }

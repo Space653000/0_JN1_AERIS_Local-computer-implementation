@@ -147,9 +147,7 @@
     "company/capabilities/R079/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070724Z-18121174"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -177,6 +175,14 @@
       "neighbor_role": "R078",
       "this_seat_owns": "Build traceable uncertainty and gage R&R budgets with correct references and correlations",
       "neighbor_owns": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-fr-uncertainty-domain-review",
+      "method": "methods/roles/speaker-fr-uncertainty-domain-review.json",
+      "suite": "golden/roles/R079/golden.json",
+      "scope": "Bounded monotone reference-interval review; not full uncertainty metrology or physical qualification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -221,11 +227,5 @@
     "fixture bias rather than operator error",
     "drift rather than random spread",
     "coverage factor, covariance and metrological traceability"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "speaker-fr-uncertainty-domain-review",
-    "method": "methods/roles/speaker-fr-uncertainty-domain-review.json",
-    "suite": "golden/roles/R079/golden.json",
-    "scope": "Bounded monotone reference-interval review; not full uncertainty metrology or physical qualification."
-  }
+  ]
 }

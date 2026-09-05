@@ -185,9 +185,7 @@
     "company/capabilities/R046/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070716Z-95f7202d"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "receiver with user-adjustable gain",
@@ -270,6 +268,7 @@
       "neighbor_owns": "Balance circumaural cushion seal, driver output and hybrid ANC stability across head shapes"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",

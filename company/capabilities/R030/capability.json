@@ -168,9 +168,7 @@
     "company/capabilities/R030/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070713Z-28858f44"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -200,6 +198,14 @@
       "neighbor_role": "R031",
       "this_seat_owns": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
       "neighbor_owns": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-noise-headroom-domain-review",
+      "method": "methods/roles/microphone-noise-headroom-domain-review.json",
+      "suite": "golden/roles/R030/golden.json",
+      "scope": "Bounded noise identifiability and signal headroom review; not capsule AOP or total peak verification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -246,11 +252,5 @@
     "supply ripple rather than capsule self-noise",
     "common-mode conversion rather than differential signal",
     "noise-source correlation and component tolerance"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "microphone-noise-headroom-domain-review",
-    "method": "methods/roles/microphone-noise-headroom-domain-review.json",
-    "suite": "golden/roles/R030/golden.json",
-    "scope": "Bounded noise identifiability and signal headroom review; not capsule AOP or total peak verification."
-  }
+  ]
 }

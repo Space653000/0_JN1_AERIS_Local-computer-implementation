@@ -97,3 +97,34 @@ screenshot, one-click installer and Autopilot, then was cancelled at the exact
 failure preceded cancellation. The matrix budget is now 50 minutes with a
 regression that also requires every original acceptance path to remain present;
 this change still needs the next Windows CI result.
+
+## Multi-capability Role Acceptance architecture checkpoint
+
+The singular role-domain contract has been replaced by an ordered capability
+list. Receipts and locators are now exact `(role, Skill)` records. Aggregate role
+level is display/completeness truth only: every declared capability is required
+for aggregate L2, while an intact A receipt remains executable/reviewable if a
+new B is still missing. Reviewer routing, workflow execution, fixtures and all
+eight company Challenges use exact Skill qualification. Each Challenge registry
+entry now seals its executor Skill so adding B cannot make the scenario ambiguous.
+
+Per-capability fingerprints bind exact implementation, Method, suite, Skill
+assets and used shared predicates without coupling an unrelated handler. Ordered
+contract-set transitions are retained in a local-only append-only SQLite ledger.
+Each row has a separate sealed Evidence anchor outside that database. Concurrent
+writers are serialized, and payload rewrite, trigger removal plus truncation,
+missing anchor, or ledger/anchor reset beside an existing receipt fail closed.
+SQLite, anchors and raw bundles remain under `.aeris` and are not published.
+
+Independent plan review found two P1 design defects; independent Spec/Standards
+reviews then found and reproduced six implementation edge cases. All were fixed,
+their negative regressions pass, and both review axes report no open P0/P1/P2.
+Final fixed-source regression: 378 PASS in 650.176 seconds, finished
+2026-09-05T00:21:31.122624+00:00. Local transcript:
+`.aeris/evidence/H0001-multi-capability-full-tests.log`, SHA-256
+`10edb0cc3aceb93dfdef3ba162e463a98cb6311764da8da65bb190b1e402071e`.
+Six real-browser semantic routes and all six dark/light exact-repeatability and
+accessibility captures pass locally. Source coverage remains 67 executable
+Skills/Methods, 25 role suites and 311 role cases; 75 roles still lack a domain
+suite. This is prerequisite architecture, not P02/H0001 acceptance or L3/L4.
+New Windows/Ubuntu CI is required on the pushed checkpoint.

@@ -168,9 +168,7 @@
     "company/capabilities/R099/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070727Z-ae7afd20"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -200,6 +198,14 @@
       "neighbor_role": "R008",
       "this_seat_owns": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval",
       "neighbor_owns": "Separate source authority, standards applicability and research hypotheses before reuse"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "requirement-association-domain-review",
+      "method": "methods/roles/requirement-association-domain-review.json",
+      "suite": "golden/roles/R099/golden.json",
+      "scope": "Independent required-association and evidence-content claim challenge; no source authenticity or universal domain authority."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -246,11 +252,5 @@
     "provenance mismatch rather than conflicting result",
     "stale report rather than changed product",
     "source completeness and unresolved reviewer disagreement"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "requirement-association-domain-review",
-    "method": "methods/roles/requirement-association-domain-review.json",
-    "suite": "golden/roles/R099/golden.json",
-    "scope": "Independent required-association and evidence-content claim challenge; no source authenticity or universal domain authority."
-  }
+  ]
 }

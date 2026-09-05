@@ -23,7 +23,10 @@ def route_pod(request: dict, capability_matrix=None):
     if "FREE_LOCAL_BASELINE" not in request.get("available_tools",[]):
         return {"state":"BLOCKED","uncovered_skills":required,"reason":"free local tool layer unavailable","roles":[],"pod_size":0}
     matrix=capability_matrix or factory.matrix()
-    eligible=[r for r in matrix["roles"] if r["level"] in {"L2","L3","L4"} and r.get('executable_skills')]
+    # Aggregate maturity is display/completeness truth. Exact evidenced Skills
+    # authorize execution, so a partial multi-capability role may retain A while
+    # an unevidenced B remains blocked.
+    eligible=[r for r in matrix["roles"] if r.get('executable_skills')]
     by_id={r["id"]:r for r in eligible}; remaining=set(required); executors=[]; reasons={}
     group={"Speaker":"Speaker CoE","Microphone":"Microphone CoE"}.get(request["transducer"])
     while remaining:
@@ -33,7 +36,7 @@ def route_pod(request: dict, capability_matrix=None):
         if not candidates: break
         selected=sorted(candidates,key=lambda r:(-len(remaining&set(r['executable_skills'])), -int(r["group"]==group),r["id"]))[0]
         covers=sorted(remaining & set(selected['executable_skills'])); remaining-=set(covers)
-        executors.append(selected); reasons[selected["id"]]="Executable "+selected["level"]+" coverage: "+", ".join(covers)
+        executors.append(selected); reasons[selected["id"]]="Current exact-Skill Evidence coverage: "+", ".join(covers)
     product=request.get("product","")
     chiefs=[r for r in eligible if r["group"]=="Product Chiefs" and product in {r["id"],r["name"]}]
     lead=chiefs[0] if chiefs else (by_id.get("R001") or (executors[0] if executors else None))
@@ -80,9 +83,11 @@ def run_role(role_id: str, skill_id: str, params: dict, *, objective: str, proje
              "lifecycle":"EVT","risk":risk,"requirement":objective,"required_evidence":["sealed numerical run","independent counterreview"],
              "needed_skills":[skill_id],"available_tools":["FREE_LOCAL_BASELINE"],
              'execution_role_id':role_id,'source_kind':source_kind,**(context or {})}
-    matrix=factory.matrix(); by_id={r["id"]:r for r in matrix["roles"]}
-    if by_id[role_id]["level"] not in {"L2","L3","L4"} or skill_id not in by_id[role_id].get('executable_skills',[]):
+    from .role_acceptance import RoleAcceptanceFactory
+    qualification=RoleAcceptanceFactory().status_for_skill(role_id,skill_id)
+    if not qualification['execution_passed']:
         raise ValueError("requested role lacks current execution evidence for this Skill")
+    matrix=factory.matrix()
     pod=route_pod(request,matrix)
     if not pod.get('software_execution_permitted'):
         raise ValueError("no evaluated capability coverage: "+str(pod["uncovered_skills"]))

@@ -145,9 +145,7 @@
     "company/capabilities/R036/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070714Z-d506a25f"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -175,6 +173,7 @@
       "neighbor_owns": "Tune speech capture for double-talk, spectral preservation and transient intelligibility"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Tune microphone tonal response while preserving intelligibility and overload margin",

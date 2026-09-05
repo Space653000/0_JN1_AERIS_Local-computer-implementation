@@ -166,9 +166,7 @@
     "company/capabilities/R003/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070707Z-df89932a"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -198,6 +196,7 @@
       "neighbor_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",

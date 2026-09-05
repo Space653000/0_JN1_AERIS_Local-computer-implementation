@@ -149,9 +149,7 @@
     "company/capabilities/R028/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070712Z-1234ed4e"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -179,6 +177,14 @@
       "neighbor_role": "R030",
       "this_seat_owns": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
       "neighbor_owns": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-reference-domain-review",
+      "method": "methods/roles/microphone-reference-domain-review.json",
+      "suite": "golden/roles/R028/golden.json",
+      "scope": "Bounded pressure/voltage/gain sensitivity review; not physical capsule characterization."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -223,11 +229,5 @@
     "bias network noise rather than capsule noise",
     "calibrator coupling rather than sensitivity shift",
     "calibrator uncertainty and capsule production spread"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "microphone-reference-domain-review",
-    "method": "methods/roles/microphone-reference-domain-review.json",
-    "suite": "golden/roles/R028/golden.json",
-    "scope": "Bounded pressure/voltage/gain sensitivity review; not physical capsule characterization."
-  }
+  ]
 }

@@ -170,9 +170,7 @@
     "company/capabilities/R029/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070712Z-4d1b587f"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "ROLE_SCOPED_METADATA",
   "professional_decision_contract": {
@@ -202,6 +200,14 @@
       "neighbor_role": "R041",
       "this_seat_owns": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss",
       "neighbor_owns": "Separate wind, room and structure paths in microphone disturbance models"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "tws-fit-capture-domain-review",
+      "method": "methods/roles/tws-fit-capture-domain-review.json",
+      "suite": "golden/roles/R029/golden.json",
+      "scope": "Bounded seal and capture noise discrimination review; not physical port/mesh characterization."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -248,11 +254,5 @@
     "structure-borne vibration rather than airflow",
     "blocked vent rather than capsule defect",
     "porosity, leakage path and flow direction"
-  ],
-  "domain_execution_contract": {
-    "skill_id": "tws-fit-capture-domain-review",
-    "method": "methods/roles/tws-fit-capture-domain-review.json",
-    "suite": "golden/roles/R029/golden.json",
-    "scope": "Bounded seal and capture noise discrimination review; not physical port/mesh characterization."
-  }
+  ]
 }

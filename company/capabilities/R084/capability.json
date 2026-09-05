@@ -143,9 +143,7 @@
     "company/capabilities/R084/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260903T070724Z-8d35e8d0"
-  ],
+  "maturity_evidence": [],
   "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
@@ -173,6 +171,7 @@
       "neighbor_owns": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions"
     }
   ],
+  "domain_execution_contracts": [],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Assess local audio ML generalization, leakage and calibration rather than training fit alone",
