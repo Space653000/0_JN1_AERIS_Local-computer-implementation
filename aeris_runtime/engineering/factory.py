@@ -221,10 +221,11 @@ def materialize() -> dict:
     return {"roles":len(roles),"factory_skills":len(definitions),"methods":len(definitions),"state":"CONTRACTS_MATERIALIZED_NOT_YET_EVALUATED"}
 
 
-def contract_errors(pack):
+def contract_errors(pack, *, profile_registry=None, definition_registry=None):
     errors=["missing field "+k for k in SCHEMA_REQUIRED if k not in pack]
     from .professional_profiles import profiles
-    profile=profiles().get(pack.get('identity',{}).get('id'))
+    profile=(profiles() if profile_registry is None else profile_registry).get(
+        pack.get('identity',{}).get('id'))
     if profile is None:
         errors.append('unknown professional role identity')
     else:
@@ -245,7 +246,7 @@ def contract_errors(pack):
             errors.append('duplicate role-domain Skill or suite')
     except ValueError as exc:
         domains=[]; errors.append(str(exc))
-    definitions=catalog.definitions()
+    definitions=catalog.definitions() if definition_registry is None else definition_registry
     from .domain_methods import HANDLERS
     for skill in pack.get("required_skills",[]):
         if skill not in definitions and skill not in HANDLERS: errors.append("unknown skill "+skill); continue
@@ -308,15 +309,23 @@ def evaluate_role(role_id: str) -> dict:
 def matrix() -> dict:
     from .role_acceptance import RoleAcceptanceFactory
     from .domain_methods import HANDLERS
+    from .professional_profiles import profiles
     role_factory=RoleAcceptanceFactory()
     roles=canonical_roles(); rows=[]; counts={f"L{i}":0 for i in range(5)}; groups={}
     implementation=catalog.implementation_digest(); artifact_cache={}
+    # A live matrix validates the same immutable in-process registries for every
+    # role. Build them once per projection instead of reparsing all analytical
+    # fixtures and professional profiles hundreds of times. Disk-backed role,
+    # Method, Skill and Evidence assets are still checked for every role below.
+    definition_registry=catalog.definitions(); profile_registry=profiles()
     for role in roles:
         level="L0"; weaknesses=[]; skills=[]; refs=[]; shared_evaluated=False; executable=[]
         domain_status={'execution_passed':False,'case_count':0,'role_l3_accepted':False}
         pack={}
         try:
-            pack=load_pack(role["id"]); errors=contract_errors(pack); skills=pack["required_skills"]
+            pack=load_pack(role["id"]); errors=contract_errors(
+                pack,profile_registry=profile_registry,definition_registry=definition_registry)
+            skills=pack["required_skills"]
             if not errors: level="L1"
             else: weaknesses+=errors
             path=STATE/"evaluations"/(role["id"]+".json")
@@ -337,7 +346,7 @@ def matrix() -> dict:
                     else: weaknesses.append("sealed role/source/contract/predicate mismatch or incomplete Skill/negative evidence")
                 else: weaknesses.append("missing or tampered executable evaluation evidence")
             if level=='L1' and domain_contracts(pack):
-                domain_status=role_factory.status(role['id'])
+                domain_status=role_factory.status(role['id'],pack=pack,errors=errors)
                 executable.extend(domain_status.get('passed_skill_ids',[]))
                 refs.extend(item['evidence_ref'] for item in domain_status.get('capabilities',[]) if item.get('execution_passed'))
                 if domain_status['execution_passed']:
@@ -360,7 +369,7 @@ def matrix() -> dict:
                                   'domain_passed':domain_status.get('passed_capability_count',0),
                                   'domain_missing':len(domain_status.get('missing_skill_ids',[]))},
                      "known_weaknesses":weaknesses+["no physical/calibrated expert-accepted L4 evidence"]})
-    definitions=catalog.definitions(); unresolved=[r["id"] for r in rows if r["level"] in {"L0","L1"}]
+    definitions=definition_registry; unresolved=[r["id"] for r in rows if r["level"] in {"L0","L1"}]
     from .professional_profiles import ROLE_DOMAIN_CONTRACTS
     suite_paths=sorted({contract['suite'] for contracts in ROLE_DOMAIN_CONTRACTS.values() for contract in contracts})
     role_suites=[read(ROOT/path) for path in suite_paths]

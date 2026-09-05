@@ -5,6 +5,7 @@ import json
 import copy
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -29,6 +30,7 @@ SERVICE_PLANES={
     'EXECUTION':('Local Model Router','Free Local Acoustic Baseline','Licensed Professional Tool Bus'),
     'TRUST':('Evidence Store','Verification Engine','Audit Ledger','Reproduction Runner'),
     'OPERATIONS':('Expected-run Health','Watchdog Recovery','Machine / GPU Qualification','Offline Continuity','Capability Maturity')}
+_HEALTH_EXECUTOR=ThreadPoolExecutor(max_workers=1,thread_name_prefix='aeris-local-health')
 
 
 def _read(path: Path) -> dict[str, Any]:
@@ -71,6 +73,11 @@ def role_router_status(snapshot: dict[str, Any]) -> dict[str, Any]:
 def _collect_service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
     """Assess capability evidence; process liveness alone never yields HEALTHY."""
     now = datetime.now(timezone.utc).isoformat()
+    config = load_config()
+    # The loopback model probe has its own bounded network timeout and is
+    # independent of repository/Evidence validation. Overlap it with those
+    # checks so a truthful 10-second telemetry window remains observable.
+    local_health=_HEALTH_EXECUTOR.submit(ModelRouter(config).local.health)
     maturity = _read(MATURITY)
     skills = list_skills()
     try:
@@ -88,8 +95,7 @@ def _collect_service_telemetry(control_summary: dict[str, int]) -> dict[str, Any
     watchdog = _read(watchdog_path)
     opening_path = STATE / "COMPANY_OPENING.json"
     opening = _read(opening_path)
-    config = load_config()
-    local_ok, local_reason = ModelRouter(config).local.health()
+    local_ok, local_reason = local_health.result()
     evidence_dirs = [p for p in EVIDENCE.iterdir() if p.is_dir() and p.name.startswith("RUN-")] if EVIDENCE.exists() else []
     valid_evidence = [p for p in evidence_dirs if validate_bundle(p.name).get("valid")]
     evidenced_workflows = [item for item in workflows if item.get("state") in {"EVIDENCED", "VERIFIED"}]

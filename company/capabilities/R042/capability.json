@@ -21,22 +21,26 @@
   "inputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
     "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-    "latency-budget": "skills/latency-budget/input.schema.json"
+    "latency-budget": "skills/latency-budget/input.schema.json",
+    "microphone-aec-control-baseline": "skills/microphone-aec-control-baseline/input.schema.json"
   },
   "outputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
     "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-    "latency-budget": "skills/latency-budget/output.schema.json"
+    "latency-budget": "skills/latency-budget/output.schema.json",
+    "microphone-aec-control-baseline": "skills/microphone-aec-control-baseline/output.schema.json"
   },
   "required_skills": [
     "enhancement-aec-metrics",
     "transfer-coherence",
-    "latency-budget"
+    "latency-budget",
+    "microphone-aec-control-baseline"
   ],
   "required_methods": [
     "methods/engineering/enhancement-aec-metrics.json",
     "methods/engineering/transfer-coherence.json",
-    "methods/engineering/latency-budget.json"
+    "methods/engineering/latency-budget.json",
+    "methods/roles/microphone-aec-control-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/enhancement-aec-metrics.json",
@@ -173,12 +177,14 @@
     "required_methods": [
       "methods/engineering/enhancement-aec-metrics.json",
       "methods/engineering/transfer-coherence.json",
-      "methods/engineering/latency-budget.json"
+      "methods/engineering/latency-budget.json",
+      "methods/roles/microphone-aec-control-baseline.json"
     ],
     "required_skills": [
       "enhancement-aec-metrics",
       "transfer-coherence",
-      "latency-budget"
+      "latency-budget",
+      "microphone-aec-control-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -194,7 +200,14 @@
       "neighbor_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-aec-control-baseline",
+      "method": "methods/roles/microphone-aec-control-baseline.json",
+      "suite": "golden/roles/R042/golden.json",
+      "scope": "Supplied scalar ERLE, near-speech loss, alignment, drift, double-talk adaptation, tail and nonlinear-residual screening; no measured echo path or speech-quality acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose echo-control alignment and adaptation constraints across delay and double-talk",
@@ -212,7 +225,8 @@
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
       "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-      "latency-budget": "skills/latency-budget/input.schema.json"
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "microphone-aec-control-baseline": "skills/microphone-aec-control-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -227,7 +241,8 @@
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
       "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-      "latency-budget": "skills/latency-budget/output.schema.json"
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "microphone-aec-control-baseline": "skills/microphone-aec-control-baseline/output.schema.json"
     }
   },
   "report_sections": [

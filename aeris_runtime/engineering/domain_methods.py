@@ -156,6 +156,10 @@ from .room_decay import analyze as room_decay_model
 from .room_correction import analyze as room_correction_model
 from .speaker_digital_transport import analyze as speaker_digital_transport_model
 from .speaker_filter_realization import analyze as speaker_filter_realization_model
+from .microphone_architecture import analyze as microphone_architecture_model
+from .far_field_scenarios import analyze as far_field_scenarios_model
+from .microphone_tonal import analyze as microphone_tonal_model
+from .aec_control import analyze as aec_control_model
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
@@ -175,6 +179,10 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'room-correction-spatial-baseline':room_correction_model,
           'speaker-digital-transport-baseline':speaker_digital_transport_model,
           'speaker-filter-realization-baseline':speaker_filter_realization_model,
+          'microphone-architecture-baseline':microphone_architecture_model,
+          'microphone-far-field-scenarios-baseline':far_field_scenarios_model,
+          'microphone-tonal-headroom-baseline':microphone_tonal_model,
+          'microphone-aec-control-baseline':aec_control_model,
           'microphone-array-taper-baseline':array_beam_model,
           'microphone-capture-continuity-baseline':capture_clock_model}
 
@@ -209,7 +217,7 @@ def _review_handler(domain):
     return run
 
 
-for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-array-pattern','microphone-capture-clock'):
+for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','microphone-array-pattern','microphone-capture-clock'):
     HANDLERS[_domain+'-domain-review']=_review_handler(_domain)
 
 

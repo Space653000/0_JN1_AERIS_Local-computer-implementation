@@ -712,6 +712,40 @@ The private transcript remains local at
 No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
 this checkpoint.
 
+## Twenty-second checkpoint — Microphone CoE suite coverage 18/18
+
+Eight remaining Microphone CoE seats now have bounded role-specific domain
+suites. R027 checks capsule sensitivity, self-noise, overload, acoustic-port
+loss and array spacing; R039 independently reconstructs that architecture.
+R035 checks far-field distance, noise, competing speech and scalar RT60
+scenarios; R041 independently challenges disturbance coverage. R036 checks
+sampled tonal correction, voice HPF, smoothing, headroom and capsule overload;
+R038 independently reviews the declared assertions. R042 checks ERLE,
+near-speech preservation, alignment, clock drift, double talk, tail and
+nonlinear residual; R044 independently reviews the AEC/enhancement decision.
+
+Focused regressions passed 30 and 38 tests. Final fixed-source regression passed
+434 tests in 1198.927 seconds. Six real-browser semantic routes and all six
+fixed-environment dark/light screenshot repeatability/basic-accessibility
+routes passed. The screenshot gate exposed a real ten-second telemetry
+freshness race; reuse of immutable in-process registries and concurrent bounded
+local-model health probing reduced a full service assessment from about 9.86
+seconds to 6.36 seconds without changing fail-closed expiry semantics.
+
+Inventory is 95 executable Skills, 95 Methods, 53 role suites and 423 role
+cases. Forty-nine roles have at least one suite and 51 do not. Speaker CoE and
+Microphone CoE are both 18/18. Installed truth remains L0=0, L1=100, L2=0,
+L3=0, L4=0; no physical, calibration, perceptual, Human, role-wide L3,
+H0001 or P02 completion is claimed.
+
+Private transcript
+`.aeris/evidence/H0001-microphone-completion-final-full-tests.log`, SHA-256
+`87c2c52f5e48e12e99304af8e4e7e90196c382bcfca80d56428975f802c99f7b`.
+No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
+this checkpoint. The GitHub CI job budget is 75 minutes because the previous
+50-minute runs passed all earlier gates but were cancelled during retained tail
+smoke checks; no acceptance path is removed.
+
 ## Nineteenth checkpoint — signal chain, bass protection and structural path
 
 Six more seats now have bounded role-specific domain suites. R012 refers each

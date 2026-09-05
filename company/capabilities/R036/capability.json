@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "response-phase-delay": "skills/response-phase-delay/input.schema.json",
-    "butterworth-filter": "skills/butterworth-filter/input.schema.json"
+    "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+    "microphone-tonal-headroom-baseline": "skills/microphone-tonal-headroom-baseline/input.schema.json"
   },
   "outputs": {
     "response-phase-delay": "skills/response-phase-delay/output.schema.json",
-    "butterworth-filter": "skills/butterworth-filter/output.schema.json"
+    "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+    "microphone-tonal-headroom-baseline": "skills/microphone-tonal-headroom-baseline/output.schema.json"
   },
   "required_skills": [
     "response-phase-delay",
-    "butterworth-filter"
+    "butterworth-filter",
+    "microphone-tonal-headroom-baseline"
   ],
   "required_methods": [
     "methods/engineering/response-phase-delay.json",
-    "methods/engineering/butterworth-filter.json"
+    "methods/engineering/butterworth-filter.json",
+    "methods/roles/microphone-tonal-headroom-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/response-phase-delay.json",
@@ -153,11 +157,13 @@
     "question": "Tune microphone tonal response while preserving intelligibility and overload margin",
     "required_methods": [
       "methods/engineering/response-phase-delay.json",
-      "methods/engineering/butterworth-filter.json"
+      "methods/engineering/butterworth-filter.json",
+      "methods/roles/microphone-tonal-headroom-baseline.json"
     ],
     "required_skills": [
       "response-phase-delay",
-      "butterworth-filter"
+      "butterworth-filter",
+      "microphone-tonal-headroom-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -173,7 +179,14 @@
       "neighbor_owns": "Tune speech capture for double-talk, spectral preservation and transient intelligibility"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-tonal-headroom-baseline",
+      "method": "methods/roles/microphone-tonal-headroom-baseline.json",
+      "suite": "golden/roles/R036/golden.json",
+      "scope": "Supplied sampled microphone magnitude, correction, smoothing, high-pass, headroom and overload-margin screening; no realized filter, intelligibility or physical acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Tune microphone tonal response while preserving intelligibility and overload margin",
@@ -190,7 +203,8 @@
     ],
     "calculation_schemas": {
       "response-phase-delay": "skills/response-phase-delay/input.schema.json",
-      "butterworth-filter": "skills/butterworth-filter/input.schema.json"
+      "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+      "microphone-tonal-headroom-baseline": "skills/microphone-tonal-headroom-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -204,7 +218,8 @@
     ],
     "calculation_schemas": {
       "response-phase-delay": "skills/response-phase-delay/output.schema.json",
-      "butterworth-filter": "skills/butterworth-filter/output.schema.json"
+      "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+      "microphone-tonal-headroom-baseline": "skills/microphone-tonal-headroom-baseline/output.schema.json"
     }
   },
   "report_sections": [

@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
-    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json"
+    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+    "microphone-tonal-intelligibility-domain-review": "skills/microphone-tonal-intelligibility-domain-review/input.schema.json"
   },
   "outputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
-    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json"
+    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+    "microphone-tonal-intelligibility-domain-review": "skills/microphone-tonal-intelligibility-domain-review/output.schema.json"
   },
   "required_skills": [
     "enhancement-aec-metrics",
-    "psychoacoustic-descriptors"
+    "psychoacoustic-descriptors",
+    "microphone-tonal-intelligibility-domain-review"
   ],
   "required_methods": [
     "methods/engineering/enhancement-aec-metrics.json",
-    "methods/engineering/psychoacoustic-descriptors.json"
+    "methods/engineering/psychoacoustic-descriptors.json",
+    "methods/roles/microphone-tonal-intelligibility-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/enhancement-aec-metrics.json",
@@ -151,11 +155,13 @@
     "question": "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
     "required_methods": [
       "methods/engineering/enhancement-aec-metrics.json",
-      "methods/engineering/psychoacoustic-descriptors.json"
+      "methods/engineering/psychoacoustic-descriptors.json",
+      "methods/roles/microphone-tonal-intelligibility-domain-review.json"
     ],
     "required_skills": [
       "enhancement-aec-metrics",
-      "psychoacoustic-descriptors"
+      "psychoacoustic-descriptors",
+      "microphone-tonal-intelligibility-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -171,7 +177,14 @@
       "neighbor_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-tonal-intelligibility-domain-review",
+      "method": "methods/roles/microphone-tonal-intelligibility-domain-review.json",
+      "suite": "golden/roles/R038/microphone-tonal.json",
+      "scope": "Independent microphone correction, voice high-pass, headroom and overload assertion review; no intelligibility, realized-filter or physical acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Tune speech capture for double-talk, spectral preservation and transient intelligibility",
@@ -188,7 +201,8 @@
     ],
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
-      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json"
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+      "microphone-tonal-intelligibility-domain-review": "skills/microphone-tonal-intelligibility-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -202,7 +216,8 @@
     ],
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
-      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json"
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+      "microphone-tonal-intelligibility-domain-review": "skills/microphone-tonal-intelligibility-domain-review/output.schema.json"
     }
   },
   "report_sections": [

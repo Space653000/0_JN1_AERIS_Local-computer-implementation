@@ -315,9 +315,10 @@ class RoleAcceptanceFactory:
                       {'role_id':role_id,'skill_id':contract['skill_id'],'run_id':run_id})
         return self.status_for_skill(role_id,contract['skill_id'])
 
-    def status_for_skill(self,role_id,skill_id):
-        pack=factory.load_pack(role_id)
-        result={'role_id':role_id,'level':'L0' if factory.contract_errors(pack) else 'L1',
+    def status_for_skill(self,role_id,skill_id,*,pack=None,errors=None):
+        pack=factory.load_pack(role_id) if pack is None else pack
+        errors=factory.contract_errors(pack) if errors is None else errors
+        result={'role_id':role_id,'level':'L0' if errors else 'L1',
                 'skill_id':skill_id,
                 'execution_passed':False,'role_l3_accepted':False,'review_state':'REVIEW_BLOCKED',
                 'physical_measurement_verified':False,'case_count':0,'reason':'No current role-domain execution evidence'}
@@ -347,8 +348,9 @@ class RoleAcceptanceFactory:
             result['reason']=str(exc)
         return result
 
-    def status(self,role_id):
-        pack=factory.load_pack(role_id); errors=factory.contract_errors(pack)
+    def status(self,role_id,*,pack=None,errors=None):
+        pack=factory.load_pack(role_id) if pack is None else pack
+        errors=factory.contract_errors(pack) if errors is None else errors
         try: contracts=factory.domain_contracts(pack)
         except ValueError as exc: errors=[*errors,str(exc)]; contracts=[]
         composition=[]; composition_error=None
@@ -359,7 +361,7 @@ class RoleAcceptanceFactory:
         capabilities=[]
         for contract in contracts:
             skill_id=contract.get('skill_id') if isinstance(contract,dict) else ''
-            capabilities.append(self.status_for_skill(role_id,skill_id) if skill_id else {
+            capabilities.append(self.status_for_skill(role_id,skill_id,pack=pack,errors=errors) if skill_id else {
                 'role_id':role_id,'skill_id':skill_id,'level':'L0','execution_passed':False,
                 'case_count':0,'reason':'invalid role-domain Skill contract'})
         passed=[item for item in capabilities if item.get('execution_passed')]

@@ -27,6 +27,10 @@ REQUIRED_DOMAINS={
     'room-correction-spatial-baseline':['room-correction-spatial'],
     'speaker-digital-transport-baseline':['speaker-digital-transport'],
     'speaker-filter-realization-baseline':['speaker-filter-realization'],
+    'microphone-architecture-baseline':['microphone-architecture-acoustic-path'],
+    'microphone-far-field-scenarios-baseline':['microphone-far-field-disturbance'],
+    'microphone-tonal-headroom-baseline':['microphone-tonal-intelligibility'],
+    'microphone-aec-control-baseline':['microphone-aec-enhancement'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -191,6 +195,18 @@ def review(domain,request):
     if domain=='speaker-filter-realization':
         from .speaker_filter_realization_review import review as review_filter
         return review_filter(p,candidate)
+    if domain=='microphone-architecture-acoustic-path':
+        from .microphone_architecture_review import review as review_microphone_architecture
+        return review_microphone_architecture(p,candidate)
+    if domain=='microphone-far-field-disturbance':
+        from .far_field_scenarios_review import review as review_far_field
+        return review_far_field(p,candidate)
+    if domain=='microphone-tonal-intelligibility':
+        from .microphone_tonal_review import review as review_microphone_tonal
+        return review_microphone_tonal(p,candidate)
+    if domain=='microphone-aec-enhancement':
+        from .aec_control_review import review as review_aec
+        return review_aec(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -337,6 +353,10 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'room-correction-spatial':('room_correction_review.py','room_correction.py'),
     'speaker-digital-transport':('speaker_digital_transport_review.py','speaker_digital_transport.py'),
     'speaker-filter-realization':('speaker_filter_realization_review.py','speaker_filter_realization.py'),
+    'microphone-architecture-acoustic-path':('microphone_architecture_review.py','microphone_architecture.py'),
+    'microphone-far-field-disturbance':('far_field_scenarios_review.py','far_field_scenarios.py'),
+    'microphone-tonal-intelligibility':('microphone_tonal_review.py','microphone_tonal.py'),
+    'microphone-aec-enhancement':('aec_control_review.py','aec_control.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -382,7 +402,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -508,6 +528,14 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['WORD_FITS_SLOT','BIT_CLOCK_RELATION','FRAME_SYNC_RELATION','SERVICE_BUFFER_MARGIN','BUFFER_LATENCY','ACTIVE_SLOT_COVERAGE']
     if skill=='speaker-filter-realization-baseline':
         return [c.get('id') for c in values['checks']]==['POLE_STABILITY','COEFFICIENT_QUANTIZATION','CROSSOVER_SUM','CROSSOVER_PHASE','OUTPUT_HEADROOM','GROUP_DELAY']
+    if skill=='microphone-architecture-baseline':
+        return [c.get('id') for c in values['checks']]==['SYSTEM_SENSITIVITY','SELF_NOISE','ACOUSTIC_OVERLOAD','ARRAY_ALIAS_GUARD','ARRAY_ELEMENT_COVERAGE','PORT_INSERTION_LOSS']
+    if skill=='microphone-far-field-scenarios-baseline':
+        return [c.get('id') for c in values['checks']]==['SCENARIO_COVERAGE','DISTANCE_COVERAGE','WORST_CASE_SNR','REVERBERATION_COVERAGE','COMPETING_SPEECH_COVERAGE','NONSTATIONARY_NOISE_COVERAGE']
+    if skill=='microphone-tonal-headroom-baseline':
+        return [c.get('id') for c in values['checks']]==['BOOST_BOUND','CUT_BOUND','OUTPUT_HEADROOM','VOICE_HIGHPASS','SMOOTHING_RESOLUTION','CAPSULE_OVERLOAD_MARGIN']
+    if skill=='microphone-aec-control-baseline':
+        return [c.get('id') for c in values['checks']]==['ERLE','NEAR_SPEECH_PRESERVATION','ALIGNMENT_DELAY','CLOCK_DRIFT','DOUBLE_TALK_ADAPTATION','ECHO_TAIL_COVERAGE','NONLINEAR_RESIDUAL']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

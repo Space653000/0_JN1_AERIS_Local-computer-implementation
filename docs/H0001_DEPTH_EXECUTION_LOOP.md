@@ -125,3 +125,31 @@
   remains unfinished.
 - Local-only transcript: `.aeris/evidence/H0001-speaker-completion-full-tests.log`,
   SHA-256 `5d5fa635b478bffeb546bded9f533de016bcfe63c4303f1c7ab7c91f4180ef91`.
+
+## Microphone CoE completion checkpoint
+
+- R027/R039: bounded microphone capsule, acoustic-port and array-spacing
+  architecture execution plus independent acoustic-path review.
+- R035/R041: bounded far-field distance, stationary/nonstationary noise,
+  competing-speech and scalar-decay scenarios plus independent disturbance
+  review.
+- R036/R038: bounded sampled tonal correction, voice-band smoothing, output
+  headroom and capsule-overload screening plus independent review.
+- R042/R044: bounded ERLE, near-speech preservation, alignment, drift,
+  double-talk, tail and nonlinear-residual screening plus independent review.
+- Focused regressions: 30/30 PASS and combined 38/38 PASS.
+- Final fixed-source regression: 434/434 PASS in 1198.927 seconds.
+- Six semantic routes and six fixed-environment dark/light screenshot/basic
+  accessibility routes: PASS. The visual gate initially exposed a real
+  telemetry freshness race. Per-request registry reuse and concurrent bounded
+  loopback health probing reduced complete assessment from about 9.86 seconds
+  to 6.36 seconds without extending the ten-second truth window.
+- Source inventory: 95 executable Skills, 95 Methods, 53 role-specific suites,
+  423 role cases; 49 roles have at least one suite and 51 do not. Speaker CoE
+  and Microphone CoE coverage are both 18/18.
+- Installed company truth remains L0=0, L1=100, L2=0, L3=0, L4=0. These are
+  analytical/synthetic bounded capabilities, not calibrated measurement,
+  perceptual acceptance, role-wide L3, H0001 or P02 completion.
+- Local-only transcript:
+  `.aeris/evidence/H0001-microphone-completion-final-full-tests.log`, SHA-256
+  `87c2c52f5e48e12e99304af8e4e7e90196c382bcfca80d56428975f802c99f7b`.

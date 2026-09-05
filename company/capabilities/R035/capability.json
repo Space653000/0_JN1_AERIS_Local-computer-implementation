@@ -21,22 +21,26 @@
   "inputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
     "room-ir-decay": "skills/room-ir-decay/input.schema.json",
-    "level-statistics": "skills/level-statistics/input.schema.json"
+    "level-statistics": "skills/level-statistics/input.schema.json",
+    "microphone-far-field-scenarios-baseline": "skills/microphone-far-field-scenarios-baseline/input.schema.json"
   },
   "outputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
     "room-ir-decay": "skills/room-ir-decay/output.schema.json",
-    "level-statistics": "skills/level-statistics/output.schema.json"
+    "level-statistics": "skills/level-statistics/output.schema.json",
+    "microphone-far-field-scenarios-baseline": "skills/microphone-far-field-scenarios-baseline/output.schema.json"
   },
   "required_skills": [
     "enhancement-aec-metrics",
     "room-ir-decay",
-    "level-statistics"
+    "level-statistics",
+    "microphone-far-field-scenarios-baseline"
   ],
   "required_methods": [
     "methods/engineering/enhancement-aec-metrics.json",
     "methods/engineering/room-ir-decay.json",
-    "methods/engineering/level-statistics.json"
+    "methods/engineering/level-statistics.json",
+    "methods/roles/microphone-far-field-scenarios-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/enhancement-aec-metrics.json",
@@ -173,12 +177,14 @@
     "required_methods": [
       "methods/engineering/enhancement-aec-metrics.json",
       "methods/engineering/room-ir-decay.json",
-      "methods/engineering/level-statistics.json"
+      "methods/engineering/level-statistics.json",
+      "methods/roles/microphone-far-field-scenarios-baseline.json"
     ],
     "required_skills": [
       "enhancement-aec-metrics",
       "room-ir-decay",
-      "level-statistics"
+      "level-statistics",
+      "microphone-far-field-scenarios-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -194,7 +200,14 @@
       "neighbor_owns": "Separate wind, room and structure paths in microphone disturbance models"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-far-field-scenarios-baseline",
+      "method": "methods/roles/microphone-far-field-scenarios-baseline.json",
+      "suite": "golden/roles/R035/golden.json",
+      "scope": "Supplied multi-scenario distance, noise-kind, competing-speech, scalar RT60 and worst-SNR coverage; no speech-quality or measured-room acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
@@ -212,7 +225,8 @@
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
       "room-ir-decay": "skills/room-ir-decay/input.schema.json",
-      "level-statistics": "skills/level-statistics/input.schema.json"
+      "level-statistics": "skills/level-statistics/input.schema.json",
+      "microphone-far-field-scenarios-baseline": "skills/microphone-far-field-scenarios-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -227,7 +241,8 @@
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
       "room-ir-decay": "skills/room-ir-decay/output.schema.json",
-      "level-statistics": "skills/level-statistics/output.schema.json"
+      "level-statistics": "skills/level-statistics/output.schema.json",
+      "microphone-far-field-scenarios-baseline": "skills/microphone-far-field-scenarios-baseline/output.schema.json"
     }
   },
   "report_sections": [

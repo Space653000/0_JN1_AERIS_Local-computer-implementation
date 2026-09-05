@@ -156,6 +156,14 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS={
             'suite':'golden/roles/R014/golden.json','scope':'Declared I2S/TDM word/slot, BCLK/frame-sync, active-slot and deterministic service-buffer screening; no electrical timing or glitch-free physical playback acceptance.'},
     'R024':{'skill_id':'speaker-filter-realization-baseline','method':'methods/roles/speaker-filter-realization-baseline.json',
             'suite':'golden/roles/R024/golden.json','scope':'Declared biquad pole/quantization, crossover-sum/phase, peak-headroom and group-delay screening; no full-band fixed-point or physical playback acceptance.'},
+    'R027':{'skill_id':'microphone-architecture-baseline','method':'methods/roles/microphone-architecture-baseline.json',
+            'suite':'golden/roles/R027/golden.json','scope':'Declared capsule sensitivity/noise/overload, scalar port loss, array spacing and element-count screening; no frequency-dependent port, measured manifold or physical acceptance.'},
+    'R035':{'skill_id':'microphone-far-field-scenarios-baseline','method':'methods/roles/microphone-far-field-scenarios-baseline.json',
+            'suite':'golden/roles/R035/golden.json','scope':'Supplied multi-scenario distance, noise-kind, competing-speech, scalar RT60 and worst-SNR coverage; no speech-quality or measured-room acceptance.'},
+    'R036':{'skill_id':'microphone-tonal-headroom-baseline','method':'methods/roles/microphone-tonal-headroom-baseline.json',
+            'suite':'golden/roles/R036/golden.json','scope':'Supplied sampled microphone magnitude, correction, smoothing, high-pass, headroom and overload-margin screening; no realized filter, intelligibility or physical acceptance.'},
+    'R042':{'skill_id':'microphone-aec-control-baseline','method':'methods/roles/microphone-aec-control-baseline.json',
+            'suite':'golden/roles/R042/golden.json','scope':'Supplied scalar ERLE, near-speech loss, alignment, drift, double-talk adaptation, tail and nonlinear-residual screening; no measured echo path or speech-quality acceptance.'},
     'R071':{'skill_id':'room-correction-spatial-domain-review','method':'methods/roles/room-correction-spatial-domain-review.json',
             'suite':'golden/roles/R071/golden.json','scope':'Independent multi-position room-correction and spatial assertion review; no HRTF, complex-response, realized-filter or physical acceptance.'},
     'R021':{'skill_id':'speaker-sealed-lumped-domain-review','method':'methods/roles/speaker-sealed-lumped-domain-review.json',
@@ -227,6 +235,26 @@ ROLE_DOMAIN_CONTRACTS['R005'].append({
     'method':'methods/roles/speaker-filter-realization-domain-review.json',
     'suite':'golden/roles/R005/speaker-filter-realization.json',
     'scope':'Independent biquad stability, quantization, crossover, headroom and delay assertion review; no full-band fixed-point or physical playback acceptance.'})
+ROLE_DOMAIN_CONTRACTS['R039']=[{
+    'skill_id':'microphone-architecture-acoustic-path-domain-review',
+    'method':'methods/roles/microphone-architecture-acoustic-path-domain-review.json',
+    'suite':'golden/roles/R039/microphone-architecture.json',
+    'scope':'Independent capsule/port/array scalar architecture assertion review; no thermoviscous solution, measured manifold or physical acceptance.'}]
+ROLE_DOMAIN_CONTRACTS['R041']=[{
+    'skill_id':'microphone-far-field-disturbance-domain-review',
+    'method':'methods/roles/microphone-far-field-disturbance-domain-review.json',
+    'suite':'golden/roles/R041/far-field-scenarios.json',
+    'scope':'Independent distance/noise/competing-speech/scalar-RT60 scenario assertion review; no measured room, wind or speech-quality acceptance.'}]
+ROLE_DOMAIN_CONTRACTS['R038']=[{
+    'skill_id':'microphone-tonal-intelligibility-domain-review',
+    'method':'methods/roles/microphone-tonal-intelligibility-domain-review.json',
+    'suite':'golden/roles/R038/microphone-tonal.json',
+    'scope':'Independent microphone correction, voice high-pass, headroom and overload assertion review; no intelligibility, realized-filter or physical acceptance.'}]
+ROLE_DOMAIN_CONTRACTS['R044']=[{
+    'skill_id':'microphone-aec-enhancement-domain-review',
+    'method':'methods/roles/microphone-aec-enhancement-domain-review.json',
+    'suite':'golden/roles/R044/aec-control.json',
+    'scope':'Independent ERLE, near-speech, alignment, drift, double-talk, tail and nonlinear-residual review; no measured echo path or perceptual acceptance.'}]
 
 
 def standards_families(value):

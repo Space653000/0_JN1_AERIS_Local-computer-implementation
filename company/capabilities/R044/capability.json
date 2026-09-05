@@ -21,22 +21,26 @@
   "inputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
     "local-audio-regression": "skills/local-audio-regression/input.schema.json",
-    "butterworth-filter": "skills/butterworth-filter/input.schema.json"
+    "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+    "microphone-aec-enhancement-domain-review": "skills/microphone-aec-enhancement-domain-review/input.schema.json"
   },
   "outputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
     "local-audio-regression": "skills/local-audio-regression/output.schema.json",
-    "butterworth-filter": "skills/butterworth-filter/output.schema.json"
+    "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+    "microphone-aec-enhancement-domain-review": "skills/microphone-aec-enhancement-domain-review/output.schema.json"
   },
   "required_skills": [
     "enhancement-aec-metrics",
     "local-audio-regression",
-    "butterworth-filter"
+    "butterworth-filter",
+    "microphone-aec-enhancement-domain-review"
   ],
   "required_methods": [
     "methods/engineering/enhancement-aec-metrics.json",
     "methods/engineering/local-audio-regression.json",
-    "methods/engineering/butterworth-filter.json"
+    "methods/engineering/butterworth-filter.json",
+    "methods/roles/microphone-aec-enhancement-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/enhancement-aec-metrics.json",
@@ -173,12 +177,14 @@
     "required_methods": [
       "methods/engineering/enhancement-aec-metrics.json",
       "methods/engineering/local-audio-regression.json",
-      "methods/engineering/butterworth-filter.json"
+      "methods/engineering/butterworth-filter.json",
+      "methods/roles/microphone-aec-enhancement-domain-review.json"
     ],
     "required_skills": [
       "enhancement-aec-metrics",
       "local-audio-regression",
-      "butterworth-filter"
+      "butterworth-filter",
+      "microphone-aec-enhancement-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -194,7 +200,14 @@
       "neighbor_owns": "Choose echo-control alignment and adaptation constraints across delay and double-talk"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-aec-enhancement-domain-review",
+      "method": "methods/roles/microphone-aec-enhancement-domain-review.json",
+      "suite": "golden/roles/R044/aec-control.json",
+      "scope": "Independent ERLE, near-speech, alignment, drift, double-talk, tail and nonlinear-residual review; no measured echo path or perceptual acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy",
@@ -212,7 +225,8 @@
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
       "local-audio-regression": "skills/local-audio-regression/input.schema.json",
-      "butterworth-filter": "skills/butterworth-filter/input.schema.json"
+      "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+      "microphone-aec-enhancement-domain-review": "skills/microphone-aec-enhancement-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -227,7 +241,8 @@
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
       "local-audio-regression": "skills/local-audio-regression/output.schema.json",
-      "butterworth-filter": "skills/butterworth-filter/output.schema.json"
+      "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+      "microphone-aec-enhancement-domain-review": "skills/microphone-aec-enhancement-domain-review/output.schema.json"
     }
   },
   "report_sections": [

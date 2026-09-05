@@ -21,22 +21,26 @@
   "inputs": {
     "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
     "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
-    "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "microphone-architecture-baseline": "skills/microphone-architecture-baseline/input.schema.json"
   },
   "outputs": {
     "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
     "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
-    "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "microphone-architecture-baseline": "skills/microphone-architecture-baseline/output.schema.json"
   },
   "required_skills": [
     "microphone-sensitivity",
     "linear-array-pattern",
-    "engineering-requirements"
+    "engineering-requirements",
+    "microphone-architecture-baseline"
   ],
   "required_methods": [
     "methods/engineering/microphone-sensitivity.json",
     "methods/engineering/linear-array-pattern.json",
-    "methods/engineering/engineering-requirements.json"
+    "methods/engineering/engineering-requirements.json",
+    "methods/roles/microphone-architecture-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/microphone-sensitivity.json",
@@ -175,12 +179,14 @@
     "required_methods": [
       "methods/engineering/microphone-sensitivity.json",
       "methods/engineering/linear-array-pattern.json",
-      "methods/engineering/engineering-requirements.json"
+      "methods/engineering/engineering-requirements.json",
+      "methods/roles/microphone-architecture-baseline.json"
     ],
     "required_skills": [
       "microphone-sensitivity",
       "linear-array-pattern",
-      "engineering-requirements"
+      "engineering-requirements",
+      "microphone-architecture-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -196,7 +202,14 @@
       "neighbor_owns": "Choose mic port, mesh and isolation tradeoffs across ingress, wind and acoustic insertion loss"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-architecture-baseline",
+      "method": "methods/roles/microphone-architecture-baseline.json",
+      "suite": "golden/roles/R027/golden.json",
+      "scope": "Declared capsule sensitivity/noise/overload, scalar port loss, array spacing and element-count screening; no frequency-dependent port, measured manifold or physical acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose microphone capsule, port and array architecture against sensitivity, noise and overload constraints",
@@ -214,7 +227,8 @@
     "calculation_schemas": {
       "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
       "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
-      "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "microphone-architecture-baseline": "skills/microphone-architecture-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -229,7 +243,8 @@
     "calculation_schemas": {
       "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
       "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
-      "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "microphone-architecture-baseline": "skills/microphone-architecture-baseline/output.schema.json"
     }
   },
   "report_sections": [

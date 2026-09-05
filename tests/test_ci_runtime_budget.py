@@ -11,7 +11,10 @@ class CIRuntimeBudgetTests(unittest.TestCase):
         workflow=(ROOT/'.github/workflows/ci.yml').read_text(encoding='utf-8')
         match=re.search(r'^\s*timeout-minutes:\s*(\d+)\s*$',workflow,re.MULTILINE)
         self.assertIsNotNone(match)
-        self.assertGreaterEqual(int(match.group(1)),50)
+        # The 434-test fixed-source suite is now about 20 minutes per OS before
+        # installer, Autopilot, wrapper and portable-package smoke gates run.
+        # A 50-minute job repeatedly cancelled otherwise-successful tail gates.
+        self.assertGreaterEqual(int(match.group(1)),75)
         # These remain distinct acceptance paths; timeout repair must not delete them.
         for gate in ('Unit tests including Core alignment privacy trust acoustics watchdog reproduction',
                      'one-click installer smoke without external runtime installation',

@@ -240,3 +240,33 @@ L1=100 and H0001/P02 remains unfinished.
 
 Private transcript `.aeris/evidence/H0001-speaker-completion-full-tests.log`,
 SHA-256 `5d5fa635b478bffeb546bded9f533de016bcfe63c4303f1c7ab7c91f4180ef91`.
+
+## Microphone architecture / far-field / tonal / AEC checkpoint
+
+R027/R039, R035/R041, R036/R038 and R042/R044 add four exact execution/review
+pairs covering bounded capsule/acoustic-path architecture, far-field scenario
+coverage, sampled tonal/headroom decisions and AEC control metrics. Reviewers
+reconstruct the declared candidate independently and reject hidden or extra
+assertions. No thermoviscous model, measured room/wind, intelligibility,
+realized filter, perceptual score, physical measurement, L3/L4 or Human
+acceptance is claimed.
+
+Focused regressions: 30 PASS and 38 PASS. Final fixed-source regression: 434
+PASS in 1198.927 seconds. Six semantic routes and six dark/light fixed-
+environment screenshot/basic-accessibility routes pass. The visual gate first
+failed closed because a complete service assessment nearly consumed its whole
+ten-second freshness budget. Matrix registry reuse and overlapping the bounded
+loopback provider probe reduced assessment from about 9.86 seconds to 6.36
+seconds while retaining start-time aging and stale-state rejection.
+
+Inventory: 95 Skills, 95 Methods, 53 role suites, 423 cases, 49 roles with a
+suite and 51 without one. Speaker CoE is 18/18 and Microphone CoE is 18/18.
+Installed truth remains L1=100, so H0001/P02 is unfinished.
+
+Private transcript
+`.aeris/evidence/H0001-microphone-completion-final-full-tests.log`, SHA-256
+`87c2c52f5e48e12e99304af8e4e7e90196c382bcfca80d56428975f802c99f7b`.
+GitHub CI receives a 75-minute total job budget after otherwise-green Windows
+and Ubuntu runs were cancelled in retained tail smoke gates at 50 minutes. No
+gate is deleted or weakened. No Core/main/PR32 mutation, raw Evidence, SQLite,
+measurement or binary is included.
