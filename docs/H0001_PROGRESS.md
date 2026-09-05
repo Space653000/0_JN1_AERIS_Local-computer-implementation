@@ -683,3 +683,31 @@ Fixed-source full regression passed 386 tests in 747.086 seconds, finished
 2026-09-05T05:27:43Z. Local-only transcript:
 `.aeris/evidence/H0001-speaker-polar-full-tests.log`, SHA-256
 `c7375c7af30ce64a2d4265b8ed04e917aa8540e1db7b0193944a4bc642709455`.
+
+## Eighteenth checkpoint — R018 tonal decision and R020 context review
+
+R018 now owns a bounded absolute level-matched sampled tonal decision. It
+checks pointwise correction, spatial-spread and level-uncertainty bounds,
+smoothing resolution, unresolved resonances, boost/cut, signal headroom, deep
+room-notch policy and loudness matching. It explicitly does not design a
+realizable filter or claim audibility, preference or calibrated measurement.
+
+R020 now owns an independently versioned reviewer capability. It reconstructs
+all R018 assertions without calling the executor, rejects missing/extra fields,
+hidden headroom and R4 applicability, and cannot award Human approval or L3.
+The end-to-end test proves exact R018 to R020 capability routing, sealed review
+status and reproduction.
+
+Focused regression passed 26 tests. Fixed-source regression passed 390 tests
+in 732.098 seconds. Six semantic routes and all six fixed-environment dark/light
+screenshot repeatability/basic-accessibility checks passed. Source inventory is
+now 73 executable Skills/Methods, 31 role-specific suites and 335 role cases.
+Twenty-nine unique roles have at least one domain suite; 71 still lack one.
+Installed company truth remains L0=0, L1=100, L2=0, L3=0, L4=0. H0001/P02 is
+unfinished.
+
+The private transcript remains local at
+`.aeris/evidence/H0001-tonal-full-tests.log`; SHA-256
+`a407aab318c2814c02cea7e38ef3b4bcb6e6e6ecb62d8e5e8aeedfbfa171fb4b`.
+No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
+this checkpoint.

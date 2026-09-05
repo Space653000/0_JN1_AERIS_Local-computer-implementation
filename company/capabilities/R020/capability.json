@@ -21,22 +21,26 @@
   "inputs": {
     "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
     "frequency-weighting": "skills/frequency-weighting/input.schema.json",
-    "level-statistics": "skills/level-statistics/input.schema.json"
+    "level-statistics": "skills/level-statistics/input.schema.json",
+    "speaker-tonal-context-domain-review": "skills/speaker-tonal-context-domain-review/input.schema.json"
   },
   "outputs": {
     "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
     "frequency-weighting": "skills/frequency-weighting/output.schema.json",
-    "level-statistics": "skills/level-statistics/output.schema.json"
+    "level-statistics": "skills/level-statistics/output.schema.json",
+    "speaker-tonal-context-domain-review": "skills/speaker-tonal-context-domain-review/output.schema.json"
   },
   "required_skills": [
     "psychoacoustic-descriptors",
     "frequency-weighting",
-    "level-statistics"
+    "level-statistics",
+    "speaker-tonal-context-domain-review"
   ],
   "required_methods": [
     "methods/engineering/psychoacoustic-descriptors.json",
     "methods/engineering/frequency-weighting.json",
-    "methods/engineering/level-statistics.json"
+    "methods/engineering/level-statistics.json",
+    "methods/roles/speaker-tonal-context-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/psychoacoustic-descriptors.json",
@@ -173,12 +177,14 @@
     "required_methods": [
       "methods/engineering/psychoacoustic-descriptors.json",
       "methods/engineering/frequency-weighting.json",
-      "methods/engineering/level-statistics.json"
+      "methods/engineering/level-statistics.json",
+      "methods/roles/speaker-tonal-context-domain-review.json"
     ],
     "required_skills": [
       "psychoacoustic-descriptors",
       "frequency-weighting",
-      "level-statistics"
+      "level-statistics",
+      "speaker-tonal-context-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -194,7 +200,14 @@
       "neighbor_owns": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-tonal-context-domain-review",
+      "method": "methods/roles/speaker-tonal-context-domain-review.json",
+      "suite": "golden/roles/R020/golden.json",
+      "scope": "Independent tonal correction, spatial uncertainty and level-match assertion review; no preference, audibility or physical acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Evaluate perceived speaker balance using level, masking and spectral context",
@@ -212,7 +225,8 @@
     "calculation_schemas": {
       "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
       "frequency-weighting": "skills/frequency-weighting/input.schema.json",
-      "level-statistics": "skills/level-statistics/input.schema.json"
+      "level-statistics": "skills/level-statistics/input.schema.json",
+      "speaker-tonal-context-domain-review": "skills/speaker-tonal-context-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -227,7 +241,8 @@
     "calculation_schemas": {
       "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
       "frequency-weighting": "skills/frequency-weighting/output.schema.json",
-      "level-statistics": "skills/level-statistics/output.schema.json"
+      "level-statistics": "skills/level-statistics/output.schema.json",
+      "speaker-tonal-context-domain-review": "skills/speaker-tonal-context-domain-review/output.schema.json"
     }
   },
   "report_sections": [

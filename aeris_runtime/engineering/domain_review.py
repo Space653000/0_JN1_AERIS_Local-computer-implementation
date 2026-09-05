@@ -19,6 +19,7 @@ REQUIRED_DOMAINS={
     'speaker-sealed-alignment-baseline':['speaker-sealed-lumped'],
     'speaker-ported-alignment-baseline':['speaker-port-lumped'],
     'speaker-polar-spatial-baseline':['speaker-polar-spatial'],
+    'speaker-tonal-eq-baseline':['speaker-tonal-context'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -154,6 +155,9 @@ def review(domain,request):
     if domain=='speaker-polar-spatial':
         from .speaker_polar_review import review as review_polar
         return review_polar(p,candidate)
+    if domain=='speaker-tonal-context':
+        from .speaker_tonal_review import review as review_tonal
+        return review_tonal(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -292,6 +296,7 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'speaker-sealed-lumped':('sealed_alignment_review.py','sealed_alignment.py'),
     'speaker-port-lumped':('ported_alignment_review.py','ported_alignment.py'),
     'speaker-polar-spatial':('speaker_polar_review.py','speaker_polar.py'),
+    'speaker-tonal-context':('speaker_tonal_review.py','speaker_tonal.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -337,7 +342,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -447,6 +452,8 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['TUNING_INTERVAL','PORT_VELOCITY','LONGITUDINAL_MODE_SEPARATION','LUMPED_GEOMETRY_VALIDITY']
     if skill=='speaker-polar-spatial-baseline':
         return [c.get('id') for c in values['checks']]==['ANGULAR_COVERAGE','ANGULAR_SAMPLING','ABSOLUTE_REFERENCE','EDGE_ATTENUATION','SYMMETRY','ANGLE_ALIGNMENT']
+    if skill=='speaker-tonal-eq-baseline':
+        return [c.get('id') for c in values['checks']]==['SMOOTHING_RESOLUTION','UNRESOLVED_RESONANCE','BOOST_BOUND','CUT_BOUND','HEADROOM','ROOM_NOTCH_POLICY','LOUDNESS_MATCH']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

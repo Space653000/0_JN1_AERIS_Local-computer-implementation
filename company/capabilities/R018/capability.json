@@ -21,22 +21,26 @@
   "inputs": {
     "response-phase-delay": "skills/response-phase-delay/input.schema.json",
     "fractional-octave": "skills/fractional-octave/input.schema.json",
-    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json"
+    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+    "speaker-tonal-eq-baseline": "skills/speaker-tonal-eq-baseline/input.schema.json"
   },
   "outputs": {
     "response-phase-delay": "skills/response-phase-delay/output.schema.json",
     "fractional-octave": "skills/fractional-octave/output.schema.json",
-    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json"
+    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+    "speaker-tonal-eq-baseline": "skills/speaker-tonal-eq-baseline/output.schema.json"
   },
   "required_skills": [
     "response-phase-delay",
     "fractional-octave",
-    "psychoacoustic-descriptors"
+    "psychoacoustic-descriptors",
+    "speaker-tonal-eq-baseline"
   ],
   "required_methods": [
     "methods/engineering/response-phase-delay.json",
     "methods/engineering/fractional-octave.json",
-    "methods/engineering/psychoacoustic-descriptors.json"
+    "methods/engineering/psychoacoustic-descriptors.json",
+    "methods/roles/speaker-tonal-eq-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/response-phase-delay.json",
@@ -175,12 +179,14 @@
     "required_methods": [
       "methods/engineering/response-phase-delay.json",
       "methods/engineering/fractional-octave.json",
-      "methods/engineering/psychoacoustic-descriptors.json"
+      "methods/engineering/psychoacoustic-descriptors.json",
+      "methods/roles/speaker-tonal-eq-baseline.json"
     ],
     "required_skills": [
       "response-phase-delay",
       "fractional-octave",
-      "psychoacoustic-descriptors"
+      "psychoacoustic-descriptors",
+      "speaker-tonal-eq-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -196,7 +202,14 @@
       "neighbor_owns": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-tonal-eq-baseline",
+      "method": "methods/roles/speaker-tonal-eq-baseline.json",
+      "suite": "golden/roles/R018/golden.json",
+      "scope": "Supplied sampled tonal correction, spatial spread, smoothing, notch and headroom decisions; no realized filter, listening or measured acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
@@ -214,7 +227,8 @@
     "calculation_schemas": {
       "response-phase-delay": "skills/response-phase-delay/input.schema.json",
       "fractional-octave": "skills/fractional-octave/input.schema.json",
-      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json"
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+      "speaker-tonal-eq-baseline": "skills/speaker-tonal-eq-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -229,7 +243,8 @@
     "calculation_schemas": {
       "response-phase-delay": "skills/response-phase-delay/output.schema.json",
       "fractional-octave": "skills/fractional-octave/output.schema.json",
-      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json"
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+      "speaker-tonal-eq-baseline": "skills/speaker-tonal-eq-baseline/output.schema.json"
     }
   },
   "report_sections": [

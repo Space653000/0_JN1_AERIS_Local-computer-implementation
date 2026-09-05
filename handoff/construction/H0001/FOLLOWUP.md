@@ -162,3 +162,23 @@ No continuous/full-sphere, calibration, L3/L4 or Human acceptance is claimed.
 Fixed-source full regression: 386 PASS in 747.086 seconds. Private transcript
 `.aeris/evidence/H0001-speaker-polar-full-tests.log`, SHA-256
 `c7375c7af30ce64a2d4265b8ed04e917aa8540e1db7b0193944a4bc642709455`.
+
+## R018 sampled tonal / R020 context-review construction checkpoint
+
+R018 adds an absolute level-matched sampled tonal correction contract with
+explicit spatial uncertainty, smoothing, unresolved-resonance, boost/cut,
+headroom, deep room-notch and loudness-match gates. R020 independently
+reconstructs the complete candidate and rejects hidden headroom or outside-scope
+R4 use. Exact capability routing, review Evidence and reproduction pass. No
+realized filter, audibility, preference, calibration, L3/L4 or Human acceptance
+is claimed.
+
+Focused regression: 26 PASS. Fixed-source regression: 390 PASS in 732.098
+seconds. Six semantic browser routes and six fixed-environment dark/light
+screenshot repeatability/basic-accessibility routes pass. Source inventory is
+73 executable Skills/Methods, 31 role suites and 335 role cases; 29 unique
+roles have a suite and 71 still do not. Installed truth remains L1=100, so
+H0001/P02 remains unfinished.
+
+Private transcript `.aeris/evidence/H0001-tonal-full-tests.log`, SHA-256
+`a407aab318c2814c02cea7e38ef3b4bcb6e6e6ecb62d8e5e8aeedfbfa171fb4b`.
