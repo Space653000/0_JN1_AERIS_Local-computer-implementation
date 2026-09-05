@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-butterworth-filter",
+  "category": "Failures",
+  "title": "FAILURE-butterworth-filter",
+  "text": "{\"invalid_variant\": {\"cutoff_hz\": [8192]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/DSP/butterworth-filter/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "be00b71edc5ff9b61d1970c1f6ab951ccf6f72336fd9bbfd5ed8fe3657db4b3c",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

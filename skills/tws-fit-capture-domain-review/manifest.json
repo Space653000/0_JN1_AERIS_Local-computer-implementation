@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "skill_id": "tws-fit-capture-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/tws-fit-capture-domain-review.json",
+  "input_schema": "skills/tws-fit-capture-domain-review/input.schema.json",
+  "output_schema": "skills/tws-fit-capture-domain-review/output.schema.json",
+  "role_mappings": [
+    "R029"
+  ],
+  "review_domain": "tws-fit-capture",
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded software review qualification; no Human credentials or whole-role L3"
+}

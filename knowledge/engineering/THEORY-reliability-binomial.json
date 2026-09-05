@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-reliability-binomial",
+  "category": "Theory",
+  "title": "THEORY-reliability-binomial",
+  "text": "Zero failures in 100 trials gives exact one-sided binomial bound.",
+  "source": "methods/engineering/reliability-binomial.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "617234e01665fd63427339f7b30a3a272f417600f7e97c3aed615353f74217ec",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

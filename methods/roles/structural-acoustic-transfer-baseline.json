@@ -1,0 +1,10 @@
+{
+  "method_id": "structural-acoustic-transfer-baseline", "version": "1.0.0", "role": "R022",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.structural_acoustic:analyze",
+  "applicability": "Supplied synchronized band RMS acceleration/pressure, noise floors and magnitude-squared coherence",
+  "equations": {"transfer": "pressure_rms_pa / acceleration_rms_m_s2", "snr": "band RMS / band noise floor", "coverage": "identifiable bands / supplied bands"},
+  "assumptions": ["Shared band and timing alignment", "Coherence is identifiability, not causality", "Descriptive magnitude ratio only"],
+  "excluded": ["path direction and causality", "mode shape and radiation efficiency", "sensor calibration, physical and Human acceptance"],
+  "golden_tests": "golden/roles/R022/golden.json"
+}

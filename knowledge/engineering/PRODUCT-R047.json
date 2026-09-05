@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R047",
+  "category": "Products",
+  "title": "PRODUCT-R047",
+  "text": "{\"speaker_topology_considerations\": \"ear-level receiver or neckloop interface\", \"microphone_topology_considerations\": \"optional remote talker microphone\", \"usage_scenarios\": [\"public assistive broadcast listening\"], \"common_acoustic_failure_modes\": [\"broadcast latency\", \"interoperability\", \"accessibility\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [\"IEC 60268-5\", \"IEC 60268-4\"], \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R047/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "7ca9e933b18a5306f968339f6367e1c07e62138cabc964535ca849ae55c36a61",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -37,6 +37,16 @@ function Write-FinalResult($Status,$Opening,$Failure){
   if($Py){ try { $Machine=((& $Py -m aeris_runtime machine detect) -join "`n") | ConvertFrom-Json } catch {} }
   $Unattended=$null
   try { $Unattended=Get-Content (Join-Path $State 'UNATTENDED_INSTALL.json') -Raw | ConvertFrom-Json } catch {}
+  $Completion=$null
+  if($Py){ try { $Completion=((& $Py -m aeris_runtime.completion --write) -join "`n") | ConvertFrom-Json } catch {} }
+  $UnresolvedSoftwareGaps=[System.Collections.ArrayList]::new()
+  $RemainingExternalBlockers=[System.Collections.ArrayList]::new()
+  if($Completion){
+    foreach($Item in @($Completion.unresolved_software_gaps)){[void]$UnresolvedSoftwareGaps.Add($Item)}
+    foreach($Item in @($Completion.remaining_external_blockers)){[void]$RemainingExternalBlockers.Add($Item)}
+  } else {
+    [void]$UnresolvedSoftwareGaps.Add([ordered]@{id='COMPLETION_ASSESSMENT_UNAVAILABLE';status='UNKNOWN'})
+  }
   $Payload=[ordered]@{
     schema_version=2
     run_kind=($(if($CISmoke){'CI_SMOKE'}else{'REAL_AUTOPILOT'}))
@@ -54,6 +64,10 @@ function Write-FinalResult($Status,$Opening,$Failure){
     company_complete=$false
     supervisor=$(if($Opening -and $Opening.PSObject.Properties.Name -contains 'supervisor'){$Opening.supervisor}else{$null})
     unattended_operations=$Unattended
+    unresolved_software_gaps=$UnresolvedSoftwareGaps
+    remaining_external_blockers=$RemainingExternalBlockers
+    remote_write_performed=$false
+    local_only_scope=$true
     failure=$Failure
     evidence_paths=[ordered]@{
       preflight=$Preflight
@@ -63,6 +77,7 @@ function Write-FinalResult($Status,$Opening,$Failure){
       heartbeat=(Join-Path $State 'HEARTBEAT.json')
       unattended_install=(Join-Path $State 'UNATTENDED_INSTALL.json')
       unattended_runtime=(Join-Path $State 'UNATTENDED_OPERATIONS.json')
+      software_completion=(Join-Path $State 'SOFTWARE_COMPLETION.json')
       audit=(Join-Path $Root '.aeris\audit\audit.jsonl')
     }
     truth='Autopilot completion means the supported local control plane was deployed/opened for its verified scope. It never means every acoustic capability, proprietary tool or release gate is complete.'
@@ -160,6 +175,14 @@ try {
     $Stage='UNATTENDED_OPERATIONS'
     & (Join-Path $Root 'scripts\install-unattended-windows.ps1') -Port 8765 -IntervalSec 20
     if($LASTEXITCODE -ne 0){ throw 'Persistent unattended operations could not be registered. This is a real OS-policy/admin Human Gate.' }
+  }
+
+  $Stage='SOFTWARE_GAP_CLOSURE'
+  $CompletionText=(& $Py -m aeris_runtime.completion --write) -join "`n"
+  $CompletionExit=$LASTEXITCODE
+  $CompletionGate=$CompletionText | ConvertFrom-Json
+  if($CompletionExit -ne 0 -or -not $CompletionGate.software_local_fixable_zero){
+    throw "Software-local completion gate failed; unresolved=$(@($CompletionGate.unresolved_software_gaps).Count)"
   }
 
   $Stage='EVIDENCE_HANDOFF'

@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "speaker-digital-transport-domain-review", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/speaker-digital-transport-domain-review.json",
+  "input_schema": "skills/speaker-digital-transport-domain-review/input.schema.json", "output_schema": "skills/speaker-digital-transport-domain-review/output.schema.json",
+  "role_mappings": ["R032"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Independent serial-audio format, clock, slot-map and service-buffer assertion review", "review_domain": "speaker-digital-transport"
+}

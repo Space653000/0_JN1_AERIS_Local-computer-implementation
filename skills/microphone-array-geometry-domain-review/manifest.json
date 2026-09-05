@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "skill_id": "microphone-array-geometry-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/microphone-array-geometry-domain-review.json",
+  "input_schema": "skills/microphone-array-geometry-domain-review/input.schema.json",
+  "output_schema": "skills/microphone-array-geometry-domain-review/output.schema.json",
+  "role_mappings": [
+    "R040"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded supplied two-channel delay/geometry assertions; not complete beamforming, calibrated DOA or unique 3D direction",
+  "review_domain": "microphone-array-geometry"
+}

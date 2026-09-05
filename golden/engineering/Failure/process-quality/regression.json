@@ -1,0 +1,39 @@
+{
+  "input": {
+    "values": [
+      9,
+      10,
+      11,
+      10,
+      10
+    ],
+    "lower_limit": 7,
+    "upper_limit": 13
+  },
+  "expected_checks": [
+    {
+      "path": "mean",
+      "expected": 10,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "out_of_spec_count",
+      "expected": 0,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "ppk",
+      "expected": 1.4142135623730951,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "31307566951f3a83b1ab2977b3951a4036e7aad3c90f650bf171cccb1d1cd205"
+}

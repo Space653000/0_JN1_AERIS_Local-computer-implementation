@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R020",
+    "name": "Psychoacoustic Speaker Tuning Engineer",
+    "group": "Speaker CoE"
+  },
+  "mission": "Evaluate perceived speaker balance using level, masking and spectral context",
+  "domain": "Speaker CoE",
+  "scope": [
+    "Evaluate perceived speaker balance using level, masking and spectral context",
+    "Investigate and bound: loudness mismatch biases comparison",
+    "Investigate and bound: sharpness proxy presented as listener verdict"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R018 owns: Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+    "Neighbor R069 owns: Distinguish measurable psychoacoustic descriptors from listener preference or discomfort"
+  ],
+  "inputs": {
+    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+    "frequency-weighting": "skills/frequency-weighting/input.schema.json",
+    "level-statistics": "skills/level-statistics/input.schema.json",
+    "speaker-tonal-context-domain-review": "skills/speaker-tonal-context-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+    "frequency-weighting": "skills/frequency-weighting/output.schema.json",
+    "level-statistics": "skills/level-statistics/output.schema.json",
+    "speaker-tonal-context-domain-review": "skills/speaker-tonal-context-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "psychoacoustic-descriptors",
+    "frequency-weighting",
+    "level-statistics",
+    "speaker-tonal-context-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/psychoacoustic-descriptors.json",
+    "methods/engineering/frequency-weighting.json",
+    "methods/engineering/level-statistics.json",
+    "methods/roles/speaker-tonal-context-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/psychoacoustic-descriptors.json",
+    "knowledge/engineering/frequency-weighting.json",
+    "knowledge/engineering/level-statistics.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "listener population and descriptor validity"
+  ],
+  "common_failure_modes": [
+    "loudness mismatch biases comparison",
+    "sharpness proxy presented as listener verdict"
+  ],
+  "counter_hypotheses": [
+    "level difference rather than preference",
+    "room coloration rather than transducer signature"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Evaluate perceived speaker balance using level, masking and spectral context",
+      "must_challenge": [
+        "level difference rather than preference",
+        "room coloration rather than transducer signature"
+      ],
+      "must_account_for": "listener population and descriptor validity",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Speaker/psychoacoustic-descriptors/golden.json",
+    "golden/engineering/DSP/frequency-weighting/golden.json",
+    "golden/engineering/Microphone/level-statistics/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Speaker/psychoacoustic-descriptors/negative.json",
+    "golden/engineering/DSP/frequency-weighting/negative.json",
+    "golden/engineering/Microphone/level-statistics/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Speaker/psychoacoustic-descriptors/regression.json",
+    "golden/engineering/DSP/frequency-weighting/regression.json",
+    "golden/engineering/Microphone/level-statistics/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R020",
+      "skill_id": "psychoacoustic-descriptors",
+      "inputs": "skills/psychoacoustic-descriptors/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Evaluate perceived speaker balance using level, masking and spectral context",
+      "decision_contract": "R020-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level difference rather than preference",
+        "room coloration rather than transducer signature"
+      ]
+    },
+    {
+      "role_id": "R020",
+      "skill_id": "frequency-weighting",
+      "inputs": "skills/frequency-weighting/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Evaluate perceived speaker balance using level, masking and spectral context",
+      "decision_contract": "R020-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level difference rather than preference",
+        "room coloration rather than transducer signature"
+      ]
+    },
+    {
+      "role_id": "R020",
+      "skill_id": "level-statistics",
+      "inputs": "skills/level-statistics/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Evaluate perceived speaker balance using level, masking and spectral context",
+      "decision_contract": "R020-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "level difference rather than preference",
+        "room coloration rather than transducer signature"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R020/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R020-DOMAIN-DECISION",
+    "question": "Evaluate perceived speaker balance using level, masking and spectral context",
+    "required_methods": [
+      "methods/engineering/psychoacoustic-descriptors.json",
+      "methods/engineering/frequency-weighting.json",
+      "methods/engineering/level-statistics.json",
+      "methods/roles/speaker-tonal-context-domain-review.json"
+    ],
+    "required_skills": [
+      "psychoacoustic-descriptors",
+      "frequency-weighting",
+      "level-statistics",
+      "speaker-tonal-context-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R018",
+      "this_seat_owns": "Evaluate perceived speaker balance using level, masking and spectral context",
+      "neighbor_owns": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances"
+    },
+    {
+      "neighbor_role": "R069",
+      "this_seat_owns": "Evaluate perceived speaker balance using level, masking and spectral context",
+      "neighbor_owns": "Distinguish measurable psychoacoustic descriptors from listener preference or discomfort"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-tonal-context-domain-review",
+      "method": "methods/roles/speaker-tonal-context-domain-review.json",
+      "suite": "golden/roles/R020/golden.json",
+      "scope": "Independent tonal correction, spatial uncertainty and level-match assertion review; no preference, audibility or physical acceptance."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Evaluate perceived speaker balance using level, masking and spectral context",
+    "Discriminate: level difference rather than preference",
+    "Discriminate: room coloration rather than transducer signature"
+  ],
+  "professional_inputs": {
+    "decision_question": "Evaluate perceived speaker balance using level, masking and spectral context",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "listener population and descriptor validity"
+    ],
+    "calculation_schemas": {
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+      "frequency-weighting": "skills/frequency-weighting/input.schema.json",
+      "level-statistics": "skills/level-statistics/input.schema.json",
+      "speaker-tonal-context-domain-review": "skills/speaker-tonal-context-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R020-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+      "frequency-weighting": "skills/frequency-weighting/output.schema.json",
+      "level-statistics": "skills/level-statistics/output.schema.json",
+      "speaker-tonal-context-domain-review": "skills/speaker-tonal-context-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Evaluate perceived speaker balance using level, masking and spectral context",
+    "loudness mismatch biases comparison",
+    "sharpness proxy presented as listener verdict",
+    "level difference rather than preference",
+    "room coloration rather than transducer signature",
+    "listener population and descriptor validity"
+  ]
+}

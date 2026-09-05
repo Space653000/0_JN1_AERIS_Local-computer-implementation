@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-helmholtz-port",
+  "category": "Theory",
+  "title": "THEORY-helmholtz-port",
+  "text": "Area/(length*volume)=1/m2 in the ideal Helmholtz model.",
+  "source": "methods/engineering/helmholtz-port.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "6826aefe4f77ee3b34ebd1f8ad315e82a8e2a9f805ed8c3ab4eddb14f918fa8b",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

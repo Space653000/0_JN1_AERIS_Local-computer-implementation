@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-harmonic-noise-analysis",
+  "category": "Theory",
+  "title": "THEORY-harmonic-noise-analysis",
+  "text": "Unit fundamental plus 0.1 second harmonic gives 10% THD, absent added noise.",
+  "source": "methods/engineering/harmonic-noise-analysis.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "84b3acc95549a8bfae4fb266b8802ccdb40f4705d54ca6a2441cc37c34135b3f",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

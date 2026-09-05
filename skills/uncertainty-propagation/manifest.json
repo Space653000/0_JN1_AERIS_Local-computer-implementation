@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "skill_id": "uncertainty-propagation",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/uncertainty-propagation/implementation.py",
+  "input_schema": "skills/uncertainty-propagation/input.schema.json",
+  "output_schema": "skills/uncertainty-propagation/output.schema.json",
+  "method": "methods/engineering/uncertainty-propagation.json",
+  "applicability": "Independent variance terms are 0.01 and 0.16.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/Failure/uncertainty-propagation/golden.json",
+  "negative_tests": "golden/engineering/Failure/uncertainty-propagation/negative.json",
+  "regression_tests": "golden/engineering/Failure/uncertainty-propagation/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R006",
+    "R034",
+    "R079",
+    "R092"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

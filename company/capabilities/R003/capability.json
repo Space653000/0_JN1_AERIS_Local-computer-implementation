@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R003",
+    "name": "Microphone Engineering Director",
+    "group": "Chief Council"
+  },
+  "mission": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+  "domain": "Chief Council",
+  "scope": [
+    "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+    "Investigate and bound: adequate single-capsule SNR but aliased array",
+    "Investigate and bound: capsule overload hidden by digital attenuation"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R027 owns: Choose microphone capsule, port and array architecture against sensitivity, noise and overload constraints",
+    "Neighbor R034 owns: Validate microphone-array directionality against angular, gain and delay uncertainty"
+  ],
+  "inputs": {
+    "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
+    "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+  },
+  "outputs": {
+    "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
+    "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+  },
+  "required_skills": [
+    "microphone-sensitivity",
+    "linear-array-pattern",
+    "engineering-requirements"
+  ],
+  "required_methods": [
+    "methods/engineering/microphone-sensitivity.json",
+    "methods/engineering/linear-array-pattern.json",
+    "methods/engineering/engineering-requirements.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/microphone-sensitivity.json",
+    "knowledge/engineering/linear-array-pattern.json",
+    "knowledge/engineering/engineering-requirements.json"
+  ],
+  "standards_metadata_references": [
+    "IEC 60268-4"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "capsule spread and talker geometry"
+  ],
+  "common_failure_modes": [
+    "adequate single-capsule SNR but aliased array",
+    "capsule overload hidden by digital attenuation"
+  ],
+  "counter_hypotheses": [
+    "capture gain mismatch rather than capsule defect",
+    "array spacing rather than NR weakness"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+      "must_challenge": [
+        "capture gain mismatch rather than capsule defect",
+        "array spacing rather than NR weakness"
+      ],
+      "must_account_for": "capsule spread and talker geometry",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/microphone-sensitivity/golden.json",
+    "golden/engineering/Array/linear-array-pattern/golden.json",
+    "golden/engineering/Product/engineering-requirements/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/microphone-sensitivity/negative.json",
+    "golden/engineering/Array/linear-array-pattern/negative.json",
+    "golden/engineering/Product/engineering-requirements/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/microphone-sensitivity/regression.json",
+    "golden/engineering/Array/linear-array-pattern/regression.json",
+    "golden/engineering/Product/engineering-requirements/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R003",
+      "skill_id": "microphone-sensitivity",
+      "inputs": "skills/microphone-sensitivity/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+      "decision_contract": "R003-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "capture gain mismatch rather than capsule defect",
+        "array spacing rather than NR weakness"
+      ]
+    },
+    {
+      "role_id": "R003",
+      "skill_id": "linear-array-pattern",
+      "inputs": "skills/linear-array-pattern/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+      "decision_contract": "R003-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "capture gain mismatch rather than capsule defect",
+        "array spacing rather than NR weakness"
+      ]
+    },
+    {
+      "role_id": "R003",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+      "decision_contract": "R003-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "capture gain mismatch rather than capsule defect",
+        "array spacing rather than NR weakness"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R003/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R003-DOMAIN-DECISION",
+    "question": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+    "required_methods": [
+      "methods/engineering/microphone-sensitivity.json",
+      "methods/engineering/linear-array-pattern.json",
+      "methods/engineering/engineering-requirements.json"
+    ],
+    "required_skills": [
+      "microphone-sensitivity",
+      "linear-array-pattern",
+      "engineering-requirements"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R027",
+      "this_seat_owns": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+      "neighbor_owns": "Choose microphone capsule, port and array architecture against sensitivity, noise and overload constraints"
+    },
+    {
+      "neighbor_role": "R034",
+      "this_seat_owns": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+      "neighbor_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+    "Discriminate: capture gain mismatch rather than capsule defect",
+    "Discriminate: array spacing rather than NR weakness"
+  ],
+  "professional_inputs": {
+    "decision_question": "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "capsule spread and talker geometry"
+    ],
+    "calculation_schemas": {
+      "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
+      "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R003-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
+      "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Allocate capture sensitivity, self-noise and array spatial budgets across microphone subsystems",
+    "adequate single-capsule SNR but aliased array",
+    "capsule overload hidden by digital attenuation",
+    "capture gain mismatch rather than capsule defect",
+    "array spacing rather than NR weakness",
+    "capsule spread and talker geometry"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "levels_db": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "durations_s": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "required": [
+    "levels_db",
+    "durations_s"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,19 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "frequency_hz", "measured_level_db", "target_level_db", "spatial_spread_db", "level_uncertainty_db", "maximum_boost_db", "maximum_cut_db", "available_headroom_db", "headroom_reserve_db", "smoothing_octaves", "maximum_smoothing_octaves", "unresolved_peak_db", "maximum_unresolved_peak_db", "room_notch_depth_db", "maximum_boostable_notch_depth_db", "loudness_match_error_db", "maximum_loudness_match_error_db", "normalization_mode"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_SAMPLED_TONAL_EQ"},
+    "frequency_hz": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "measured_level_db": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "target_level_db": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "spatial_spread_db": {"type": "array", "minItems": 3, "maxItems": 2048, "items": {"type": "number"}},
+    "level_uncertainty_db": {"type": "number"}, "maximum_boost_db": {"type": "number"},
+    "maximum_cut_db": {"type": "number"}, "available_headroom_db": {"type": "number"},
+    "headroom_reserve_db": {"type": "number"}, "smoothing_octaves": {"type": "number"},
+    "maximum_smoothing_octaves": {"type": "number"}, "unresolved_peak_db": {"type": "number"},
+    "maximum_unresolved_peak_db": {"type": "number"}, "room_notch_depth_db": {"type": "number"},
+    "maximum_boostable_notch_depth_db": {"type": "number"}, "loudness_match_error_db": {"type": "number"},
+    "maximum_loudness_match_error_db": {"type": "number"},
+    "normalization_mode": {"type": "string", "const": "ABSOLUTE_LEVEL_MATCHED"}
+  }
+}

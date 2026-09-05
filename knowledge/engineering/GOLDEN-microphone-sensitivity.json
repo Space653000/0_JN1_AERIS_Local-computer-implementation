@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-microphone-sensitivity",
+  "category": "Golden cases",
+  "title": "GOLDEN-microphone-sensitivity",
+  "text": "[{\"path\": \"signal_spl_db\", \"expected\": 93.97940008672037, \"absolute_tolerance\": 1e-08, \"unit\": \"dB re 20 uPa\", \"reduction\": null}, {\"path\": \"snr_db\", \"expected\": 60, \"absolute_tolerance\": 1e-08, \"unit\": \"dB\", \"reduction\": null}, {\"path\": \"sensitivity_dbv_per_pa\", \"expected\": -40, \"absolute_tolerance\": 1e-08, \"unit\": \"dBV/Pa\", \"reduction\": null}]",
+  "source": "golden/engineering/Microphone/microphone-sensitivity/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "bc357c8485aec99e5d96ca1702923ff58649c4db4e536a78701f7d02ad93b0ec",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

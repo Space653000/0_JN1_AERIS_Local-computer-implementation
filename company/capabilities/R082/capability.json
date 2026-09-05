@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R082",
+    "name": "OS Audio Stack / Latency / Sync",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+    "Investigate and bound: average latency hides underrun tails",
+    "Investigate and bound: different clock domains treated as synchronous"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R014 owns: Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+    "Neighbor R032 owns: Verify multichannel capture timestamps, channel ordering and buffer continuity"
+  ],
+  "inputs": {
+    "latency-budget": "skills/latency-budget/input.schema.json",
+    "transfer-coherence": "skills/transfer-coherence/input.schema.json"
+  },
+  "outputs": {
+    "latency-budget": "skills/latency-budget/output.schema.json",
+    "transfer-coherence": "skills/transfer-coherence/output.schema.json"
+  },
+  "required_skills": [
+    "latency-budget",
+    "transfer-coherence"
+  ],
+  "required_methods": [
+    "methods/engineering/latency-budget.json",
+    "methods/engineering/transfer-coherence.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/latency-budget.json",
+    "knowledge/engineering/transfer-coherence.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "tail latency and timestamp precision"
+  ],
+  "common_failure_modes": [
+    "average latency hides underrun tails",
+    "different clock domains treated as synchronous"
+  ],
+  "counter_hypotheses": [
+    "scheduler stall rather than DSP overload",
+    "resampler drift rather than hardware fault"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+      "must_challenge": [
+        "scheduler stall rather than DSP overload",
+        "resampler drift rather than hardware fault"
+      ],
+      "must_account_for": "tail latency and timestamp precision",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/latency-budget/golden.json",
+    "golden/engineering/DSP/transfer-coherence/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/latency-budget/negative.json",
+    "golden/engineering/DSP/transfer-coherence/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/latency-budget/regression.json",
+    "golden/engineering/DSP/transfer-coherence/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R082",
+      "skill_id": "latency-budget",
+      "inputs": "skills/latency-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+      "decision_contract": "R082-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "scheduler stall rather than DSP overload",
+        "resampler drift rather than hardware fault"
+      ]
+    },
+    {
+      "role_id": "R082",
+      "skill_id": "transfer-coherence",
+      "inputs": "skills/transfer-coherence/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+      "decision_contract": "R082-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "scheduler stall rather than DSP overload",
+        "resampler drift rather than hardware fault"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R082/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R082-DOMAIN-DECISION",
+    "question": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+    "required_methods": [
+      "methods/engineering/latency-budget.json",
+      "methods/engineering/transfer-coherence.json"
+    ],
+    "required_skills": [
+      "latency-budget",
+      "transfer-coherence"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R014",
+      "this_seat_owns": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+      "neighbor_owns": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback"
+    },
+    {
+      "neighbor_role": "R032",
+      "this_seat_owns": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+      "neighbor_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+    "Discriminate: scheduler stall rather than DSP overload",
+    "Discriminate: resampler drift rather than hardware fault"
+  ],
+  "professional_inputs": {
+    "decision_question": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "tail latency and timestamp precision"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R082-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
+    "average latency hides underrun tails",
+    "different clock domains treated as synchronous",
+    "scheduler stall rather than DSP overload",
+    "resampler drift rather than hardware fault",
+    "tail latency and timestamp precision"
+  ]
+}

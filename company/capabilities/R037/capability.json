@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R037",
+    "name": "Array Pattern Tuning Engineer",
+    "group": "Microphone CoE"
+  },
+  "mission": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+  "domain": "Microphone CoE",
+  "scope": [
+    "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+    "Investigate and bound: narrow beam destroys robustness to mismatch",
+    "Investigate and bound: desired direction overlaps spatial alias"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R034 owns: Validate microphone-array directionality against angular, gain and delay uncertainty",
+    "Neighbor R043 owns: Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+  ],
+  "inputs": {
+    "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
+    "delay-sum-beamforming": "skills/delay-sum-beamforming/input.schema.json",
+    "microphone-array-taper-baseline": "skills/microphone-array-taper-baseline/input.schema.json"
+  },
+  "outputs": {
+    "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
+    "delay-sum-beamforming": "skills/delay-sum-beamforming/output.schema.json",
+    "microphone-array-taper-baseline": "skills/microphone-array-taper-baseline/output.schema.json"
+  },
+  "required_skills": [
+    "linear-array-pattern",
+    "delay-sum-beamforming",
+    "microphone-array-taper-baseline"
+  ],
+  "required_methods": [
+    "methods/engineering/linear-array-pattern.json",
+    "methods/engineering/delay-sum-beamforming.json",
+    "methods/roles/microphone-array-taper-baseline.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/linear-array-pattern.json",
+    "knowledge/engineering/delay-sum-beamforming.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "sensor phase spread and diffuse-field assumptions"
+  ],
+  "common_failure_modes": [
+    "narrow beam destroys robustness to mismatch",
+    "desired direction overlaps spatial alias"
+  ],
+  "counter_hypotheses": [
+    "gain mismatch rather than taper choice",
+    "wrong geometry rather than bad optimization"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+      "must_challenge": [
+        "gain mismatch rather than taper choice",
+        "wrong geometry rather than bad optimization"
+      ],
+      "must_account_for": "sensor phase spread and diffuse-field assumptions",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Array/linear-array-pattern/golden.json",
+    "golden/engineering/Array/delay-sum-beamforming/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Array/linear-array-pattern/negative.json",
+    "golden/engineering/Array/delay-sum-beamforming/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Array/linear-array-pattern/regression.json",
+    "golden/engineering/Array/delay-sum-beamforming/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R037",
+      "skill_id": "linear-array-pattern",
+      "inputs": "skills/linear-array-pattern/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+      "decision_contract": "R037-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "gain mismatch rather than taper choice",
+        "wrong geometry rather than bad optimization"
+      ]
+    },
+    {
+      "role_id": "R037",
+      "skill_id": "delay-sum-beamforming",
+      "inputs": "skills/delay-sum-beamforming/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+      "decision_contract": "R037-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "gain mismatch rather than taper choice",
+        "wrong geometry rather than bad optimization"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R037/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R037-DOMAIN-DECISION",
+    "question": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+    "required_methods": [
+      "methods/engineering/linear-array-pattern.json",
+      "methods/engineering/delay-sum-beamforming.json",
+      "methods/roles/microphone-array-taper-baseline.json"
+    ],
+    "required_skills": [
+      "linear-array-pattern",
+      "delay-sum-beamforming",
+      "microphone-array-taper-baseline"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R034",
+      "this_seat_owns": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+      "neighbor_owns": "Validate microphone-array directionality against angular, gain and delay uncertainty"
+    },
+    {
+      "neighbor_role": "R043",
+      "this_seat_owns": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+      "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-array-taper-baseline",
+      "method": "methods/roles/microphone-array-taper-baseline.json",
+      "suite": "golden/roles/R037/golden.json",
+      "scope": "ULA taper/steering sampled transfer and conservative mismatch WNG; no full-angle, speech-quality or measured verification."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+    "Discriminate: gain mismatch rather than taper choice",
+    "Discriminate: wrong geometry rather than bad optimization"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "sensor phase spread and diffuse-field assumptions"
+    ],
+    "calculation_schemas": {
+      "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
+      "delay-sum-beamforming": "skills/delay-sum-beamforming/input.schema.json",
+      "microphone-array-taper-baseline": "skills/microphone-array-taper-baseline/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R037-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
+      "delay-sum-beamforming": "skills/delay-sum-beamforming/output.schema.json",
+      "microphone-array-taper-baseline": "skills/microphone-array-taper-baseline/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose array taper and steering tradeoffs between beamwidth, sidelobes and white-noise gain",
+    "narrow beam destroys robustness to mismatch",
+    "desired direction overlaps spatial alias",
+    "gain mismatch rather than taper choice",
+    "wrong geometry rather than bad optimization",
+    "sensor phase spread and diffuse-field assumptions"
+  ]
+}

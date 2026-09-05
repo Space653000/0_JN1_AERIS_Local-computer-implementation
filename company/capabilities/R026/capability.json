@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R026",
+    "name": "Spatial / Room-Correction Algorithm Engineer",
+    "group": "Speaker CoE"
+  },
+  "mission": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+  "domain": "Speaker CoE",
+  "scope": [
+    "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+    "Investigate and bound: single-position inversion destroys spatial robustness",
+    "Investigate and bound: deep null inversion wastes headroom"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R023 owns: Estimate room decay, reflection and system placement limits before ray-based simulation",
+    "Neighbor R071 owns: Choose binaural/spatial rendering assumptions from HRTF, head pose and temporal alignment"
+  ],
+  "inputs": {
+    "room-ir-decay": "skills/room-ir-decay/input.schema.json",
+    "response-phase-delay": "skills/response-phase-delay/input.schema.json",
+    "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+    "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/input.schema.json"
+  },
+  "outputs": {
+    "room-ir-decay": "skills/room-ir-decay/output.schema.json",
+    "response-phase-delay": "skills/response-phase-delay/output.schema.json",
+    "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+    "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/output.schema.json"
+  },
+  "required_skills": [
+    "room-ir-decay",
+    "response-phase-delay",
+    "butterworth-filter",
+    "room-correction-spatial-baseline"
+  ],
+  "required_methods": [
+    "methods/engineering/room-ir-decay.json",
+    "methods/engineering/response-phase-delay.json",
+    "methods/engineering/butterworth-filter.json",
+    "methods/roles/room-correction-spatial-baseline.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/room-ir-decay.json",
+    "knowledge/engineering/response-phase-delay.json",
+    "knowledge/engineering/butterworth-filter.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "position spread and mixed-phase inversion limits"
+  ],
+  "common_failure_modes": [
+    "single-position inversion destroys spatial robustness",
+    "deep null inversion wastes headroom"
+  ],
+  "counter_hypotheses": [
+    "position-dependent cancellation rather than loudspeaker defect",
+    "late reflection rather than minimum-phase peak"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+      "must_challenge": [
+        "position-dependent cancellation rather than loudspeaker defect",
+        "late reflection rather than minimum-phase peak"
+      ],
+      "must_account_for": "position spread and mixed-phase inversion limits",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/room-ir-decay/golden.json",
+    "golden/engineering/DSP/response-phase-delay/golden.json",
+    "golden/engineering/DSP/butterworth-filter/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/room-ir-decay/negative.json",
+    "golden/engineering/DSP/response-phase-delay/negative.json",
+    "golden/engineering/DSP/butterworth-filter/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/room-ir-decay/regression.json",
+    "golden/engineering/DSP/response-phase-delay/regression.json",
+    "golden/engineering/DSP/butterworth-filter/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R026",
+      "skill_id": "room-ir-decay",
+      "inputs": "skills/room-ir-decay/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+      "decision_contract": "R026-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "position-dependent cancellation rather than loudspeaker defect",
+        "late reflection rather than minimum-phase peak"
+      ]
+    },
+    {
+      "role_id": "R026",
+      "skill_id": "response-phase-delay",
+      "inputs": "skills/response-phase-delay/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+      "decision_contract": "R026-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "position-dependent cancellation rather than loudspeaker defect",
+        "late reflection rather than minimum-phase peak"
+      ]
+    },
+    {
+      "role_id": "R026",
+      "skill_id": "butterworth-filter",
+      "inputs": "skills/butterworth-filter/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+      "decision_contract": "R026-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "position-dependent cancellation rather than loudspeaker defect",
+        "late reflection rather than minimum-phase peak"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R026/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R026-DOMAIN-DECISION",
+    "question": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+    "required_methods": [
+      "methods/engineering/room-ir-decay.json",
+      "methods/engineering/response-phase-delay.json",
+      "methods/engineering/butterworth-filter.json",
+      "methods/roles/room-correction-spatial-baseline.json"
+    ],
+    "required_skills": [
+      "room-ir-decay",
+      "response-phase-delay",
+      "butterworth-filter",
+      "room-correction-spatial-baseline"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R023",
+      "this_seat_owns": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+      "neighbor_owns": "Estimate room decay, reflection and system placement limits before ray-based simulation"
+    },
+    {
+      "neighbor_role": "R071",
+      "this_seat_owns": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+      "neighbor_owns": "Choose binaural/spatial rendering assumptions from HRTF, head pose and temporal alignment"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "room-correction-spatial-baseline",
+      "method": "methods/roles/room-correction-spatial-baseline.json",
+      "suite": "golden/roles/R026/golden.json",
+      "scope": "Supplied multi-position response mean/spread, correction, notch, latency and nonminimum-phase screening; no complex inversion, realized filter or physical acceptance."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+    "Discriminate: position-dependent cancellation rather than loudspeaker defect",
+    "Discriminate: late reflection rather than minimum-phase peak"
+  ],
+  "professional_inputs": {
+    "decision_question": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "position spread and mixed-phase inversion limits"
+    ],
+    "calculation_schemas": {
+      "room-ir-decay": "skills/room-ir-decay/input.schema.json",
+      "response-phase-delay": "skills/response-phase-delay/input.schema.json",
+      "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+      "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R026-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "room-ir-decay": "skills/room-ir-decay/output.schema.json",
+      "response-phase-delay": "skills/response-phase-delay/output.schema.json",
+      "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+      "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Decide room-correction limits from spatial response, impulse decay and realizable filter latency",
+    "single-position inversion destroys spatial robustness",
+    "deep null inversion wastes headroom",
+    "position-dependent cancellation rather than loudspeaker defect",
+    "late reflection rather than minimum-phase peak",
+    "position spread and mixed-phase inversion limits"
+  ]
+}

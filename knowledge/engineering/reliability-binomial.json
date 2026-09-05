@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-reliability-binomial",
+  "category": "Methods",
+  "title": "reliability-binomial",
+  "text": "Zero failures in 100 trials gives exact one-sided binomial bound. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/reliability-binomial.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "fc68ed50e068c647fa6ca4545891d73119c9b0c06236c985d2a6520d510d1542"
+}

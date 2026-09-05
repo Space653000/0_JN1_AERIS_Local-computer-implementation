@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-linear-array-pattern",
+  "category": "Golden cases",
+  "title": "GOLDEN-linear-array-pattern",
+  "text": "[{\"path\": \"normalized_power.180\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"alias_free_spacing\", \"expected\": true, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Array/linear-array-pattern/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "5ee94fa4be83a562cf4c455770ea1f85ffe73f642f6e399a6d18bedcc905f380",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

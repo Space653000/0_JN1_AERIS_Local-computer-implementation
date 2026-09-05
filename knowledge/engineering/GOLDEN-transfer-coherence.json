@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-transfer-coherence",
+  "category": "Golden cases",
+  "title": "GOLDEN-transfer-coherence",
+  "text": "[{\"path\": \"transfer_real\", \"expected\": 2, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": \"all\"}, {\"path\": \"coherence\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": \"all\"}]",
+  "source": "golden/engineering/DSP/transfer-coherence/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "4085389d36fc7f0eaa3760d8b8448c28cb4a7c5a25affb83e1ecdef0ad6ac33d",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

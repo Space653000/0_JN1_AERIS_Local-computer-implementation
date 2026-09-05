@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R083",
+    "name": "Codec / Transport / Network Audio",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+    "Investigate and bound: buffer reduction produces dropouts",
+    "Investigate and bound: packet loss score ignores burst structure"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R081 owns: Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
+    "Neighbor R082 owns: Locate OS audio scheduling, resampling and synchronization bottlenecks end to end"
+  ],
+  "inputs": {
+    "latency-budget": "skills/latency-budget/input.schema.json",
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json"
+  },
+  "outputs": {
+    "latency-budget": "skills/latency-budget/output.schema.json",
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json"
+  },
+  "required_skills": [
+    "latency-budget",
+    "enhancement-aec-metrics"
+  ],
+  "required_methods": [
+    "methods/engineering/latency-budget.json",
+    "methods/engineering/enhancement-aec-metrics.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/latency-budget.json",
+    "knowledge/engineering/enhancement-aec-metrics.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "loss burst statistics and playout-clock drift"
+  ],
+  "common_failure_modes": [
+    "buffer reduction produces dropouts",
+    "packet loss score ignores burst structure"
+  ],
+  "counter_hypotheses": [
+    "network jitter rather than codec algorithm",
+    "reference lag rather than quality loss"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+      "must_challenge": [
+        "network jitter rather than codec algorithm",
+        "reference lag rather than quality loss"
+      ],
+      "must_account_for": "loss burst statistics and playout-clock drift",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/latency-budget/golden.json",
+    "golden/engineering/Microphone/enhancement-aec-metrics/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/latency-budget/negative.json",
+    "golden/engineering/Microphone/enhancement-aec-metrics/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/latency-budget/regression.json",
+    "golden/engineering/Microphone/enhancement-aec-metrics/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R083",
+      "skill_id": "latency-budget",
+      "inputs": "skills/latency-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+      "decision_contract": "R083-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "network jitter rather than codec algorithm",
+        "reference lag rather than quality loss"
+      ]
+    },
+    {
+      "role_id": "R083",
+      "skill_id": "enhancement-aec-metrics",
+      "inputs": "skills/enhancement-aec-metrics/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+      "decision_contract": "R083-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "network jitter rather than codec algorithm",
+        "reference lag rather than quality loss"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R083/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R083-DOMAIN-DECISION",
+    "question": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+    "required_methods": [
+      "methods/engineering/latency-budget.json",
+      "methods/engineering/enhancement-aec-metrics.json"
+    ],
+    "required_skills": [
+      "latency-budget",
+      "enhancement-aec-metrics"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R081",
+      "this_seat_owns": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+      "neighbor_owns": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification"
+    },
+    {
+      "neighbor_role": "R082",
+      "this_seat_owns": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+      "neighbor_owns": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+    "Discriminate: network jitter rather than codec algorithm",
+    "Discriminate: reference lag rather than quality loss"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "loss burst statistics and playout-clock drift"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R083-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality",
+    "buffer reduction produces dropouts",
+    "packet loss score ignores burst structure",
+    "network jitter rather than codec algorithm",
+    "reference lag rather than quality loss",
+    "loss burst statistics and playout-clock drift"
+  ]
+}

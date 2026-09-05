@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "pass_name": "AERIS LOCAL SOFTWARE COMPLETION PASS",
+  "software_local_gaps_before": 12,
+  "items": [
+    {"id": "live_backend_implementation_revision", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "running supervisor must report the revision captured when its modules loaded, matching the accepted commit"},
+    {"id": "ollama_api_no_desktop_autostart", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "HTTP model probes, direct root-scoped server startup and Windows negative regression; discovered during final real-machine Autopilot"},
+    {"id": "core_ui_ssot_six_pages", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "Core asset files and three live page shells must exist"},
+    {"id": "workspace_fields_sqlite_workflow", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "control SQLite must contain a task linked to a real workflow"},
+    {"id": "five_plane_runtime_telemetry", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "runtime assessment must emit five planes and at least 20 fully attributed service records"},
+    {"id": "free_local_acoustic_baseline", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "deterministic adapter must execute while denying professional verification"},
+    {"id": "pptx_skill_registry_sha256_provenance", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "all source/executable hashes must verify and unsigned truth must remain explicit"},
+    {"id": "scheduled_task_watchdog_persistence", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "UNATTENDED_INSTALL must report REGISTERED_RUNNING and verified for this root"},
+    {"id": "expected_run_concurrent_atomic_write", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "atomic implementation and its concurrency regression test must exist; unit acceptance executes the test"},
+    {"id": "autopilot_completion_fields", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "both platform Autopilot implementations must contain the four truth fields"},
+    {"id": "six_page_visual_accessibility_regression", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "six-route PASS report, screenshots and accessibility markers must exist"},
+    {"id": "full_local_acceptance_and_gap_rescan", "classification": "SOFTWARE_LOCAL_FIXABLE", "evidence": "LOCAL_ACCEPTANCE must PASS all required checks and maturity must contain no NOT_IMPLEMENTED state"}
+  ],
+  "truth": "Item status is computed by aeris_runtime.completion from evidence. This file declares the inventory and cannot declare itself COMPLETE."
+}

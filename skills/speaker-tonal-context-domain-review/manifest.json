@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill_id": "speaker-tonal-context-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/speaker-tonal-context-domain-review.json",
+  "input_schema": "skills/speaker-tonal-context-domain-review/input.schema.json",
+  "output_schema": "skills/speaker-tonal-context-domain-review/output.schema.json",
+  "role_mappings": ["R020"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Independent tonal-correction, smoothing, spatial uncertainty, notch, headroom and level-match assertion review",
+  "review_domain": "speaker-tonal-context"
+}

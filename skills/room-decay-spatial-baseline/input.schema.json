@@ -1,0 +1,16 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "frequency_band_hz", "position_ids", "decay_rate_db_per_s", "fit_span_db", "noise_margin_db", "fit_r_squared", "minimum_fit_span_db", "minimum_noise_margin_db", "minimum_fit_r_squared", "minimum_valid_position_fraction", "maximum_valid_rt60_s", "maximum_valid_rt60_spread_s", "window_duration_s", "minimum_window_duration_s"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_ROOM_DECAY_POSITION_FITS"},
+    "frequency_band_hz": {"type": "number"}, "position_ids": {"type": "array", "minItems": 2, "maxItems": 256, "items": {"type": "string"}},
+    "decay_rate_db_per_s": {"type": "array", "minItems": 2, "maxItems": 256, "items": {"type": "number"}},
+    "fit_span_db": {"type": "array", "minItems": 2, "maxItems": 256, "items": {"type": "number"}},
+    "noise_margin_db": {"type": "array", "minItems": 2, "maxItems": 256, "items": {"type": "number"}},
+    "fit_r_squared": {"type": "array", "minItems": 2, "maxItems": 256, "items": {"type": "number"}},
+    "minimum_fit_span_db": {"type": "number"}, "minimum_noise_margin_db": {"type": "number"},
+    "minimum_fit_r_squared": {"type": "number"}, "minimum_valid_position_fraction": {"type": "number"},
+    "maximum_valid_rt60_s": {"type": "number"}, "maximum_valid_rt60_spread_s": {"type": "number"},
+    "window_duration_s": {"type": "number"}, "minimum_window_duration_s": {"type": "number"}
+  }
+}

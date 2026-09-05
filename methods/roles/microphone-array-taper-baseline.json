@@ -1,0 +1,31 @@
+{
+  "method_id": "microphone-array-taper-baseline",
+  "version": "1.0.0",
+  "role": "R037",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.array_beam:analyze",
+  "applicability": "ULA amplitude taper and steering with supplied mismatch bounds and uncorrelated white-noise gain; not speech quality",
+  "equations": {
+    "transfer": "sum(a*g*exp(j*2*pi*f*(x*(sin(theta)-sin(steer))/c-delay)))/sum(a)",
+    "uncertainty": "Weighted triangle bound: gain_error+2*g*sin(min(pi*f*(position_error*abs(sin(theta))/c+delay_error),pi/2))",
+    "white_noise": "WNG=desired_amplitude^2 / (sum((a*g)^2)/(sum(a)^2)); covariance sigma^2 I before gain",
+    "geometry": "Adjacent spacing <= wavelength/2; range >= max(aperture*ratio,2*aperture^2/wavelength*ratio)"
+  },
+  "assumptions": [
+    "Uniform linear nominal array, fixed nominal true-time steering",
+    "exp(j*omega*t); positive channel delay retards phase",
+    "Independent supplied error bounds, not statistical calibration",
+    "Sampled hemisphere only; maximum sampled sidelobe is not continuous bound"
+  ],
+  "excluded": [
+    "Correlated/diffuse noise WNG",
+    "Actual far-field speech or full-angle conformance",
+    "Measured calibration, Human approval or whole-role L3"
+  ],
+  "golden_tests": "golden/roles/R037/golden.json",
+  "numerical_policy": {
+    "dimensionless_decimals": 12,
+    "scope": "Representation resolution, not model error"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "requirement_ids": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "string"
+      }
+    },
+    "test_ids": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "string"
+      }
+    },
+    "links": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "object",
+        "properties": {
+          "requirement_id": {
+            "type": "string"
+          },
+          "test_id": {
+            "type": "string"
+          },
+          "evidence_ref": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "requirement_id",
+          "test_id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "requirement_ids",
+    "test_ids",
+    "links"
+  ],
+  "additionalProperties": false
+}

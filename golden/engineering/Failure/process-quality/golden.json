@@ -1,0 +1,54 @@
+{
+  "id": "process-quality-analytic-v1",
+  "skill_id": "process-quality",
+  "suite": "Failure",
+  "input": {
+    "values": [
+      9,
+      10,
+      11,
+      10,
+      10
+    ],
+    "lower_limit": 7,
+    "upper_limit": 13
+  },
+  "checks": [
+    {
+      "path": "mean",
+      "expected": 10,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "out_of_spec_count",
+      "expected": 0,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "ppk",
+      "expected": 1.4142135623730951,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "values": [
+      10,
+      10,
+      10,
+      10,
+      10
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Sample SD=sqrt(0.5); centered Ppk=3/(3*SD).",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "aff126c520e66e30253ff0946649ff545950a52f3b209d374164d83864dadd71"
+}

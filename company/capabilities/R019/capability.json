@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R019",
+    "name": "Dynamics / Bass / Protection Tuning Engineer",
+    "group": "Speaker CoE"
+  },
+  "mission": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+  "domain": "Speaker CoE",
+  "scope": [
+    "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+    "Investigate and bound: bass boost exceeds Xmax",
+    "Investigate and bound: limiter release pumps speech envelope"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R016 owns: Derate speaker drive from distortion, compression, temperature and durability limits",
+    "Neighbor R025 owns: Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay"
+  ],
+  "inputs": {
+    "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+    "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+    "thermal-rc": "skills/thermal-rc/input.schema.json",
+    "speaker-bass-limiter-envelope-baseline": "skills/speaker-bass-limiter-envelope-baseline/input.schema.json"
+  },
+  "outputs": {
+    "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+    "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+    "thermal-rc": "skills/thermal-rc/output.schema.json",
+    "speaker-bass-limiter-envelope-baseline": "skills/speaker-bass-limiter-envelope-baseline/output.schema.json"
+  },
+  "required_skills": [
+    "lumped-speaker",
+    "butterworth-filter",
+    "thermal-rc",
+    "speaker-bass-limiter-envelope-baseline"
+  ],
+  "required_methods": [
+    "methods/engineering/lumped-speaker.json",
+    "methods/engineering/butterworth-filter.json",
+    "methods/engineering/thermal-rc.json",
+    "methods/roles/speaker-bass-limiter-envelope-baseline.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/lumped-speaker.json",
+    "knowledge/engineering/butterworth-filter.json",
+    "knowledge/engineering/thermal-rc.json"
+  ],
+  "standards_metadata_references": [
+    "AES75"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "crest factor, content spectrum and attack/release transients"
+  ],
+  "common_failure_modes": [
+    "bass boost exceeds Xmax",
+    "limiter release pumps speech envelope"
+  ],
+  "counter_hypotheses": [
+    "supply clipping rather than excursion limiting",
+    "thermal drift rather than EQ mismatch"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+      "must_challenge": [
+        "supply clipping rather than excursion limiting",
+        "thermal drift rather than EQ mismatch"
+      ],
+      "must_account_for": "crest factor, content spectrum and attack/release transients",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Speaker/lumped-speaker/golden.json",
+    "golden/engineering/DSP/butterworth-filter/golden.json",
+    "golden/engineering/Speaker/thermal-rc/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Speaker/lumped-speaker/negative.json",
+    "golden/engineering/DSP/butterworth-filter/negative.json",
+    "golden/engineering/Speaker/thermal-rc/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Speaker/lumped-speaker/regression.json",
+    "golden/engineering/DSP/butterworth-filter/regression.json",
+    "golden/engineering/Speaker/thermal-rc/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R019",
+      "skill_id": "lumped-speaker",
+      "inputs": "skills/lumped-speaker/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+      "decision_contract": "R019-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "supply clipping rather than excursion limiting",
+        "thermal drift rather than EQ mismatch"
+      ]
+    },
+    {
+      "role_id": "R019",
+      "skill_id": "butterworth-filter",
+      "inputs": "skills/butterworth-filter/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+      "decision_contract": "R019-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "supply clipping rather than excursion limiting",
+        "thermal drift rather than EQ mismatch"
+      ]
+    },
+    {
+      "role_id": "R019",
+      "skill_id": "thermal-rc",
+      "inputs": "skills/thermal-rc/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+      "decision_contract": "R019-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "supply clipping rather than excursion limiting",
+        "thermal drift rather than EQ mismatch"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R019/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R019-DOMAIN-DECISION",
+    "question": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+    "required_methods": [
+      "methods/engineering/lumped-speaker.json",
+      "methods/engineering/butterworth-filter.json",
+      "methods/engineering/thermal-rc.json",
+      "methods/roles/speaker-bass-limiter-envelope-baseline.json"
+    ],
+    "required_skills": [
+      "lumped-speaker",
+      "butterworth-filter",
+      "thermal-rc",
+      "speaker-bass-limiter-envelope-baseline"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R016",
+      "this_seat_owns": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+      "neighbor_owns": "Derate speaker drive from distortion, compression, temperature and durability limits"
+    },
+    {
+      "neighbor_role": "R025",
+      "this_seat_owns": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+      "neighbor_owns": "Choose smart-amplifier protection thresholds from thermal state, excursion model and sensing delay"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-bass-limiter-envelope-baseline",
+      "method": "methods/roles/speaker-bass-limiter-envelope-baseline.json",
+      "suite": "golden/roles/R019/golden.json",
+      "scope": "Supplied bass boost, excursion and temperature bounds, amplifier voltage, crest-factor and attack/release screening; no dynamic detector, durability or measured acceptance."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+    "Discriminate: supply clipping rather than excursion limiting",
+    "Discriminate: thermal drift rather than EQ mismatch"
+  ],
+  "professional_inputs": {
+    "decision_question": "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "crest factor, content spectrum and attack/release transients"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+      "butterworth-filter": "skills/butterworth-filter/input.schema.json",
+      "thermal-rc": "skills/thermal-rc/input.schema.json",
+      "speaker-bass-limiter-envelope-baseline": "skills/speaker-bass-limiter-envelope-baseline/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R019-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+      "butterworth-filter": "skills/butterworth-filter/output.schema.json",
+      "thermal-rc": "skills/thermal-rc/output.schema.json",
+      "speaker-bass-limiter-envelope-baseline": "skills/speaker-bass-limiter-envelope-baseline/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Set bass extension, compression and limiter tradeoffs against excursion and thermal envelopes",
+    "bass boost exceeds Xmax",
+    "limiter release pumps speech envelope",
+    "supply clipping rather than excursion limiting",
+    "thermal drift rather than EQ mismatch",
+    "crest factor, content spectrum and attack/release transients"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "experiment-optimization-analytic-v1",
+  "skill_id": "experiment-optimization",
+  "suite": "Product",
+  "input": {
+    "candidate_points": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        2
+      ]
+    ],
+    "observations": [
+      {
+        "point": [
+          0
+        ],
+        "loss": 5
+      }
+    ]
+  },
+  "checks": [
+    {
+      "path": "next_point.0",
+      "expected": 2,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "unexplored_count",
+      "expected": 2,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "observations": [
+      {
+        "point": [
+          9
+        ],
+        "loss": 0
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Maximin exploration selects the farthest allowed unexplored point without hardware actions.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "2925f20f782bdcab2fb50b0dab2140fd4c0f58044f193737fa03e74e11503658"
+}

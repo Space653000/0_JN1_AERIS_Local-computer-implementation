@@ -80,28 +80,24 @@ class QualityGateContractTests(unittest.TestCase):
         visual = (ROOT / "tests/browser_visual_accessibility.py").read_text(encoding="utf-8")
         docs = (ROOT / "docs/BROWSER_VISUAL_ACCESSIBILITY_BASELINE.md").read_text(encoding="utf-8")
         self.assertIn("real headless browser SPA route/render semantic E2E; NOT pixel visual regression", text)
-        self.assertIn('id=\"workspace\" class=\"view active-view\"', text)
-        self.assertIn('id=\"services\" class=\"view active-view\"', text)
+        self.assertIn('data-page=\"workspace\"', text)
+        self.assertIn('data-page=\"services\"', text)
         self.assertIn("NOT cross-version pixel-golden regression", visual)
         self.assertIn("**not** a cross-version pixel-golden visual regression suite", docs.lower())
 
     def test_browser_accessibility_markers_are_permanent(self):
-        html = (ROOT / "ui/web/index.html").read_text(encoding="utf-8")
+        html = "\n".join((ROOT / "ui/web" / name).read_text(encoding="utf-8") for name in ("dashboard.html", "workspace.html", "services.html"))
+        js = (ROOT / "ui/web/aeris-live.js").read_text(encoding="utf-8")
         for marker in (
-            'aria-label="AERIS 主要導覽"',
-            'aria-label="儀表板"',
-            'aria-label="工作區"',
-            'aria-label="服務"',
-            'role="status"',
-            'aria-live="polite"',
-            '<main id="mainContent">',
-            '<label for="projectSelect">',
-            '<label for="taskTitle">',
-            '<label for="taskDescription">',
-            '<label for="riskLevel">',
-            '<label for="invokePrompt">',
+            '<html lang="zh-Hant">',
+            "setAttribute('aria-label','AERIS 主要導覽')",
+            "main.id='mainContent'",
+            "setAttribute('role','status')",
+            "setAttribute('aria-live','polite')",
+            "label.htmlFor=id",
+            "setAttribute('aria-label','搜尋角色')",
         ):
-            self.assertIn(marker, html)
+            self.assertTrue(marker in html or marker in js, marker)
 
     def test_machine_and_golden_baselines_cannot_be_upgraded_to_fake_verification(self):
         machine = (ROOT / "aeris_runtime/machine_qualification.py").read_text(encoding="utf-8")

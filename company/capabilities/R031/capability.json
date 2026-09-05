@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R031",
+    "name": "ADC / PDM / Clock / Noise Specialist",
+    "group": "Microphone CoE"
+  },
+  "mission": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+  "domain": "Microphone CoE",
+  "scope": [
+    "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+    "Investigate and bound: PDM clock feedthrough aliases in band",
+    "Investigate and bound: digital attenuation hides upstream overload"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R030 owns: Refer analog microphone noise and headroom through bias, gain and ADC interfaces",
+    "Neighbor R032 owns: Verify multichannel capture timestamps, channel ordering and buffer continuity"
+  ],
+  "inputs": {
+    "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+    "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+    "latency-budget": "skills/latency-budget/input.schema.json",
+    "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+    "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+    "latency-budget": "skills/latency-budget/output.schema.json",
+    "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "circuit-noise-budget",
+    "spectral-analysis",
+    "latency-budget",
+    "microphone-capture-clock-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/circuit-noise-budget.json",
+    "methods/engineering/spectral-analysis.json",
+    "methods/engineering/latency-budget.json",
+    "methods/roles/microphone-capture-clock-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/circuit-noise-budget.json",
+    "knowledge/engineering/spectral-analysis.json",
+    "knowledge/engineering/latency-budget.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "ENOB assumptions, clock phase noise and decimator response"
+  ],
+  "common_failure_modes": [
+    "PDM clock feedthrough aliases in band",
+    "digital attenuation hides upstream overload"
+  ],
+  "counter_hypotheses": [
+    "clock spur rather than acoustic tone",
+    "ADC input clipping rather than mic saturation"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+      "must_challenge": [
+        "clock spur rather than acoustic tone",
+        "ADC input clipping rather than mic saturation"
+      ],
+      "must_account_for": "ENOB assumptions, clock phase noise and decimator response",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/circuit-noise-budget/golden.json",
+    "golden/engineering/DSP/spectral-analysis/golden.json",
+    "golden/engineering/Product/latency-budget/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/circuit-noise-budget/negative.json",
+    "golden/engineering/DSP/spectral-analysis/negative.json",
+    "golden/engineering/Product/latency-budget/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/circuit-noise-budget/regression.json",
+    "golden/engineering/DSP/spectral-analysis/regression.json",
+    "golden/engineering/Product/latency-budget/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R031",
+      "skill_id": "circuit-noise-budget",
+      "inputs": "skills/circuit-noise-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+      "decision_contract": "R031-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clock spur rather than acoustic tone",
+        "ADC input clipping rather than mic saturation"
+      ]
+    },
+    {
+      "role_id": "R031",
+      "skill_id": "spectral-analysis",
+      "inputs": "skills/spectral-analysis/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+      "decision_contract": "R031-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clock spur rather than acoustic tone",
+        "ADC input clipping rather than mic saturation"
+      ]
+    },
+    {
+      "role_id": "R031",
+      "skill_id": "latency-budget",
+      "inputs": "skills/latency-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+      "decision_contract": "R031-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "clock spur rather than acoustic tone",
+        "ADC input clipping rather than mic saturation"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R031/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R031-DOMAIN-DECISION",
+    "question": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+    "required_methods": [
+      "methods/engineering/circuit-noise-budget.json",
+      "methods/engineering/spectral-analysis.json",
+      "methods/engineering/latency-budget.json",
+      "methods/roles/microphone-capture-clock-domain-review.json"
+    ],
+    "required_skills": [
+      "circuit-noise-budget",
+      "spectral-analysis",
+      "latency-budget",
+      "microphone-capture-clock-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R030",
+      "this_seat_owns": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+      "neighbor_owns": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces"
+    },
+    {
+      "neighbor_role": "R032",
+      "this_seat_owns": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+      "neighbor_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-capture-clock-domain-review",
+      "method": "methods/roles/microphone-capture-clock-domain-review.json",
+      "suite": "golden/roles/R031/golden.json",
+      "scope": "Independent timing/counter/rate interval contract review on an unverified shared reference; no ADC ENOB, PDM filtering or whole-role L3."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+    "Discriminate: clock spur rather than acoustic tone",
+    "Discriminate: ADC input clipping rather than mic saturation"
+  ],
+  "professional_inputs": {
+    "decision_question": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "ENOB assumptions, clock phase noise and decimator response"
+    ],
+    "calculation_schemas": {
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R031-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution",
+    "PDM clock feedthrough aliases in band",
+    "digital attenuation hides upstream overload",
+    "clock spur rather than acoustic tone",
+    "ADC input clipping rather than mic saturation",
+    "ENOB assumptions, clock phase noise and decimator response"
+  ]
+}

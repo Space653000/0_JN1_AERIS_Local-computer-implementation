@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {
+    "values": {"type": "object", "required": ["coverage_deg", "maximum_gap_deg", "edge_attenuation_lower_db", "maximum_symmetry_error_db", "checks", "disposition"]},
+    "physical_measurement_verified": {"const": false}
+  }
+}

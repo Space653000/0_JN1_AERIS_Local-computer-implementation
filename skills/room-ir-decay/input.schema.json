@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "impulse_response": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "sample_rate_hz": {
+      "type": "number"
+    },
+    "usable_decay_db": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "impulse_response",
+    "sample_rate_hz",
+    "usable_decay_db"
+  ],
+  "additionalProperties": false
+}

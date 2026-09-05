@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R056",
+    "name": "Soundbar",
+    "group": "Product Chiefs"
+  },
+  "mission": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+  "domain": "Product Chiefs",
+  "scope": [
+    "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+    "Investigate and bound: subwoofer polarity cancels crossover",
+    "Investigate and bound: virtual surround optimized at one seat"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R024 owns: Implement speaker EQ and crossover filters with numerical response, delay and clipping checks",
+    "Neighbor R026 owns: Decide room-correction limits from spatial response, impulse decay and realizable filter latency"
+  ],
+  "inputs": {
+    "product-system-plan": "skills/product-system-plan/input.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+  },
+  "outputs": {
+    "product-system-plan": "skills/product-system-plan/output.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+  },
+  "required_skills": [
+    "product-system-plan",
+    "engineering-requirements",
+    "requirement-traceability",
+    "dfmea-ranking"
+  ],
+  "required_methods": [
+    "methods/engineering/product-system-plan.json",
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/requirement-traceability.json",
+    "methods/engineering/dfmea-ranking.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/product-system-plan.json",
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/requirement-traceability.json",
+    "knowledge/engineering/dfmea-ranking.json"
+  ],
+  "standards_metadata_references": [
+    "CTA-2034"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "seat variation and soundbar-to-wall distance"
+  ],
+  "common_failure_modes": [
+    "subwoofer polarity cancels crossover",
+    "virtual surround optimized at one seat"
+  ],
+  "counter_hypotheses": [
+    "wall loading rather than woofer defect",
+    "transport delay rather than crossover phase"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+      "must_challenge": [
+        "wall loading rather than woofer defect",
+        "transport delay rather than crossover phase"
+      ],
+      "must_account_for": "seat variation and soundbar-to-wall distance",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/product-system-plan/golden.json",
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json",
+    "golden/engineering/Failure/dfmea-ranking/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/product-system-plan/negative.json",
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json",
+    "golden/engineering/Failure/dfmea-ranking/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/product-system-plan/regression.json",
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json",
+    "golden/engineering/Failure/dfmea-ranking/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R056",
+      "skill_id": "product-system-plan",
+      "inputs": "skills/product-system-plan/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+      "decision_contract": "R056-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "wall loading rather than woofer defect",
+        "transport delay rather than crossover phase"
+      ]
+    },
+    {
+      "role_id": "R056",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+      "decision_contract": "R056-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "wall loading rather than woofer defect",
+        "transport delay rather than crossover phase"
+      ]
+    },
+    {
+      "role_id": "R056",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+      "decision_contract": "R056-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "wall loading rather than woofer defect",
+        "transport delay rather than crossover phase"
+      ]
+    },
+    {
+      "role_id": "R056",
+      "skill_id": "dfmea-ranking",
+      "inputs": "skills/dfmea-ranking/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+      "decision_contract": "R056-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "wall loading rather than woofer defect",
+        "transport delay rather than crossover phase"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R056/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "product_architecture": {
+    "speaker_topology_considerations": "linear multiway bar plus optional subwoofer",
+    "microphone_topology_considerations": "optional voice-assistant array",
+    "usage_scenarios": [
+      "TV dialogue and virtual surround"
+    ],
+    "common_acoustic_failure_modes": [
+      "TV wall boundary",
+      "lip sync",
+      "crossover mismatch"
+    ],
+    "lifecycle": [
+      "Concept",
+      "EVT",
+      "DVT",
+      "PVT",
+      "MP",
+      "Field"
+    ],
+    "measurement_plan": [
+      "declare fixture/geometry and calibration state",
+      "capture raw FR/noise/IR and electrical limits",
+      "repeat across fit/orientation/operating conditions",
+      "compare required bands and uncertainty margins"
+    ],
+    "simulation_requirements": [
+      "linear speaker/port baseline where topology applies",
+      "array propagation and room/latency budgets where capture applies"
+    ],
+    "manufacturing_risks": [
+      "assembly leakage and tolerances",
+      "component sensitivity variation",
+      "EOL limits without justified guard bands"
+    ],
+    "standards_metadata_references": [
+      "IEC 60268-5",
+      "IEC 60268-4"
+    ],
+    "evidence_expectations": [
+      "raw-data hash",
+      "fixture and calibration provenance",
+      "method version",
+      "uncertainty",
+      "counter-hypothesis review"
+    ],
+    "non_scope": [
+      "clinical efficacy or patient fitting",
+      "licensed-tool equivalence",
+      "physical qualification without measurements"
+    ]
+  },
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R056-DOMAIN-DECISION",
+    "question": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R024",
+      "this_seat_owns": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+      "neighbor_owns": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks"
+    },
+    {
+      "neighbor_role": "R026",
+      "this_seat_owns": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+      "neighbor_owns": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+    "Discriminate: wall loading rather than woofer defect",
+    "Discriminate: transport delay rather than crossover phase"
+  ],
+  "professional_inputs": {
+    "decision_question": "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "seat variation and soundbar-to-wall distance"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R056-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Resolve soundbar crossover, wall boundary and dialogue/lip-sync tradeoffs",
+    "subwoofer polarity cancels crossover",
+    "virtual surround optimized at one seat",
+    "wall loading rather than woofer defect",
+    "transport delay rather than crossover phase",
+    "seat variation and soundbar-to-wall distance"
+  ]
+}

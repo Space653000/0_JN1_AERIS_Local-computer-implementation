@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-harmonic-noise-analysis",
+  "category": "Golden cases",
+  "title": "GOLDEN-harmonic-noise-analysis",
+  "text": "[{\"path\": \"thd_ratio\", \"expected\": 0.1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"thdn_ratio\", \"expected\": 0.1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/DSP/harmonic-noise-analysis/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "9432eed4d946c8a2432dd3625a544e1aa1c19dea69d1f8559c1ca2a6bffaeb78",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "skill_id": "circuit-noise-budget",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/circuit-noise-budget/implementation.py",
+  "input_schema": "skills/circuit-noise-budget/input.schema.json",
+  "output_schema": "skills/circuit-noise-budget/output.schema.json",
+  "method": "methods/engineering/circuit-noise-budget.json",
+  "applicability": "Ideal uniform quantization variance is one LSB squared divided by 12.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/Microphone/circuit-noise-budget/golden.json",
+  "negative_tests": "golden/engineering/Microphone/circuit-noise-budget/negative.json",
+  "regression_tests": "golden/engineering/Microphone/circuit-noise-budget/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R012",
+    "R013",
+    "R014",
+    "R028",
+    "R030",
+    "R031",
+    "R076",
+    "R081"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

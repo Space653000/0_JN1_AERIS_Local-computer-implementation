@@ -1,0 +1,17 @@
+{
+  "suite_id": "R024-FILTER-REALIZATION-V1", "role_id": "R024", "skill_id": "speaker-filter-realization-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored one-biquad exact-binary coefficient and complementary crossover fixture; no DSP runtime or acoustic response was observed.",
+  "scope": "Supplied biquad, crossover, quantization, peak and delay feasibility only",
+  "base_input": {
+    "model": "SUPPLIED_SPEAKER_BIQUAD_CROSSOVER", "sections": [{"b": [0.25, 0.5, 0.25], "a": [1.0, -0.5, 0.25]}],
+    "coefficient_fractional_bits": 16, "maximum_pole_radius": 0.9, "maximum_coefficient_quantization_error": 0.0001,
+    "lowpass_gain_at_crossover": 0.5, "highpass_gain_at_crossover": 0.5, "relative_phase_deg": 0.0, "maximum_phase_mismatch_deg": 10.0, "maximum_crossover_sum_deviation_db": 0.5,
+    "input_peak_linear": 0.5, "section_peak_gains": [1.5], "available_output_peak_linear": 1.0, "group_delay_ms": 4.0, "maximum_group_delay_ms": 8.0
+  },
+  "cases": [
+    {"id": "FILTER-REALIZATION-BOUNDS", "kind": "positive", "question": "Does R024 check actual pole radius, coefficient quantization, complementary crossover, internal peak and delay?", "input_overrides": {}, "checks": [{"path": "maximum_pole_radius_actual", "expected": 0.5, "absolute_tolerance": 1e-12}, {"path": "maximum_coefficient_quantization_error_actual", "expected": 0.0, "absolute_tolerance": 0}, {"path": "estimated_output_peak_linear", "expected": 0.75, "absolute_tolerance": 1e-12}, {"path": "fixed_point_runtime_verified", "expected": false, "absolute_tolerance": 0}]},
+    {"id": "FILTER-REALIZATION-INCLUSIVE-HEADROOM", "kind": "boundary", "question": "Is exact declared output headroom inclusive without proving runtime saturation behavior?", "input_overrides": {"available_output_peak_linear": 0.75}, "checks": [{"path": "checks.4.passed", "expected": true, "absolute_tolerance": 0}, {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}]},
+    {"id": "FILTER-REALIZATION-PHASE", "kind": "counter_hypothesis", "question": "Does a 180-degree crossover cancellation trigger polarity/phase investigation rather than an EQ boost?", "input_overrides": {"relative_phase_deg": 180.0}, "checks": [{"path": "checks.2.passed", "expected": false, "absolute_tolerance": 0}, {"path": "checks.3.passed", "expected": false, "absolute_tolerance": 0}, {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}]},
+    {"id": "FILTER-REALIZATION-UNNORMALIZED", "kind": "negative", "question": "Is a denominator without a0=1 rejected rather than silently normalized?", "input_overrides": {"sections": [{"b": [0.25, 0.5, 0.25], "a": [2.0, -0.5, 0.25]}]}, "expected_error": "ValueError"}
+  ]
+}

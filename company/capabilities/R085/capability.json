@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R085",
+    "name": "Acoustic Data Engineering",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+    "Investigate and bound: mixed sample-rate channels silently combined",
+    "Investigate and bound: duplicate source recordings leak across splits"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R084 owns: Assess local audio ML generalization, leakage and calibration rather than training fit alone",
+    "Neighbor R097 owns: Maintain requirement-test-evidence and configuration links across revisions"
+  ],
+  "inputs": {
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "provenance-research": "skills/provenance-research/input.schema.json"
+  },
+  "outputs": {
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "provenance-research": "skills/provenance-research/output.schema.json"
+  },
+  "required_skills": [
+    "requirement-traceability",
+    "provenance-research"
+  ],
+  "required_methods": [
+    "methods/engineering/requirement-traceability.json",
+    "methods/engineering/provenance-research.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/requirement-traceability.json",
+    "knowledge/engineering/provenance-research.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "annotation reliability and missing acquisition metadata"
+  ],
+  "common_failure_modes": [
+    "mixed sample-rate channels silently combined",
+    "duplicate source recordings leak across splits"
+  ],
+  "counter_hypotheses": [
+    "unit conversion rather than distribution shift",
+    "duplicate capture rather than independent evidence"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+      "must_challenge": [
+        "unit conversion rather than distribution shift",
+        "duplicate capture rather than independent evidence"
+      ],
+      "must_account_for": "annotation reliability and missing acquisition metadata",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/requirement-traceability/golden.json",
+    "golden/engineering/Product/provenance-research/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/requirement-traceability/negative.json",
+    "golden/engineering/Product/provenance-research/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/requirement-traceability/regression.json",
+    "golden/engineering/Product/provenance-research/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R085",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+      "decision_contract": "R085-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "unit conversion rather than distribution shift",
+        "duplicate capture rather than independent evidence"
+      ]
+    },
+    {
+      "role_id": "R085",
+      "skill_id": "provenance-research",
+      "inputs": "skills/provenance-research/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+      "decision_contract": "R085-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "unit conversion rather than distribution shift",
+        "duplicate capture rather than independent evidence"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R085/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R085-DOMAIN-DECISION",
+    "question": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+    "required_methods": [
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/provenance-research.json"
+    ],
+    "required_skills": [
+      "requirement-traceability",
+      "provenance-research"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R084",
+      "this_seat_owns": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+      "neighbor_owns": "Assess local audio ML generalization, leakage and calibration rather than training fit alone"
+    },
+    {
+      "neighbor_role": "R097",
+      "this_seat_owns": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+      "neighbor_owns": "Maintain requirement-test-evidence and configuration links across revisions"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+    "Discriminate: unit conversion rather than distribution shift",
+    "Discriminate: duplicate capture rather than independent evidence"
+  ],
+  "professional_inputs": {
+    "decision_question": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "annotation reliability and missing acquisition metadata"
+    ],
+    "calculation_schemas": {
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "provenance-research": "skills/provenance-research/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R085-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "provenance-research": "skills/provenance-research/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
+    "mixed sample-rate channels silently combined",
+    "duplicate source recordings leak across splits",
+    "unit conversion rather than distribution shift",
+    "duplicate capture rather than independent evidence",
+    "annotation reliability and missing acquisition metadata"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "suite_id":"R016-POWER-NONLINEAR-DOMAIN-V1", "role_id":"R016",
+  "skill_id":"speaker-power-distortion-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Independent RMS harmonic arithmetic, pressure/voltage ratios and constant-power RC worked examples; manually authored engineering dispositions, not copied from shared Skill fixtures.",
+  "scope":"Nonlinear/power requirement separation and discriminating experiments under a single-node thermal model; not physical reliability or product lifetime qualification.",
+  "base_input":{
+    "reference_voltage_rms_v":1.0,"drive_voltage_rms_v":2.0,
+    "reference_fundamental_rms_pa":0.5,"fundamental_rms_pa":1.0,"harmonic_rms_pa":[0.01,0.005],
+    "input_power_w":1.0,"thermal_resistance_k_per_w":10.0,"thermal_capacity_j_per_k":10.0,
+    "duration_s":100.0,"ambient_temperature_c":25.0,
+    "max_thd_percent":5.0,"max_compression_db":3.0,"max_coil_temperature_c":80.0
+  },
+  "cases":[
+    {"id":"POWER-NOMINAL","kind":"positive","question":"Does proportional acoustic gain with low harmonics and bounded thermal rise satisfy the three stated requirements?","input_overrides":{},
+     "checks":[{"path":"thd_percent","expected":1.118033988749895,"absolute_tolerance":0.000001},
+               {"path":"compression_db","expected":0.0,"absolute_tolerance":0.000001},
+               {"path":"predicted_coil_temperature_c","expected":31.32120558828558,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"POWER-THD-BOUNDARY","kind":"boundary","question":"Are orthogonal 3% and 4% harmonic RMS components exactly at the inclusive 5% THD requirement?","input_overrides":{"harmonic_rms_pa":[0.03,0.04]},
+     "checks":[{"path":"thd_percent","expected":5.0,"absolute_tolerance":0.000001},
+               {"path":"checks.0.passed","expected":true,"absolute_tolerance":0}]},
+    {"id":"POWER-WRONG-UNIT","kind":"negative","question":"Must a voltage dBV field be rejected rather than treated as RMS volts?","input_overrides":{"drive_voltage_dbv":6.020599913279624},"expected_error":"ValueError"},
+    {"id":"POWER-COLD-COMPRESSION","kind":"counter_hypothesis","question":"When acoustic gain compresses without thermal input, must amplifier/limiter behavior be discriminated before blaming the coil?","input_overrides":{"fundamental_rms_pa":0.5,"input_power_w":0.0},
+     "checks":[{"path":"compression_db","expected":6.020599913279624,"absolute_tolerance":0.000001},
+               {"path":"next_discriminating_experiment","expected":"Record amplifier output and limiter gain at matched cold-coil conditions before attributing loss to heat","absolute_tolerance":0},
+               {"path":"checks.2.passed","expected":true,"absolute_tolerance":0}]},
+    {"id":"POWER-HOT-COMPRESSION","kind":"counter_hypothesis","question":"Does equal compression with excessive predicted coil temperature require cooling and resistance-based temperature evidence?","input_overrides":{"fundamental_rms_pa":0.5,"input_power_w":20.0},
+     "checks":[{"path":"compression_db","expected":6.020599913279624,"absolute_tolerance":0.000001},
+               {"path":"predicted_coil_temperature_c","expected":151.42411176571153,"absolute_tolerance":0.000001},
+               {"path":"next_discriminating_experiment","expected":"Measure resistance-derived coil temperature and repeat the level sweep after cooling at identical gain","absolute_tolerance":0},
+               {"path":"checks.2.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"POWER-NONLINEAR-ONLY","kind":"positive","question":"Should excessive harmonic distortion remain a transducer-versus-amplifier investigation when the thermal and compression requirements pass?","input_overrides":{"harmonic_rms_pa":[0.1,0.0]},
+     "checks":[{"path":"required_revisions.0","expected":"LOWER_DRIVE_AND_DISCRIMINATE_TRANSDUCER_FROM_AMPLIFIER_NONLINEARITY","absolute_tolerance":0},
+               {"path":"checks.1.passed","expected":true,"absolute_tolerance":0},
+               {"path":"checks.2.passed","expected":true,"absolute_tolerance":0}]},
+    {"id":"POWER-INITIAL-TEMPERATURE","kind":"boundary","question":"At zero elapsed time, is initial temperature exactly ambient rather than a fictitious steady-state coil rise?","input_overrides":{"duration_s":0.0,"ambient_temperature_c":80.0,"input_power_w":20.0},
+     "checks":[{"path":"predicted_coil_temperature_c","expected":80.0,"absolute_tolerance":0.000001},
+               {"path":"checks.2.passed","expected":true,"absolute_tolerance":0}]},
+    {"id":"POWER-MISSING-FUNDAMENTAL","kind":"negative","question":"Must a missing fundamental block a THD verdict instead of yielding a finite-looking percentage?","input_overrides":{"fundamental_rms_pa":0.0},"expected_error":"ValueError"}
+  ]
+}

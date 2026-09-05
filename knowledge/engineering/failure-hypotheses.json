@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-failure-hypotheses",
+  "category": "Methods",
+  "title": "failure-hypotheses",
+  "text": "Contradictory evidence leaves the cause contested and generates a discriminating test. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/failure-hypotheses.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "5f02b1c4e68f9b2f9be71efe066ce520d030109666eeb3ee29286f0057b3337d"
+}

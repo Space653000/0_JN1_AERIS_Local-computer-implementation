@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R015",
+    "name": "Speaker Measurement Engineer",
+    "group": "Speaker CoE"
+  },
+  "mission": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+  "domain": "Speaker CoE",
+  "scope": [
+    "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+    "Investigate and bound: window truncation biases low-frequency FR",
+    "Investigate and bound: voltage reference mistaken for acoustic calibration"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R016 owns: Derate speaker drive from distortion, compression, temperature and durability limits",
+    "Neighbor R033 owns: Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references"
+  ],
+  "inputs": {
+    "response-phase-delay": "skills/response-phase-delay/input.schema.json",
+    "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json",
+    "resonance-characterization": "skills/resonance-characterization/input.schema.json",
+    "speaker-fr-reference-baseline": "skills/speaker-fr-reference-baseline/input.schema.json"
+  },
+  "outputs": {
+    "response-phase-delay": "skills/response-phase-delay/output.schema.json",
+    "harmonic-noise-analysis": "skills/harmonic-noise-analysis/output.schema.json",
+    "resonance-characterization": "skills/resonance-characterization/output.schema.json",
+    "speaker-fr-reference-baseline": "skills/speaker-fr-reference-baseline/output.schema.json"
+  },
+  "required_skills": [
+    "response-phase-delay",
+    "harmonic-noise-analysis",
+    "resonance-characterization",
+    "speaker-fr-reference-baseline"
+  ],
+  "required_methods": [
+    "methods/engineering/response-phase-delay.json",
+    "methods/engineering/harmonic-noise-analysis.json",
+    "methods/engineering/resonance-characterization.json",
+    "methods/roles/speaker-fr-reference-baseline.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/response-phase-delay.json",
+    "knowledge/engineering/harmonic-noise-analysis.json",
+    "knowledge/engineering/resonance-characterization.json"
+  ],
+  "standards_metadata_references": [
+    "IEC 60268-5"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "distance, gate length, calibration and environmental variation"
+  ],
+  "common_failure_modes": [
+    "window truncation biases low-frequency FR",
+    "voltage reference mistaken for acoustic calibration"
+  ],
+  "counter_hypotheses": [
+    "time-window artifact rather than resonance",
+    "microphone alignment rather than phase defect"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+      "must_challenge": [
+        "time-window artifact rather than resonance",
+        "microphone alignment rather than phase defect"
+      ],
+      "must_account_for": "distance, gate length, calibration and environmental variation",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/DSP/response-phase-delay/golden.json",
+    "golden/engineering/DSP/harmonic-noise-analysis/golden.json",
+    "golden/engineering/Speaker/resonance-characterization/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/DSP/response-phase-delay/negative.json",
+    "golden/engineering/DSP/harmonic-noise-analysis/negative.json",
+    "golden/engineering/Speaker/resonance-characterization/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/DSP/response-phase-delay/regression.json",
+    "golden/engineering/DSP/harmonic-noise-analysis/regression.json",
+    "golden/engineering/Speaker/resonance-characterization/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R015",
+      "skill_id": "response-phase-delay",
+      "inputs": "skills/response-phase-delay/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+      "decision_contract": "R015-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "time-window artifact rather than resonance",
+        "microphone alignment rather than phase defect"
+      ]
+    },
+    {
+      "role_id": "R015",
+      "skill_id": "harmonic-noise-analysis",
+      "inputs": "skills/harmonic-noise-analysis/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+      "decision_contract": "R015-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "time-window artifact rather than resonance",
+        "microphone alignment rather than phase defect"
+      ]
+    },
+    {
+      "role_id": "R015",
+      "skill_id": "resonance-characterization",
+      "inputs": "skills/resonance-characterization/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+      "decision_contract": "R015-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "time-window artifact rather than resonance",
+        "microphone alignment rather than phase defect"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R015/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R015-DOMAIN-DECISION",
+    "question": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+    "required_methods": [
+      "methods/engineering/response-phase-delay.json",
+      "methods/engineering/harmonic-noise-analysis.json",
+      "methods/engineering/resonance-characterization.json",
+      "methods/roles/speaker-fr-reference-baseline.json"
+    ],
+    "required_skills": [
+      "response-phase-delay",
+      "harmonic-noise-analysis",
+      "resonance-characterization",
+      "speaker-fr-reference-baseline"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R016",
+      "this_seat_owns": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+      "neighbor_owns": "Derate speaker drive from distortion, compression, temperature and durability limits"
+    },
+    {
+      "neighbor_role": "R033",
+      "this_seat_owns": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+      "neighbor_owns": "Measure microphone sensitivity, self-noise and overload with explicit pressure and electrical references"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-fr-reference-baseline",
+      "method": "methods/roles/speaker-fr-reference-baseline.json",
+      "suite": "golden/roles/R015/golden.json",
+      "scope": "Supplied sampled FR reference, interval and window validity; not calibrated acquisition or full-band conformance."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+    "Discriminate: time-window artifact rather than resonance",
+    "Discriminate: microphone alignment rather than phase defect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "distance, gate length, calibration and environmental variation"
+    ],
+    "calculation_schemas": {
+      "response-phase-delay": "skills/response-phase-delay/input.schema.json",
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/input.schema.json",
+      "resonance-characterization": "skills/resonance-characterization/input.schema.json",
+      "speaker-fr-reference-baseline": "skills/speaker-fr-reference-baseline/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R015-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "response-phase-delay": "skills/response-phase-delay/output.schema.json",
+      "harmonic-noise-analysis": "skills/harmonic-noise-analysis/output.schema.json",
+      "resonance-characterization": "skills/resonance-characterization/output.schema.json",
+      "speaker-fr-reference-baseline": "skills/speaker-fr-reference-baseline/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Design repeatable speaker FR, phase, impedance and distortion measurements with explicit reference conditions",
+    "window truncation biases low-frequency FR",
+    "voltage reference mistaken for acoustic calibration",
+    "time-window artifact rather than resonance",
+    "microphone alignment rather than phase defect",
+    "distance, gate length, calibration and environmental variation"
+  ]
+}

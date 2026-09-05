@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": ["skill_id", "result", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {
+    "skill_id": {"const": "tws-fit-anc-call-baseline"},
+    "result": {"const": "PASS"},
+    "physical_measurement_verified": {"const": false},
+    "professional_tool_verified": {"const": false},
+    "values": {
+      "type": "object",
+      "required": ["disposition", "checks", "anc_topology_candidate", "required_revisions", "model_assumptions", "unresolved"]
+    }
+  }
+}

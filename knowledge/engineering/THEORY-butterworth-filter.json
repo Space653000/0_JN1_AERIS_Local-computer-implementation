@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-butterworth-filter",
+  "category": "Theory",
+  "title": "THEORY-butterworth-filter",
+  "text": "Stable unit-DC-gain lowpass impulse response sums to one.",
+  "source": "methods/engineering/butterworth-filter.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "a7b6c389a2d10629d163ac5f40c0899999030ef505ffe7ade60f5896c73ed2ea",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

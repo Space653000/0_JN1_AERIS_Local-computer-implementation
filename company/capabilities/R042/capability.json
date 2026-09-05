@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R042",
+    "name": "AEC / Echo Control Engineer",
+    "group": "Microphone CoE"
+  },
+  "mission": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+  "domain": "Microphone CoE",
+  "scope": [
+    "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+    "Investigate and bound: echo-return metric computed on misaligned signals",
+    "Investigate and bound: near-end speech removed during adaptation"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R035 owns: Validate far-field capture under noise, distance and reverberation with realistic speech conditions",
+    "Neighbor R044 owns: Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
+  ],
+  "inputs": {
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+    "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+    "latency-budget": "skills/latency-budget/input.schema.json"
+  },
+  "outputs": {
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+    "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+    "latency-budget": "skills/latency-budget/output.schema.json"
+  },
+  "required_skills": [
+    "enhancement-aec-metrics",
+    "transfer-coherence",
+    "latency-budget"
+  ],
+  "required_methods": [
+    "methods/engineering/enhancement-aec-metrics.json",
+    "methods/engineering/transfer-coherence.json",
+    "methods/engineering/latency-budget.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/enhancement-aec-metrics.json",
+    "knowledge/engineering/transfer-coherence.json",
+    "knowledge/engineering/latency-budget.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "echo-path variation and reference timing"
+  ],
+  "common_failure_modes": [
+    "echo-return metric computed on misaligned signals",
+    "near-end speech removed during adaptation"
+  ],
+  "counter_hypotheses": [
+    "nonlinear playback rather than insufficient adaptive length",
+    "clock drift rather than static delay"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+      "must_challenge": [
+        "nonlinear playback rather than insufficient adaptive length",
+        "clock drift rather than static delay"
+      ],
+      "must_account_for": "echo-path variation and reference timing",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/enhancement-aec-metrics/golden.json",
+    "golden/engineering/DSP/transfer-coherence/golden.json",
+    "golden/engineering/Product/latency-budget/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/enhancement-aec-metrics/negative.json",
+    "golden/engineering/DSP/transfer-coherence/negative.json",
+    "golden/engineering/Product/latency-budget/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/enhancement-aec-metrics/regression.json",
+    "golden/engineering/DSP/transfer-coherence/regression.json",
+    "golden/engineering/Product/latency-budget/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R042",
+      "skill_id": "enhancement-aec-metrics",
+      "inputs": "skills/enhancement-aec-metrics/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+      "decision_contract": "R042-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "nonlinear playback rather than insufficient adaptive length",
+        "clock drift rather than static delay"
+      ]
+    },
+    {
+      "role_id": "R042",
+      "skill_id": "transfer-coherence",
+      "inputs": "skills/transfer-coherence/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+      "decision_contract": "R042-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "nonlinear playback rather than insufficient adaptive length",
+        "clock drift rather than static delay"
+      ]
+    },
+    {
+      "role_id": "R042",
+      "skill_id": "latency-budget",
+      "inputs": "skills/latency-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+      "decision_contract": "R042-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "nonlinear playback rather than insufficient adaptive length",
+        "clock drift rather than static delay"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R042/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R042-DOMAIN-DECISION",
+    "question": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+    "required_methods": [
+      "methods/engineering/enhancement-aec-metrics.json",
+      "methods/engineering/transfer-coherence.json",
+      "methods/engineering/latency-budget.json"
+    ],
+    "required_skills": [
+      "enhancement-aec-metrics",
+      "transfer-coherence",
+      "latency-budget"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R035",
+      "this_seat_owns": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+      "neighbor_owns": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions"
+    },
+    {
+      "neighbor_role": "R044",
+      "this_seat_owns": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+      "neighbor_owns": "Choose NR, AGC and dereverb tradeoffs without claiming perceptual quality from a single proxy"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+    "Discriminate: nonlinear playback rather than insufficient adaptive length",
+    "Discriminate: clock drift rather than static delay"
+  ],
+  "professional_inputs": {
+    "decision_question": "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "echo-path variation and reference timing"
+    ],
+    "calculation_schemas": {
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+      "latency-budget": "skills/latency-budget/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R042-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+      "latency-budget": "skills/latency-budget/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Choose echo-control alignment and adaptation constraints across delay and double-talk",
+    "echo-return metric computed on misaligned signals",
+    "near-end speech removed during adaptation",
+    "nonlinear playback rather than insufficient adaptive length",
+    "clock drift rather than static delay",
+    "echo-path variation and reference timing"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "POLICY-Countermeasures",
+  "category": "Countermeasures",
+  "title": "POLICY-Countermeasures",
+  "text": "DFMEA maps ranked risks to named owners and countermeasures; effectiveness requires follow-up evidence.",
+  "source": "docs/PROFESSIONAL_COMPANY_BUILD.md",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "a56eb52975469d060edc5ffdb296c9ccff94e1402642e253ac54a22e5686c1bb",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-level-statistics",
+  "category": "Theory",
+  "title": "THEORY-level-statistics",
+  "text": "Equal-duration energies average linearly, not as decibels.",
+  "source": "methods/engineering/level-statistics.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "9cbfb9c093a5a145c799e2ade07b2a212cd9d2b8ad70e1c36adb013585038604",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

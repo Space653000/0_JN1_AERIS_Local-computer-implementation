@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "skill_id": "microphone-capture-clock-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/microphone-capture-clock-domain-review.json",
+  "input_schema": "skills/microphone-capture-clock-domain-review/input.schema.json",
+  "output_schema": "skills/microphone-capture-clock-domain-review/output.schema.json",
+  "role_mappings": [
+    "R031"
+  ],
+  "review_domain": "microphone-capture-clock",
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Independent counter/timestamp/rate-bound consistency; not absolute clock accuracy, PDM filtering or ADC noise"
+}

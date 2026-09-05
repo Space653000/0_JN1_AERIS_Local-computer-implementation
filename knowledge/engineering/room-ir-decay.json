@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-room-ir-decay",
+  "category": "Methods",
+  "title": "room-ir-decay",
+  "text": "Exponential amplitude decay of 60 dB in 0.6 s yields the same extrapolated RT. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/room-ir-decay.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "c99acb298f901a95b693dd1a9b6afb97907dd14653c0a4075a563aa41227034d"
+}

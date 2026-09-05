@@ -35,6 +35,17 @@ DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
 
 
+def _loaded_revision() -> str:
+    try:
+        return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip()
+    except (OSError, subprocess.SubprocessError):
+        return "UNKNOWN"
+
+
+# Capture once at module load; a later git commit must not relabel old code.
+LOADED_IMPLEMENTATION_SHA = _loaded_revision()
+
+
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -51,7 +62,7 @@ def _unverified_capabilities() -> list[dict[str, str]]:
     result: list[dict[str, str]] = []
     for name, info in maturity.get("capabilities", {}).items():
         state = str(info.get("state", "UNKNOWN"))
-        if state in {"NOT_IMPLEMENTED", "IMPLEMENTED", "BLOCKED_EXTERNAL"}:
+        if state in {"NOT_IMPLEMENTED", "IMPLEMENTED", "BLOCKED_EXTERNAL", "HUMAN_GATE", "EXTERNAL_LICENSE", "PHYSICAL_HARDWARE", "REBOOT_LOGOFF_REQUIRED"}:
             result.append({"capability": name, "state": state})
     return result
 
@@ -194,6 +205,8 @@ class _Handler(BaseHTTPRequestHandler):
             self._json(200, {
                 "service": "AERIS_LOCAL_SUPERVISOR",
                 "service_state": "SERVING",
+                "implementation_sha": LOADED_IMPLEMENTATION_SHA,
+                "pid": os.getpid(),
                 "company_opening_state": opening.get("operational_state"),
                 "company_complete": False,
                 "scope": "loopback local supervisor heartbeat, not whole-company health proof",
@@ -237,10 +250,13 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
     except OSError:
         pass
     server = ThreadingHTTPServer((DEFAULT_HOST, int(port)), _Handler)
+    # Drain accepted requests during controlled capability-runtime replacement.
+    server.daemon_threads = False
     server.shutdown_token = token  # type: ignore[attr-defined]
     supervisor_state = {
         "schema_version": 2,
         "pid": os.getpid(),
+        "implementation_sha": LOADED_IMPLEMENTATION_SHA,
         "bind_host": DEFAULT_HOST,
         "port": int(port),
         "started_at_utc": _now(),
@@ -269,7 +285,8 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
         server.server_close()
         append_event("SUPERVISOR_STOPPED", "AERIS Supervisor", {"pid": os.getpid(), "port": int(port)})
         try:
-            SUPERVISOR_TOKEN_FILE.unlink()
+            if SUPERVISOR_TOKEN_FILE.read_text(encoding="utf-8-sig").strip() == token:
+                SUPERVISOR_TOKEN_FILE.unlink()
         except FileNotFoundError:
             pass
     return 0
@@ -283,6 +300,12 @@ def supervisor_status(port: int = DEFAULT_PORT, timeout: float = 1.0) -> dict[st
         return {"reachable": False, "error": str(exc), "host": DEFAULT_HOST, "port": int(port)}
 
 
+def supervisor_python() -> str:
+    """Use the root-contained engineering environment for supervised workers."""
+    candidate = ROOT / ".venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+    return str(candidate) if candidate.is_file() else sys.executable
+
+
 def start_supervisor_background(port: int = DEFAULT_PORT) -> dict[str, Any]:
     existing = supervisor_status(port)
     if existing.get("reachable"):
@@ -290,7 +313,7 @@ def start_supervisor_background(port: int = DEFAULT_PORT) -> dict[str, Any]:
     log_dir = ROOT / ".aeris" / "logs"
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / "supervisor.log"
-    cmd = [sys.executable, "-m", "aeris_runtime", "company", "serve", "--port", str(int(port))]
+    cmd = [supervisor_python(), "-B", "-m", "aeris_runtime", "company", "serve", "--port", str(int(port))]
     kwargs: dict[str, Any] = {"cwd": str(ROOT), "stdin": subprocess.DEVNULL}
     if os.name == "nt":
         kwargs["creationflags"] = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0) | getattr(subprocess, "CREATE_NO_WINDOW", 0)

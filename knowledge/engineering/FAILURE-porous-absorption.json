@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-porous-absorption",
+  "category": "Failures",
+  "title": "FAILURE-porous-absorption",
+  "text": "{\"invalid_variant\": {\"flow_resistivity_pa_s_m2\": 1000000000.0}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Speaker/porous-absorption/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "4508c4ebcc8142ad842b00df78402a6ad72b471f7b2f2f0de0703432e1a1d03d",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

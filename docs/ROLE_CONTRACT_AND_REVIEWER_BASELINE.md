@@ -36,4 +36,4 @@ Reviewer safeguards:
 
 ## Truth boundary
 
-Allocation is not review completion. A real review record/Evidence is still required where the R0-R4 policy requires independent review. The framework baseline does not upgrade the full `100_role_executable_domain_contracts` maturity item until specialty domain assets and acceptance coverage exist.
+Allocation is not review completion. A real review record/Evidence is still required where the R0-R4 policy requires independent review. All locally implementable contract and free-baseline software is present; `100_role_executable_domain_contracts` remains a `HUMAN_GATE` for independent specialty approval plus licensed/physical domain evidence.

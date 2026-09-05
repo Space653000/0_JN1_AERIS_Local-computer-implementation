@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill_id": "speaker-signal-chain-headroom-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/speaker-signal-chain-headroom-domain-review.json",
+  "input_schema": "skills/speaker-signal-chain-headroom-domain-review/input.schema.json",
+  "output_schema": "skills/speaker-signal-chain-headroom-domain-review/output.schema.json",
+  "role_mappings": ["R013"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Independent gain-chain referred-noise, loading, voltage/current headroom and declared stability-metadata assertion review",
+  "review_domain": "speaker-signal-chain-headroom"
+}

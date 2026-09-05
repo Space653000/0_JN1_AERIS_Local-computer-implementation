@@ -1,0 +1,68 @@
+{
+  "suite_id": "R073-STRUCTURAL-ACOUSTIC-REVIEW-V1", "role_id": "R073", "skill_id": "structural-acoustic-path-domain-review",
+  "source_kind": "SYNTHETIC", "oracle_provenance": "Authored independent reconstruction oracle for the R022 synchronized three-band fixture; candidate constants are analytic and not executor evidence.",
+  "scope": "Independent structural/acoustic transfer-identifiability report consistency",
+  "base_input": {
+    "parameters": {
+      "model": "SUPPLIED_STRUCTURAL_ACOUSTIC_BANDS", "frequency_hz": [100.0, 200.0, 400.0],
+      "acceleration_rms_m_s2": [0.2, 0.4, 0.1], "pressure_rms_pa": [0.02, 0.08, 0.005],
+      "coherence": [0.8, 0.95, 0.3], "acceleration_noise_floor_m_s2": [0.01, 0.01, 0.01],
+      "pressure_noise_floor_pa": [0.001, 0.001, 0.001], "minimum_acceleration_snr_ratio": 5.0,
+      "minimum_pressure_snr_ratio": 5.0, "minimum_coherence": 0.7,
+      "minimum_identifiable_band_fraction": 0.6, "maximum_transfer_spread_ratio": 2.5,
+      "frequency_alignment_bound_hz": 1.0, "maximum_frequency_alignment_bound_hz": 2.0
+    },
+    "candidate": {
+      "acceleration_snr_ratio": [20.0, 40.0, 10.0], "pressure_snr_ratio": [20.0, 80.0, 5.0],
+      "transfer_pa_per_m_s2": [0.09999999999999999, 0.19999999999999998, 0.049999999999999996],
+      "identifiable_band_indices": [0, 1], "identifiable_band_fraction": 0.6666666666666666, "transfer_spread_ratio": 2.0,
+      "checks": [
+        {"id": "IDENTIFIABLE_BAND_FRACTION", "actual": 0.6666666666666666, "limit": 0.6, "operator": ">=", "passed": true, "on_failure": "ADD_IDENTIFIABLE_BANDS_OR_WITHHOLD_TRANSFER_INTERPRETATION"},
+        {"id": "TRANSFER_SPREAD", "actual": 2.0, "limit": 2.5, "operator": "<=", "passed": true, "on_failure": "SEPARATE_MODES_PATHS_OR_OPERATING_CONDITIONS"},
+        {"id": "IDENTIFIABLE_COHERENCE", "actual": 0.8, "limit": 0.7, "operator": ">=", "passed": true, "on_failure": "IMPROVE_SYNCHRONIZATION_SNR_OR_PATH_EXCITATION"},
+        {"id": "FREQUENCY_ALIGNMENT", "actual": 1.0, "limit": 2.0, "operator": "<=", "passed": true, "on_failure": "REALIGN_STRUCTURAL_AND_ACOUSTIC_SPECTRA"}
+      ],
+      "required_revisions": [], "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "causal_path_verified": false, "radiation_efficiency_verified": false, "physical_measurement_verified": false,
+      "counter_hypotheses": ["Mount-stiffness change rather than source-amplitude change", "Electrical pickup rather than mechanically radiated sound", "Acoustic loading rather than structural damping change"],
+      "next_discriminating_experiment": "REPEAT_SYNCHRONIZED_ACCELERATION_PRESSURE_BANDS_WITH_MOUNT_AND_ELECTRICAL_PICKUP_CONTROLS",
+      "model_assumptions": ["Supplied band RMS values share time/frequency alignment", "Pressure-to-acceleration ratio is a descriptive transfer metric only", "Magnitude-squared coherence gates identifiability but does not establish causation"],
+      "unresolved": ["Transfer direction and causal path", "Mode shapes, radiation efficiency and boundary loading", "Sensor calibration, physical repetition and qualified Human acceptance"]
+    },
+    "context": {"product": "Speaker structural/acoustic path", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {
+      "id": "STRUCTURAL-REVIEW-INDEPENDENT", "kind": "positive",
+      "question": "Can the reviewer reconstruct transfer identifiability while refusing causal and Human approval?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0},
+        {"path": "human_approval", "expected": false, "absolute_tolerance": 0},
+        {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "STRUCTURAL-REVIEW-NUMERIC-TAIL", "kind": "boundary",
+      "question": "Can a representation-scale transfer tail pass without changing the engineering verdict?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.transfer_spread_ratio", "value": 2.000000000001}],
+      "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "STRUCTURAL-REVIEW-CAUSAL-OVERCLAIM", "kind": "counter_hypothesis",
+      "question": "Does independent review reject a causal-path claim based only on coherence?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.causal_path_verified", "value": true}],
+      "checks": [
+        {"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0},
+        {"path": "disagreements.0.field", "expected": "causal_path_verified", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "STRUCTURAL-REVIEW-R4-REJECTED", "kind": "negative",
+      "question": "Must R4 require authority outside this bounded automated path review?",
+      "input_overrides": {}, "input_mutations": [{"path": "context.risk", "value": "R4"}], "expected_error": "ValueError"
+    }
+  ]
+}

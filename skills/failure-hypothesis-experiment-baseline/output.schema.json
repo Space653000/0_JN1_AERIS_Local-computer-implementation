@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "skill_id",
+    "values",
+    "input_sha256",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "values": {
+      "type": "object",
+      "required": [
+        "posterior",
+        "selected_experiment_id",
+        "root_cause_verified",
+        "posterior_calibrated",
+        "disposition"
+      ]
+    },
+    "physical_measurement_verified": {
+      "const": false
+    }
+  }
+}
+

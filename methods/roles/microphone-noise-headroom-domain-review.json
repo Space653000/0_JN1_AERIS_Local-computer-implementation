@@ -1,0 +1,22 @@
+{
+  "method_id": "microphone-noise-headroom-domain-review",
+  "version": "1.0.0",
+  "role": "R030",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_review:review",
+  "review_domain": "microphone-noise-headroom",
+  "applicability": "Challenge microphone noise identifiability and ADC signal headroom independently of capsule overload",
+  "executor_calls_permitted": false,
+  "assumptions": [
+    "common bandwidth and electrical output frame",
+    "supplied pressure reference and conservative relative bounds"
+  ],
+  "excluded": [
+    "instrument calibration",
+    "capsule acoustic overload proof",
+    "combined noise-peak immunity",
+    "Human approval"
+  ],
+  "golden_tests": "golden/roles/R030/golden.json"
+}

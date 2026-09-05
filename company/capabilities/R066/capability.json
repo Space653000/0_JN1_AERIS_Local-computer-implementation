@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R066",
+    "name": "Humanoid / Service Robot",
+    "group": "Product Chiefs"
+  },
+  "mission": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+  "domain": "Product Chiefs",
+  "scope": [
+    "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+    "Investigate and bound: robot speech masks user interruption",
+    "Investigate and bound: joint noise follows head-tracking motion"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R042 owns: Choose echo-control alignment and adaptation constraints across delay and double-talk",
+    "Neighbor R043 owns: Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+  ],
+  "inputs": {
+    "product-system-plan": "skills/product-system-plan/input.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+  },
+  "outputs": {
+    "product-system-plan": "skills/product-system-plan/output.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+  },
+  "required_skills": [
+    "product-system-plan",
+    "engineering-requirements",
+    "requirement-traceability",
+    "dfmea-ranking"
+  ],
+  "required_methods": [
+    "methods/engineering/product-system-plan.json",
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/requirement-traceability.json",
+    "methods/engineering/dfmea-ranking.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/product-system-plan.json",
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/requirement-traceability.json",
+    "knowledge/engineering/dfmea-ranking.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "joint state, talker distance and duplex overlap"
+  ],
+  "common_failure_modes": [
+    "robot speech masks user interruption",
+    "joint noise follows head-tracking motion"
+  ],
+  "counter_hypotheses": [
+    "self-echo path change rather than speech detector error",
+    "actuator harmonic rather than human voice"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+      "must_challenge": [
+        "self-echo path change rather than speech detector error",
+        "actuator harmonic rather than human voice"
+      ],
+      "must_account_for": "joint state, talker distance and duplex overlap",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/product-system-plan/golden.json",
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json",
+    "golden/engineering/Failure/dfmea-ranking/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/product-system-plan/negative.json",
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json",
+    "golden/engineering/Failure/dfmea-ranking/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/product-system-plan/regression.json",
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json",
+    "golden/engineering/Failure/dfmea-ranking/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R066",
+      "skill_id": "product-system-plan",
+      "inputs": "skills/product-system-plan/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+      "decision_contract": "R066-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "self-echo path change rather than speech detector error",
+        "actuator harmonic rather than human voice"
+      ]
+    },
+    {
+      "role_id": "R066",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+      "decision_contract": "R066-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "self-echo path change rather than speech detector error",
+        "actuator harmonic rather than human voice"
+      ]
+    },
+    {
+      "role_id": "R066",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+      "decision_contract": "R066-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "self-echo path change rather than speech detector error",
+        "actuator harmonic rather than human voice"
+      ]
+    },
+    {
+      "role_id": "R066",
+      "skill_id": "dfmea-ranking",
+      "inputs": "skills/dfmea-ranking/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+      "decision_contract": "R066-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "self-echo path change rather than speech detector error",
+        "actuator harmonic rather than human voice"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R066/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "product_architecture": {
+    "speaker_topology_considerations": "head/chest speech speaker",
+    "microphone_topology_considerations": "head/body conversational array",
+    "usage_scenarios": [
+      "human-facing service interaction"
+    ],
+    "common_acoustic_failure_modes": [
+      "self-generated speech echo",
+      "mechanical motion",
+      "privacy"
+    ],
+    "lifecycle": [
+      "Concept",
+      "EVT",
+      "DVT",
+      "PVT",
+      "MP",
+      "Field"
+    ],
+    "measurement_plan": [
+      "declare fixture/geometry and calibration state",
+      "capture raw FR/noise/IR and electrical limits",
+      "repeat across fit/orientation/operating conditions",
+      "compare required bands and uncertainty margins"
+    ],
+    "simulation_requirements": [
+      "linear speaker/port baseline where topology applies",
+      "array propagation and room/latency budgets where capture applies"
+    ],
+    "manufacturing_risks": [
+      "assembly leakage and tolerances",
+      "component sensitivity variation",
+      "EOL limits without justified guard bands"
+    ],
+    "standards_metadata_references": [
+      "IEC 60268-5",
+      "IEC 60268-4"
+    ],
+    "evidence_expectations": [
+      "raw-data hash",
+      "fixture and calibration provenance",
+      "method version",
+      "uncertainty",
+      "counter-hypothesis review"
+    ],
+    "non_scope": [
+      "clinical efficacy or patient fitting",
+      "licensed-tool equivalence",
+      "physical qualification without measurements"
+    ]
+  },
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R066-DOMAIN-DECISION",
+    "question": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R042",
+      "this_seat_owns": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+      "neighbor_owns": "Choose echo-control alignment and adaptation constraints across delay and double-talk"
+    },
+    {
+      "neighbor_role": "R043",
+      "this_seat_owns": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+      "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+    "Discriminate: self-echo path change rather than speech detector error",
+    "Discriminate: actuator harmonic rather than human voice"
+  ],
+  "professional_inputs": {
+    "decision_question": "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "joint state, talker distance and duplex overlap"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R066-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Coordinate humanoid self-speech echo, moving joints and conversational directionality",
+    "robot speech masks user interruption",
+    "joint noise follows head-tracking motion",
+    "self-echo path change rather than speech detector error",
+    "actuator harmonic rather than human voice",
+    "joint state, talker distance and duplex overlap"
+  ]
+}

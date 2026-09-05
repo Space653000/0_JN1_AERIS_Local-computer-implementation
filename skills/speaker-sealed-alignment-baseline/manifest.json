@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "skill_id": "speaker-sealed-alignment-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/speaker-sealed-alignment-baseline.json",
+  "input_schema": "skills/speaker-sealed-alignment-baseline/input.schema.json",
+  "output_schema": "skills/speaker-sealed-alignment-baseline/output.schema.json",
+  "role_mappings": [
+    "R009"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Ideal sealed small-signal T/S alignment with independent supplied bounds; no ported or excursion acceptance"
+}

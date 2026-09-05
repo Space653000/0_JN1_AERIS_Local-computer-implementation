@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-frequency-weighting",
+  "category": "Theory",
+  "title": "THEORY-frequency-weighting",
+  "text": "Z weighting is unity gain.",
+  "source": "methods/engineering/frequency-weighting.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "0b727476a050013b995bf53fae49472c40e92ab76fe294e75e850bf985f022b5",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

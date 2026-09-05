@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R021",
+    "name": "Lumped / FEM Acoustic Simulation Engineer",
+    "group": "Speaker CoE"
+  },
+  "mission": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+  "domain": "Speaker CoE",
+  "scope": [
+    "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+    "Investigate and bound: lumped model used above geometric validity",
+    "Investigate and bound: mesh result claimed from analytic calculation"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R009 owns: Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints",
+    "Neighbor R022 owns: Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation"
+  ],
+  "inputs": {
+    "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+    "helmholtz-port": "skills/helmholtz-port/input.schema.json",
+    "speaker-sealed-lumped-domain-review": "skills/speaker-sealed-lumped-domain-review/input.schema.json",
+    "speaker-port-lumped-domain-review": "skills/speaker-port-lumped-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+    "helmholtz-port": "skills/helmholtz-port/output.schema.json",
+    "speaker-sealed-lumped-domain-review": "skills/speaker-sealed-lumped-domain-review/output.schema.json",
+    "speaker-port-lumped-domain-review": "skills/speaker-port-lumped-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "lumped-speaker",
+    "helmholtz-port",
+    "speaker-sealed-lumped-domain-review",
+    "speaker-port-lumped-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/lumped-speaker.json",
+    "methods/engineering/helmholtz-port.json",
+    "methods/roles/speaker-sealed-lumped-domain-review.json",
+    "methods/roles/speaker-port-lumped-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/lumped-speaker.json",
+    "knowledge/engineering/helmholtz-port.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "model-form error and parameter sensitivity"
+  ],
+  "common_failure_modes": [
+    "lumped model used above geometric validity",
+    "mesh result claimed from analytic calculation"
+  ],
+  "counter_hypotheses": [
+    "wrong boundary condition rather than material model",
+    "parameter non-identifiability rather than solver issue"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+      "must_challenge": [
+        "wrong boundary condition rather than material model",
+        "parameter non-identifiability rather than solver issue"
+      ],
+      "must_account_for": "model-form error and parameter sensitivity",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Speaker/lumped-speaker/golden.json",
+    "golden/engineering/Speaker/helmholtz-port/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Speaker/lumped-speaker/negative.json",
+    "golden/engineering/Speaker/helmholtz-port/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Speaker/lumped-speaker/regression.json",
+    "golden/engineering/Speaker/helmholtz-port/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R021",
+      "skill_id": "lumped-speaker",
+      "inputs": "skills/lumped-speaker/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+      "decision_contract": "R021-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "wrong boundary condition rather than material model",
+        "parameter non-identifiability rather than solver issue"
+      ]
+    },
+    {
+      "role_id": "R021",
+      "skill_id": "helmholtz-port",
+      "inputs": "skills/helmholtz-port/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+      "decision_contract": "R021-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "wrong boundary condition rather than material model",
+        "parameter non-identifiability rather than solver issue"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R021/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R021-DOMAIN-DECISION",
+    "question": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+    "required_methods": [
+      "methods/engineering/lumped-speaker.json",
+      "methods/engineering/helmholtz-port.json",
+      "methods/roles/speaker-sealed-lumped-domain-review.json",
+      "methods/roles/speaker-port-lumped-domain-review.json"
+    ],
+    "required_skills": [
+      "lumped-speaker",
+      "helmholtz-port",
+      "speaker-sealed-lumped-domain-review",
+      "speaker-port-lumped-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R009",
+      "this_seat_owns": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+      "neighbor_owns": "Choose sealed/vented speaker alignment against F3, enclosure volume and excursion constraints"
+    },
+    {
+      "neighbor_role": "R022",
+      "this_seat_owns": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+      "neighbor_owns": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-sealed-lumped-domain-review",
+      "method": "methods/roles/speaker-sealed-lumped-domain-review.json",
+      "suite": "golden/roles/R021/golden.json",
+      "scope": "Independent sealed transfer polynomial, extrema and lumped geometry review; no FEM or actual model validation."
+    },
+    {
+      "skill_id": "speaker-port-lumped-domain-review",
+      "method": "methods/roles/speaker-port-lumped-domain-review.json",
+      "suite": "golden/roles/R021/ported.json",
+      "scope": "Independent port interval, velocity and compact-model assertion review; no CFD/BEM or physical model validation."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+    "Discriminate: wrong boundary condition rather than material model",
+    "Discriminate: parameter non-identifiability rather than solver issue"
+  ],
+  "professional_inputs": {
+    "decision_question": "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "model-form error and parameter sensitivity"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/input.schema.json",
+      "helmholtz-port": "skills/helmholtz-port/input.schema.json",
+      "speaker-sealed-lumped-domain-review": "skills/speaker-sealed-lumped-domain-review/input.schema.json",
+      "speaker-port-lumped-domain-review": "skills/speaker-port-lumped-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R021-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "lumped-speaker": "skills/lumped-speaker/output.schema.json",
+      "helmholtz-port": "skills/helmholtz-port/output.schema.json",
+      "speaker-sealed-lumped-domain-review": "skills/speaker-sealed-lumped-domain-review/output.schema.json",
+      "speaker-port-lumped-domain-review": "skills/speaker-port-lumped-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Select a defensible lumped model and boundary assumptions before escalating to FEM",
+    "lumped model used above geometric validity",
+    "mesh result claimed from analytic calculation",
+    "wrong boundary condition rather than material model",
+    "parameter non-identifiability rather than solver issue",
+    "model-form error and parameter sensitivity"
+  ]
+}

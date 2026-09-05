@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R018",
+    "name": "Tonal Tuning Engineer",
+    "group": "Speaker CoE"
+  },
+  "mission": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+  "domain": "Speaker CoE",
+  "scope": [
+    "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+    "Investigate and bound: heavy smoothing hides peaks",
+    "Investigate and bound: room cancellation boosted beyond headroom"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R020 owns: Evaluate perceived speaker balance using level, masking and spectral context",
+    "Neighbor R024 owns: Implement speaker EQ and crossover filters with numerical response, delay and clipping checks"
+  ],
+  "inputs": {
+    "response-phase-delay": "skills/response-phase-delay/input.schema.json",
+    "fractional-octave": "skills/fractional-octave/input.schema.json",
+    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+    "speaker-tonal-eq-baseline": "skills/speaker-tonal-eq-baseline/input.schema.json"
+  },
+  "outputs": {
+    "response-phase-delay": "skills/response-phase-delay/output.schema.json",
+    "fractional-octave": "skills/fractional-octave/output.schema.json",
+    "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+    "speaker-tonal-eq-baseline": "skills/speaker-tonal-eq-baseline/output.schema.json"
+  },
+  "required_skills": [
+    "response-phase-delay",
+    "fractional-octave",
+    "psychoacoustic-descriptors",
+    "speaker-tonal-eq-baseline"
+  ],
+  "required_methods": [
+    "methods/engineering/response-phase-delay.json",
+    "methods/engineering/fractional-octave.json",
+    "methods/engineering/psychoacoustic-descriptors.json",
+    "methods/roles/speaker-tonal-eq-baseline.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/response-phase-delay.json",
+    "knowledge/engineering/fractional-octave.json",
+    "knowledge/engineering/psychoacoustic-descriptors.json"
+  ],
+  "standards_metadata_references": [
+    "IEC 60268-5"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "smoothing bandwidth and spatial averaging"
+  ],
+  "common_failure_modes": [
+    "heavy smoothing hides peaks",
+    "room cancellation boosted beyond headroom"
+  ],
+  "counter_hypotheses": [
+    "room notch rather than driver deficit",
+    "measurement window rather than tonal imbalance"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+      "must_challenge": [
+        "room notch rather than driver deficit",
+        "measurement window rather than tonal imbalance"
+      ],
+      "must_account_for": "smoothing bandwidth and spatial averaging",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/DSP/response-phase-delay/golden.json",
+    "golden/engineering/DSP/fractional-octave/golden.json",
+    "golden/engineering/Speaker/psychoacoustic-descriptors/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/DSP/response-phase-delay/negative.json",
+    "golden/engineering/DSP/fractional-octave/negative.json",
+    "golden/engineering/Speaker/psychoacoustic-descriptors/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/DSP/response-phase-delay/regression.json",
+    "golden/engineering/DSP/fractional-octave/regression.json",
+    "golden/engineering/Speaker/psychoacoustic-descriptors/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R018",
+      "skill_id": "response-phase-delay",
+      "inputs": "skills/response-phase-delay/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+      "decision_contract": "R018-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "room notch rather than driver deficit",
+        "measurement window rather than tonal imbalance"
+      ]
+    },
+    {
+      "role_id": "R018",
+      "skill_id": "fractional-octave",
+      "inputs": "skills/fractional-octave/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+      "decision_contract": "R018-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "room notch rather than driver deficit",
+        "measurement window rather than tonal imbalance"
+      ]
+    },
+    {
+      "role_id": "R018",
+      "skill_id": "psychoacoustic-descriptors",
+      "inputs": "skills/psychoacoustic-descriptors/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+      "decision_contract": "R018-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "room notch rather than driver deficit",
+        "measurement window rather than tonal imbalance"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R018/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R018-DOMAIN-DECISION",
+    "question": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+    "required_methods": [
+      "methods/engineering/response-phase-delay.json",
+      "methods/engineering/fractional-octave.json",
+      "methods/engineering/psychoacoustic-descriptors.json",
+      "methods/roles/speaker-tonal-eq-baseline.json"
+    ],
+    "required_skills": [
+      "response-phase-delay",
+      "fractional-octave",
+      "psychoacoustic-descriptors",
+      "speaker-tonal-eq-baseline"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R020",
+      "this_seat_owns": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+      "neighbor_owns": "Evaluate perceived speaker balance using level, masking and spectral context"
+    },
+    {
+      "neighbor_role": "R024",
+      "this_seat_owns": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+      "neighbor_owns": "Implement speaker EQ and crossover filters with numerical response, delay and clipping checks"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "speaker-tonal-eq-baseline",
+      "method": "methods/roles/speaker-tonal-eq-baseline.json",
+      "suite": "golden/roles/R018/golden.json",
+      "scope": "Supplied sampled tonal correction, spatial spread, smoothing, notch and headroom decisions; no realized filter, listening or measured acceptance."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+    "Discriminate: room notch rather than driver deficit",
+    "Discriminate: measurement window rather than tonal imbalance"
+  ],
+  "professional_inputs": {
+    "decision_question": "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "smoothing bandwidth and spatial averaging"
+    ],
+    "calculation_schemas": {
+      "response-phase-delay": "skills/response-phase-delay/input.schema.json",
+      "fractional-octave": "skills/fractional-octave/input.schema.json",
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
+      "speaker-tonal-eq-baseline": "skills/speaker-tonal-eq-baseline/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R018-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "response-phase-delay": "skills/response-phase-delay/output.schema.json",
+      "fractional-octave": "skills/fractional-octave/output.schema.json",
+      "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
+      "speaker-tonal-eq-baseline": "skills/speaker-tonal-eq-baseline/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Select tonal EQ from band response and listening-context weighting without hiding narrow resonances",
+    "heavy smoothing hides peaks",
+    "room cancellation boosted beyond headroom",
+    "room notch rather than driver deficit",
+    "measurement window rather than tonal imbalance",
+    "smoothing bandwidth and spatial averaging"
+  ]
+}

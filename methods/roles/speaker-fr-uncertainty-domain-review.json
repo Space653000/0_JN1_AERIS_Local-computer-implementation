@@ -1,0 +1,32 @@
+{
+  "method_id": "speaker-fr-uncertainty-domain-review",
+  "version": "1.0.0",
+  "role": "R079",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_fr_review:review",
+  "applicability": "Supplied sampled SPL under declared free-field far-field, linear small-signal same-configuration no-limiter assumptions",
+  "equations": {
+    "interval": "20 log10(distance * target_voltage / target_distance / voltage), monotonic interval extrema"
+  },
+  "assumptions": [
+    "Exact target reference coordinates",
+    "level bound excludes separately declared distance and voltage bounds",
+    "Worst-case bounds, not statistical confidence",
+    "Cycles threshold is a stated heuristic, not universal accuracy",
+    "Model declarations are not measured linearity or calibration"
+  ],
+  "excluded": [
+    "Complete-band conformance from sampled points",
+    "Room/near-field extrapolation",
+    "Voltage scaling with compression/AGC/limiter",
+    "Physical source attribution or Human approval"
+  ],
+  "golden_tests": "golden/roles/R079/golden.json",
+  "numerical_policy": {
+    "db_comparison_resolution": 1e-12,
+    "cycle_comparison_resolution": 1e-12,
+    "inclusive_limits": true,
+    "scope": "Representation resolution only, separate from physical uncertainty and gate-validity model error"
+  }
+}

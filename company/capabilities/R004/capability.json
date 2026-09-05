@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R004",
+    "name": "Product Audio System Architect",
+    "group": "Chief Council"
+  },
+  "mission": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+  "domain": "Chief Council",
+  "scope": [
+    "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+    "Investigate and bound: individually passing blocks exceed end-to-end delay",
+    "Investigate and bound: echo-reference placement mismatch"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R001 owns: Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+    "Neighbor R005 owns: Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints"
+  ],
+  "inputs": {
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "latency-budget": "skills/latency-budget/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json"
+  },
+  "outputs": {
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "latency-budget": "skills/latency-budget/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json"
+  },
+  "required_skills": [
+    "engineering-requirements",
+    "latency-budget",
+    "requirement-traceability"
+  ],
+  "required_methods": [
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/latency-budget.json",
+    "methods/engineering/requirement-traceability.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/latency-budget.json",
+    "knowledge/engineering/requirement-traceability.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "clock drift and subsystem budget covariance"
+  ],
+  "common_failure_modes": [
+    "individually passing blocks exceed end-to-end delay",
+    "echo-reference placement mismatch"
+  ],
+  "counter_hypotheses": [
+    "transport buffering rather than DSP cost",
+    "mechanical coupling rather than AEC tuning"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+      "must_challenge": [
+        "transport buffering rather than DSP cost",
+        "mechanical coupling rather than AEC tuning"
+      ],
+      "must_account_for": "clock drift and subsystem budget covariance",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/latency-budget/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/latency-budget/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/latency-budget/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R004",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+      "decision_contract": "R004-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "transport buffering rather than DSP cost",
+        "mechanical coupling rather than AEC tuning"
+      ]
+    },
+    {
+      "role_id": "R004",
+      "skill_id": "latency-budget",
+      "inputs": "skills/latency-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+      "decision_contract": "R004-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "transport buffering rather than DSP cost",
+        "mechanical coupling rather than AEC tuning"
+      ]
+    },
+    {
+      "role_id": "R004",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+      "decision_contract": "R004-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "transport buffering rather than DSP cost",
+        "mechanical coupling rather than AEC tuning"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R004/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R004-DOMAIN-DECISION",
+    "question": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+    "required_methods": [
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/latency-budget.json",
+      "methods/engineering/requirement-traceability.json"
+    ],
+    "required_skills": [
+      "engineering-requirements",
+      "latency-budget",
+      "requirement-traceability"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R001",
+      "this_seat_owns": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+      "neighbor_owns": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision"
+    },
+    {
+      "neighbor_role": "R005",
+      "this_seat_owns": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+      "neighbor_owns": "Choose bounded DSP architecture consistent with signal bandwidth, delay and stability constraints"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+    "Discriminate: transport buffering rather than DSP cost",
+    "Discriminate: mechanical coupling rather than AEC tuning"
+  ],
+  "professional_inputs": {
+    "decision_question": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "clock drift and subsystem budget covariance"
+    ],
+    "calculation_schemas": {
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R004-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+    "individually passing blocks exceed end-to-end delay",
+    "echo-reference placement mismatch",
+    "transport buffering rather than DSP cost",
+    "mechanical coupling rather than AEC tuning",
+    "clock drift and subsystem budget covariance"
+  ]
+}
