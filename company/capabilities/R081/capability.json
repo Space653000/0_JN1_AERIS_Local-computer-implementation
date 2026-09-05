@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "latency-budget": "skills/latency-budget/input.schema.json",
-    "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json"
+    "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+    "auracast-transport-sync-domain-review": "skills/auracast-transport-sync-domain-review/input.schema.json"
   },
   "outputs": {
     "latency-budget": "skills/latency-budget/output.schema.json",
-    "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json"
+    "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+    "auracast-transport-sync-domain-review": "skills/auracast-transport-sync-domain-review/output.schema.json"
   },
   "required_skills": [
     "latency-budget",
-    "circuit-noise-budget"
+    "circuit-noise-budget",
+    "auracast-transport-sync-domain-review"
   ],
   "required_methods": [
     "methods/engineering/latency-budget.json",
-    "methods/engineering/circuit-noise-budget.json"
+    "methods/engineering/circuit-noise-budget.json",
+    "methods/roles/auracast-transport-sync-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/latency-budget.json",
@@ -151,11 +155,13 @@
     "question": "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
     "required_methods": [
       "methods/engineering/latency-budget.json",
-      "methods/engineering/circuit-noise-budget.json"
+      "methods/engineering/circuit-noise-budget.json",
+      "methods/roles/auracast-transport-sync-domain-review.json"
     ],
     "required_skills": [
       "latency-budget",
-      "circuit-noise-budget"
+      "circuit-noise-budget",
+      "auracast-transport-sync-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -171,7 +177,14 @@
       "neighbor_owns": "Choose codec/network audio tradeoffs among latency, loss concealment and duplex quality"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "auracast-transport-sync-domain-review",
+      "method": "methods/roles/auracast-transport-sync-domain-review.json",
+      "suite": "golden/roles/R081/auracast.json",
+      "scope": "Independent Auracast transport/sync assertion review; no live radio, multi-vendor, accessibility or Human approval."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Budget Bluetooth/LE Audio transport, buffering and clock constraints without claiming protocol certification",
@@ -188,7 +201,8 @@
     ],
     "calculation_schemas": {
       "latency-budget": "skills/latency-budget/input.schema.json",
-      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json"
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+      "auracast-transport-sync-domain-review": "skills/auracast-transport-sync-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -202,7 +216,8 @@
     ],
     "calculation_schemas": {
       "latency-budget": "skills/latency-budget/output.schema.json",
-      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json"
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+      "auracast-transport-sync-domain-review": "skills/auracast-transport-sync-domain-review/output.schema.json"
     }
   },
   "report_sections": [

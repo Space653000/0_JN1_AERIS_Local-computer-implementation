@@ -211,6 +211,36 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS={
             'suite':'golden/roles/R048/golden.json',
             'scope':'Bounded TWS seal, FF/FB ANC, outward call noise, excursion and occlusion decisions; not complete product acceptance.'}}
 
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R045']={
+    'skill_id':'hearing-aid-gain-feedback-output-baseline',
+    'method':'methods/roles/hearing-aid-gain-feedback-output-baseline.json',
+    'suite':'golden/roles/R045/golden.json',
+    'scope':'Supplied coupler gain, vent loss, feedback onset, MPO and receiver-headroom screening; no patient fitting or clinical efficacy.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R069']={
+    'skill_id':'hearing-aid-acoustic-boundary-domain-review',
+    'method':'methods/roles/hearing-aid-acoustic-boundary-domain-review.json',
+    'suite':'golden/roles/R069/hearing-aid.json',
+    'scope':'Independent hearing-aid acoustic budget assertion review; no clinical, real-ear, safety or Human approval.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R046']={
+    'skill_id':'otc-self-fit-output-baseline',
+    'method':'methods/roles/otc-self-fit-output-baseline.json',
+    'suite':'golden/roles/R046/golden.json',
+    'scope':'Supplied OTC user gain, seal, output, instruction and fit-spread screening; no clinical indication or user-study acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R070']={
+    'skill_id':'otc-self-fit-output-claims-domain-review',
+    'method':'methods/roles/otc-self-fit-output-claims-domain-review.json',
+    'suite':'golden/roles/R070/otc-self-fit.json',
+    'scope':'Independent OTC self-fit/output assertion review; no usability, exposure-dose, clinical or Human approval.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R047']={
+    'skill_id':'auracast-latency-sync-baseline','method':'methods/roles/auracast-latency-sync-baseline.json',
+    'suite':'golden/roles/R047/golden.json','scope':'Supplied Auracast latency, receiver-clock, diversity, packet-loss and level-spread screening; no live interoperability or audibility.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R081']={
+    'skill_id':'auracast-transport-sync-domain-review','method':'methods/roles/auracast-transport-sync-domain-review.json',
+    'suite':'golden/roles/R081/auracast.json','scope':'Independent Auracast transport/sync assertion review; no live radio, multi-vendor, accessibility or Human approval.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R049']={
+    'skill_id':'over-ear-anc-seal-stability-baseline','method':'methods/roles/over-ear-anc-seal-stability-baseline.json',
+    'suite':'golden/roles/R049/golden.json','scope':'Supplied circumaural fit/seal, feedback margin, excursion, cushion-compression and pressure-proxy screening; no full-loop or listener acceptance.'}
+
 # A role may own several independently evidenced bounded capabilities.  The
 # ordered list is authored source truth; aggregate maturity must never hide a
 # missing member or let one shared receipt qualify its neighbors.
@@ -235,6 +265,11 @@ ROLE_DOMAIN_CONTRACTS['R005'].append({
     'method':'methods/roles/speaker-filter-realization-domain-review.json',
     'suite':'golden/roles/R005/speaker-filter-realization.json',
     'scope':'Independent biquad stability, quantization, crossover, headroom and delay assertion review; no full-band fixed-point or physical playback acceptance.'})
+ROLE_DOMAIN_CONTRACTS['R005'].append({
+    'skill_id':'over-ear-anc-seal-stability-domain-review',
+    'method':'methods/roles/over-ear-anc-seal-stability-domain-review.json',
+    'suite':'golden/roles/R005/over-ear-anc.json',
+    'scope':'Independent circumaural fit/seal, feedback, excursion, cushion and pressure-proxy assertion review; no full-loop, fit population or listener acceptance.'})
 ROLE_DOMAIN_CONTRACTS['R039']=[{
     'skill_id':'microphone-architecture-acoustic-path-domain-review',
     'method':'methods/roles/microphone-architecture-acoustic-path-domain-review.json',

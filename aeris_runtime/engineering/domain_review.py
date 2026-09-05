@@ -31,6 +31,10 @@ REQUIRED_DOMAINS={
     'microphone-far-field-scenarios-baseline':['microphone-far-field-disturbance'],
     'microphone-tonal-headroom-baseline':['microphone-tonal-intelligibility'],
     'microphone-aec-control-baseline':['microphone-aec-enhancement'],
+    'hearing-aid-gain-feedback-output-baseline':['hearing-aid-acoustic-boundary'],
+    'otc-self-fit-output-baseline':['otc-self-fit-output-claims'],
+    'auracast-latency-sync-baseline':['auracast-transport-sync'],
+    'over-ear-anc-seal-stability-baseline':['over-ear-anc-seal-stability'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -44,6 +48,21 @@ DOMAIN_SKILLS={domain:skill for skill,domains in REQUIRED_DOMAINS.items() for do
 
 
 def applicable(domain,context):
+    if domain in {'hearing-aid-acoustic-boundary','otc-self-fit-output-claims'}:
+        return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
+                and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
+                and context.get('transducer') in {'Speaker','Both'}
+                and context.get('product') in ({'R045','Medical Hearing Aid'} if domain=='hearing-aid-acoustic-boundary' else {'R046','OTC Hearing Aid / PSAP'}))
+    if domain=='auracast-transport-sync':
+        return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
+                and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
+                and context.get('transducer') in {'Speaker','Both'}
+                and context.get('product') in {'R047','Assistive Listening / Auracast'})
+    if domain=='over-ear-anc-seal-stability':
+        return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
+                and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
+                and context.get('transducer') in {'Speaker','Both'}
+                and context.get('product') in {'R049','ANC Over-Ear Headphone'})
     if domain in {'structural-acoustic-path','room-decay-spatial','room-correction-spatial'}:
         return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
@@ -207,6 +226,18 @@ def review(domain,request):
     if domain=='microphone-aec-enhancement':
         from .aec_control_review import review as review_aec
         return review_aec(p,candidate)
+    if domain=='hearing-aid-acoustic-boundary':
+        from .hearing_aid_product_review import review as review_hearing_aid
+        return review_hearing_aid(p,candidate)
+    if domain=='otc-self-fit-output-claims':
+        from .hearing_aid_product_review import review_otc
+        return review_otc(p,candidate)
+    if domain=='auracast-transport-sync':
+        from .auracast_product_review import review as review_auracast
+        return review_auracast(p,candidate)
+    if domain=='over-ear-anc-seal-stability':
+        from .overear_anc_product_review import review as review_overear
+        return review_overear(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -357,6 +388,10 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'microphone-far-field-disturbance':('far_field_scenarios_review.py','far_field_scenarios.py'),
     'microphone-tonal-intelligibility':('microphone_tonal_review.py','microphone_tonal.py'),
     'microphone-aec-enhancement':('aec_control_review.py','aec_control.py'),
+    'hearing-aid-acoustic-boundary':('hearing_aid_product_review.py','hearing_aid_product.py'),
+    'otc-self-fit-output-claims':('hearing_aid_product_review.py','hearing_aid_product.py'),
+    'auracast-transport-sync':('auracast_product_review.py','auracast_product.py'),
+    'over-ear-anc-seal-stability':('overear_anc_product_review.py','overear_anc_product.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -402,7 +437,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','hearing-aid-acoustic-boundary','otc-self-fit-output-claims','auracast-transport-sync','over-ear-anc-seal-stability','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -536,6 +571,14 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['BOOST_BOUND','CUT_BOUND','OUTPUT_HEADROOM','VOICE_HIGHPASS','SMOOTHING_RESOLUTION','CAPSULE_OVERLOAD_MARGIN']
     if skill=='microphone-aec-control-baseline':
         return [c.get('id') for c in values['checks']]==['ERLE','NEAR_SPEECH_PRESERVATION','ALIGNMENT_DELAY','CLOCK_DRIFT','DOUBLE_TALK_ADAPTATION','ECHO_TAIL_COVERAGE','NONLINEAR_RESIDUAL']
+    if skill=='hearing-aid-gain-feedback-output-baseline':
+        return [c.get('id') for c in values['checks']]==['PRESCRIBED_GAIN','FEEDBACK_MARGIN','PREDICTED_OUTPUT','DEVICE_MPO','RECEIVER_HEADROOM']
+    if skill=='otc-self-fit-output-baseline':
+        return [c.get('id') for c in values['checks']]==['USER_GAIN_CONTROL','SELF_FIT_TARGET_ERROR','PREDICTED_OUTPUT','OUTPUT_LIMITER','INSTRUCTION_COMPREHENSION','SEAL_REPEATABILITY']
+    if skill=='auracast-latency-sync-baseline':
+        return [c.get('id') for c in values['checks']]==['END_TO_END_LATENCY','INTER_RECEIVER_SYNC','RECEIVER_DIVERSITY','PACKET_LOSS','RECEIVER_LEVEL_SPREAD']
+    if skill=='over-ear-anc-seal-stability-baseline':
+        return [c.get('id') for c in values['checks']]==['FIT_STATE_COVERAGE','CUSHION_LEAK_LOSS','FEEDBACK_PHASE_MARGIN','DRIVER_EXCURSION','CUSHION_COMPRESSION','EARCUP_PRESSURE_PROXY']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

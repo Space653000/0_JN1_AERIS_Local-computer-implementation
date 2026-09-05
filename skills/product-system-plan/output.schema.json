@@ -70,9 +70,10 @@
             "standards_metadata_references": {
               "type": "array",
               "maxItems": 262144,
-              "items": {
-                "type": "string"
-              }
+              "items": {}
+            },
+            "standards_metadata_state": {
+              "type": "string"
             },
             "evidence_expectations": {
               "type": "array",
@@ -99,6 +100,7 @@
             "simulation_requirements",
             "manufacturing_risks",
             "standards_metadata_references",
+            "standards_metadata_state",
             "evidence_expectations",
             "non_scope"
           ],

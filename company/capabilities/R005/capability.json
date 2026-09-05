@@ -23,28 +23,32 @@
     "butterworth-filter": "skills/butterworth-filter/input.schema.json",
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
     "tws-anc-domain-review": "skills/tws-anc-domain-review/input.schema.json",
-    "speaker-filter-realization-domain-review": "skills/speaker-filter-realization-domain-review/input.schema.json"
+    "speaker-filter-realization-domain-review": "skills/speaker-filter-realization-domain-review/input.schema.json",
+    "over-ear-anc-seal-stability-domain-review": "skills/over-ear-anc-seal-stability-domain-review/input.schema.json"
   },
   "outputs": {
     "spectral-analysis": "skills/spectral-analysis/output.schema.json",
     "butterworth-filter": "skills/butterworth-filter/output.schema.json",
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
     "tws-anc-domain-review": "skills/tws-anc-domain-review/output.schema.json",
-    "speaker-filter-realization-domain-review": "skills/speaker-filter-realization-domain-review/output.schema.json"
+    "speaker-filter-realization-domain-review": "skills/speaker-filter-realization-domain-review/output.schema.json",
+    "over-ear-anc-seal-stability-domain-review": "skills/over-ear-anc-seal-stability-domain-review/output.schema.json"
   },
   "required_skills": [
     "spectral-analysis",
     "butterworth-filter",
     "enhancement-aec-metrics",
     "tws-anc-domain-review",
-    "speaker-filter-realization-domain-review"
+    "speaker-filter-realization-domain-review",
+    "over-ear-anc-seal-stability-domain-review"
   ],
   "required_methods": [
     "methods/engineering/spectral-analysis.json",
     "methods/engineering/butterworth-filter.json",
     "methods/engineering/enhancement-aec-metrics.json",
     "methods/roles/tws-anc-domain-review.json",
-    "methods/roles/speaker-filter-realization-domain-review.json"
+    "methods/roles/speaker-filter-realization-domain-review.json",
+    "methods/roles/over-ear-anc-seal-stability-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/spectral-analysis.json",
@@ -183,14 +187,16 @@
       "methods/engineering/butterworth-filter.json",
       "methods/engineering/enhancement-aec-metrics.json",
       "methods/roles/tws-anc-domain-review.json",
-      "methods/roles/speaker-filter-realization-domain-review.json"
+      "methods/roles/speaker-filter-realization-domain-review.json",
+      "methods/roles/over-ear-anc-seal-stability-domain-review.json"
     ],
     "required_skills": [
       "spectral-analysis",
       "butterworth-filter",
       "enhancement-aec-metrics",
       "tws-anc-domain-review",
-      "speaker-filter-realization-domain-review"
+      "speaker-filter-realization-domain-review",
+      "over-ear-anc-seal-stability-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -218,6 +224,12 @@
       "method": "methods/roles/speaker-filter-realization-domain-review.json",
       "suite": "golden/roles/R005/speaker-filter-realization.json",
       "scope": "Independent biquad stability, quantization, crossover, headroom and delay assertion review; no full-band fixed-point or physical playback acceptance."
+    },
+    {
+      "skill_id": "over-ear-anc-seal-stability-domain-review",
+      "method": "methods/roles/over-ear-anc-seal-stability-domain-review.json",
+      "suite": "golden/roles/R005/over-ear-anc.json",
+      "scope": "Independent circumaural fit/seal, feedback, excursion, cushion and pressure-proxy assertion review; no full-loop, fit population or listener acceptance."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -239,7 +251,8 @@
       "butterworth-filter": "skills/butterworth-filter/input.schema.json",
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
       "tws-anc-domain-review": "skills/tws-anc-domain-review/input.schema.json",
-      "speaker-filter-realization-domain-review": "skills/speaker-filter-realization-domain-review/input.schema.json"
+      "speaker-filter-realization-domain-review": "skills/speaker-filter-realization-domain-review/input.schema.json",
+      "over-ear-anc-seal-stability-domain-review": "skills/over-ear-anc-seal-stability-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -256,7 +269,8 @@
       "butterworth-filter": "skills/butterworth-filter/output.schema.json",
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
       "tws-anc-domain-review": "skills/tws-anc-domain-review/output.schema.json",
-      "speaker-filter-realization-domain-review": "skills/speaker-filter-realization-domain-review/output.schema.json"
+      "speaker-filter-realization-domain-review": "skills/speaker-filter-realization-domain-review/output.schema.json",
+      "over-ear-anc-seal-stability-domain-review": "skills/over-ear-anc-seal-stability-domain-review/output.schema.json"
     }
   },
   "report_sections": [

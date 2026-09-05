@@ -270,3 +270,29 @@ GitHub CI receives a 75-minute total job budget after otherwise-green Windows
 and Ubuntu runs were cancelled in retained tail smoke gates at 50 minutes. No
 gate is deleted or weakened. No Core/main/PR32 mutation, raw Evidence, SQLite,
 measurement or binary is included.
+
+## Product Chief wave 1 construction checkpoint
+
+R045 Medical Hearing Aid, R046 OTC Hearing Aid / PSAP, R047 Assistive Listening
+/ Auracast and R049 ANC Over-Ear now have product-specific execution suites.
+Their decisions are materially different: prescribed acoustic fitting budget,
+consumer self-fit/output control, broadcast latency/clock/receiver diversity,
+and circumaural seal/ANC/excursion/pressure respectively. R069, R070 and R081
+provide exact new review capabilities; R005 provides a separate over-ear review
+capability without reusing TWS assertions.
+
+All 24 Product architecture records now use an empty applicable-standard list
+until task-specific legal metadata establishes family, edition, region,
+provenance, rights and linkage. The prior blanket IEC 60268-5/4 assignment is
+removed from generated product packs and authored knowledge derivations.
+
+Final focused gate: 34 PASS. Fixed-source regression: 450 PASS in 1444.273
+seconds. Six semantic and six dark/light screenshot/accessibility routes pass.
+Inventory: 103 Skills, 103 Methods, 61 role suites, 459 cases, 56 roles with a
+suite and 44 without; Product Chiefs are 5/24. Installed truth remains L1=100,
+so H0001/P02 remains unfinished.
+
+Private transcript `.aeris/evidence/H0001-product-chiefs-wave1-full-tests.log`,
+SHA-256 `9000048c69dcc707764b0207b29baaf6a2beafa27cfd4880c0b50795c13d43bc`.
+No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is
+included.

@@ -746,6 +746,39 @@ this checkpoint. The GitHub CI job budget is 75 minutes because the previous
 50-minute runs passed all earlier gates but were cancelled during retained tail
 smoke checks; no acceptance path is removed.
 
+## Twenty-third checkpoint — Product Chief wave 1
+
+Four Product Chiefs now have distinct product-level decisions. R045 covers
+hearing-aid prescribed gain, vent leakage, feedback headroom, MPO and receiver
+headroom without a clinical claim. R046 covers OTC self-fit user control, seal,
+target error, limiter, instruction comprehension and fit repeatability without
+a clinical or user-study claim. R047 covers Auracast stage latency, clock/resync
+skew, receiver diversity, packet loss and receiver-level spread without
+claiming interoperability or audibility. R049 covers circumaural fit/cushion
+seal, ANC margin, excursion, compression and pressure proxy without reusing the
+TWS call-capture suite or claiming listener response.
+
+R069, R070 and R081 gained independently versioned hearing/OTC/Auracast review
+qualifications. R005 gained a third exact capability for over-ear review.
+Capability-driven routing, sealed review Evidence and reproduction pass for all
+four pairs. Product architecture also stops attaching IEC 60268-5/4 to all 24
+products; applicability now remains empty pending task-specific public metadata
+with edition, region, rights, provenance and requirement linkage.
+
+Final focused gate passed 34 tests. Fixed-source regression passed 450 tests in
+1444.273 seconds. Six semantic routes and all six dark/light fixed-environment
+screenshot repeatability/basic-accessibility routes passed. Inventory is 103
+Skills, 103 Methods, 61 role suites and 459 cases. Fifty-six roles have a suite,
+44 do not, and Product Chief coverage is 5/24.
+
+Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0. No clinical,
+interoperability, physical-fit, listener, calibration, Human, role-wide L3,
+H0001 or P02 acceptance is claimed. Private transcript
+`.aeris/evidence/H0001-product-chiefs-wave1-full-tests.log`, SHA-256
+`9000048c69dcc707764b0207b29baaf6a2beafa27cfd4880c0b50795c13d43bc`.
+No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
+this checkpoint.
+
 ## Nineteenth checkpoint — signal chain, bass protection and structural path
 
 Six more seats now have bounded role-specific domain suites. R012 refers each

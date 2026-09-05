@@ -222,10 +222,8 @@
       "component sensitivity variation",
       "EOL limits without justified guard bands"
     ],
-    "standards_metadata_references": [
-      "IEC 60268-5",
-      "IEC 60268-4"
-    ],
+    "standards_metadata_references": [],
+    "standards_metadata_state": "TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED",
     "evidence_expectations": [
       "raw-data hash",
       "fixture and calibration provenance",

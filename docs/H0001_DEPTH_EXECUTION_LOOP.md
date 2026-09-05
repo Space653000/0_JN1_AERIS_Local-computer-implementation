@@ -153,3 +153,28 @@
 - Local-only transcript:
   `.aeris/evidence/H0001-microphone-completion-final-full-tests.log`, SHA-256
   `87c2c52f5e48e12e99304af8e4e7e90196c382bcfca80d56428975f802c99f7b`.
+
+## Product Chief wave 1 checkpoint
+
+- R045/R069: prescribed hearing-aid gain, vent loss, feedback onset, MPO and
+  receiver-headroom execution plus independent acoustic-boundary review.
+- R046/R070: OTC user gain, seal, target error, limiter, instruction and fit-
+  repeatability execution plus independent claims review.
+- R047/R081: Auracast serial latency, clock/resync skew, receiver diversity,
+  packet loss and receiver-level spread plus independent transport review.
+- R049/R005: circumaural fit coverage, cushion leak, hybrid-ANC margin,
+  excursion, cushion compression and pressure proxy plus an exact new DSP
+  reviewer capability; the TWS suite is not reused.
+- Product architecture no longer assigns IEC 60268-5/4 to every product by
+  default. The applicable list is empty until task-specific legal public
+  metadata records family, edition, region, provenance, rights and linkage.
+- Final focused gate: 34/34 PASS. Fixed-source regression: 450/450 PASS in
+  1444.273 seconds. Six semantic routes and six dark/light screenshot/basic-
+  accessibility routes: PASS.
+- Inventory: 103 executable Skills, 103 Methods, 61 role suites, 459 cases;
+  56 roles have a suite and 44 do not. Product Chief coverage is 5/24.
+- Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0. No medical,
+  interoperability, physical-fit, listener, calibrated, Human, L3, H0001 or
+  P02 acceptance is claimed.
+- Local-only transcript: `.aeris/evidence/H0001-product-chiefs-wave1-full-tests.log`,
+  SHA-256 `9000048c69dcc707764b0207b29baaf6a2beafa27cfd4880c0b50795c13d43bc`.

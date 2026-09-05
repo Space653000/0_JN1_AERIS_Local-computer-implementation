@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
-    "correlation-outliers": "skills/correlation-outliers/input.schema.json"
+    "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+    "otc-self-fit-output-claims-domain-review": "skills/otc-self-fit-output-claims-domain-review/input.schema.json"
   },
   "outputs": {
     "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
-    "correlation-outliers": "skills/correlation-outliers/output.schema.json"
+    "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+    "otc-self-fit-output-claims-domain-review": "skills/otc-self-fit-output-claims-domain-review/output.schema.json"
   },
   "required_skills": [
     "enhancement-aec-metrics",
-    "correlation-outliers"
+    "correlation-outliers",
+    "otc-self-fit-output-claims-domain-review"
   ],
   "required_methods": [
     "methods/engineering/enhancement-aec-metrics.json",
-    "methods/engineering/correlation-outliers.json"
+    "methods/engineering/correlation-outliers.json",
+    "methods/roles/otc-self-fit-output-claims-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/enhancement-aec-metrics.json",
@@ -151,11 +155,13 @@
     "question": "Validate perceptual metric relevance and avoid unsupported MOS predictions",
     "required_methods": [
       "methods/engineering/enhancement-aec-metrics.json",
-      "methods/engineering/correlation-outliers.json"
+      "methods/engineering/correlation-outliers.json",
+      "methods/roles/otc-self-fit-output-claims-domain-review.json"
     ],
     "required_skills": [
       "enhancement-aec-metrics",
-      "correlation-outliers"
+      "correlation-outliers",
+      "otc-self-fit-output-claims-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -171,7 +177,14 @@
       "neighbor_owns": "Assess local audio ML generalization, leakage and calibration rather than training fit alone"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "otc-self-fit-output-claims-domain-review",
+      "method": "methods/roles/otc-self-fit-output-claims-domain-review.json",
+      "suite": "golden/roles/R070/otc-self-fit.json",
+      "scope": "Independent OTC self-fit/output assertion review; no usability, exposure-dose, clinical or Human approval."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Validate perceptual metric relevance and avoid unsupported MOS predictions",
@@ -188,7 +201,8 @@
     ],
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
-      "correlation-outliers": "skills/correlation-outliers/input.schema.json"
+      "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+      "otc-self-fit-output-claims-domain-review": "skills/otc-self-fit-output-claims-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -202,7 +216,8 @@
     ],
     "calculation_schemas": {
       "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
-      "correlation-outliers": "skills/correlation-outliers/output.schema.json"
+      "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+      "otc-self-fit-output-claims-domain-review": "skills/otc-self-fit-output-claims-domain-review/output.schema.json"
     }
   },
   "report_sections": [

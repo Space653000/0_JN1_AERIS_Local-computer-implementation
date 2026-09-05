@@ -121,6 +121,10 @@ def product_profile(index: int) -> dict:
                                 "repeat across fit/orientation/operating conditions","compare required bands and uncertainty margins"],
             "simulation_requirements":["linear speaker/port baseline where topology applies","array propagation and room/latency budgets where capture applies"],
             "manufacturing_risks":["assembly leakage and tolerances","component sensitivity variation","EOL limits without justified guard bands"],
-            "standards_metadata_references":["IEC 60268-5","IEC 60268-4"],
+            # Product-wide applicability cannot be inferred from a transducer
+            # label. Task-specific research must record family, edition,
+            # region, provenance, rights and requirement linkage first.
+            "standards_metadata_references":[],
+            "standards_metadata_state":"TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED",
             "evidence_expectations":["raw-data hash","fixture and calibration provenance","method version","uncertainty","counter-hypothesis review"],
             "non_scope":["clinical efficacy or patient fitting","licensed-tool equivalence","physical qualification without measurements"]}

@@ -36,7 +36,10 @@ def _fingerprint():
            ROOT/'aeris_runtime/engineering/capture_clock_review.py',ROOT/'aeris_runtime/engineering/ported_alignment.py',
            ROOT/'aeris_runtime/engineering/ported_alignment_review.py',ROOT/'aeris_runtime/engineering/speaker_polar.py',
            ROOT/'aeris_runtime/engineering/speaker_polar_review.py',ROOT/'aeris_runtime/engineering/speaker_tonal.py',
-           ROOT/'aeris_runtime/engineering/speaker_tonal_review.py']
+           ROOT/'aeris_runtime/engineering/speaker_tonal_review.py',ROOT/'aeris_runtime/engineering/hearing_aid_product.py',
+           ROOT/'aeris_runtime/engineering/hearing_aid_product_review.py']
+    paths.extend([ROOT/'aeris_runtime/engineering/auracast_product.py',ROOT/'aeris_runtime/engineering/auracast_product_review.py'])
+    paths.extend([ROOT/'aeris_runtime/engineering/overear_anc_product.py',ROOT/'aeris_runtime/engineering/overear_anc_product_review.py'])
     for skill in HANDLERS:
         paths.append(ROOT/f'methods/roles/{skill}.json')
         paths.extend(ROOT/f'skills/{skill}/{name}' for name in ('manifest.json','input.schema.json','output.schema.json','SKILL.md'))
@@ -160,6 +163,9 @@ from .microphone_architecture import analyze as microphone_architecture_model
 from .far_field_scenarios import analyze as far_field_scenarios_model
 from .microphone_tonal import analyze as microphone_tonal_model
 from .aec_control import analyze as aec_control_model
+from .hearing_aid_product import analyze as hearing_aid_product_model,analyze_otc as otc_self_fit_model
+from .auracast_product import analyze as auracast_product_model
+from .overear_anc_product import analyze as overear_anc_product_model
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
@@ -183,6 +189,10 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'microphone-far-field-scenarios-baseline':far_field_scenarios_model,
           'microphone-tonal-headroom-baseline':microphone_tonal_model,
           'microphone-aec-control-baseline':aec_control_model,
+          'hearing-aid-gain-feedback-output-baseline':hearing_aid_product_model,
+          'otc-self-fit-output-baseline':otc_self_fit_model,
+          'auracast-latency-sync-baseline':auracast_product_model,
+          'over-ear-anc-seal-stability-baseline':overear_anc_product_model,
           'microphone-array-taper-baseline':array_beam_model,
           'microphone-capture-continuity-baseline':capture_clock_model}
 
@@ -217,7 +227,7 @@ def _review_handler(domain):
     return run
 
 
-for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','microphone-array-pattern','microphone-capture-clock'):
+for _domain in ('speaker-nonlinear','speaker-thermal','tws-anc','tws-fit-capture','microphone-reference','microphone-noise-headroom','speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','hearing-aid-acoustic-boundary','otc-self-fit-output-claims','auracast-transport-sync','over-ear-anc-seal-stability','microphone-array-pattern','microphone-capture-clock'):
     HANDLERS[_domain+'-domain-review']=_review_handler(_domain)
 
 

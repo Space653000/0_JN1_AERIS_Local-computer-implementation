@@ -27,6 +27,9 @@ class CapabilityFactoryTests(unittest.TestCase):
         for i in range(45,69):
             role=f"R{i:03d}"; pack=factory.load_pack(role)
             topologies.add(pack["product_architecture"]["speaker_topology_considerations"])
+            self.assertEqual(pack["product_architecture"]["standards_metadata_references"],[])
+            self.assertEqual(pack["product_architecture"]["standards_metadata_state"],
+                             "TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED")
             fixture=factory.fixture_for(role,"product-system-plan")
             out=catalog.execute("product-system-plan",fixture["input"])
             self.assertTrue(all(c["passed"] for c in catalog.verify_checks(out["values"],fixture["checks"])))
