@@ -264,6 +264,12 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS['R054']={
 _SINGLE_ROLE_DOMAIN_CONTRACTS['R055']={
     'skill_id':'smart-speaker-far-field-self-echo-baseline','method':'methods/roles/smart-speaker-far-field-self-echo-baseline.json',
     'suite':'golden/roles/R055/golden.json','scope':'Supplied smart-speaker self-echo, wakeword SNR, array aliasing, talker, room-mode and AEC-tail screening; no wakeword or physical acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R056']={
+    'skill_id':'soundbar-crossover-wall-dialogue-baseline','method':'methods/roles/soundbar-crossover-wall-dialogue-baseline.json',
+    'suite':'golden/roles/R056/golden.json','scope':'Supplied soundbar crossover/sub delay, wall loading, dialogue headroom, lip-sync and seat-spread screening; no physical/listener acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R057']={
+    'skill_id':'home-theater-level-polarity-delay-baseline','method':'methods/roles/home-theater-level-polarity-delay-baseline.json',
+    'suite':'golden/roles/R057/golden.json','scope':'Supplied multichannel level, polarity, delay, seat-region, sub-crossover and calibration-position screening; no physical/listener acceptance.'}
 
 # A role may own several independently evidenced bounded capabilities.  The
 # ordered list is authored source truth; aggregate maturity must never hide a
@@ -281,6 +287,12 @@ ROLE_DOMAIN_CONTRACTS['R076']=[{
 ROLE_DOMAIN_CONTRACTS['R035'].append({
     'skill_id':'smart-speaker-far-field-self-echo-domain-review','method':'methods/roles/smart-speaker-far-field-self-echo-domain-review.json',
     'suite':'golden/roles/R035/smart-speaker.json','scope':'Independent smart-speaker far-field/self-echo assertion review; no wakeword corpus, room population, AEC or Human approval.'})
+ROLE_DOMAIN_CONTRACTS['R024'].append({
+    'skill_id':'soundbar-crossover-wall-dialogue-domain-review','method':'methods/roles/soundbar-crossover-wall-dialogue-domain-review.json',
+    'suite':'golden/roles/R024/soundbar.json','scope':'Independent soundbar crossover/wall/dialogue assertion review; no realized transfer, lip-sync perception, room or Human approval.'})
+ROLE_DOMAIN_CONTRACTS['R026'].append({
+    'skill_id':'home-theater-level-polarity-delay-domain-review','method':'methods/roles/home-theater-level-polarity-delay-domain-review.json',
+    'suite':'golden/roles/R026/home-theater.json','scope':'Independent multichannel level/polarity/delay assertion review; no wiring, room-wide, listener or Human approval.'})
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',

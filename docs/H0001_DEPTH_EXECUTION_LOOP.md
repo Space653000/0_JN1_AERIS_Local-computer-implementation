@@ -211,3 +211,19 @@
 - Inventory: 115 Skills, 115 Methods, 73 suites, 513 cases; 65 roles have a
   suite, 35 do not; Product Chiefs 11/24. Truth remains L1=100 and H0001/P02
   remains unfinished.
+
+## Product Chief wave 2 soundbar/theater checkpoint
+
+- R056/R024: soundbar crossover-sum, subwoofer-delay, wall-boundary,
+  dialogue-headroom, lip-sync and seat-spread execution plus exact independent
+  soundbar review.
+- R057/R026: home-theater channel-level, polarity, delay, seat-region,
+  subwoofer-crossover and calibration-position execution plus exact independent
+  home-theater review.
+- Focused 38/38 PASS; fixed-source 482/482 PASS in 2069.966 seconds; all six
+  semantic and six dark/light visual/accessibility routes PASS.
+- Inventory: 119 Skills, 119 Methods, 77 suites, 531 cases; 67 roles have a
+  suite, 33 do not; Product Chiefs 13/24.
+- Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0. H0001/P02 remains
+  unfinished; analytical/synthetic execution is not physical-room,
+  calibration, listener or Human acceptance.

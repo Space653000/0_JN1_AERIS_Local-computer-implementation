@@ -712,6 +712,31 @@ The private transcript remains local at
 No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
 this checkpoint.
 
+## Twenty-sixth checkpoint — Soundbar and Home Theater product depth
+
+R056 now owns bounded soundbar crossover summation, subwoofer delay, wall-
+boundary gain, dialogue headroom, lip-sync and seat-response-spread decisions.
+R024 independently reconstructs and challenges those assertions through a
+separate soundbar review capability. R057 now owns bounded home-theater
+channel-level, polarity, delay, seat-region spread, subwoofer-crossover and
+calibration-position-coverage decisions. R026 independently reconstructs and
+challenges that evidence through a separate home-theater review capability.
+The suites fail closed on altered assertions and do not convert analytical or
+synthetic decisions into physical-room, calibrated, listener or Human
+acceptance claims.
+
+Focused regression passed 38 tests. Fixed-source regression passed 482 tests
+in 2069.966 seconds. Six real-browser semantic routes and all six fixed-
+environment dark/light screenshot repeatability/basic-accessibility routes
+passed. Source inventory is 119 executable Skills, 119 Methods, 77 role suites
+and 531 role cases. Sixty-seven roles have at least one suite, 33 do not;
+Product Chiefs are 13/24.
+
+Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0. This checkpoint is not
+H0001/P02 completion and claims no physical, calibrated, perceptual or Human
+acceptance. No Core/main/PR32 mutation, raw `.aeris` Evidence, SQLite,
+credential, user/customer data, measurement or binary is included.
+
 ## Twenty-fourth checkpoint — Product Chief wave 2 (interactive/handheld)
 
 R050 now owns a gaming/communication-headset decision that separately checks

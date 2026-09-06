@@ -22,25 +22,29 @@
     "room-ir-decay": "skills/room-ir-decay/input.schema.json",
     "response-phase-delay": "skills/response-phase-delay/input.schema.json",
     "butterworth-filter": "skills/butterworth-filter/input.schema.json",
-    "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/input.schema.json"
+    "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/input.schema.json",
+    "home-theater-level-polarity-delay-domain-review": "skills/home-theater-level-polarity-delay-domain-review/input.schema.json"
   },
   "outputs": {
     "room-ir-decay": "skills/room-ir-decay/output.schema.json",
     "response-phase-delay": "skills/response-phase-delay/output.schema.json",
     "butterworth-filter": "skills/butterworth-filter/output.schema.json",
-    "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/output.schema.json"
+    "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/output.schema.json",
+    "home-theater-level-polarity-delay-domain-review": "skills/home-theater-level-polarity-delay-domain-review/output.schema.json"
   },
   "required_skills": [
     "room-ir-decay",
     "response-phase-delay",
     "butterworth-filter",
-    "room-correction-spatial-baseline"
+    "room-correction-spatial-baseline",
+    "home-theater-level-polarity-delay-domain-review"
   ],
   "required_methods": [
     "methods/engineering/room-ir-decay.json",
     "methods/engineering/response-phase-delay.json",
     "methods/engineering/butterworth-filter.json",
-    "methods/roles/room-correction-spatial-baseline.json"
+    "methods/roles/room-correction-spatial-baseline.json",
+    "methods/roles/home-theater-level-polarity-delay-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/room-ir-decay.json",
@@ -178,13 +182,15 @@
       "methods/engineering/room-ir-decay.json",
       "methods/engineering/response-phase-delay.json",
       "methods/engineering/butterworth-filter.json",
-      "methods/roles/room-correction-spatial-baseline.json"
+      "methods/roles/room-correction-spatial-baseline.json",
+      "methods/roles/home-theater-level-polarity-delay-domain-review.json"
     ],
     "required_skills": [
       "room-ir-decay",
       "response-phase-delay",
       "butterworth-filter",
-      "room-correction-spatial-baseline"
+      "room-correction-spatial-baseline",
+      "home-theater-level-polarity-delay-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -206,6 +212,12 @@
       "method": "methods/roles/room-correction-spatial-baseline.json",
       "suite": "golden/roles/R026/golden.json",
       "scope": "Supplied multi-position response mean/spread, correction, notch, latency and nonminimum-phase screening; no complex inversion, realized filter or physical acceptance."
+    },
+    {
+      "skill_id": "home-theater-level-polarity-delay-domain-review",
+      "method": "methods/roles/home-theater-level-polarity-delay-domain-review.json",
+      "suite": "golden/roles/R026/home-theater.json",
+      "scope": "Independent multichannel level/polarity/delay assertion review; no wiring, room-wide, listener or Human approval."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -226,7 +238,8 @@
       "room-ir-decay": "skills/room-ir-decay/input.schema.json",
       "response-phase-delay": "skills/response-phase-delay/input.schema.json",
       "butterworth-filter": "skills/butterworth-filter/input.schema.json",
-      "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/input.schema.json"
+      "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/input.schema.json",
+      "home-theater-level-polarity-delay-domain-review": "skills/home-theater-level-polarity-delay-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -242,7 +255,8 @@
       "room-ir-decay": "skills/room-ir-decay/output.schema.json",
       "response-phase-delay": "skills/response-phase-delay/output.schema.json",
       "butterworth-filter": "skills/butterworth-filter/output.schema.json",
-      "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/output.schema.json"
+      "room-correction-spatial-baseline": "skills/room-correction-spatial-baseline/output.schema.json",
+      "home-theater-level-polarity-delay-domain-review": "skills/home-theater-level-polarity-delay-domain-review/output.schema.json"
     }
   },
   "report_sections": [

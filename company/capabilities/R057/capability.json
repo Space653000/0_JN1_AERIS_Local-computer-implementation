@@ -22,25 +22,29 @@
     "product-system-plan": "skills/product-system-plan/input.schema.json",
     "engineering-requirements": "skills/engineering-requirements/input.schema.json",
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+    "home-theater-level-polarity-delay-baseline": "skills/home-theater-level-polarity-delay-baseline/input.schema.json"
   },
   "outputs": {
     "product-system-plan": "skills/product-system-plan/output.schema.json",
     "engineering-requirements": "skills/engineering-requirements/output.schema.json",
     "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+    "home-theater-level-polarity-delay-baseline": "skills/home-theater-level-polarity-delay-baseline/output.schema.json"
   },
   "required_skills": [
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "home-theater-level-polarity-delay-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/home-theater-level-polarity-delay-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -246,13 +250,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/home-theater-level-polarity-delay-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "home-theater-level-polarity-delay-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -268,7 +274,14 @@
       "neighbor_owns": "Choose binaural/spatial rendering assumptions from HRTF, head pose and temporal alignment"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "home-theater-level-polarity-delay-baseline",
+      "method": "methods/roles/home-theater-level-polarity-delay-baseline.json",
+      "suite": "golden/roles/R057/golden.json",
+      "scope": "Supplied multichannel level, polarity, delay, seat-region, sub-crossover and calibration-position screening; no physical/listener acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Align multichannel home-theater level, polarity and delay over a listening region",
@@ -287,7 +300,8 @@
       "product-system-plan": "skills/product-system-plan/input.schema.json",
       "engineering-requirements": "skills/engineering-requirements/input.schema.json",
       "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+      "home-theater-level-polarity-delay-baseline": "skills/home-theater-level-polarity-delay-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -303,7 +317,8 @@
       "product-system-plan": "skills/product-system-plan/output.schema.json",
       "engineering-requirements": "skills/engineering-requirements/output.schema.json",
       "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+      "home-theater-level-polarity-delay-baseline": "skills/home-theater-level-polarity-delay-baseline/output.schema.json"
     }
   },
   "report_sections": [
