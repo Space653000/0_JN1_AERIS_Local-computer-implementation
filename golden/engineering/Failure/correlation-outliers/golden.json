@@ -1,0 +1,59 @@
+{
+  "id": "correlation-outliers-analytic-v1",
+  "skill_id": "correlation-outliers",
+  "suite": "Failure",
+  "input": {
+    "x": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "y": [
+      3,
+      5,
+      7,
+      9,
+      11
+    ]
+  },
+  "checks": [
+    {
+      "path": "slope",
+      "expected": 2,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "intercept",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "pearson_r",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "x": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Exact affine relation y=2x+1.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "53512de1eff9588d44fc15f9c869f7ecc3fb1f8e1e370c8ae909529dca1b09c4"
+}

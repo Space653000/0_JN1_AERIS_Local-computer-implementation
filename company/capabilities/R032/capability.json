@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R032",
+    "name": "Embedded Capture Pipeline Engineer",
+    "group": "Microphone CoE"
+  },
+  "mission": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+  "domain": "Microphone CoE",
+  "scope": [
+    "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "Investigate and bound: channel swap invalidates array geometry",
+    "Investigate and bound: clock slip creates false TDOA"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R014 owns: Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback",
+    "Neighbor R043 owns: Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+  ],
+  "inputs": {
+    "latency-budget": "skills/latency-budget/input.schema.json",
+    "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+    "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+    "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/input.schema.json",
+    "speaker-digital-transport-domain-review": "skills/speaker-digital-transport-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "latency-budget": "skills/latency-budget/output.schema.json",
+    "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+    "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+    "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/output.schema.json",
+    "speaker-digital-transport-domain-review": "skills/speaker-digital-transport-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "latency-budget",
+    "spectral-analysis",
+    "transfer-coherence",
+    "microphone-capture-continuity-baseline",
+    "speaker-digital-transport-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/latency-budget.json",
+    "methods/engineering/spectral-analysis.json",
+    "methods/engineering/transfer-coherence.json",
+    "methods/roles/microphone-capture-continuity-baseline.json",
+    "methods/roles/speaker-digital-transport-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/latency-budget.json",
+    "knowledge/engineering/spectral-analysis.json",
+    "knowledge/engineering/transfer-coherence.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "timestamp granularity and independent clock drift"
+  ],
+  "common_failure_modes": [
+    "channel swap invalidates array geometry",
+    "clock slip creates false TDOA"
+  ],
+  "counter_hypotheses": [
+    "scheduling gap rather than DOA instability",
+    "format packing rather than microphone failure"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "must_challenge": [
+        "scheduling gap rather than DOA instability",
+        "format packing rather than microphone failure"
+      ],
+      "must_account_for": "timestamp granularity and independent clock drift",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/latency-budget/golden.json",
+    "golden/engineering/DSP/spectral-analysis/golden.json",
+    "golden/engineering/DSP/transfer-coherence/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/latency-budget/negative.json",
+    "golden/engineering/DSP/spectral-analysis/negative.json",
+    "golden/engineering/DSP/transfer-coherence/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/latency-budget/regression.json",
+    "golden/engineering/DSP/spectral-analysis/regression.json",
+    "golden/engineering/DSP/transfer-coherence/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R032",
+      "skill_id": "latency-budget",
+      "inputs": "skills/latency-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "decision_contract": "R032-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "scheduling gap rather than DOA instability",
+        "format packing rather than microphone failure"
+      ]
+    },
+    {
+      "role_id": "R032",
+      "skill_id": "spectral-analysis",
+      "inputs": "skills/spectral-analysis/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "decision_contract": "R032-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "scheduling gap rather than DOA instability",
+        "format packing rather than microphone failure"
+      ]
+    },
+    {
+      "role_id": "R032",
+      "skill_id": "transfer-coherence",
+      "inputs": "skills/transfer-coherence/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "decision_contract": "R032-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "scheduling gap rather than DOA instability",
+        "format packing rather than microphone failure"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R032/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R032-DOMAIN-DECISION",
+    "question": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "required_methods": [
+      "methods/engineering/latency-budget.json",
+      "methods/engineering/spectral-analysis.json",
+      "methods/engineering/transfer-coherence.json",
+      "methods/roles/microphone-capture-continuity-baseline.json",
+      "methods/roles/speaker-digital-transport-domain-review.json"
+    ],
+    "required_skills": [
+      "latency-budget",
+      "spectral-analysis",
+      "transfer-coherence",
+      "microphone-capture-continuity-baseline",
+      "speaker-digital-transport-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R014",
+      "this_seat_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "neighbor_owns": "Verify I2S/TDM transport format, clocking and buffer timing for glitch-free speaker playback"
+    },
+    {
+      "neighbor_role": "R043",
+      "this_seat_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+      "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-capture-continuity-baseline",
+      "method": "methods/roles/microphone-capture-continuity-baseline.json",
+      "suite": "golden/roles/R032/golden.json",
+      "scope": "First-sample capture metadata continuity, slot mapping, relative reference-rate and delivery bounds; no physical driver capture or absolute clock accuracy."
+    },
+    {
+      "skill_id": "speaker-digital-transport-domain-review",
+      "method": "methods/roles/speaker-digital-transport-domain-review.json",
+      "suite": "golden/roles/R032/speaker-digital-transport.json",
+      "scope": "Independent serial-audio format, clock-relation, slot-map and service-buffer assertion review; no electrical interface or playback-continuity acceptance."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "Discriminate: scheduling gap rather than DOA instability",
+    "Discriminate: format packing rather than microphone failure"
+  ],
+  "professional_inputs": {
+    "decision_question": "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "timestamp granularity and independent clock drift"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/input.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+      "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/input.schema.json",
+      "speaker-digital-transport-domain-review": "skills/speaker-digital-transport-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R032-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "latency-budget": "skills/latency-budget/output.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+      "microphone-capture-continuity-baseline": "skills/microphone-capture-continuity-baseline/output.schema.json",
+      "speaker-digital-transport-domain-review": "skills/speaker-digital-transport-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Verify multichannel capture timestamps, channel ordering and buffer continuity",
+    "channel swap invalidates array geometry",
+    "clock slip creates false TDOA",
+    "scheduling gap rather than DOA instability",
+    "format packing rather than microphone failure",
+    "timestamp granularity and independent clock drift"
+  ]
+}

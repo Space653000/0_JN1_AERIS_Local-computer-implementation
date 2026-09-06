@@ -1,0 +1,13 @@
+{
+  "input": {
+    "hypotheses": [
+      {
+        "id": "H1",
+        "support_refs": [],
+        "refute_refs": []
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "ab466130d1747f5aba396fd97a85eb4a2f8334c15cc9ba288c064e0a82031b39"
+}

@@ -1,0 +1,1 @@
+{"type":"object","required":["skill_id","values","physical_measurement_verified"],"properties":{"values":{"type":"object","required":["subwoofer_polarity","checks","disposition","crossover_transfer_verified","lip_sync_perceptually_verified","physical_soundbar_verified"]},"physical_measurement_verified":{"const":false}}}

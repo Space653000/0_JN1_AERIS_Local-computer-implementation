@@ -1,0 +1,11 @@
+{
+  "id": "STANDARD-IEC-60268-5",
+  "category": "Standards metadata",
+  "title": "STANDARD-IEC-60268-5",
+  "text": "{\"standard_id\": \"IEC 60268-5\", \"title\": \"Sound system equipment — Part 5: Loudspeakers\", \"keywords\": [\"speaker\", \"loudspeaker\", \"electroacoustic measurement\"], \"edition\": null, \"status\": \"UNKNOWN_UNTIL_LIVE_VERIFIED\", \"verification_state\": \"NEEDS_LIVE_VERIFICATION\", \"verified_at_utc\": null, \"source_url\": null, \"note\": \"Core research references this family; do not infer current edition/status from memory.\"}",
+  "source": "standards/registry.v1.json",
+  "rights": "PUBLIC_METADATA",
+  "sha256": "aa0f216866627575fda4a368b9e83c036f5ccf8a0b89619132e2cfd417806536",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

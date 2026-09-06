@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-nvh-integration",
+  "category": "Methods",
+  "title": "nvh-integration",
+  "text": "Integration of a sine divides amplitude by angular frequency. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/nvh-integration.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "f66a7bd43267de25515de5edf52bec7d218df683b49d466bd9cdf5dbaeff6050"
+}

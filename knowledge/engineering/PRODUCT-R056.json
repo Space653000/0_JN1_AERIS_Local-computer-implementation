@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R056",
+  "category": "Products",
+  "title": "PRODUCT-R056",
+  "text": "{\"speaker_topology_considerations\": \"linear multiway bar plus optional subwoofer\", \"microphone_topology_considerations\": \"optional voice-assistant array\", \"usage_scenarios\": [\"TV dialogue and virtual surround\"], \"common_acoustic_failure_modes\": [\"TV wall boundary\", \"lip sync\", \"crossover mismatch\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [], \"standards_metadata_state\": \"TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED\", \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R056/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "dc15f90967bdc7a3629e370e55cc2fc91d38035e699cf37d2de1b83710bc22c4",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-lumped-speaker",
+  "category": "Methods",
+  "title": "lumped-speaker",
+  "text": "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/lumped-speaker.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "453aec2d7fdd2c877a278764c32253b2ae70e1f617289aee899730a65f56d75c"
+}

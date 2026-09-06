@@ -1,0 +1,88 @@
+{
+  "suite_id": "R034-SPEAKER-POLAR-REVIEW-V1",
+  "role_id": "R034",
+  "skill_id": "speaker-polar-spatial-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored independent coordinate-map and uncertainty arithmetic for the R017 supplied polar, including a deliberately falsified asymmetry assertion; no executor call or acquired measurement.",
+  "scope": "Independent discrete absolute speaker polar report review only",
+  "base_input": {
+    "parameters": {
+      "model": "SUPPLIED_HORIZONTAL_POLAR_ABSOLUTE",
+      "angles_deg": [-90, -60, -30, 0, 30, 60, 90],
+      "levels_db": [70, 76, 79, 80, 79, 76, 70],
+      "supplied_on_axis_reference_db": 80, "level_uncertainty_db": 0.5,
+      "minimum_coverage_deg": 180, "maximum_angular_gap_deg": 30,
+      "maximum_on_axis_reference_error_db": 1, "minimum_edge_attenuation_db": 8,
+      "maximum_symmetry_error_db": 1, "angle_alignment_bound_deg": 1,
+      "maximum_angle_alignment_bound_deg": 2,
+      "normalization_mode": "ABSOLUTE_NOT_PEAK_NORMALIZED"
+    },
+    "candidate": {
+      "coverage_deg": 180, "maximum_gap_deg": 30, "on_axis_level_db": 80,
+      "on_axis_reference_error_upper_db": 0.5,
+      "edge_attenuation_db": [10, 10], "edge_attenuation_lower_db": [9.0, 9.0],
+      "pair_symmetry_errors_db": [0, 0, 0], "maximum_symmetry_error_db": 0,
+      "symmetry_error_upper_db": 1.0,
+      "checks": [
+        {"id": "ANGULAR_COVERAGE", "actual": 180, "limit": 180, "passed": true, "on_failure": "EXTEND_POLAR_ANGLE_COVERAGE"},
+        {"id": "ANGULAR_SAMPLING", "actual": 30, "limit": 30, "passed": true, "on_failure": "ADD_ANGLE_SAMPLES_BEFORE_LOBE_DECISION"},
+        {"id": "ABSOLUTE_REFERENCE", "actual": 0.5, "limit": 1, "passed": true, "on_failure": "RESTORE_ABSOLUTE_LEVEL_REFERENCE_BEFORE_NORMALIZED_COMPARISON"},
+        {"id": "EDGE_ATTENUATION", "actual": [9.0, 9.0], "limit": 8, "passed": true, "on_failure": "REVIEW_BAFFLE_BOUNDARY_AND_CROSSOVER_BEFORE_DIRECTIVITY_ACCEPTANCE"},
+        {"id": "SYMMETRY", "actual": 1.0, "limit": 1, "passed": true, "on_failure": "RECHECK_ANGLE_ALIGNMENT_FIXTURE_AND_ASYMMETRIC_RADIATION"},
+        {"id": "ANGLE_ALIGNMENT", "actual": 1, "limit": 2, "passed": true, "on_failure": "REDUCE_ANGULAR_ALIGNMENT_UNCERTAINTY"}
+      ],
+      "required_revisions": [], "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "continuous_angle_verified": false, "waveguide_cause_verified": false, "physical_measurement_verified": false,
+      "counter_hypotheses": ["Baffle diffraction rather than crossover defect", "Angle or acoustic-center alignment error rather than asymmetric radiation"],
+      "next_discriminating_experiment": "REPEAT_ABSOLUTE_POLAR_WITH_FINER_ANGLE_GRID_AND_REVERSED_FIXTURE_ORIENTATION",
+      "model_assumptions": [
+        "Supplied horizontal samples share one absolute level reference",
+        "Symmetric coordinates permit pairwise left-right comparison",
+        "Scalar level uncertainty is conservatively applied to differences",
+        "No interpolation or continuous-angle lobe search is performed"
+      ],
+      "unresolved": [
+        "Unobserved angles, vertical polar and full-sphere directivity",
+        "Baffle, crossover, acoustic-center and fixture causal attribution",
+        "Calibrated measurement and qualified Human acceptance"
+      ]
+    },
+    "context": {"product": "Bookshelf speaker", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {
+      "id": "POLAR-REVIEW-CONSISTENT", "kind": "positive",
+      "question": "Does an independent coordinate reconstruction confirm all supplied discrete assertions without physical approval?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0},
+        {"path": "human_approval", "expected": false, "absolute_tolerance": 0},
+        {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "POLAR-REVIEW-REPRESENTATION", "kind": "boundary",
+      "question": "Can a sub-tolerance numerical tail be accepted without changing sampling policy?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.maximum_gap_deg", "value": 30.000000000001}],
+      "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "POLAR-REVIEW-HIDDEN-ASYMMETRY", "kind": "counter_hypothesis",
+      "question": "Does the reviewer reject an invented symmetry error that obscures the supplied left-right relationship?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.maximum_symmetry_error_db", "value": 0.8}],
+      "checks": [
+        {"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0},
+        {"path": "disagreements.0.field", "expected": "maximum_symmetry_error_db", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "POLAR-REVIEW-RISK-OUTSIDE", "kind": "negative",
+      "question": "Is R4 outside this automated spatial review applicability?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "context.risk", "value": "R4"}],
+      "expected_error": "ValueError"
+    }
+  ]
+}

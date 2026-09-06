@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-circuit-noise-budget",
+  "category": "Golden cases",
+  "title": "GOLDEN-circuit-noise-budget",
+  "text": "[{\"path\": \"quantization_rms_v\", \"expected\": 8.809665972742094e-06, \"absolute_tolerance\": 1e-08, \"unit\": \"V\", \"reduction\": null}, {\"path\": \"jitter_snr_limit_db\", \"expected\": 104.0364026328377, \"absolute_tolerance\": 1e-07, \"unit\": \"dB\", \"reduction\": null}]",
+  "source": "golden/engineering/Microphone/circuit-noise-budget/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "4956bcc6a6a8c5cdc7abc4df0322d3ebcab86aeb1f59dd74eb9cfdc181f4c205",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

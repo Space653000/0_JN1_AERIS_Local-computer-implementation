@@ -1,0 +1,121 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "frequency_hz": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "psd_unit2_per_hz": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "time_s": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "stft_real": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "array",
+            "maxItems": 262144,
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "stft_imag": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "array",
+            "maxItems": 262144,
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "spectrogram_power": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "array",
+            "maxItems": 262144,
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "integrated_power": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "frequency_hz",
+        "psd_unit2_per_hz",
+        "time_s",
+        "stft_real",
+        "stft_imag",
+        "spectrogram_power",
+        "integrated_power"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

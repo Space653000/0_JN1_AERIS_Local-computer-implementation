@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "sample_rate_hz": {
+      "type": "number"
+    },
+    "buffer_samples": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "other_stage_ms": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "clock_difference_ppm": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "sample_rate_hz",
+    "buffer_samples",
+    "other_stage_ms",
+    "clock_difference_ppm"
+  ],
+  "additionalProperties": false
+}

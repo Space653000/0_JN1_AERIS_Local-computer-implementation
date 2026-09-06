@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "skill_id": "lumped-speaker",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/lumped-speaker/implementation.py",
+  "input_schema": "skills/lumped-speaker/input.schema.json",
+  "output_schema": "skills/lumped-speaker/output.schema.json",
+  "method": "methods/engineering/lumped-speaker.json",
+  "applicability": "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/Speaker/lumped-speaker/golden.json",
+  "negative_tests": "golden/engineering/Speaker/lumped-speaker/negative.json",
+  "regression_tests": "golden/engineering/Speaker/lumped-speaker/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R002",
+    "R009",
+    "R010",
+    "R011",
+    "R013",
+    "R019",
+    "R021",
+    "R025"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

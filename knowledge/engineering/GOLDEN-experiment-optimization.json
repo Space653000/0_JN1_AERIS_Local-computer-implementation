@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-experiment-optimization",
+  "category": "Golden cases",
+  "title": "GOLDEN-experiment-optimization",
+  "text": "[{\"path\": \"next_point.0\", \"expected\": 2, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"unexplored_count\", \"expected\": 2, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Product/experiment-optimization/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "eb65db6a25d06d50a38824f3d39476664c64aa717d65b14345d17fdb9846217c",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

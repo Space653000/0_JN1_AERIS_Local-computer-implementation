@@ -1,0 +1,19 @@
+{
+  "method_id": "tws-fit-capture-domain-review",
+  "version": "1.0.0",
+  "role": "R029",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_review:review",
+  "review_domain": "tws-fit-capture",
+  "applicability": "Review seal loss and distinguish wind exposure from stationary capture noise",
+  "executor_calls_permitted": false,
+  "uncertainty": "Supplied model assumptions remain uncalibrated. Agreement proves scoped report consistency, not real-world correctness.",
+  "excluded": [
+    "Human approval",
+    "full profession acceptance",
+    "physical calibration",
+    "formal release"
+  ],
+  "golden_tests": "golden/roles/R029/golden.json"
+}

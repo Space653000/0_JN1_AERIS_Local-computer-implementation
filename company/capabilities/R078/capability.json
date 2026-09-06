@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R078",
+    "name": "DOE / Statistics / Monte-Carlo",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+    "Investigate and bound: confounded design interpreted causally",
+    "Investigate and bound: Monte-Carlo precision mistaken for model validity"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R079 owns: Build traceable uncertainty and gage R&R budgets with correct references and correlations",
+    "Neighbor R100 owns: Select safe next experiments from informative coverage and observed loss without overriding risk gates"
+  ],
+  "inputs": {
+    "factorial-doe": "skills/factorial-doe/input.schema.json",
+    "monte-carlo": "skills/monte-carlo/input.schema.json",
+    "correlation-outliers": "skills/correlation-outliers/input.schema.json"
+  },
+  "outputs": {
+    "factorial-doe": "skills/factorial-doe/output.schema.json",
+    "monte-carlo": "skills/monte-carlo/output.schema.json",
+    "correlation-outliers": "skills/correlation-outliers/output.schema.json"
+  },
+  "required_skills": [
+    "factorial-doe",
+    "monte-carlo",
+    "correlation-outliers"
+  ],
+  "required_methods": [
+    "methods/engineering/factorial-doe.json",
+    "methods/engineering/monte-carlo.json",
+    "methods/engineering/correlation-outliers.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/factorial-doe.json",
+    "knowledge/engineering/monte-carlo.json",
+    "knowledge/engineering/correlation-outliers.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "sampling design and input distribution validity"
+  ],
+  "common_failure_modes": [
+    "confounded design interpreted causally",
+    "Monte-Carlo precision mistaken for model validity"
+  ],
+  "counter_hypotheses": [
+    "interaction rather than main effect",
+    "batch drift rather than treatment effect"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+      "must_challenge": [
+        "interaction rather than main effect",
+        "batch drift rather than treatment effect"
+      ],
+      "must_account_for": "sampling design and input distribution validity",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/factorial-doe/golden.json",
+    "golden/engineering/Failure/monte-carlo/golden.json",
+    "golden/engineering/Failure/correlation-outliers/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/factorial-doe/negative.json",
+    "golden/engineering/Failure/monte-carlo/negative.json",
+    "golden/engineering/Failure/correlation-outliers/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/factorial-doe/regression.json",
+    "golden/engineering/Failure/monte-carlo/regression.json",
+    "golden/engineering/Failure/correlation-outliers/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R078",
+      "skill_id": "factorial-doe",
+      "inputs": "skills/factorial-doe/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+      "decision_contract": "R078-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "interaction rather than main effect",
+        "batch drift rather than treatment effect"
+      ]
+    },
+    {
+      "role_id": "R078",
+      "skill_id": "monte-carlo",
+      "inputs": "skills/monte-carlo/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+      "decision_contract": "R078-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "interaction rather than main effect",
+        "batch drift rather than treatment effect"
+      ]
+    },
+    {
+      "role_id": "R078",
+      "skill_id": "correlation-outliers",
+      "inputs": "skills/correlation-outliers/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+      "decision_contract": "R078-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "interaction rather than main effect",
+        "batch drift rather than treatment effect"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R078/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R078-DOMAIN-DECISION",
+    "question": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+    "required_methods": [
+      "methods/engineering/factorial-doe.json",
+      "methods/engineering/monte-carlo.json",
+      "methods/engineering/correlation-outliers.json"
+    ],
+    "required_skills": [
+      "factorial-doe",
+      "monte-carlo",
+      "correlation-outliers"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R079",
+      "this_seat_owns": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+      "neighbor_owns": "Build traceable uncertainty and gage R&R budgets with correct references and correlations"
+    },
+    {
+      "neighbor_role": "R100",
+      "this_seat_owns": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+      "neighbor_owns": "Select safe next experiments from informative coverage and observed loss without overriding risk gates"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+    "Discriminate: interaction rather than main effect",
+    "Discriminate: batch drift rather than treatment effect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "sampling design and input distribution validity"
+    ],
+    "calculation_schemas": {
+      "factorial-doe": "skills/factorial-doe/input.schema.json",
+      "monte-carlo": "skills/monte-carlo/input.schema.json",
+      "correlation-outliers": "skills/correlation-outliers/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R078-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "factorial-doe": "skills/factorial-doe/output.schema.json",
+      "monte-carlo": "skills/monte-carlo/output.schema.json",
+      "correlation-outliers": "skills/correlation-outliers/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+    "confounded design interpreted causally",
+    "Monte-Carlo precision mistaken for model validity",
+    "interaction rather than main effect",
+    "batch drift rather than treatment effect",
+    "sampling design and input distribution validity"
+  ]
+}

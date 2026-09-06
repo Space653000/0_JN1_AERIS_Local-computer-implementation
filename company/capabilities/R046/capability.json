@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R046",
+    "name": "OTC Hearing Aid / PSAP",
+    "group": "Product Chiefs"
+  },
+  "mission": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+  "domain": "Product Chiefs",
+  "scope": [
+    "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+    "Investigate and bound: consumer preference promoted to clinical indication",
+    "Investigate and bound: self-fit gain exceeds safe output budget"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R045 owns: Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting",
+    "Neighbor R049 owns: Balance circumaural cushion seal, driver output and hybrid ANC stability across head shapes"
+  ],
+  "inputs": {
+    "product-system-plan": "skills/product-system-plan/input.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+    "otc-self-fit-output-baseline": "skills/otc-self-fit-output-baseline/input.schema.json"
+  },
+  "outputs": {
+    "product-system-plan": "skills/product-system-plan/output.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+    "otc-self-fit-output-baseline": "skills/otc-self-fit-output-baseline/output.schema.json"
+  },
+  "required_skills": [
+    "product-system-plan",
+    "engineering-requirements",
+    "requirement-traceability",
+    "dfmea-ranking",
+    "otc-self-fit-output-baseline"
+  ],
+  "required_methods": [
+    "methods/engineering/product-system-plan.json",
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/requirement-traceability.json",
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/otc-self-fit-output-baseline.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/product-system-plan.json",
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/requirement-traceability.json",
+    "knowledge/engineering/dfmea-ranking.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "fit variability and user-controlled gain"
+  ],
+  "common_failure_modes": [
+    "consumer preference promoted to clinical indication",
+    "self-fit gain exceeds safe output budget"
+  ],
+  "counter_hypotheses": [
+    "poor seal rather than insufficient gain",
+    "instruction failure rather than algorithm defect"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+      "must_challenge": [
+        "poor seal rather than insufficient gain",
+        "instruction failure rather than algorithm defect"
+      ],
+      "must_account_for": "fit variability and user-controlled gain",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/product-system-plan/golden.json",
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json",
+    "golden/engineering/Failure/dfmea-ranking/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/product-system-plan/negative.json",
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json",
+    "golden/engineering/Failure/dfmea-ranking/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/product-system-plan/regression.json",
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json",
+    "golden/engineering/Failure/dfmea-ranking/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R046",
+      "skill_id": "product-system-plan",
+      "inputs": "skills/product-system-plan/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+      "decision_contract": "R046-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "poor seal rather than insufficient gain",
+        "instruction failure rather than algorithm defect"
+      ]
+    },
+    {
+      "role_id": "R046",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+      "decision_contract": "R046-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "poor seal rather than insufficient gain",
+        "instruction failure rather than algorithm defect"
+      ]
+    },
+    {
+      "role_id": "R046",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+      "decision_contract": "R046-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "poor seal rather than insufficient gain",
+        "instruction failure rather than algorithm defect"
+      ]
+    },
+    {
+      "role_id": "R046",
+      "skill_id": "dfmea-ranking",
+      "inputs": "skills/dfmea-ranking/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+      "decision_contract": "R046-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "poor seal rather than insufficient gain",
+        "instruction failure rather than algorithm defect"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R046/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "product_architecture": {
+    "speaker_topology_considerations": "receiver with user-adjustable gain",
+    "microphone_topology_considerations": "dual external microphones",
+    "usage_scenarios": [
+      "consumer self-fit listening"
+    ],
+    "common_acoustic_failure_modes": [
+      "output exposure",
+      "fit variability",
+      "misuse as clinical device"
+    ],
+    "lifecycle": [
+      "Concept",
+      "EVT",
+      "DVT",
+      "PVT",
+      "MP",
+      "Field"
+    ],
+    "measurement_plan": [
+      "declare fixture/geometry and calibration state",
+      "capture raw FR/noise/IR and electrical limits",
+      "repeat across fit/orientation/operating conditions",
+      "compare required bands and uncertainty margins"
+    ],
+    "simulation_requirements": [
+      "linear speaker/port baseline where topology applies",
+      "array propagation and room/latency budgets where capture applies"
+    ],
+    "manufacturing_risks": [
+      "assembly leakage and tolerances",
+      "component sensitivity variation",
+      "EOL limits without justified guard bands"
+    ],
+    "standards_metadata_references": [],
+    "standards_metadata_state": "TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED",
+    "evidence_expectations": [
+      "raw-data hash",
+      "fixture and calibration provenance",
+      "method version",
+      "uncertainty",
+      "counter-hypothesis review"
+    ],
+    "non_scope": [
+      "clinical efficacy or patient fitting",
+      "licensed-tool equivalence",
+      "physical qualification without measurements"
+    ]
+  },
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R046-DOMAIN-DECISION",
+    "question": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/otc-self-fit-output-baseline.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking",
+      "otc-self-fit-output-baseline"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R045",
+      "this_seat_owns": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+      "neighbor_owns": "Separate hearing-aid acoustic gain, feedback headroom and output-limit decisions from clinical fitting"
+    },
+    {
+      "neighbor_role": "R049",
+      "this_seat_owns": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+      "neighbor_owns": "Balance circumaural cushion seal, driver output and hybrid ANC stability across head shapes"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "otc-self-fit-output-baseline",
+      "method": "methods/roles/otc-self-fit-output-baseline.json",
+      "suite": "golden/roles/R046/golden.json",
+      "scope": "Supplied OTC user gain, seal, output, instruction and fit-spread screening; no clinical indication or user-study acceptance."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+    "Discriminate: poor seal rather than insufficient gain",
+    "Discriminate: instruction failure rather than algorithm defect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "fit variability and user-controlled gain"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+      "otc-self-fit-output-baseline": "skills/otc-self-fit-output-baseline/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R046-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+      "otc-self-fit-output-baseline": "skills/otc-self-fit-output-baseline/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Bound OTC/PSAP self-fit acoustic output and usability without inferring medical efficacy",
+    "consumer preference promoted to clinical indication",
+    "self-fit gain exceeds safe output budget",
+    "poor seal rather than insufficient gain",
+    "instruction failure rather than algorithm defect",
+    "fit variability and user-controlled gain"
+  ]
+}

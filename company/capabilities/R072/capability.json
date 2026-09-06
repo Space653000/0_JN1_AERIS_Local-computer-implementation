@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R072",
+    "name": "Room Acoustics",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+    "Investigate and bound: RT extrapolated below noise floor",
+    "Investigate and bound: single-position room correction claimed universal"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R023 owns: Estimate room decay, reflection and system placement limits before ray-based simulation",
+    "Neighbor R026 owns: Decide room-correction limits from spatial response, impulse decay and realizable filter latency"
+  ],
+  "inputs": {
+    "room-ir-decay": "skills/room-ir-decay/input.schema.json",
+    "fractional-octave": "skills/fractional-octave/input.schema.json",
+    "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/input.schema.json",
+    "tablet-orientation-case-table-domain-review": "skills/tablet-orientation-case-table-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "room-ir-decay": "skills/room-ir-decay/output.schema.json",
+    "fractional-octave": "skills/fractional-octave/output.schema.json",
+    "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/output.schema.json",
+    "tablet-orientation-case-table-domain-review": "skills/tablet-orientation-case-table-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "room-ir-decay",
+    "fractional-octave",
+    "room-decay-spatial-domain-review",
+    "tablet-orientation-case-table-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/room-ir-decay.json",
+    "methods/engineering/fractional-octave.json",
+    "methods/roles/room-decay-spatial-domain-review.json",
+    "methods/roles/tablet-orientation-case-table-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/room-ir-decay.json",
+    "knowledge/engineering/fractional-octave.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "position distribution and decay-fit interval"
+  ],
+  "common_failure_modes": [
+    "RT extrapolated below noise floor",
+    "single-position room correction claimed universal"
+  ],
+  "counter_hypotheses": [
+    "local mode rather than global decay",
+    "measurement window rather than absorption change"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+      "must_challenge": [
+        "local mode rather than global decay",
+        "measurement window rather than absorption change"
+      ],
+      "must_account_for": "position distribution and decay-fit interval",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/room-ir-decay/golden.json",
+    "golden/engineering/DSP/fractional-octave/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/room-ir-decay/negative.json",
+    "golden/engineering/DSP/fractional-octave/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/room-ir-decay/regression.json",
+    "golden/engineering/DSP/fractional-octave/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R072",
+      "skill_id": "room-ir-decay",
+      "inputs": "skills/room-ir-decay/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+      "decision_contract": "R072-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "local mode rather than global decay",
+        "measurement window rather than absorption change"
+      ]
+    },
+    {
+      "role_id": "R072",
+      "skill_id": "fractional-octave",
+      "inputs": "skills/fractional-octave/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+      "decision_contract": "R072-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "local mode rather than global decay",
+        "measurement window rather than absorption change"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R072/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R072-DOMAIN-DECISION",
+    "question": "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+    "required_methods": [
+      "methods/engineering/room-ir-decay.json",
+      "methods/engineering/fractional-octave.json",
+      "methods/roles/room-decay-spatial-domain-review.json",
+      "methods/roles/tablet-orientation-case-table-domain-review.json"
+    ],
+    "required_skills": [
+      "room-ir-decay",
+      "fractional-octave",
+      "room-decay-spatial-domain-review",
+      "tablet-orientation-case-table-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R023",
+      "this_seat_owns": "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+      "neighbor_owns": "Estimate room decay, reflection and system placement limits before ray-based simulation"
+    },
+    {
+      "neighbor_role": "R026",
+      "this_seat_owns": "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+      "neighbor_owns": "Decide room-correction limits from spatial response, impulse decay and realizable filter latency"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "room-decay-spatial-domain-review",
+      "method": "methods/roles/room-decay-spatial-domain-review.json",
+      "suite": "golden/roles/R072/golden.json",
+      "scope": "Independent multi-position decay-fit and spatial assertion review; no room-wide, diffuse-field, calibrated IR or physical acceptance."
+    },
+    {
+      "skill_id": "tablet-orientation-case-table-domain-review",
+      "method": "methods/roles/tablet-orientation-case-table-domain-review.json",
+      "suite": "golden/roles/R072/tablet.json",
+      "scope": "Independent tablet orientation/case/table assertion review; no measured transfer, case population, speech quality or Human approval."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+    "Discriminate: local mode rather than global decay",
+    "Discriminate: measurement window rather than absorption change"
+  ],
+  "professional_inputs": {
+    "decision_question": "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "position distribution and decay-fit interval"
+    ],
+    "calculation_schemas": {
+      "room-ir-decay": "skills/room-ir-decay/input.schema.json",
+      "fractional-octave": "skills/fractional-octave/input.schema.json",
+      "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/input.schema.json",
+      "tablet-orientation-case-table-domain-review": "skills/tablet-orientation-case-table-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R072-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "room-ir-decay": "skills/room-ir-decay/output.schema.json",
+      "fractional-octave": "skills/fractional-octave/output.schema.json",
+      "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/output.schema.json",
+      "tablet-orientation-case-table-domain-review": "skills/tablet-orientation-case-table-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Interpret room modes and reverberation without overextending diffuse-field assumptions",
+    "RT extrapolated below noise floor",
+    "single-position room correction claimed universal",
+    "local mode rather than global decay",
+    "measurement window rather than absorption change",
+    "position distribution and decay-fit interval"
+  ]
+}

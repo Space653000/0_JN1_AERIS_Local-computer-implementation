@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": [
+    "skill_id",
+    "values",
+    "input_sha256",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "values": {
+      "type": "object",
+      "required": [
+        "decision",
+        "assertions_consistent",
+        "human_approval"
+      ]
+    },
+    "physical_measurement_verified": {
+      "const": false
+    }
+  }
+}
+

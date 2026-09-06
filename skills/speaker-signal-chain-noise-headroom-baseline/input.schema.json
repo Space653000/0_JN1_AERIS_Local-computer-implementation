@@ -1,0 +1,16 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "stage_voltage_gains", "stage_input_noise_rms_v", "source_noise_rms_v", "source_signal_rms_v", "source_impedance_ohm", "chain_input_impedance_ohm", "minimum_loading_ratio", "crest_factor", "load_impedance_min_ohm", "minimum_supported_load_ohm", "available_output_peak_v", "available_output_peak_a", "maximum_output_noise_rms_v", "noise_relative_bound", "phase_margin_deg", "minimum_phase_margin_deg"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_SPEAKER_SIGNAL_CHAIN"},
+    "stage_voltage_gains": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"type": "number"}},
+    "stage_input_noise_rms_v": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"type": "number"}},
+    "source_noise_rms_v": {"type": "number"}, "source_signal_rms_v": {"type": "number"},
+    "source_impedance_ohm": {"type": "number"}, "chain_input_impedance_ohm": {"type": "number"},
+    "minimum_loading_ratio": {"type": "number"}, "crest_factor": {"type": "number"},
+    "load_impedance_min_ohm": {"type": "number"}, "minimum_supported_load_ohm": {"type": "number"},
+    "available_output_peak_v": {"type": "number"}, "available_output_peak_a": {"type": "number"},
+    "maximum_output_noise_rms_v": {"type": "number"}, "noise_relative_bound": {"type": "number"},
+    "phase_margin_deg": {"type": "number"}, "minimum_phase_margin_deg": {"type": "number"}
+  }
+}

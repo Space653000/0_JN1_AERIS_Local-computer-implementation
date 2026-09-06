@@ -1,0 +1,191 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "hypotheses",
+    "observations",
+    "experiments",
+    "minimum_leading_posterior",
+    "minimum_leading_margin"
+  ],
+  "properties": {
+    "hypotheses": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "mechanism",
+          "category",
+          "prior"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+          },
+          "mechanism": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "category": {
+            "enum": [
+              "PRODUCT",
+              "TEST_SYSTEM"
+            ]
+          },
+          "prior": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "source_record_id",
+          "source_kind",
+          "conditional_independence_assumed",
+          "likelihoods"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+          },
+          "source_record_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+          },
+          "source_kind": {
+            "enum": [
+              "SYNTHETIC",
+              "SUPPLIED_UNVERIFIED"
+            ]
+          },
+          "conditional_independence_assumed": {
+            "const": true
+          },
+          "likelihoods": {
+            "type": "object",
+            "minProperties": 2,
+            "maxProperties": 16,
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "experiment_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+          },
+          "outcome_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+          }
+        }
+      }
+    },
+    "experiments": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "intervention",
+          "control",
+          "cost",
+          "risk",
+          "local_available",
+          "outcomes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+          },
+          "intervention": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "control": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "cost": {
+            "type": "number",
+            "minimum": 1e-12,
+            "maximum": 1000000000000
+          },
+          "risk": {
+            "enum": [
+              "R0",
+              "R1"
+            ]
+          },
+          "local_available": {
+            "type": "boolean"
+          },
+          "outcomes": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "likelihoods"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$"
+                },
+                "likelihoods": {
+                  "type": "object",
+                  "minProperties": 2,
+                  "maxProperties": 16,
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "minimum_leading_posterior": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "minimum_leading_margin": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}
+

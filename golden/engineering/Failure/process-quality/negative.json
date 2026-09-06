@@ -1,0 +1,15 @@
+{
+  "input": {
+    "values": [
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "lower_limit": 7,
+    "upper_limit": 13
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "e9c9ddf5e53c58f400d39971e519fdca51ac6c0be3f121e0f599b133c5e082f4"
+}

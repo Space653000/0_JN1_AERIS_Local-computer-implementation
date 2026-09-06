@@ -233,6 +233,9 @@ def execute_workflow(workflow_id: str, actor: str) -> dict[str, Any]:
     run_id = str(bundle["run_id"])
     root = bundle_dir(run_id)
     (root / "processed" / "skill_result.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if result.get("capability_maturity") == "FREE_LOCAL_BASELINE":
+        from .engineering.reporting import write_artifacts
+        write_artifacts(root,params,result,wf.get("engineering_context"))
     validation = {
         "state": "DETERMINISTIC_SKILL_EXECUTED",
         "skill_id": skill_id,

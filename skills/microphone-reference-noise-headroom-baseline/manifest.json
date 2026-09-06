@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "skill_id": "microphone-reference-noise-headroom-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/microphone-reference-noise-headroom-baseline.json",
+  "input_schema": "skills/microphone-reference-noise-headroom-baseline/input.schema.json",
+  "output_schema": "skills/microphone-reference-noise-headroom-baseline/output.schema.json",
+  "role_mappings": [
+    "R033"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Supplied-reference microphone noise/headroom analysis; no physical measurement or acoustic overload certification"
+}

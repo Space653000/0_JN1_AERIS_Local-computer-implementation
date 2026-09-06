@@ -1,0 +1,428 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "parameters",
+    "candidate",
+    "context"
+  ],
+  "properties": {
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "as_of",
+        "freshness_days",
+        "intended_use",
+        "region",
+        "domain_tags",
+        "requirements",
+        "previous",
+        "current"
+      ],
+      "properties": {
+        "as_of": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "freshness_days": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 365
+        },
+        "intended_use": {
+          "enum": [
+            "METADATA_ONLY",
+            "NORMATIVE_USE"
+          ]
+        },
+        "region": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "domain_tags": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "family",
+              "region",
+              "domain_tags"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "family": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "region": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "domain_tags": {
+                "type": "array",
+                "maxItems": 256,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                }
+              }
+            }
+          },
+          "minItems": 1
+        },
+        "previous": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "metadata",
+            "source"
+          ],
+          "properties": {
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "family",
+                "edition",
+                "status",
+                "superseded_by",
+                "regions",
+                "domain_tags",
+                "normative_informative",
+                "license_access",
+                "requirement_ids"
+              ],
+              "properties": {
+                "family": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                },
+                "edition": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "CURRENT",
+                    "SUPERSEDED",
+                    "UNKNOWN"
+                  ]
+                },
+                "superseded_by": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "regions": {
+                  "type": "array",
+                  "maxItems": 256,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "domain_tags": {
+                  "type": "array",
+                  "maxItems": 256,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "normative_informative": {
+                  "enum": [
+                    "NORMATIVE",
+                    "INFORMATIVE",
+                    "UNKNOWN"
+                  ]
+                },
+                "license_access": {
+                  "enum": [
+                    "METADATA_ONLY",
+                    "PUBLIC_FULL_TEXT",
+                    "USER_DECLARED_AUTHORIZED",
+                    "UNKNOWN"
+                  ]
+                },
+                "requirement_ids": {
+                  "type": "array",
+                  "maxItems": 256,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                }
+              }
+            },
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "record_id",
+                "publisher",
+                "url",
+                "retrieved_at",
+                "source_kind",
+                "content_sha256"
+              ],
+              "properties": {
+                "record_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                },
+                "publisher": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "retrieved_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_kind": {
+                  "enum": [
+                    "SYNTHETIC",
+                    "SUPPLIED_UNVERIFIED",
+                    "REGISTRY_UNVERIFIED"
+                  ]
+                },
+                "content_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        },
+        "current": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "metadata",
+            "source"
+          ],
+          "properties": {
+            "metadata": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "family",
+                "edition",
+                "status",
+                "superseded_by",
+                "regions",
+                "domain_tags",
+                "normative_informative",
+                "license_access",
+                "requirement_ids"
+              ],
+              "properties": {
+                "family": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                },
+                "edition": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "CURRENT",
+                    "SUPERSEDED",
+                    "UNKNOWN"
+                  ]
+                },
+                "superseded_by": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "regions": {
+                  "type": "array",
+                  "maxItems": 256,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "domain_tags": {
+                  "type": "array",
+                  "maxItems": 256,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "normative_informative": {
+                  "enum": [
+                    "NORMATIVE",
+                    "INFORMATIVE",
+                    "UNKNOWN"
+                  ]
+                },
+                "license_access": {
+                  "enum": [
+                    "METADATA_ONLY",
+                    "PUBLIC_FULL_TEXT",
+                    "USER_DECLARED_AUTHORIZED",
+                    "UNKNOWN"
+                  ]
+                },
+                "requirement_ids": {
+                  "type": "array",
+                  "maxItems": 256,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                }
+              }
+            },
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "record_id",
+                "publisher",
+                "url",
+                "retrieved_at",
+                "source_kind",
+                "content_sha256"
+              ],
+              "properties": {
+                "record_id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                },
+                "publisher": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "url": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "retrieved_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_kind": {
+                  "enum": [
+                    "SYNTHETIC",
+                    "SUPPLIED_UNVERIFIED",
+                    "REGISTRY_UNVERIFIED"
+                  ]
+                },
+                "content_sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "candidate": {
+      "type": "object"
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product",
+        "transducer",
+        "lifecycle",
+        "risk",
+        "source_kind"
+      ],
+      "properties": {
+        "product": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "transducer": {
+          "enum": [
+            "Speaker",
+            "Microphone",
+            "Both"
+          ]
+        },
+        "lifecycle": {
+          "enum": [
+            "Concept",
+            "Architecture",
+            "Prototype",
+            "EVT"
+          ]
+        },
+        "risk": {
+          "enum": [
+            "R0",
+            "R1"
+          ]
+        },
+        "source_kind": {
+          "enum": [
+            "SYNTHETIC",
+            "USER_SUPPLIED_UNVERIFIED"
+          ]
+        }
+      }
+    }
+  }
+}

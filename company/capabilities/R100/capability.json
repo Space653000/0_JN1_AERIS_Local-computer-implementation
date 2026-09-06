@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R100",
+    "name": "Autonomous Experiment & Optimization Engineer",
+    "group": "Engineering Ops"
+  },
+  "mission": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+  "domain": "Engineering Ops",
+  "scope": [
+    "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+    "Investigate and bound: optimizer extrapolates outside safe region",
+    "Investigate and bound: repeated point counted as new information"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R078 owns: Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
+    "Neighbor R094 owns: Rank FACA hypotheses and choose experiments that distinguish root causes before closure"
+  ],
+  "inputs": {
+    "experiment-optimization": "skills/experiment-optimization/input.schema.json",
+    "factorial-doe": "skills/factorial-doe/input.schema.json",
+    "monte-carlo": "skills/monte-carlo/input.schema.json"
+  },
+  "outputs": {
+    "experiment-optimization": "skills/experiment-optimization/output.schema.json",
+    "factorial-doe": "skills/factorial-doe/output.schema.json",
+    "monte-carlo": "skills/monte-carlo/output.schema.json"
+  },
+  "required_skills": [
+    "experiment-optimization",
+    "factorial-doe",
+    "monte-carlo"
+  ],
+  "required_methods": [
+    "methods/engineering/experiment-optimization.json",
+    "methods/engineering/factorial-doe.json",
+    "methods/engineering/monte-carlo.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/experiment-optimization.json",
+    "knowledge/engineering/factorial-doe.json",
+    "knowledge/engineering/monte-carlo.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "surrogate error, exploration coverage and safe bounds"
+  ],
+  "common_failure_modes": [
+    "optimizer extrapolates outside safe region",
+    "repeated point counted as new information"
+  ],
+  "counter_hypotheses": [
+    "measurement noise rather than improvement",
+    "unexplored interaction rather than poor parameter"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+      "must_challenge": [
+        "measurement noise rather than improvement",
+        "unexplored interaction rather than poor parameter"
+      ],
+      "must_account_for": "surrogate error, exploration coverage and safe bounds",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/experiment-optimization/golden.json",
+    "golden/engineering/Product/factorial-doe/golden.json",
+    "golden/engineering/Failure/monte-carlo/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/experiment-optimization/negative.json",
+    "golden/engineering/Product/factorial-doe/negative.json",
+    "golden/engineering/Failure/monte-carlo/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/experiment-optimization/regression.json",
+    "golden/engineering/Product/factorial-doe/regression.json",
+    "golden/engineering/Failure/monte-carlo/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R100",
+      "skill_id": "experiment-optimization",
+      "inputs": "skills/experiment-optimization/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+      "decision_contract": "R100-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "measurement noise rather than improvement",
+        "unexplored interaction rather than poor parameter"
+      ]
+    },
+    {
+      "role_id": "R100",
+      "skill_id": "factorial-doe",
+      "inputs": "skills/factorial-doe/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+      "decision_contract": "R100-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "measurement noise rather than improvement",
+        "unexplored interaction rather than poor parameter"
+      ]
+    },
+    {
+      "role_id": "R100",
+      "skill_id": "monte-carlo",
+      "inputs": "skills/monte-carlo/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+      "decision_contract": "R100-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "measurement noise rather than improvement",
+        "unexplored interaction rather than poor parameter"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R100/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R100-DOMAIN-DECISION",
+    "question": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+    "required_methods": [
+      "methods/engineering/experiment-optimization.json",
+      "methods/engineering/factorial-doe.json",
+      "methods/engineering/monte-carlo.json"
+    ],
+    "required_skills": [
+      "experiment-optimization",
+      "factorial-doe",
+      "monte-carlo"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R078",
+      "this_seat_owns": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+      "neighbor_owns": "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty"
+    },
+    {
+      "neighbor_role": "R094",
+      "this_seat_owns": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+      "neighbor_owns": "Rank FACA hypotheses and choose experiments that distinguish root causes before closure"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+    "Discriminate: measurement noise rather than improvement",
+    "Discriminate: unexplored interaction rather than poor parameter"
+  ],
+  "professional_inputs": {
+    "decision_question": "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "surrogate error, exploration coverage and safe bounds"
+    ],
+    "calculation_schemas": {
+      "experiment-optimization": "skills/experiment-optimization/input.schema.json",
+      "factorial-doe": "skills/factorial-doe/input.schema.json",
+      "monte-carlo": "skills/monte-carlo/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R100-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "experiment-optimization": "skills/experiment-optimization/output.schema.json",
+      "factorial-doe": "skills/factorial-doe/output.schema.json",
+      "monte-carlo": "skills/monte-carlo/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Select safe next experiments from informative coverage and observed loss without overriding risk gates",
+    "optimizer extrapolates outside safe region",
+    "repeated point counted as new information",
+    "measurement noise rather than improvement",
+    "unexplored interaction rather than poor parameter",
+    "surrogate error, exploration coverage and safe bounds"
+  ]
+}

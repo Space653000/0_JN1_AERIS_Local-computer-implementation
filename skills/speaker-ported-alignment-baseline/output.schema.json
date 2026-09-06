@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {
+    "values": {"type": "object", "required": ["tuning_hz", "tuning_interval_hz", "port_velocity_upper_m_s", "checks", "disposition"]},
+    "physical_measurement_verified": {"const": false}
+  }
+}

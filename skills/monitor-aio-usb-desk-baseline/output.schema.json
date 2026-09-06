@@ -1,0 +1,1 @@
+{"type":"object","required":["skill_id","values","input_sha256","implementation_sha256","physical_measurement_verified"],"properties":{"values":{"type":"object","required":["usb_mode","checks","disposition","hum_source_verified","usb_continuity_verified","desk_transfer_verified","physical_monitor_verified"]},"physical_measurement_verified":{"const":false}}}

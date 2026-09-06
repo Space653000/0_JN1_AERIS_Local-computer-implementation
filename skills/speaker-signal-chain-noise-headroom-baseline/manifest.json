@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "speaker-signal-chain-noise-headroom-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/speaker-signal-chain-noise-headroom-baseline.json",
+  "input_schema": "skills/speaker-signal-chain-noise-headroom-baseline/input.schema.json",
+  "output_schema": "skills/speaker-signal-chain-noise-headroom-baseline/output.schema.json",
+  "role_mappings": ["R012"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Supplied scalar gain, uncorrelated referred-noise, source loading, peak voltage/current, minimum-load and declared phase-margin screening; no complex-load or bench stability acceptance"
+}

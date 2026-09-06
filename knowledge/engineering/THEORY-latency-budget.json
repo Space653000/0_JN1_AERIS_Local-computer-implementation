@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-latency-budget",
+  "category": "Theory",
+  "title": "THEORY-latency-budget",
+  "text": "Thirty ms of buffers plus thirty ms of other serial stages.",
+  "source": "methods/engineering/latency-budget.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "1bd185edf9ae7abb1a3a6d04d45daf621337614aefe6c0645ebffdeff54ae414",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-local-audio-regression",
+  "category": "Theory",
+  "title": "THEORY-local-audio-regression",
+  "text": "Held-out affine regression without train/validation ID leakage.",
+  "source": "methods/engineering/local-audio-regression.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "ea6f47473eaccbca91581a7917aff9d067309d9c6e3c48f5ea0ad8821fef4804",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

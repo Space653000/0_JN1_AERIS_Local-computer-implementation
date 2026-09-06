@@ -1,0 +1,15 @@
+{
+  "input": {
+    "sensitivity_coefficients": [
+      1,
+      2
+    ],
+    "standard_uncertainties": [
+      -0.1,
+      0.2
+    ],
+    "coverage_factor": 2
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "18e21ede678b7cf98801379b62c59ca369a7dc29329d7a113f3fa58235d40586"
+}

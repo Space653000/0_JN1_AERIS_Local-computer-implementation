@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-level-statistics",
+  "category": "Golden cases",
+  "title": "GOLDEN-level-statistics",
+  "text": "[{\"path\": \"leq_db\", \"expected\": 67.40362689494243, \"absolute_tolerance\": 1e-08, \"unit\": \"dB\", \"reduction\": null}, {\"path\": \"l10_db\", \"expected\": 70, \"absolute_tolerance\": 1e-08, \"unit\": \"dB\", \"reduction\": null}]",
+  "source": "golden/engineering/Microphone/level-statistics/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "52c4be1cc9792afdee7cff98ff0e3a9b287e4e9e2a2015a6e06a0036a0e08ef1",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

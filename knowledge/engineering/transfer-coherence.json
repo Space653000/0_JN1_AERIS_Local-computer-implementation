@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-transfer-coherence",
+  "category": "Methods",
+  "title": "transfer-coherence",
+  "text": "A noiseless gain-of-two system has H=2 and unit coherence in excited bins. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/transfer-coherence.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "7ead1ec8d20755c8301e3cb8d5c37edbfa60cb687301f1161891b1fbfb32df51"
+}

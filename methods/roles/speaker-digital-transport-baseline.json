@@ -1,0 +1,7 @@
+{
+  "method_id": "speaker-digital-transport-baseline", "version": "1.0.0", "role": "R014", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_digital_transport:analyze", "applicability": "Supplied I2S/TDM format, arithmetic clock relations, active slots and deterministic service interval",
+  "equations": {"bit_clock": "sample_rate * slots_per_frame * slot_width", "service_frames": "sample_rate * service_interval", "buffer_latency": "buffer_frames / sample_rate"},
+  "assumptions": ["One frame per sample period", "Supplied service interval is a deterministic bound", "No electrical timing is measured"],
+  "excluded": ["electrical setup/hold and jitter", "driver/DMA execution", "physical glitch-free playback and Human acceptance"], "golden_tests": "golden/roles/R014/golden.json"
+}

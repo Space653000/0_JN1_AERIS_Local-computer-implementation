@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-uncertainty-propagation",
+  "category": "Golden cases",
+  "title": "GOLDEN-uncertainty-propagation",
+  "text": "[{\"path\": \"combined_standard_uncertainty\", \"expected\": 0.41231056256176607, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"expanded_uncertainty\", \"expected\": 0.8246211251235321, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Failure/uncertainty-propagation/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "a7a64fbff34baccb7eb5e2c33e0ca6e47993a5c7752c0fb30096284fb07336eb",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

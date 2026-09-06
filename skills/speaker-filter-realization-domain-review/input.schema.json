@@ -1,0 +1,4 @@
+{
+  "type": "object", "required": ["parameters", "candidate", "context"], "additionalProperties": false,
+  "properties": {"parameters": {"type": "object"}, "candidate": {"type": "object"}, "context": {"type": "object", "required": ["product", "transducer", "lifecycle", "risk", "source_kind"], "additionalProperties": false, "properties": {"product": {"type": "string"}, "transducer": {"type": "string"}, "lifecycle": {"type": "string"}, "risk": {"type": "string"}, "source_kind": {"type": "string"}}}}
+}

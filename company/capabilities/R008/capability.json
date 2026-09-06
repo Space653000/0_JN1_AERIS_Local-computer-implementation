@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R008",
+    "name": "Research / Standards / Knowledge Director",
+    "group": "Chief Council"
+  },
+  "mission": "Separate source authority, standards applicability and research hypotheses before reuse",
+  "domain": "Chief Council",
+  "scope": [
+    "Separate source authority, standards applicability and research hypotheses before reuse",
+    "Investigate and bound: bibliography counted as retrieved knowledge",
+    "Investigate and bound: obsolete edition used as current requirement"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R087 owns: Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
+    "Neighbor R089 owns: Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
+  ],
+  "inputs": {
+    "provenance-research": "skills/provenance-research/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "evidence-counterreview": "skills/evidence-counterreview/input.schema.json"
+  },
+  "outputs": {
+    "provenance-research": "skills/provenance-research/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "evidence-counterreview": "skills/evidence-counterreview/output.schema.json"
+  },
+  "required_skills": [
+    "provenance-research",
+    "requirement-traceability",
+    "evidence-counterreview"
+  ],
+  "required_methods": [
+    "methods/engineering/provenance-research.json",
+    "methods/engineering/requirement-traceability.json",
+    "methods/engineering/evidence-counterreview.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/provenance-research.json",
+    "knowledge/engineering/requirement-traceability.json",
+    "knowledge/engineering/evidence-counterreview.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "source date, coverage and rights uncertainty"
+  ],
+  "common_failure_modes": [
+    "bibliography counted as retrieved knowledge",
+    "obsolete edition used as current requirement"
+  ],
+  "counter_hypotheses": [
+    "source duplication rather than corroboration",
+    "scope mismatch rather than scientific disagreement"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "must_challenge": [
+        "source duplication rather than corroboration",
+        "scope mismatch rather than scientific disagreement"
+      ],
+      "must_account_for": "source date, coverage and rights uncertainty",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/provenance-research/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json",
+    "golden/engineering/Failure/evidence-counterreview/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/provenance-research/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json",
+    "golden/engineering/Failure/evidence-counterreview/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/provenance-research/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json",
+    "golden/engineering/Failure/evidence-counterreview/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R008",
+      "skill_id": "provenance-research",
+      "inputs": "skills/provenance-research/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "decision_contract": "R008-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "source duplication rather than corroboration",
+        "scope mismatch rather than scientific disagreement"
+      ]
+    },
+    {
+      "role_id": "R008",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "decision_contract": "R008-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "source duplication rather than corroboration",
+        "scope mismatch rather than scientific disagreement"
+      ]
+    },
+    {
+      "role_id": "R008",
+      "skill_id": "evidence-counterreview",
+      "inputs": "skills/evidence-counterreview/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "decision_contract": "R008-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "source duplication rather than corroboration",
+        "scope mismatch rather than scientific disagreement"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R008/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R008-DOMAIN-DECISION",
+    "question": "Separate source authority, standards applicability and research hypotheses before reuse",
+    "required_methods": [
+      "methods/engineering/provenance-research.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/evidence-counterreview.json"
+    ],
+    "required_skills": [
+      "provenance-research",
+      "requirement-traceability",
+      "evidence-counterreview"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R087",
+      "this_seat_owns": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "neighbor_owns": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance"
+    },
+    {
+      "neighbor_role": "R089",
+      "this_seat_owns": "Separate source authority, standards applicability and research hypotheses before reuse",
+      "neighbor_owns": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Separate source authority, standards applicability and research hypotheses before reuse",
+    "Discriminate: source duplication rather than corroboration",
+    "Discriminate: scope mismatch rather than scientific disagreement"
+  ],
+  "professional_inputs": {
+    "decision_question": "Separate source authority, standards applicability and research hypotheses before reuse",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "source date, coverage and rights uncertainty"
+    ],
+    "calculation_schemas": {
+      "provenance-research": "skills/provenance-research/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R008-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "provenance-research": "skills/provenance-research/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "evidence-counterreview": "skills/evidence-counterreview/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Separate source authority, standards applicability and research hypotheses before reuse",
+    "bibliography counted as retrieved knowledge",
+    "obsolete edition used as current requirement",
+    "source duplication rather than corroboration",
+    "scope mismatch rather than scientific disagreement",
+    "source date, coverage and rights uncertainty"
+  ]
+}

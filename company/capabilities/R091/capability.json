@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R091",
+    "name": "Test Automation Engineer",
+    "group": "Engineering Ops"
+  },
+  "mission": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+  "domain": "Engineering Ops",
+  "scope": [
+    "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+    "Investigate and bound: retry hides persistent failure",
+    "Investigate and bound: test process alive mistaken for passed test"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R092 owns: Plan safe instrument sequences with verified limits, acquisition provenance and explicit IO authority",
+    "Neighbor R093 owns: Set factory EOL decision limits from process capability, gage variation and false-reject cost"
+  ],
+  "inputs": {
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "experiment-optimization": "skills/experiment-optimization/input.schema.json"
+  },
+  "outputs": {
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "experiment-optimization": "skills/experiment-optimization/output.schema.json"
+  },
+  "required_skills": [
+    "engineering-requirements",
+    "experiment-optimization"
+  ],
+  "required_methods": [
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/experiment-optimization.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/experiment-optimization.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "timing determinism and environment provenance"
+  ],
+  "common_failure_modes": [
+    "retry hides persistent failure",
+    "test process alive mistaken for passed test"
+  ],
+  "counter_hypotheses": [
+    "fixture state leakage rather than product regression",
+    "race condition rather than intermittent hardware"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+      "must_challenge": [
+        "fixture state leakage rather than product regression",
+        "race condition rather than intermittent hardware"
+      ],
+      "must_account_for": "timing determinism and environment provenance",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/experiment-optimization/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/experiment-optimization/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/experiment-optimization/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R091",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+      "decision_contract": "R091-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture state leakage rather than product regression",
+        "race condition rather than intermittent hardware"
+      ]
+    },
+    {
+      "role_id": "R091",
+      "skill_id": "experiment-optimization",
+      "inputs": "skills/experiment-optimization/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+      "decision_contract": "R091-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture state leakage rather than product regression",
+        "race condition rather than intermittent hardware"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R091/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R091-DOMAIN-DECISION",
+    "question": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+    "required_methods": [
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/experiment-optimization.json"
+    ],
+    "required_skills": [
+      "engineering-requirements",
+      "experiment-optimization"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R092",
+      "this_seat_owns": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+      "neighbor_owns": "Plan safe instrument sequences with verified limits, acquisition provenance and explicit IO authority"
+    },
+    {
+      "neighbor_role": "R093",
+      "this_seat_owns": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+      "neighbor_owns": "Set factory EOL decision limits from process capability, gage variation and false-reject cost"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+    "Discriminate: fixture state leakage rather than product regression",
+    "Discriminate: race condition rather than intermittent hardware"
+  ],
+  "professional_inputs": {
+    "decision_question": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "timing determinism and environment provenance"
+    ],
+    "calculation_schemas": {
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "experiment-optimization": "skills/experiment-optimization/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R091-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "experiment-optimization": "skills/experiment-optimization/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
+    "retry hides persistent failure",
+    "test process alive mistaken for passed test",
+    "fixture state leakage rather than product regression",
+    "race condition rather than intermittent hardware",
+    "timing determinism and environment provenance"
+  ]
+}

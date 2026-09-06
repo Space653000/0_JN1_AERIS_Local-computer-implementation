@@ -1,0 +1,7 @@
+{
+  "method_id": "speaker-filter-realization-domain-review", "version": "1.0.0", "role": "R005", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_filter_realization_review:review", "applicability": "Independent biquad stability, quantization, crossover, headroom and group-delay assertion review",
+  "equations": {"poles": "independent quadratic roots", "peak": "input peak times declared section peaks"},
+  "assumptions": ["Same declared coefficient contract", "Consistency does not verify DSP runtime"],
+  "excluded": ["full-band fixed-point behavior", "audibility and calibrated response", "physical playback and Human acceptance"], "golden_tests": "golden/roles/R005/speaker-filter-realization.json"
+}

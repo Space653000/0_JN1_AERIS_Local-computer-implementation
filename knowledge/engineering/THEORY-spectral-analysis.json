@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-spectral-analysis",
+  "category": "Theory",
+  "title": "THEORY-spectral-analysis",
+  "text": "Coherent bin-64 sinusoid has unit peak amplitude and 1/sqrt(2) RMS.",
+  "source": "methods/engineering/spectral-analysis.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "8a61c92515a75305a4898e4273787decc09abf694a0ffc7b5887a49871e536b7",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

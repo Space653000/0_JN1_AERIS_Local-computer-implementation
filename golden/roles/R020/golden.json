@@ -1,0 +1,92 @@
+{
+  "suite_id": "R020-SPEAKER-TONAL-REVIEW-V1",
+  "role_id": "R020",
+  "skill_id": "speaker-tonal-context-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored independent reconstruction oracle for the R018 four-band absolute tonal fixture. Candidate constants are analytically authored and are not loaded from executor evidence.",
+  "scope": "Independent sampled tonal, uncertainty, notch, level-match and headroom assertion consistency",
+  "base_input": {
+    "parameters": {
+      "model": "SUPPLIED_SAMPLED_TONAL_EQ",
+      "frequency_hz": [100, 500, 1000, 5000],
+      "measured_level_db": [78, 80, 82, 79],
+      "target_level_db": [80, 80, 80, 80],
+      "spatial_spread_db": [1, 1, 1, 1],
+      "level_uncertainty_db": 0.5,
+      "maximum_boost_db": 3.5,
+      "maximum_cut_db": 4.0,
+      "available_headroom_db": 4.0,
+      "headroom_reserve_db": 0.5,
+      "smoothing_octaves": 0.16666666666666666,
+      "maximum_smoothing_octaves": 0.3333333333333333,
+      "unresolved_peak_db": 2.0,
+      "maximum_unresolved_peak_db": 3.0,
+      "room_notch_depth_db": 4.0,
+      "maximum_boostable_notch_depth_db": 6.0,
+      "loudness_match_error_db": 0.2,
+      "maximum_loudness_match_error_db": 0.5,
+      "normalization_mode": "ABSOLUTE_LEVEL_MATCHED"
+    },
+    "candidate": {
+      "proposed_correction_db": [2, 0, -2, 1],
+      "boost_upper_db": 3.5,
+      "cut_upper_db": 3.5,
+      "required_headroom_db": 4.0,
+      "checks": [
+        {"id": "SMOOTHING_RESOLUTION", "actual": 0.16666666666666666, "limit": 0.3333333333333333, "passed": true, "on_failure": "REDUCE_SMOOTHING_AND_RECHECK_NARROW_RESONANCES"},
+        {"id": "UNRESOLVED_RESONANCE", "actual": 2.0, "limit": 3.0, "passed": true, "on_failure": "RESOLVE_NARROW_RESONANCE_BEFORE_TONAL_EQ"},
+        {"id": "BOOST_BOUND", "actual": 3.5, "limit": 3.5, "passed": true, "on_failure": "REDUCE_BOOST_OR_REVISE_TRANSDUCER_AND_ACOUSTIC_RESPONSE"},
+        {"id": "CUT_BOUND", "actual": 3.5, "limit": 4.0, "passed": true, "on_failure": "REVISE_TARGET_OR_FILTER_ALLOCATION"},
+        {"id": "HEADROOM", "actual": 4.0, "limit": 4.0, "passed": true, "on_failure": "RESERVE_SIGNAL_HEADROOM_BEFORE_APPLYING_EQ"},
+        {"id": "ROOM_NOTCH_POLICY", "actual": 4.0, "limit": 6.0, "passed": true, "on_failure": "DO_NOT_BOOST_DEEP_ROOM_CANCELLATION"},
+        {"id": "LOUDNESS_MATCH", "actual": 0.2, "limit": 0.5, "passed": true, "on_failure": "LEVEL_MATCH_BEFORE_PERCEPTUAL_COMPARISON"}
+      ],
+      "required_revisions": [],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "deep_notch_boost_authorized": false,
+      "listening_preference_verified": false,
+      "physical_measurement_verified": false,
+      "counter_hypotheses": ["Room cancellation rather than driver deficit", "Measurement window or smoothing rather than tonal imbalance", "Level mismatch rather than listener preference"],
+      "next_discriminating_experiment": "REPEAT_SPATIALLY_AVERAGED_LEVEL_MATCHED_RESPONSE_WITH_FINE_SMOOTHING_AND_BYPASS_COMPARISON",
+      "model_assumptions": ["Corrections are pointwise supplied-target differences, not designed filter coefficients", "Spatial spread and level uncertainty are conservatively added in dB for screening", "Headroom requirement includes the declared reserve", "No interpolation, audibility model or listener preference inference"],
+      "unresolved": ["Realizable filter response, phase, latency and clipping", "Room/fixture versus transducer causal attribution", "Listening validation, calibrated measurement and qualified Human acceptance"]
+    },
+    "context": {"product": "Level-matched speaker tonal baseline", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {
+      "id": "TONAL-REVIEW-INDEPENDENT", "kind": "positive",
+      "question": "Can the reviewer independently reconstruct all bounded tonal assertions while withholding preference and Human approval?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0},
+        {"path": "human_approval", "expected": false, "absolute_tolerance": 0},
+        {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "TONAL-REVIEW-NUMERIC-TAIL", "kind": "boundary",
+      "question": "Is a representation-scale numeric tail tolerated without changing the engineering decision?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.required_headroom_db", "value": 4.000000000001}],
+      "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "TONAL-REVIEW-HIDDEN-HEADROOM", "kind": "counter_hypothesis",
+      "question": "Does the reviewer reject a candidate that hides spatial and reserve headroom behind a smaller claim?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.required_headroom_db", "value": 1.0}],
+      "checks": [
+        {"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0},
+        {"path": "disagreements.0.field", "expected": "required_headroom_db", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "TONAL-REVIEW-R4-REJECTED", "kind": "negative",
+      "question": "Must R4 require authority outside this bounded automated review?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "context.risk", "value": "R4"}],
+      "expected_error": "ValueError"
+    }
+  ]
+}

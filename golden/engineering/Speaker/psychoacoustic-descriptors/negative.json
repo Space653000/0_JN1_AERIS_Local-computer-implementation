@@ -1,0 +1,14 @@
+{
+  "input": {
+    "frequency_hz": [
+      1000,
+      3000
+    ],
+    "power": [
+      -1,
+      1
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "dc84c617acc3b388c16fcabe57dcaf310da92c82c8d21d7a79efdaa7c4838372"
+}

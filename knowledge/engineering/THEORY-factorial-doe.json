@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-factorial-doe",
+  "category": "Theory",
+  "title": "THEORY-factorial-doe",
+  "text": "Single-factor effect equals high minus low response.",
+  "source": "methods/engineering/factorial-doe.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "56ced5c3a8c4b9a82dbc05d801b4a2b31459e389212f654b0f01ca467f064ef6",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

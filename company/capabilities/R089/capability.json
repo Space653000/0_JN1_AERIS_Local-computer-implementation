@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R089",
+    "name": "International Standards & Regulation Engineer",
+    "group": "Engineering Ops"
+  },
+  "mission": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+  "domain": "Engineering Ops",
+  "scope": [
+    "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+    "Investigate and bound: superseded edition treated as current",
+    "Investigate and bound: informative guidance treated as normative obligation"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R090 owns: Build OEM/customer certification traceability without implying ungranted customer approval",
+    "Neighbor R097 owns: Maintain requirement-test-evidence and configuration links across revisions"
+  ],
+  "inputs": {
+    "provenance-research": "skills/provenance-research/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "standards-metadata-applicability-baseline": "skills/standards-metadata-applicability-baseline/input.schema.json"
+  },
+  "outputs": {
+    "provenance-research": "skills/provenance-research/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "standards-metadata-applicability-baseline": "skills/standards-metadata-applicability-baseline/output.schema.json"
+  },
+  "required_skills": [
+    "provenance-research",
+    "requirement-traceability",
+    "standards-metadata-applicability-baseline"
+  ],
+  "required_methods": [
+    "methods/engineering/provenance-research.json",
+    "methods/engineering/requirement-traceability.json",
+    "methods/roles/standards-metadata-applicability-baseline.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/provenance-research.json",
+    "knowledge/engineering/requirement-traceability.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "edition status, adoption date and source verification age"
+  ],
+  "common_failure_modes": [
+    "superseded edition treated as current",
+    "informative guidance treated as normative obligation"
+  ],
+  "counter_hypotheses": [
+    "regional adoption difference rather than conflicting standard",
+    "scope exclusion rather than noncompliance"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+      "must_challenge": [
+        "regional adoption difference rather than conflicting standard",
+        "scope exclusion rather than noncompliance"
+      ],
+      "must_account_for": "edition status, adoption date and source verification age",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/provenance-research/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/provenance-research/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/provenance-research/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R089",
+      "skill_id": "provenance-research",
+      "inputs": "skills/provenance-research/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+      "decision_contract": "R089-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "regional adoption difference rather than conflicting standard",
+        "scope exclusion rather than noncompliance"
+      ]
+    },
+    {
+      "role_id": "R089",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+      "decision_contract": "R089-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "regional adoption difference rather than conflicting standard",
+        "scope exclusion rather than noncompliance"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R089/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R089-DOMAIN-DECISION",
+    "question": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+    "required_methods": [
+      "methods/engineering/provenance-research.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/roles/standards-metadata-applicability-baseline.json"
+    ],
+    "required_skills": [
+      "provenance-research",
+      "requirement-traceability",
+      "standards-metadata-applicability-baseline"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R090",
+      "this_seat_owns": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+      "neighbor_owns": "Build OEM/customer certification traceability without implying ungranted customer approval"
+    },
+    {
+      "neighbor_role": "R097",
+      "this_seat_owns": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+      "neighbor_owns": "Maintain requirement-test-evidence and configuration links across revisions"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "standards-metadata-applicability-baseline",
+      "method": "methods/roles/standards-metadata-applicability-baseline.json",
+      "suite": "golden/roles/R089/golden.json",
+      "scope": "Supplied standards metadata applicability/access/requirement-change reasoning; no authoritative current-edition or conformance verification."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+    "Discriminate: regional adoption difference rather than conflicting standard",
+    "Discriminate: scope exclusion rather than noncompliance"
+  ],
+  "professional_inputs": {
+    "decision_question": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "edition status, adoption date and source verification age"
+    ],
+    "calculation_schemas": {
+      "provenance-research": "skills/provenance-research/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "standards-metadata-applicability-baseline": "skills/standards-metadata-applicability-baseline/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R089-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "provenance-research": "skills/provenance-research/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "standards-metadata-applicability-baseline": "skills/standards-metadata-applicability-baseline/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+    "superseded edition treated as current",
+    "informative guidance treated as normative obligation",
+    "regional adoption difference rather than conflicting standard",
+    "scope exclusion rather than noncompliance",
+    "edition status, adoption date and source verification age"
+  ]
+}

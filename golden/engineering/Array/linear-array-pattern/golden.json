@@ -1,0 +1,46 @@
+{
+  "id": "linear-array-pattern-analytic-v1",
+  "skill_id": "linear-array-pattern",
+  "suite": "Array",
+  "input": {
+    "positions_m": [
+      0,
+      0.02,
+      0.04,
+      0.06
+    ],
+    "frequency_hz": 1000,
+    "sound_speed_m_s": 343,
+    "steering_deg": 0
+  },
+  "checks": [
+    {
+      "path": "normalized_power.180",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "alias_free_spacing",
+      "expected": true,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "positions_m": [
+      0,
+      0,
+      0.04,
+      0.06
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Broadside in-phase sensors have normalized unit power.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "2785dd9a4533c10b9d2611c57e70277d422443a7a8615ca0071f1cc4f0ed91c8"
+}

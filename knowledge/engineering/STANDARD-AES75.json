@@ -1,0 +1,11 @@
+{
+  "id": "STANDARD-AES75",
+  "category": "Standards metadata",
+  "title": "STANDARD-AES75",
+  "text": "{\"standard_id\": \"AES75\", \"title\": \"AES standard related to loudspeaker maximum linear sound levels\", \"keywords\": [\"speaker\", \"maximum level\", \"linearity\"], \"edition\": null, \"status\": \"UNKNOWN_UNTIL_LIVE_VERIFIED\", \"verification_state\": \"NEEDS_LIVE_VERIFICATION\", \"verified_at_utc\": null, \"source_url\": null, \"note\": \"Registry intentionally avoids asserting edition from stale memory.\"}",
+  "source": "standards/registry.v1.json",
+  "rights": "PUBLIC_METADATA",
+  "sha256": "45c61b3613ffa2dd7cabdb2779ab6d615803de5fe5dcb46fc2ebf697f81b0f74",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

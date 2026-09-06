@@ -1,0 +1,36 @@
+{
+  "input": {
+    "hypotheses": [
+      {
+        "id": "H1",
+        "support_refs": [
+          "E1"
+        ],
+        "refute_refs": [
+          "E2"
+        ],
+        "alternative_cause": "fixture leak",
+        "discriminating_test": "repeat with sealed fixture"
+      }
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "hypotheses.0.refutation_count",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "hypotheses.0.root_cause_verified",
+      "expected": false,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "37cf113a73871ed03b32b8c3331c120ec8734f8065571179c223e4f43f0f6e84"
+}

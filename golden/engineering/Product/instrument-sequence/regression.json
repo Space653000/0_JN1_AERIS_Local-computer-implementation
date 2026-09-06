@@ -1,0 +1,28 @@
+{
+  "input": {
+    "sample_rate_hz": 48000,
+    "duration_s": 1,
+    "requested_rms_v": 0.1,
+    "safe_rms_limit_v": 0.2,
+    "mode": "SYNTHETIC_DRY_RUN"
+  },
+  "expected_checks": [
+    {
+      "path": "sample_count",
+      "expected": 48000,
+      "absolute_tolerance": 1e-08,
+      "unit": "samples",
+      "reduction": null
+    },
+    {
+      "path": "physical_io_performed",
+      "expected": false,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "4ee40a48fe15b740bee03d876ee2124ef3c666eb3f842afdd0f39216c9903c6a"
+}

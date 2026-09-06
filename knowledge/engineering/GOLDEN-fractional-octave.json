@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-fractional-octave",
+  "category": "Golden cases",
+  "title": "GOLDEN-fractional-octave",
+  "text": "[{\"path\": \"band_power_unit2\", \"expected\": 0.5, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": \"sum\"}]",
+  "source": "golden/engineering/DSP/fractional-octave/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "0f7e5b6f16b7f4de29248e403c7fc092107db337e81c2ceebbccfab64dc46dc6",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

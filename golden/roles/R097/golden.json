@@ -1,0 +1,515 @@
+{
+  "suite_id": "R097-REQUIREMENT-ASSOCIATION-V1",
+  "role_id": "R097",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored fixed requirement/test associations and 80 +/- 1 exact interval with independent denominator and contradiction assertions. Candidate values are hand-authored, not copied from executor output.",
+  "scope": "Supplied requirement/result content and interval identity; no physical/source authenticity acceptance",
+  "skill_id": "requirement-association-baseline",
+  "base_input": {
+    "configuration": {
+      "product": "SYNTHETIC_SPEAKER",
+      "revision": "A"
+    },
+    "requirements": [
+      {
+        "id": "FR",
+        "revision": "1",
+        "measurand": "on_axis_level",
+        "unit": "dB",
+        "reference": "20uPa_1m_1Vrms",
+        "lower": 78,
+        "upper": 82,
+        "combination": "ALL",
+        "required_tests": [
+          {
+            "id": "T-LOW",
+            "revision": "1"
+          },
+          {
+            "id": "T-HIGH",
+            "revision": "1"
+          }
+        ]
+      }
+    ],
+    "tests": [
+      {
+        "id": "T-LOW",
+        "revision": "1",
+        "measurand": "on_axis_level",
+        "unit": "dB",
+        "reference": "20uPa_1m_1Vrms"
+      },
+      {
+        "id": "T-HIGH",
+        "revision": "1",
+        "measurand": "on_axis_level",
+        "unit": "dB",
+        "reference": "20uPa_1m_1Vrms"
+      }
+    ],
+    "results": [
+      {
+        "id": "RESULT-T-LOW",
+        "payload": {
+          "test_id": "T-LOW",
+          "test_revision": "1",
+          "configuration": {
+            "product": "SYNTHETIC_SPEAKER",
+            "revision": "A"
+          },
+          "measurand": "on_axis_level",
+          "unit": "dB",
+          "reference": "20uPa_1m_1Vrms",
+          "observed": 80,
+          "uncertainty": 1,
+          "source_record_id": "SYN-T-LOW",
+          "source_kind": "SYNTHETIC",
+          "status": "COMPLETE"
+        },
+        "sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+      },
+      {
+        "id": "RESULT-T-HIGH",
+        "payload": {
+          "test_id": "T-HIGH",
+          "test_revision": "1",
+          "configuration": {
+            "product": "SYNTHETIC_SPEAKER",
+            "revision": "A"
+          },
+          "measurand": "on_axis_level",
+          "unit": "dB",
+          "reference": "20uPa_1m_1Vrms",
+          "observed": 80,
+          "uncertainty": 1,
+          "source_record_id": "SYN-T-HIGH",
+          "source_kind": "SYNTHETIC",
+          "status": "COMPLETE"
+        },
+        "sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+      }
+    ],
+    "links": [
+      {
+        "requirement_id": "FR",
+        "requirement_revision": "1",
+        "test_id": "T-LOW",
+        "test_revision": "1",
+        "result_id": "RESULT-T-LOW",
+        "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+      },
+      {
+        "requirement_id": "FR",
+        "requirement_revision": "1",
+        "test_id": "T-HIGH",
+        "test_revision": "1",
+        "result_id": "RESULT-T-HIGH",
+        "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "TRACE-COMPLETE",
+      "kind": "positive",
+      "question": "Do two explicitly required test associations satisfy the supplied interval policy without real evidence?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "required_associations",
+          "expected": 2,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "bounded_associations",
+          "expected": 2,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "real_evidence_count",
+          "expected": 0,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-MISSING-ASSOCIATION",
+      "kind": "counter_hypothesis",
+      "question": "Does one of two expected links remain incomplete even when the linked test passes?",
+      "input_overrides": {
+        "links": [
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-LOW",
+            "test_revision": "1",
+            "result_id": "RESULT-T-LOW",
+            "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "complete_requirements",
+          "expected": 0,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "required_associations",
+          "expected": 2,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "linked_associations",
+          "expected": 1,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-ALL-MISSING",
+      "kind": "counter_hypothesis",
+      "question": "Can zero supplied links erase the expected denominator?",
+      "input_overrides": {
+        "links": []
+      },
+      "checks": [
+        {
+          "path": "required_associations",
+          "expected": 2,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "linked_associations",
+          "expected": 0,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-EXACT-BOUNDARY",
+      "kind": "boundary",
+      "question": "Is the complete supplied 80 +/- 1 interval inclusive inside 79..81?",
+      "input_overrides": {
+        "requirements": [
+          {
+            "id": "FR",
+            "revision": "1",
+            "measurand": "on_axis_level",
+            "unit": "dB",
+            "reference": "20uPa_1m_1Vrms",
+            "lower": 79,
+            "upper": 81,
+            "combination": "ALL",
+            "required_tests": [
+              {
+                "id": "T-LOW",
+                "revision": "1"
+              },
+              {
+                "id": "T-HIGH",
+                "revision": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REAL-EXCESS",
+      "kind": "boundary",
+      "question": "Does a 0.001 exceedance remain rejected?",
+      "input_overrides": {
+        "requirements": [
+          {
+            "id": "FR",
+            "revision": "1",
+            "measurand": "on_axis_level",
+            "unit": "dB",
+            "reference": "20uPa_1m_1Vrms",
+            "lower": 78,
+            "upper": 80.999,
+            "combination": "ALL",
+            "required_tests": [
+              {
+                "id": "T-LOW",
+                "revision": "1"
+              },
+              {
+                "id": "T-HIGH",
+                "revision": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "bounded_associations",
+          "expected": 0,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-STALE-REQ",
+      "kind": "counter_hypothesis",
+      "question": "Can a current numeric result hide an outdated requirement link?",
+      "input_overrides": {
+        "links": [
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "0",
+            "test_id": "T-LOW",
+            "test_revision": "1",
+            "result_id": "RESULT-T-LOW",
+            "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+          },
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-HIGH",
+            "test_revision": "1",
+            "result_id": "RESULT-T-HIGH",
+            "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "current_associations",
+          "expected": 1,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-STALE-TEST",
+      "kind": "counter_hypothesis",
+      "question": "Does an old test revision invalidate one association?",
+      "input_overrides": {
+        "links": [
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-LOW",
+            "test_revision": "0",
+            "result_id": "RESULT-T-LOW",
+            "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+          },
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-HIGH",
+            "test_revision": "1",
+            "result_id": "RESULT-T-HIGH",
+            "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "current_associations",
+          "expected": 1,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-WRONG-CONFIG",
+      "kind": "counter_hypothesis",
+      "question": "Can old configuration results count for a new revision?",
+      "input_overrides": {
+        "configuration": {
+          "product": "SYNTHETIC_SPEAKER",
+          "revision": "B"
+        }
+      },
+      "checks": [
+        {
+          "path": "current_associations",
+          "expected": 0,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-WRONG-REFERENCE",
+      "kind": "counter_hypothesis",
+      "question": "Does matching dB unit hide a different pressure reference?",
+      "input_overrides": {
+        "requirements": [
+          {
+            "id": "FR",
+            "revision": "1",
+            "measurand": "on_axis_level",
+            "unit": "dB",
+            "reference": "1Pa_10cm",
+            "lower": 78,
+            "upper": 82,
+            "combination": "ALL",
+            "required_tests": [
+              {
+                "id": "T-LOW",
+                "revision": "1"
+              },
+              {
+                "id": "T-HIGH",
+                "revision": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "current_associations",
+          "expected": 0,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-TAMPERED-HASH",
+      "kind": "negative",
+      "question": "Must a mutated observation with its old hash fail?",
+      "input_overrides": {
+        "results": [
+          {
+            "id": "RESULT-T-LOW",
+            "payload": {
+              "test_id": "T-LOW",
+              "test_revision": "1",
+              "configuration": {
+                "product": "SYNTHETIC_SPEAKER",
+                "revision": "A"
+              },
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms",
+              "observed": 99,
+              "uncertainty": 1,
+              "source_record_id": "SYN-T-LOW",
+              "source_kind": "SYNTHETIC",
+              "status": "COMPLETE"
+            },
+            "sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+          },
+          {
+            "id": "RESULT-T-HIGH",
+            "payload": {
+              "test_id": "T-HIGH",
+              "test_revision": "1",
+              "configuration": {
+                "product": "SYNTHETIC_SPEAKER",
+                "revision": "A"
+              },
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms",
+              "observed": 80,
+              "uncertainty": 1,
+              "source_record_id": "SYN-T-HIGH",
+              "source_kind": "SYNTHETIC",
+              "status": "COMPLETE"
+            },
+            "sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+          }
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "TRACE-EMPTY-DENOMINATOR",
+      "kind": "negative",
+      "question": "Can an empty requirement set become 100 percent?",
+      "input_overrides": {
+        "requirements": []
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "TRACE-DUPLICATE-LINK",
+      "kind": "negative",
+      "question": "Can duplicate links inflate coverage?",
+      "input_overrides": {
+        "links": [
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-LOW",
+            "test_revision": "1",
+            "result_id": "RESULT-T-LOW",
+            "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+          },
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-HIGH",
+            "test_revision": "1",
+            "result_id": "RESULT-T-HIGH",
+            "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+          },
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-LOW",
+            "test_revision": "1",
+            "result_id": "RESULT-T-LOW",
+            "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+          }
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "TRACE-DANGLING",
+      "kind": "negative",
+      "question": "Must a nonexistent result reference fail?",
+      "input_overrides": {
+        "links": [
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-LOW",
+            "test_revision": "1",
+            "result_id": "MISSING",
+            "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+          },
+          {
+            "requirement_id": "FR",
+            "requirement_revision": "1",
+            "test_id": "T-HIGH",
+            "test_revision": "1",
+            "result_id": "RESULT-T-HIGH",
+            "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+          }
+        ]
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

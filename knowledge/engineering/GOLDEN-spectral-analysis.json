@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-spectral-analysis",
+  "category": "Golden cases",
+  "title": "GOLDEN-spectral-analysis",
+  "text": "[{\"path\": \"amplitude.64\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"rms\", \"expected\": 0.7071067811865476, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/DSP/spectral-analysis/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "967311465af1db84d86192f1542c2e956239c10a6461ddfeb9b7fecd8ded25af",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

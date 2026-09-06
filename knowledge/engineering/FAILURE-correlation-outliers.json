@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-correlation-outliers",
+  "category": "Failures",
+  "title": "FAILURE-correlation-outliers",
+  "text": "{\"invalid_variant\": {\"x\": [1, 1, 1, 1, 1]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Failure/correlation-outliers/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "176de0a455c1b276146999f2e5cfa7d3f4f92d6cbee843cc79dc224fba57e5f3",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

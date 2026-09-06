@@ -1,0 +1,68 @@
+{
+  "suite_id": "R018-SPEAKER-TONAL-V1",
+  "role_id": "R018",
+  "skill_id": "speaker-tonal-eq-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored four-band absolute level-matched tonal fixture with declared spatial spread, smoothing, resonance, room-notch, boost/cut and headroom limits; no acquired response or listener result.",
+  "scope": "Supplied sampled tonal correction and bounded headroom decision only",
+  "base_input": {
+    "model": "SUPPLIED_SAMPLED_TONAL_EQ",
+    "frequency_hz": [100, 500, 1000, 5000],
+    "measured_level_db": [78, 80, 82, 79],
+    "target_level_db": [80, 80, 80, 80],
+    "spatial_spread_db": [1, 1, 1, 1],
+    "level_uncertainty_db": 0.5,
+    "maximum_boost_db": 3.5,
+    "maximum_cut_db": 4.0,
+    "available_headroom_db": 4.0,
+    "headroom_reserve_db": 0.5,
+    "smoothing_octaves": 0.16666666666666666,
+    "maximum_smoothing_octaves": 0.3333333333333333,
+    "unresolved_peak_db": 2.0,
+    "maximum_unresolved_peak_db": 3.0,
+    "room_notch_depth_db": 4.0,
+    "maximum_boostable_notch_depth_db": 6.0,
+    "loudness_match_error_db": 0.2,
+    "maximum_loudness_match_error_db": 0.5,
+    "normalization_mode": "ABSOLUTE_LEVEL_MATCHED"
+  },
+  "cases": [
+    {
+      "id": "TONAL-ABSOLUTE-CORRECTION", "kind": "positive",
+      "question": "Does the role preserve absolute level matching while deriving the declared pointwise tonal correction?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "proposed_correction_db", "expected": [2, 0, -2, 1], "absolute_tolerance": 1e-12},
+        {"path": "required_headroom_db", "expected": 4.0, "absolute_tolerance": 1e-12},
+        {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+        {"path": "listening_preference_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "TONAL-INCLUSIVE-HEADROOM", "kind": "boundary",
+      "question": "Are exact boost and available-headroom limits accepted without inventing extra margin?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "checks.2.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "checks.4.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "boost_upper_db", "expected": 3.5, "absolute_tolerance": 1e-12}
+      ]
+    },
+    {
+      "id": "TONAL-DEEP-ROOM-NOTCH", "kind": "counter_hypothesis",
+      "question": "Does a deep room cancellation prohibit boost rather than being misattributed to driver deficit?",
+      "input_overrides": {"room_notch_depth_db": 8.0},
+      "checks": [
+        {"path": "checks.5.passed", "expected": false, "absolute_tolerance": 0},
+        {"path": "required_revisions.0", "expected": "DO_NOT_BOOST_DEEP_ROOM_CANCELLATION", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "TONAL-PEAK-NORMALIZATION-REJECTED", "kind": "negative",
+      "question": "Is peak-normalized data rejected because it can conceal absolute level and headroom loss?",
+      "input_overrides": {"normalization_mode": "PEAK_NORMALIZED"},
+      "expected_error": "ValueError"
+    }
+  ]
+}

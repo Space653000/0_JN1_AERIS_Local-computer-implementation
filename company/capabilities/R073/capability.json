@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R073",
+    "name": "Vibration / NVH",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+    "Investigate and bound: integration drift dominates displacement",
+    "Investigate and bound: coherence interpreted as causation"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R022 owns: Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation",
+    "Neighbor R041 owns: Separate wind, room and structure paths in microphone disturbance models"
+  ],
+  "inputs": {
+    "nvh-integration": "skills/nvh-integration/input.schema.json",
+    "resonance-characterization": "skills/resonance-characterization/input.schema.json",
+    "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/input.schema.json",
+    "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "nvh-integration": "skills/nvh-integration/output.schema.json",
+    "resonance-characterization": "skills/resonance-characterization/output.schema.json",
+    "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/output.schema.json",
+    "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "nvh-integration",
+    "resonance-characterization",
+    "structural-acoustic-path-domain-review",
+    "laptop-fan-hinge-coupling-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/nvh-integration.json",
+    "methods/engineering/resonance-characterization.json",
+    "methods/roles/structural-acoustic-path-domain-review.json",
+    "methods/roles/laptop-fan-hinge-coupling-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/nvh-integration.json",
+    "knowledge/engineering/resonance-characterization.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "sensor mounting and transfer-path identifiability"
+  ],
+  "common_failure_modes": [
+    "integration drift dominates displacement",
+    "coherence interpreted as causation"
+  ],
+  "counter_hypotheses": [
+    "mount stiffness rather than source amplitude",
+    "electrical pickup rather than mechanical vibration"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+      "must_challenge": [
+        "mount stiffness rather than source amplitude",
+        "electrical pickup rather than mechanical vibration"
+      ],
+      "must_account_for": "sensor mounting and transfer-path identifiability",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Speaker/nvh-integration/golden.json",
+    "golden/engineering/Speaker/resonance-characterization/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Speaker/nvh-integration/negative.json",
+    "golden/engineering/Speaker/resonance-characterization/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Speaker/nvh-integration/regression.json",
+    "golden/engineering/Speaker/resonance-characterization/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R073",
+      "skill_id": "nvh-integration",
+      "inputs": "skills/nvh-integration/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+      "decision_contract": "R073-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount stiffness rather than source amplitude",
+        "electrical pickup rather than mechanical vibration"
+      ]
+    },
+    {
+      "role_id": "R073",
+      "skill_id": "resonance-characterization",
+      "inputs": "skills/resonance-characterization/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+      "decision_contract": "R073-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "mount stiffness rather than source amplitude",
+        "electrical pickup rather than mechanical vibration"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R073/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R073-DOMAIN-DECISION",
+    "question": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+    "required_methods": [
+      "methods/engineering/nvh-integration.json",
+      "methods/engineering/resonance-characterization.json",
+      "methods/roles/structural-acoustic-path-domain-review.json",
+      "methods/roles/laptop-fan-hinge-coupling-domain-review.json"
+    ],
+    "required_skills": [
+      "nvh-integration",
+      "resonance-characterization",
+      "structural-acoustic-path-domain-review",
+      "laptop-fan-hinge-coupling-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R022",
+      "this_seat_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+      "neighbor_owns": "Separate structural vibration and acoustic radiation mechanisms before BEM/vibro-acoustic escalation"
+    },
+    {
+      "neighbor_role": "R041",
+      "this_seat_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+      "neighbor_owns": "Separate wind, room and structure paths in microphone disturbance models"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "structural-acoustic-path-domain-review",
+      "method": "methods/roles/structural-acoustic-path-domain-review.json",
+      "suite": "golden/roles/R073/golden.json",
+      "scope": "Independent structural/acoustic transfer, SNR and coherence assertion review; no causality, calibrated sensor or physical path acceptance."
+    },
+    {
+      "skill_id": "laptop-fan-hinge-coupling-domain-review",
+      "method": "methods/roles/laptop-fan-hinge-coupling-domain-review.json",
+      "suite": "golden/roles/R073/laptop.json",
+      "scope": "Independent laptop fan/hinge/structural-coupling assertion review; no physical path, AEC, call-quality or Human approval."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+    "Discriminate: mount stiffness rather than source amplitude",
+    "Discriminate: electrical pickup rather than mechanical vibration"
+  ],
+  "professional_inputs": {
+    "decision_question": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "sensor mounting and transfer-path identifiability"
+    ],
+    "calculation_schemas": {
+      "nvh-integration": "skills/nvh-integration/input.schema.json",
+      "resonance-characterization": "skills/resonance-characterization/input.schema.json",
+      "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/input.schema.json",
+      "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R073-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "nvh-integration": "skills/nvh-integration/output.schema.json",
+      "resonance-characterization": "skills/resonance-characterization/output.schema.json",
+      "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/output.schema.json",
+      "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions",
+    "integration drift dominates displacement",
+    "coherence interpreted as causation",
+    "mount stiffness rather than source amplitude",
+    "electrical pickup rather than mechanical vibration",
+    "sensor mounting and transfer-path identifiability"
+  ]
+}

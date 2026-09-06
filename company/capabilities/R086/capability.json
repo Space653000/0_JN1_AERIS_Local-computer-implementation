@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R086",
+    "name": "Competitive Benchmark / Teardown",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Compare products/teardowns under matched conditions and bounded inference",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Compare products/teardowns under matched conditions and bounded inference",
+    "Investigate and bound: unmatched SPL biases benchmark",
+    "Investigate and bound: teardown appearance promoted to validated topology"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R088 owns: Test acoustic research hypotheses against reproducible sources and discriminating experiments",
+    "Neighbor R099 owns: Curate report claims, evidence hashes and knowledge provenance without domain self-approval"
+  ],
+  "inputs": {
+    "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+  },
+  "outputs": {
+    "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+  },
+  "required_skills": [
+    "correlation-outliers",
+    "engineering-requirements",
+    "repeatability-reproducibility"
+  ],
+  "required_methods": [
+    "methods/engineering/correlation-outliers.json",
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/repeatability-reproducibility.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/correlation-outliers.json",
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/repeatability-reproducibility.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "configuration parity and sampling representativeness"
+  ],
+  "common_failure_modes": [
+    "unmatched SPL biases benchmark",
+    "teardown appearance promoted to validated topology"
+  ],
+  "counter_hypotheses": [
+    "firmware mode rather than hardware difference",
+    "fixture mismatch rather than product superiority"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Compare products/teardowns under matched conditions and bounded inference",
+      "must_challenge": [
+        "firmware mode rather than hardware difference",
+        "fixture mismatch rather than product superiority"
+      ],
+      "must_account_for": "configuration parity and sampling representativeness",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Failure/correlation-outliers/golden.json",
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Failure/repeatability-reproducibility/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Failure/correlation-outliers/negative.json",
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Failure/repeatability-reproducibility/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Failure/correlation-outliers/regression.json",
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Failure/repeatability-reproducibility/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R086",
+      "skill_id": "correlation-outliers",
+      "inputs": "skills/correlation-outliers/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Compare products/teardowns under matched conditions and bounded inference",
+      "decision_contract": "R086-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "firmware mode rather than hardware difference",
+        "fixture mismatch rather than product superiority"
+      ]
+    },
+    {
+      "role_id": "R086",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Compare products/teardowns under matched conditions and bounded inference",
+      "decision_contract": "R086-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "firmware mode rather than hardware difference",
+        "fixture mismatch rather than product superiority"
+      ]
+    },
+    {
+      "role_id": "R086",
+      "skill_id": "repeatability-reproducibility",
+      "inputs": "skills/repeatability-reproducibility/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Compare products/teardowns under matched conditions and bounded inference",
+      "decision_contract": "R086-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "firmware mode rather than hardware difference",
+        "fixture mismatch rather than product superiority"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R086/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R086-DOMAIN-DECISION",
+    "question": "Compare products/teardowns under matched conditions and bounded inference",
+    "required_methods": [
+      "methods/engineering/correlation-outliers.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/repeatability-reproducibility.json"
+    ],
+    "required_skills": [
+      "correlation-outliers",
+      "engineering-requirements",
+      "repeatability-reproducibility"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R088",
+      "this_seat_owns": "Compare products/teardowns under matched conditions and bounded inference",
+      "neighbor_owns": "Test acoustic research hypotheses against reproducible sources and discriminating experiments"
+    },
+    {
+      "neighbor_role": "R099",
+      "this_seat_owns": "Compare products/teardowns under matched conditions and bounded inference",
+      "neighbor_owns": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Compare products/teardowns under matched conditions and bounded inference",
+    "Discriminate: firmware mode rather than hardware difference",
+    "Discriminate: fixture mismatch rather than product superiority"
+  ],
+  "professional_inputs": {
+    "decision_question": "Compare products/teardowns under matched conditions and bounded inference",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "configuration parity and sampling representativeness"
+    ],
+    "calculation_schemas": {
+      "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R086-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Compare products/teardowns under matched conditions and bounded inference",
+    "unmatched SPL biases benchmark",
+    "teardown appearance promoted to validated topology",
+    "firmware mode rather than hardware difference",
+    "fixture mismatch rather than product superiority",
+    "configuration parity and sampling representativeness"
+  ]
+}

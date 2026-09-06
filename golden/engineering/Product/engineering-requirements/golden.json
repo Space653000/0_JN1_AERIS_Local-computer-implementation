@@ -1,0 +1,54 @@
+{
+  "id": "engineering-requirements-analytic-v1",
+  "skill_id": "engineering-requirements",
+  "suite": "Product",
+  "input": {
+    "requirements": [
+      {
+        "id": "FR1",
+        "minimum": -3,
+        "maximum": 3,
+        "unit": "dB"
+      }
+    ],
+    "observations": [
+      {
+        "requirement_id": "FR1",
+        "value": 1,
+        "unit": "dB",
+        "evidence_ref": "synthetic-case"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "path": "coverage",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "checks.0.margin_to_nearest_limit",
+      "expected": 2,
+      "absolute_tolerance": 1e-08,
+      "unit": "dB",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "observations": [
+      {
+        "requirement_id": "FR1",
+        "value": 1,
+        "unit": "Pa"
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "a8f4e8db69df2c1e4e66788d7b36e0ffe7fe6fca9552967df58952a5a4dd41e5"
+}

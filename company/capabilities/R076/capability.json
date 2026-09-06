@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R076",
+    "name": "EMC / EMI / Ground Noise",
+    "group": "Distinguished Experts"
+  },
+  "mission": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+  "domain": "Distinguished Experts",
+  "scope": [
+    "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+    "Investigate and bound: hum removed digitally without isolating ground cause",
+    "Investigate and bound: aliased clock spur called acoustic tone"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R012 owns: Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets",
+    "Neighbor R031 owns: Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution"
+  ],
+  "inputs": {
+    "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+    "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+    "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+    "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+    "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+    "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+    "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "circuit-noise-budget",
+    "spectral-analysis",
+    "transfer-coherence",
+    "monitor-aio-usb-desk-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/circuit-noise-budget.json",
+    "methods/engineering/spectral-analysis.json",
+    "methods/engineering/transfer-coherence.json",
+    "methods/roles/monitor-aio-usb-desk-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/circuit-noise-budget.json",
+    "knowledge/engineering/spectral-analysis.json",
+    "knowledge/engineering/transfer-coherence.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "coupling topology and spectral resolution"
+  ],
+  "common_failure_modes": [
+    "hum removed digitally without isolating ground cause",
+    "aliased clock spur called acoustic tone"
+  ],
+  "counter_hypotheses": [
+    "ground loop rather than component self-noise",
+    "PDM leakage rather than environmental signal"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+      "must_challenge": [
+        "ground loop rather than component self-noise",
+        "PDM leakage rather than environmental signal"
+      ],
+      "must_account_for": "coupling topology and spectral resolution",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/circuit-noise-budget/golden.json",
+    "golden/engineering/DSP/spectral-analysis/golden.json",
+    "golden/engineering/DSP/transfer-coherence/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/circuit-noise-budget/negative.json",
+    "golden/engineering/DSP/spectral-analysis/negative.json",
+    "golden/engineering/DSP/transfer-coherence/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/circuit-noise-budget/regression.json",
+    "golden/engineering/DSP/spectral-analysis/regression.json",
+    "golden/engineering/DSP/transfer-coherence/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R076",
+      "skill_id": "circuit-noise-budget",
+      "inputs": "skills/circuit-noise-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+      "decision_contract": "R076-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "ground loop rather than component self-noise",
+        "PDM leakage rather than environmental signal"
+      ]
+    },
+    {
+      "role_id": "R076",
+      "skill_id": "spectral-analysis",
+      "inputs": "skills/spectral-analysis/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+      "decision_contract": "R076-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "ground loop rather than component self-noise",
+        "PDM leakage rather than environmental signal"
+      ]
+    },
+    {
+      "role_id": "R076",
+      "skill_id": "transfer-coherence",
+      "inputs": "skills/transfer-coherence/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+      "decision_contract": "R076-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "ground loop rather than component self-noise",
+        "PDM leakage rather than environmental signal"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R076/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R076-DOMAIN-DECISION",
+    "question": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+    "required_methods": [
+      "methods/engineering/circuit-noise-budget.json",
+      "methods/engineering/spectral-analysis.json",
+      "methods/engineering/transfer-coherence.json",
+      "methods/roles/monitor-aio-usb-desk-domain-review.json"
+    ],
+    "required_skills": [
+      "circuit-noise-budget",
+      "spectral-analysis",
+      "transfer-coherence",
+      "monitor-aio-usb-desk-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R012",
+      "this_seat_owns": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+      "neighbor_owns": "Choose speaker signal-chain gain and impedance architecture from output noise and headroom budgets"
+    },
+    {
+      "neighbor_role": "R031",
+      "this_seat_owns": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+      "neighbor_owns": "Allocate ADC/PDM clock and quantization noise without confusing bit depth with effective resolution"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "monitor-aio-usb-desk-domain-review",
+      "method": "methods/roles/monitor-aio-usb-desk-domain-review.json",
+      "suite": "golden/roles/R076/monitor-aio.json",
+      "scope": "Independent monitor/AIO hum, USB, desk and bezel assertion review; no physical coupling, continuity, call-quality or Human approval."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+    "Discriminate: ground loop rather than component self-noise",
+    "Discriminate: PDM leakage rather than environmental signal"
+  ],
+  "professional_inputs": {
+    "decision_question": "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "coupling topology and spectral resolution"
+    ],
+    "calculation_schemas": {
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/input.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+      "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R076-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+      "spectral-analysis": "skills/spectral-analysis/output.schema.json",
+      "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+      "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Separate EMI/ground/clock coupling signatures from acoustic signal-chain noise",
+    "hum removed digitally without isolating ground cause",
+    "aliased clock spur called acoustic tone",
+    "ground loop rather than component self-noise",
+    "PDM leakage rather than environmental signal",
+    "coupling topology and spectral resolution"
+  ]
+}

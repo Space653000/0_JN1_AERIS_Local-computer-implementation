@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-nvh-integration",
+  "category": "Theory",
+  "title": "THEORY-nvh-integration",
+  "text": "Integration of a sine divides amplitude by angular frequency.",
+  "source": "methods/engineering/nvh-integration.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "8698d6ac5e8ec6a778e076cdb9f64dd60d6af555fafc28e0cdd6363202bde84a",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

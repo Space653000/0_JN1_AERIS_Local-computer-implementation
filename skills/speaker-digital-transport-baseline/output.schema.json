@@ -1,0 +1,4 @@
+{
+  "type": "object", "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {"values": {"type": "object", "required": ["expected_bit_clock_hz", "buffer_margin_frames", "buffer_latency_ms", "checks", "disposition", "glitch_free_playback_verified"]}, "physical_measurement_verified": {"const": false}}
+}

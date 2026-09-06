@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "values": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "lower_limit": {
+      "type": "number"
+    },
+    "upper_limit": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "values",
+    "lower_limit",
+    "upper_limit"
+  ],
+  "additionalProperties": false
+}

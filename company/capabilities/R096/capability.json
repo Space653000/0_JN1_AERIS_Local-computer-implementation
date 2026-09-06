@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R096",
+    "name": "Reliability / HALT / Environmental Engineer",
+    "group": "Engineering Ops"
+  },
+  "mission": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+  "domain": "Engineering Ops",
+  "scope": [
+    "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+    "Investigate and bound: zero failures means infinite life",
+    "Investigate and bound: HALT overstress interpreted as use-condition acceleration"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R007 owns: Set NPI readiness conditions using capability, yield and reliability evidence",
+    "Neighbor R075 owns: Bound temperature rise, power compression and reliability duty-cycle tradeoffs"
+  ],
+  "inputs": {
+    "reliability-binomial": "skills/reliability-binomial/input.schema.json",
+    "thermal-rc": "skills/thermal-rc/input.schema.json"
+  },
+  "outputs": {
+    "reliability-binomial": "skills/reliability-binomial/output.schema.json",
+    "thermal-rc": "skills/thermal-rc/output.schema.json"
+  },
+  "required_skills": [
+    "reliability-binomial",
+    "thermal-rc"
+  ],
+  "required_methods": [
+    "methods/engineering/reliability-binomial.json",
+    "methods/engineering/thermal-rc.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/reliability-binomial.json",
+    "knowledge/engineering/thermal-rc.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "censoring, stress model and confidence bounds"
+  ],
+  "common_failure_modes": [
+    "zero failures means infinite life",
+    "HALT overstress interpreted as use-condition acceleration"
+  ],
+  "counter_hypotheses": [
+    "fixture overstress rather than field mechanism",
+    "different failure mode rather than same acceleration law"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+      "must_challenge": [
+        "fixture overstress rather than field mechanism",
+        "different failure mode rather than same acceleration law"
+      ],
+      "must_account_for": "censoring, stress model and confidence bounds",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Failure/reliability-binomial/golden.json",
+    "golden/engineering/Speaker/thermal-rc/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Failure/reliability-binomial/negative.json",
+    "golden/engineering/Speaker/thermal-rc/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Failure/reliability-binomial/regression.json",
+    "golden/engineering/Speaker/thermal-rc/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R096",
+      "skill_id": "reliability-binomial",
+      "inputs": "skills/reliability-binomial/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+      "decision_contract": "R096-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture overstress rather than field mechanism",
+        "different failure mode rather than same acceleration law"
+      ]
+    },
+    {
+      "role_id": "R096",
+      "skill_id": "thermal-rc",
+      "inputs": "skills/thermal-rc/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+      "decision_contract": "R096-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "fixture overstress rather than field mechanism",
+        "different failure mode rather than same acceleration law"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R096/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R096-DOMAIN-DECISION",
+    "question": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+    "required_methods": [
+      "methods/engineering/reliability-binomial.json",
+      "methods/engineering/thermal-rc.json"
+    ],
+    "required_skills": [
+      "reliability-binomial",
+      "thermal-rc"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R007",
+      "this_seat_owns": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+      "neighbor_owns": "Set NPI readiness conditions using capability, yield and reliability evidence"
+    },
+    {
+      "neighbor_role": "R075",
+      "this_seat_owns": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+      "neighbor_owns": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+    "Discriminate: fixture overstress rather than field mechanism",
+    "Discriminate: different failure mode rather than same acceleration law"
+  ],
+  "professional_inputs": {
+    "decision_question": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "censoring, stress model and confidence bounds"
+    ],
+    "calculation_schemas": {
+      "reliability-binomial": "skills/reliability-binomial/input.schema.json",
+      "thermal-rc": "skills/thermal-rc/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R096-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "reliability-binomial": "skills/reliability-binomial/output.schema.json",
+      "thermal-rc": "skills/thermal-rc/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
+    "zero failures means infinite life",
+    "HALT overstress interpreted as use-condition acceleration",
+    "fixture overstress rather than field mechanism",
+    "different failure mode rather than same acceleration law",
+    "censoring, stress model and confidence bounds"
+  ]
+}

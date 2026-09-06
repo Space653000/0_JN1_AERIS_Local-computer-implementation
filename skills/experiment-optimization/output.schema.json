@@ -1,0 +1,98 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "next_point": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "best_observed": {
+          "type": "object",
+          "properties": {
+            "point": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "number"
+              }
+            },
+            "loss": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "point",
+            "loss"
+          ],
+          "additionalProperties": false
+        },
+        "unexplored_count": {
+          "type": "number"
+        },
+        "policy": {
+          "type": "string"
+        },
+        "hardware_action_performed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "next_point",
+        "best_observed",
+        "unexplored_count",
+        "policy",
+        "hardware_action_performed"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

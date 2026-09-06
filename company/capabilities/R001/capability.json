@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R001",
+    "name": "Chief Acoustic Architect",
+    "group": "Chief Council"
+  },
+  "mission": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+  "domain": "Chief Council",
+  "scope": [
+    "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+    "Investigate and bound: incompatible SPL and battery targets",
+    "Investigate and bound: unowned interface budget"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R004 owns: Resolve product-level playback/capture interfaces and end-to-end audio latency budgets",
+    "Neighbor R006 owns: Decide whether verification margins survive measurement uncertainty and reviewer objections"
+  ],
+  "inputs": {
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+  },
+  "outputs": {
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+  },
+  "required_skills": [
+    "engineering-requirements",
+    "requirement-traceability",
+    "dfmea-ranking"
+  ],
+  "required_methods": [
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/requirement-traceability.json",
+    "methods/engineering/dfmea-ranking.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/requirement-traceability.json",
+    "knowledge/engineering/dfmea-ranking.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "allocation margins and unresolved stakeholder constraints"
+  ],
+  "common_failure_modes": [
+    "incompatible SPL and battery targets",
+    "unowned interface budget"
+  ],
+  "counter_hypotheses": [
+    "requirement inconsistency rather than transducer deficit",
+    "missing usage scenario rather than algorithm defect"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+      "must_challenge": [
+        "requirement inconsistency rather than transducer deficit",
+        "missing usage scenario rather than algorithm defect"
+      ],
+      "must_account_for": "allocation margins and unresolved stakeholder constraints",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json",
+    "golden/engineering/Failure/dfmea-ranking/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json",
+    "golden/engineering/Failure/dfmea-ranking/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json",
+    "golden/engineering/Failure/dfmea-ranking/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R001",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+      "decision_contract": "R001-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "requirement inconsistency rather than transducer deficit",
+        "missing usage scenario rather than algorithm defect"
+      ]
+    },
+    {
+      "role_id": "R001",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+      "decision_contract": "R001-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "requirement inconsistency rather than transducer deficit",
+        "missing usage scenario rather than algorithm defect"
+      ]
+    },
+    {
+      "role_id": "R001",
+      "skill_id": "dfmea-ranking",
+      "inputs": "skills/dfmea-ranking/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+      "decision_contract": "R001-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "requirement inconsistency rather than transducer deficit",
+        "missing usage scenario rather than algorithm defect"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R001/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R001-DOMAIN-DECISION",
+    "question": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+    "required_methods": [
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R004",
+      "this_seat_owns": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+      "neighbor_owns": "Resolve product-level playback/capture interfaces and end-to-end audio latency budgets"
+    },
+    {
+      "neighbor_role": "R006",
+      "this_seat_owns": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+      "neighbor_owns": "Decide whether verification margins survive measurement uncertainty and reviewer objections"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+    "Discriminate: requirement inconsistency rather than transducer deficit",
+    "Discriminate: missing usage scenario rather than algorithm defect"
+  ],
+  "professional_inputs": {
+    "decision_question": "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "allocation margins and unresolved stakeholder constraints"
+    ],
+    "calculation_schemas": {
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R001-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Resolve conflicting system acoustic requirements through a traceable budget and architecture decision",
+    "incompatible SPL and battery targets",
+    "unowned interface budget",
+    "requirement inconsistency rather than transducer deficit",
+    "missing usage scenario rather than algorithm defect",
+    "allocation margins and unresolved stakeholder constraints"
+  ]
+}

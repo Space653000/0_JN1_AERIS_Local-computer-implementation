@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill_id": "speaker-port-lumped-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/speaker-port-lumped-domain-review.json",
+  "input_schema": "skills/speaker-port-lumped-domain-review/input.schema.json",
+  "output_schema": "skills/speaker-port-lumped-domain-review/output.schema.json",
+  "role_mappings": ["R021"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Independent Helmholtz interval, velocity and compact-model assertion review; no physical model validation",
+  "review_domain": "speaker-port-lumped"
+}

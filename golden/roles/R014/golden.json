@@ -1,0 +1,17 @@
+{
+  "suite_id": "R014-DIGITAL-TRANSPORT-V1", "role_id": "R014", "skill_id": "speaker-digital-transport-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored 48 kHz stereo 24-in-32 serial-audio arithmetic fixture; no hardware bus or playback was observed.",
+  "scope": "Supplied I2S/TDM format, clock and deterministic buffer feasibility only",
+  "base_input": {
+    "model": "SUPPLIED_I2S_TDM_TRANSPORT", "sample_rate_hz": 48000.0, "slot_width_bits": 32, "word_length_bits": 24, "slots_per_frame": 2,
+    "bit_clock_hz": 3072000.0, "bit_clock_relative_tolerance": 0.000001, "frame_sync_hz": 48000.0, "frame_sync_relative_tolerance": 0.000001,
+    "buffer_capacity_frames": 256, "worst_case_service_interval_ms": 2.0, "minimum_buffer_margin_frames": 128, "maximum_buffer_latency_ms": 6.0,
+    "expected_channel_count": 2, "active_slot_indices": [0, 1], "packing": "I2S_ONE_BIT_DELAY"
+  },
+  "cases": [
+    {"id": "DIGITAL-TRANSPORT-RELATIONS", "kind": "positive", "question": "Does R014 reconcile 24-in-32 stereo BCLK/frame sync and retain 160 frames of service margin?", "input_overrides": {}, "checks": [{"path": "expected_bit_clock_hz", "expected": 3072000.0, "absolute_tolerance": 0}, {"path": "buffer_margin_frames", "expected": 160.0, "absolute_tolerance": 1e-12}, {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}, {"path": "glitch_free_playback_verified", "expected": false, "absolute_tolerance": 0}]},
+    {"id": "DIGITAL-TRANSPORT-INCLUSIVE-BUFFER", "kind": "boundary", "question": "Is the exact service-margin boundary inclusive without claiming real continuity?", "input_overrides": {"minimum_buffer_margin_frames": 160}, "checks": [{"path": "checks.3.passed", "expected": true, "absolute_tolerance": 0}, {"path": "physical_interface_verified", "expected": false, "absolute_tolerance": 0}]},
+    {"id": "DIGITAL-TRANSPORT-BCLK-MISMATCH", "kind": "counter_hypothesis", "question": "Does a clock relation mismatch trigger format/clock investigation rather than being called DSP overload?", "input_overrides": {"bit_clock_hz": 3000000.0}, "checks": [{"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0}, {"path": "required_revisions.0", "expected": "RECONCILE_SAMPLE_RATE_SLOT_WIDTH_AND_TDM_SLOT_COUNT", "absolute_tolerance": 0}, {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}]},
+    {"id": "DIGITAL-TRANSPORT-DUPLICATE-SLOT", "kind": "negative", "question": "Is a duplicate channel-to-slot map rejected rather than silently collapsing channels?", "input_overrides": {"active_slot_indices": [0, 0]}, "expected_error": "ValueError"}
+  ]
+}

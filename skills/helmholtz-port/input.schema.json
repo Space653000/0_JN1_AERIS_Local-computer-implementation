@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "area_m2": {
+      "type": "number"
+    },
+    "effective_length_m": {
+      "type": "number"
+    },
+    "volume_m3": {
+      "type": "number"
+    },
+    "sound_speed_m_s": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "area_m2",
+    "effective_length_m",
+    "volume_m3",
+    "sound_speed_m_s"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-harmonic-noise-analysis",
+  "category": "Methods",
+  "title": "harmonic-noise-analysis",
+  "text": "Unit fundamental plus 0.1 second harmonic gives 10% THD, absent added noise. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/harmonic-noise-analysis.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "b0fcf144e58131d1fcc649a3ecc92dadac3368246f0bf600a1fbcaf93085d5a7"
+}

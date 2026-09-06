@@ -1,0 +1,43 @@
+{
+  "id": "porous-absorption-analytic-v1",
+  "skill_id": "porous-absorption",
+  "suite": "Speaker",
+  "input": {
+    "frequency_hz": [
+      200,
+      500,
+      1000,
+      2000
+    ],
+    "flow_resistivity_pa_s_m2": 10000,
+    "thickness_m": 0.02
+  },
+  "checks": [
+    {
+      "path": "absorption_normal_incidence",
+      "expected": [
+        0,
+        1
+      ],
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": "range"
+    },
+    {
+      "path": "absorption_normal_incidence.2",
+      "expected": 0.28505572817232716,
+      "absolute_tolerance": 1e-10,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "flow_resistivity_pa_s_m2": 1000000000.0
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Passive rigid-backed fibrous layer; 1 kHz reference computed independently using scalar complex arithmetic and the stated Delany-Bazley equations.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "80e253c229db7136b059f79a9dc7f4af0f52c83e7e6492f0c0f4ddd6bb1c3a4f"
+}

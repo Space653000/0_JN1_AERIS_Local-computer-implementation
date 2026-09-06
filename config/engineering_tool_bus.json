@@ -1,0 +1,164 @@
+{
+  "FREE_LOCAL_BASELINE": {
+    "numpy": "2.2.6",
+    "scipy": "1.15.3",
+    "skills": [
+      "product-system-plan",
+      "instrument-sequence",
+      "spectral-analysis",
+      "response-phase-delay",
+      "harmonic-noise-analysis",
+      "time-frequency-analysis",
+      "transfer-coherence",
+      "fractional-octave",
+      "frequency-weighting",
+      "microphone-sensitivity",
+      "uncertainty-propagation",
+      "repeatability-reproducibility",
+      "factorial-doe",
+      "monte-carlo",
+      "correlation-outliers",
+      "lumped-speaker",
+      "helmholtz-port",
+      "linear-array-pattern",
+      "gcc-phat-tdoa",
+      "delay-sum-beamforming",
+      "enhancement-aec-metrics",
+      "room-ir-decay",
+      "psychoacoustic-descriptors",
+      "nvh-integration",
+      "porous-absorption",
+      "thermal-rc",
+      "leakage-tolerance",
+      "latency-budget",
+      "local-audio-regression",
+      "butterworth-filter",
+      "level-statistics",
+      "resonance-characterization",
+      "circuit-noise-budget",
+      "engineering-requirements",
+      "dfmea-ranking",
+      "process-quality",
+      "reliability-binomial",
+      "failure-hypotheses",
+      "provenance-research",
+      "requirement-traceability",
+      "experiment-optimization",
+      "evidence-counterreview"
+    ]
+  },
+  "PROFESSIONAL_LICENSED_TOOL": {
+    "COMSOL": {
+      "state": "OPTIONAL_NOT_INSTALLED_NOT_VERIFIED",
+      "interface": {
+        "inputs": [
+          "model_or_measurement_contract",
+          "tool_version",
+          "license_authority"
+        ],
+        "outputs": [
+          "raw_result",
+          "tool_run_log",
+          "evidence_hashes"
+        ]
+      },
+      "blocks_free_layer": false
+    },
+    "MATLAB": {
+      "state": "OPTIONAL_NOT_INSTALLED_NOT_VERIFIED",
+      "interface": {
+        "inputs": [
+          "model_or_measurement_contract",
+          "tool_version",
+          "license_authority"
+        ],
+        "outputs": [
+          "raw_result",
+          "tool_run_log",
+          "evidence_hashes"
+        ]
+      },
+      "blocks_free_layer": false
+    },
+    "Ansys/Simcenter": {
+      "state": "OPTIONAL_NOT_INSTALLED_NOT_VERIFIED",
+      "interface": {
+        "inputs": [
+          "model_or_measurement_contract",
+          "tool_version",
+          "license_authority"
+        ],
+        "outputs": [
+          "raw_result",
+          "tool_run_log",
+          "evidence_hashes"
+        ]
+      },
+      "blocks_free_layer": false
+    },
+    "APx": {
+      "state": "OPTIONAL_NOT_INSTALLED_NOT_VERIFIED",
+      "interface": {
+        "inputs": [
+          "model_or_measurement_contract",
+          "tool_version",
+          "license_authority"
+        ],
+        "outputs": [
+          "raw_result",
+          "tool_run_log",
+          "evidence_hashes"
+        ]
+      },
+      "blocks_free_layer": false
+    },
+    "KLIPPEL": {
+      "state": "OPTIONAL_NOT_INSTALLED_NOT_VERIFIED",
+      "interface": {
+        "inputs": [
+          "model_or_measurement_contract",
+          "tool_version",
+          "license_authority"
+        ],
+        "outputs": [
+          "raw_result",
+          "tool_run_log",
+          "evidence_hashes"
+        ]
+      },
+      "blocks_free_layer": false
+    },
+    "SoundCheck": {
+      "state": "OPTIONAL_NOT_INSTALLED_NOT_VERIFIED",
+      "interface": {
+        "inputs": [
+          "model_or_measurement_contract",
+          "tool_version",
+          "license_authority"
+        ],
+        "outputs": [
+          "raw_result",
+          "tool_run_log",
+          "evidence_hashes"
+        ]
+      },
+      "blocks_free_layer": false
+    },
+    "ACQUA": {
+      "state": "OPTIONAL_NOT_INSTALLED_NOT_VERIFIED",
+      "interface": {
+        "inputs": [
+          "model_or_measurement_contract",
+          "tool_version",
+          "license_authority"
+        ],
+        "outputs": [
+          "raw_result",
+          "tool_run_log",
+          "evidence_hashes"
+        ]
+      },
+      "blocks_free_layer": false
+    }
+  }
+}

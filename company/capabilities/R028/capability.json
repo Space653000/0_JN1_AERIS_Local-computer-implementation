@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R028",
+    "name": "MEMS / ECM Capsule Specialist",
+    "group": "Microphone CoE"
+  },
+  "mission": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+  "domain": "Microphone CoE",
+  "scope": [
+    "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+    "Investigate and bound: dBV/Pa confused with dBFS",
+    "Investigate and bound: maximum SPL inferred from small-signal sensitivity"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R027 owns: Choose microphone capsule, port and array architecture against sensitivity, noise and overload constraints",
+    "Neighbor R030 owns: Refer analog microphone noise and headroom through bias, gain and ADC interfaces"
+  ],
+  "inputs": {
+    "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
+    "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+    "microphone-reference-domain-review": "skills/microphone-reference-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
+    "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+    "microphone-reference-domain-review": "skills/microphone-reference-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "microphone-sensitivity",
+    "circuit-noise-budget",
+    "microphone-reference-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/microphone-sensitivity.json",
+    "methods/engineering/circuit-noise-budget.json",
+    "methods/roles/microphone-reference-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/microphone-sensitivity.json",
+    "knowledge/engineering/circuit-noise-budget.json"
+  ],
+  "standards_metadata_references": [
+    "IEC 60268-4"
+  ],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "calibrator uncertainty and capsule production spread"
+  ],
+  "common_failure_modes": [
+    "dBV/Pa confused with dBFS",
+    "maximum SPL inferred from small-signal sensitivity"
+  ],
+  "counter_hypotheses": [
+    "bias network noise rather than capsule noise",
+    "calibrator coupling rather than sensitivity shift"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+      "must_challenge": [
+        "bias network noise rather than capsule noise",
+        "calibrator coupling rather than sensitivity shift"
+      ],
+      "must_account_for": "calibrator uncertainty and capsule production spread",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Microphone/microphone-sensitivity/golden.json",
+    "golden/engineering/Microphone/circuit-noise-budget/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Microphone/microphone-sensitivity/negative.json",
+    "golden/engineering/Microphone/circuit-noise-budget/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Microphone/microphone-sensitivity/regression.json",
+    "golden/engineering/Microphone/circuit-noise-budget/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R028",
+      "skill_id": "microphone-sensitivity",
+      "inputs": "skills/microphone-sensitivity/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+      "decision_contract": "R028-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "bias network noise rather than capsule noise",
+        "calibrator coupling rather than sensitivity shift"
+      ]
+    },
+    {
+      "role_id": "R028",
+      "skill_id": "circuit-noise-budget",
+      "inputs": "skills/circuit-noise-budget/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+      "decision_contract": "R028-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "bias network noise rather than capsule noise",
+        "calibrator coupling rather than sensitivity shift"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R028/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "ROLE_SCOPED_METADATA",
+  "professional_decision_contract": {
+    "decision_id": "R028-DOMAIN-DECISION",
+    "question": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+    "required_methods": [
+      "methods/engineering/microphone-sensitivity.json",
+      "methods/engineering/circuit-noise-budget.json",
+      "methods/roles/microphone-reference-domain-review.json"
+    ],
+    "required_skills": [
+      "microphone-sensitivity",
+      "circuit-noise-budget",
+      "microphone-reference-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R027",
+      "this_seat_owns": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+      "neighbor_owns": "Choose microphone capsule, port and array architecture against sensitivity, noise and overload constraints"
+    },
+    {
+      "neighbor_role": "R030",
+      "this_seat_owns": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+      "neighbor_owns": "Refer analog microphone noise and headroom through bias, gain and ADC interfaces"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "microphone-reference-domain-review",
+      "method": "methods/roles/microphone-reference-domain-review.json",
+      "suite": "golden/roles/R028/golden.json",
+      "scope": "Bounded pressure/voltage/gain sensitivity review; not physical capsule characterization."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+    "Discriminate: bias network noise rather than capsule noise",
+    "Discriminate: calibrator coupling rather than sensitivity shift"
+  ],
+  "professional_inputs": {
+    "decision_question": "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "calibrator uncertainty and capsule production spread"
+    ],
+    "calculation_schemas": {
+      "microphone-sensitivity": "skills/microphone-sensitivity/input.schema.json",
+      "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
+      "microphone-reference-domain-review": "skills/microphone-reference-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R028-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "microphone-sensitivity": "skills/microphone-sensitivity/output.schema.json",
+      "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
+      "microphone-reference-domain-review": "skills/microphone-reference-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Compare MEMS/ECM capsule sensitivity, noise and overload at a common acoustic reference",
+    "dBV/Pa confused with dBFS",
+    "maximum SPL inferred from small-signal sensitivity",
+    "bias network noise rather than capsule noise",
+    "calibrator coupling rather than sensitivity shift",
+    "calibrator uncertainty and capsule production spread"
+  ]
+}

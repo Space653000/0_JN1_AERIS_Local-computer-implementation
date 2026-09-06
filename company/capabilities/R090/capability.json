@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R090",
+    "name": "OEM / Customer Certification Engineer",
+    "group": "Engineering Ops"
+  },
+  "mission": "Build OEM/customer certification traceability without implying ungranted customer approval",
+  "domain": "Engineering Ops",
+  "scope": [
+    "Build OEM/customer certification traceability without implying ungranted customer approval",
+    "Investigate and bound: customer revision omitted from acceptance matrix",
+    "Investigate and bound: internal pass promoted to certification"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R089 owns: Determine standards edition, regional applicability and requirement change impact from licensed-access metadata",
+    "Neighbor R097 owns: Maintain requirement-test-evidence and configuration links across revisions"
+  ],
+  "inputs": {
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "standards-metadata-domain-review": "skills/standards-metadata-domain-review/input.schema.json"
+  },
+  "outputs": {
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "standards-metadata-domain-review": "skills/standards-metadata-domain-review/output.schema.json"
+  },
+  "required_skills": [
+    "engineering-requirements",
+    "requirement-traceability",
+    "standards-metadata-domain-review"
+  ],
+  "required_methods": [
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/requirement-traceability.json",
+    "methods/roles/standards-metadata-domain-review.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/requirement-traceability.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "customer revision, fixture scope and approval authority"
+  ],
+  "common_failure_modes": [
+    "customer revision omitted from acceptance matrix",
+    "internal pass promoted to certification"
+  ],
+  "counter_hypotheses": [
+    "customer-specific limit rather than standards conflict",
+    "configuration mismatch rather than test failure"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Build OEM/customer certification traceability without implying ungranted customer approval",
+      "must_challenge": [
+        "customer-specific limit rather than standards conflict",
+        "configuration mismatch rather than test failure"
+      ],
+      "must_account_for": "customer revision, fixture scope and approval authority",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R090",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Build OEM/customer certification traceability without implying ungranted customer approval",
+      "decision_contract": "R090-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "customer-specific limit rather than standards conflict",
+        "configuration mismatch rather than test failure"
+      ]
+    },
+    {
+      "role_id": "R090",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Build OEM/customer certification traceability without implying ungranted customer approval",
+      "decision_contract": "R090-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "customer-specific limit rather than standards conflict",
+        "configuration mismatch rather than test failure"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R090/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R090-DOMAIN-DECISION",
+    "question": "Build OEM/customer certification traceability without implying ungranted customer approval",
+    "required_methods": [
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/roles/standards-metadata-domain-review.json"
+    ],
+    "required_skills": [
+      "engineering-requirements",
+      "requirement-traceability",
+      "standards-metadata-domain-review"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R089",
+      "this_seat_owns": "Build OEM/customer certification traceability without implying ungranted customer approval",
+      "neighbor_owns": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
+    },
+    {
+      "neighbor_role": "R097",
+      "this_seat_owns": "Build OEM/customer certification traceability without implying ungranted customer approval",
+      "neighbor_owns": "Maintain requirement-test-evidence and configuration links across revisions"
+    }
+  ],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "standards-metadata-domain-review",
+      "method": "methods/roles/standards-metadata-domain-review.json",
+      "suite": "golden/roles/R090/golden.json",
+      "scope": "Independent metadata and requirement impact assertion review; no customer/regulatory certification or live source verification."
+    }
+  ],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Build OEM/customer certification traceability without implying ungranted customer approval",
+    "Discriminate: customer-specific limit rather than standards conflict",
+    "Discriminate: configuration mismatch rather than test failure"
+  ],
+  "professional_inputs": {
+    "decision_question": "Build OEM/customer certification traceability without implying ungranted customer approval",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "customer revision, fixture scope and approval authority"
+    ],
+    "calculation_schemas": {
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "standards-metadata-domain-review": "skills/standards-metadata-domain-review/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R090-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "standards-metadata-domain-review": "skills/standards-metadata-domain-review/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Build OEM/customer certification traceability without implying ungranted customer approval",
+    "customer revision omitted from acceptance matrix",
+    "internal pass promoted to certification",
+    "customer-specific limit rather than standards conflict",
+    "configuration mismatch rather than test failure",
+    "customer revision, fixture scope and approval authority"
+  ]
+}

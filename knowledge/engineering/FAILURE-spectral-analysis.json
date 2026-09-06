@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-spectral-analysis",
+  "category": "Failures",
+  "title": "FAILURE-spectral-analysis",
+  "text": "{\"invalid_variant\": {\"sample_rate_hz\": 0}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/DSP/spectral-analysis/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "b53a5b0c294076b0a717b6a23459a973cbda1753de56858b0f3f6633cd846cba",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "identity": {
+    "id": "R062",
+    "name": "VR / XR Headset",
+    "group": "Product Chiefs"
+  },
+  "mission": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+  "domain": "Product Chiefs",
+  "scope": [
+    "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+    "Investigate and bound: motion-to-sound delay destabilizes scene",
+    "Investigate and bound: strap rubbing enters microphone"
+  ],
+  "non_scope": [
+    "Human clinical, legal, customer or production approval",
+    "Physical/calibrated verification without actual instrument and authorized reviewer evidence",
+    "Neighbor R071 owns: Choose binaural/spatial rendering assumptions from HRTF, head pose and temporal alignment",
+    "Neighbor R080 owns: Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty"
+  ],
+  "inputs": {
+    "product-system-plan": "skills/product-system-plan/input.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+  },
+  "outputs": {
+    "product-system-plan": "skills/product-system-plan/output.schema.json",
+    "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+    "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+  },
+  "required_skills": [
+    "product-system-plan",
+    "engineering-requirements",
+    "requirement-traceability",
+    "dfmea-ranking"
+  ],
+  "required_methods": [
+    "methods/engineering/product-system-plan.json",
+    "methods/engineering/engineering-requirements.json",
+    "methods/engineering/requirement-traceability.json",
+    "methods/engineering/dfmea-ranking.json"
+  ],
+  "required_knowledge": [
+    "knowledge/engineering/product-system-plan.json",
+    "knowledge/engineering/engineering-requirements.json",
+    "knowledge/engineering/requirement-traceability.json",
+    "knowledge/engineering/dfmea-ranking.json"
+  ],
+  "standards_metadata_references": [],
+  "permitted_tools": [
+    "FREE_LOCAL_BASELINE",
+    "LOCAL_AI_MEMORY_SUMMARY"
+  ],
+  "forbidden_actions": [
+    "modify raw Evidence",
+    "invent measurements",
+    "claim calibration",
+    "self approve R3/R4",
+    "launch paid tool",
+    "remote private-data upload"
+  ],
+  "risk_authority": {
+    "automatic": "R0/R1 software only",
+    "R2": "controlled local calculation; physical IO gated",
+    "R3/R4": "Human Approval required"
+  },
+  "evidence_requirements": [
+    "input SHA-256",
+    "method version and implementation hash",
+    "unit/schema validation",
+    "numerical output",
+    "independent expected-value checks",
+    "negative case rejection",
+    "repeatable output hash"
+  ],
+  "verification_rubric": {
+    "L0": "registry only",
+    "L1": "complete referenced contract",
+    "L2": "all mapped local capabilities executed into intact evidence",
+    "L3": "separate role-specific domain acceptance with independent decision oracle and qualified bounded review",
+    "L4": "real instrument/calibration/expert approval; cannot be granted by this factory"
+  },
+  "uncertainty_requirements": [
+    "pose prediction and physical fit"
+  ],
+  "common_failure_modes": [
+    "motion-to-sound delay destabilizes scene",
+    "strap rubbing enters microphone"
+  ],
+  "counter_hypotheses": [
+    "tracking timestamp error rather than renderer delay",
+    "mechanical contact rather than ambient noise"
+  ],
+  "review_requirements": {
+    "reviewer": "R098",
+    "evidence_curator": "R099",
+    "automated_review_is_human_approval": false,
+    "domain_qualifications": {
+      "bounded_domain_question": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+      "must_challenge": [
+        "tracking timestamp error rather than renderer delay",
+        "mechanical contact rather than ambient noise"
+      ],
+      "must_account_for": "pose prediction and physical fit",
+      "human_credential_claimed": false
+    },
+    "routing_must_verify_qualification": true,
+    "legacy_fixed_seat_is_not_domain_acceptance": true
+  },
+  "golden_cases": [
+    "golden/engineering/Product/product-system-plan/golden.json",
+    "golden/engineering/Product/engineering-requirements/golden.json",
+    "golden/engineering/Product/requirement-traceability/golden.json",
+    "golden/engineering/Failure/dfmea-ranking/golden.json"
+  ],
+  "negative_cases": [
+    "golden/engineering/Product/product-system-plan/negative.json",
+    "golden/engineering/Product/engineering-requirements/negative.json",
+    "golden/engineering/Product/requirement-traceability/negative.json",
+    "golden/engineering/Failure/dfmea-ranking/negative.json"
+  ],
+  "regression_cases": [
+    "golden/engineering/Product/product-system-plan/regression.json",
+    "golden/engineering/Product/engineering-requirements/regression.json",
+    "golden/engineering/Product/requirement-traceability/regression.json",
+    "golden/engineering/Failure/dfmea-ranking/regression.json"
+  ],
+  "task_templates": [
+    {
+      "role_id": "R062",
+      "skill_id": "product-system-plan",
+      "inputs": "skills/product-system-plan/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+      "decision_contract": "R062-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "tracking timestamp error rather than renderer delay",
+        "mechanical contact rather than ambient noise"
+      ]
+    },
+    {
+      "role_id": "R062",
+      "skill_id": "engineering-requirements",
+      "inputs": "skills/engineering-requirements/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+      "decision_contract": "R062-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "tracking timestamp error rather than renderer delay",
+        "mechanical contact rather than ambient noise"
+      ]
+    },
+    {
+      "role_id": "R062",
+      "skill_id": "requirement-traceability",
+      "inputs": "skills/requirement-traceability/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+      "decision_contract": "R062-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "tracking timestamp error rather than renderer delay",
+        "mechanical contact rather than ambient noise"
+      ]
+    },
+    {
+      "role_id": "R062",
+      "skill_id": "dfmea-ranking",
+      "inputs": "skills/dfmea-ranking/input.schema.json",
+      "risk": "R1",
+      "required_evidence": "sealed numerical run",
+      "professional_objective": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+      "decision_contract": "R062-DOMAIN-DECISION",
+      "counter_hypotheses": [
+        "tracking timestamp error rather than renderer delay",
+        "mechanical contact rather than ambient noise"
+      ]
+    }
+  ],
+  "report_templates": [
+    "company/capabilities/R062/report-template.md"
+  ],
+  "current_maturity_level": "L1",
+  "maturity_evidence": [],
+  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "product_architecture": {
+    "speaker_topology_considerations": "near-ear/open-ear stereo",
+    "microphone_topology_considerations": "headset distributed capture microphones",
+    "usage_scenarios": [
+      "immersive head-tracked interaction"
+    ],
+    "common_acoustic_failure_modes": [
+      "motion-to-sound latency",
+      "occlusion",
+      "mechanical rubbing"
+    ],
+    "lifecycle": [
+      "Concept",
+      "EVT",
+      "DVT",
+      "PVT",
+      "MP",
+      "Field"
+    ],
+    "measurement_plan": [
+      "declare fixture/geometry and calibration state",
+      "capture raw FR/noise/IR and electrical limits",
+      "repeat across fit/orientation/operating conditions",
+      "compare required bands and uncertainty margins"
+    ],
+    "simulation_requirements": [
+      "linear speaker/port baseline where topology applies",
+      "array propagation and room/latency budgets where capture applies"
+    ],
+    "manufacturing_risks": [
+      "assembly leakage and tolerances",
+      "component sensitivity variation",
+      "EOL limits without justified guard bands"
+    ],
+    "standards_metadata_references": [],
+    "standards_metadata_state": "TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED",
+    "evidence_expectations": [
+      "raw-data hash",
+      "fixture and calibration provenance",
+      "method version",
+      "uncertainty",
+      "counter-hypothesis review"
+    ],
+    "non_scope": [
+      "clinical efficacy or patient fitting",
+      "licensed-tool equivalence",
+      "physical qualification without measurements"
+    ]
+  },
+  "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
+  "professional_decision_contract": {
+    "decision_id": "R062-DOMAIN-DECISION",
+    "question": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+    "required_methods": [
+      "methods/engineering/product-system-plan.json",
+      "methods/engineering/engineering-requirements.json",
+      "methods/engineering/requirement-traceability.json",
+      "methods/engineering/dfmea-ranking.json"
+    ],
+    "required_skills": [
+      "product-system-plan",
+      "engineering-requirements",
+      "requirement-traceability",
+      "dfmea-ranking"
+    ],
+    "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
+  },
+  "neighbor_distinctions": [
+    {
+      "neighbor_role": "R071",
+      "this_seat_owns": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+      "neighbor_owns": "Choose binaural/spatial rendering assumptions from HRTF, head pose and temporal alignment"
+    },
+    {
+      "neighbor_role": "R080",
+      "this_seat_owns": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+      "neighbor_owns": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty"
+    }
+  ],
+  "domain_execution_contracts": [],
+  "professional_profile_version": "H0001-authored-v1",
+  "responsibilities": [
+    "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+    "Discriminate: tracking timestamp error rather than renderer delay",
+    "Discriminate: mechanical contact rather than ambient noise"
+  ],
+  "professional_inputs": {
+    "decision_question": "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+    "required_context": [
+      "requirement and numerical limits",
+      "product/transducer/lifecycle/risk",
+      "input units, provenance and source class",
+      "pose prediction and physical fit"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/input.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/input.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/input.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    }
+  },
+  "professional_outputs": {
+    "decision_id": "R062-DOMAIN-DECISION",
+    "required_sections": [
+      "bounded engineering disposition",
+      "observed failure modes and margins",
+      "competing hypotheses and discriminating test",
+      "uncertainty and evidence hashes",
+      "unresolved domain review and next action"
+    ],
+    "calculation_schemas": {
+      "product-system-plan": "skills/product-system-plan/output.schema.json",
+      "engineering-requirements": "skills/engineering-requirements/output.schema.json",
+      "requirement-traceability": "skills/requirement-traceability/output.schema.json",
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    }
+  },
+  "report_sections": [
+    "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",
+    "motion-to-sound delay destabilizes scene",
+    "strap rubbing enters microphone",
+    "tracking timestamp error rather than renderer delay",
+    "mechanical contact rather than ambient noise",
+    "pose prediction and physical fit"
+  ]
+}

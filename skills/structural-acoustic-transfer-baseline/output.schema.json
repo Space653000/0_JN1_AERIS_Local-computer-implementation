@@ -1,0 +1,7 @@
+{
+  "type": "object", "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {
+    "values": {"type": "object", "required": ["transfer_pa_per_m_s2", "identifiable_band_indices", "identifiable_band_fraction", "transfer_spread_ratio", "checks", "disposition", "causal_path_verified"]},
+    "physical_measurement_verified": {"const": false}
+  }
+}

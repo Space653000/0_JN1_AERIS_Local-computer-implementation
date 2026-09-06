@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-product-system-plan",
+  "category": "Failures",
+  "title": "FAILURE-product-system-plan",
+  "text": "{\"invalid_variant\": {\"product_index\": 24}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Product/product-system-plan/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "116b4f8bf91d7c0d6e04bfa2c9e86d4a80c3bc1b357f006a112b7735d9fd1b62",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}
