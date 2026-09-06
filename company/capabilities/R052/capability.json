@@ -22,25 +22,29 @@
     "product-system-plan": "skills/product-system-plan/input.schema.json",
     "engineering-requirements": "skills/engineering-requirements/input.schema.json",
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+    "tablet-orientation-case-table-baseline": "skills/tablet-orientation-case-table-baseline/input.schema.json"
   },
   "outputs": {
     "product-system-plan": "skills/product-system-plan/output.schema.json",
     "engineering-requirements": "skills/engineering-requirements/output.schema.json",
     "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+    "tablet-orientation-case-table-baseline": "skills/tablet-orientation-case-table-baseline/output.schema.json"
   },
   "required_skills": [
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "tablet-orientation-case-table-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/tablet-orientation-case-table-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -244,13 +248,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/tablet-orientation-case-table-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "tablet-orientation-case-table-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -266,7 +272,14 @@
       "neighbor_owns": "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "tablet-orientation-case-table-baseline",
+      "method": "methods/roles/tablet-orientation-case-table-baseline.json",
+      "suite": "golden/roles/R052/golden.json",
+      "scope": "Supplied tablet orientation, edge-port case clearance, table-reflection, stereo-balance and array-steering screening; no physical transfer."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Allocate tablet edge-speaker and capture performance across portrait, landscape and table placement",
@@ -285,7 +298,8 @@
       "product-system-plan": "skills/product-system-plan/input.schema.json",
       "engineering-requirements": "skills/engineering-requirements/input.schema.json",
       "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+      "tablet-orientation-case-table-baseline": "skills/tablet-orientation-case-table-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -301,7 +315,8 @@
       "product-system-plan": "skills/product-system-plan/output.schema.json",
       "engineering-requirements": "skills/engineering-requirements/output.schema.json",
       "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+      "tablet-orientation-case-table-baseline": "skills/tablet-orientation-case-table-baseline/output.schema.json"
     }
   },
   "report_sections": [

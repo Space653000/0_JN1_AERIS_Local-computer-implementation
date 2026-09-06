@@ -194,3 +194,20 @@
   60 roles have a suite and 40 do not. Product Chief coverage is 7/24.
 - Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0; H0001/P02 remains
   unfinished and no physical/calibrated/perceptual/Human acceptance is claimed.
+
+## Product Chief wave 2 continuation checkpoint
+
+- R052/R072: tablet orientation, case/port, table reflection, balance and array
+  steering execution plus exact spatial review.
+- R053/R073: laptop fan, hinge, bezel-array, keyboard/body coupling, headroom
+  and AEC-reference execution plus exact structural-path review.
+- R054/R076: monitor/AIO hum, bezel, desk, USB, orientation and echo-reference
+  execution plus exact coupling review.
+- R055/R035: smart-speaker self-echo, wakeword SNR, aliasing, talker, room-mode
+  and AEC-tail execution plus exact far-field review.
+- Focused 54/54 PASS after correcting an exact R054 product-name mismatch;
+  fixed-source 474/474 PASS in 1878.254 seconds; all six semantic and six
+  dark/light visual/accessibility routes PASS.
+- Inventory: 115 Skills, 115 Methods, 73 suites, 513 cases; 65 roles have a
+  suite, 35 do not; Product Chiefs 11/24. Truth remains L1=100 and H0001/P02
+  remains unfinished.

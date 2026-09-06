@@ -252,11 +252,35 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS['R051']={
 _SINGLE_ROLE_DOMAIN_CONTRACTS['R077']={
     'skill_id':'smartphone-port-mesh-echo-domain-review','method':'methods/roles/smartphone-port-mesh-echo-domain-review.json',
     'suite':'golden/roles/R077/smartphone.json','scope':'Independent smartphone port/mesh/echo budget assertion review; no physical transfer, AEC, user-population or Human approval.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R052']={
+    'skill_id':'tablet-orientation-case-table-baseline','method':'methods/roles/tablet-orientation-case-table-baseline.json',
+    'suite':'golden/roles/R052/golden.json','scope':'Supplied tablet orientation, edge-port case clearance, table-reflection, stereo-balance and array-steering screening; no physical transfer.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R053']={
+    'skill_id':'laptop-fan-hinge-coupling-baseline','method':'methods/roles/laptop-fan-hinge-coupling-baseline.json',
+    'suite':'golden/roles/R053/golden.json','scope':'Supplied laptop fan, hinge, bezel-array, keyboard/body coupling, speaker-headroom and AEC-reference screening; no physical transfer.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R054']={
+    'skill_id':'monitor-aio-usb-desk-baseline','method':'methods/roles/monitor-aio-usb-desk-baseline.json',
+    'suite':'golden/roles/R054/golden.json','scope':'Supplied monitor/AIO power-hum, bezel-array, desk-reflection, USB-latency, orientation and echo-reference screening; no physical conference acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R055']={
+    'skill_id':'smart-speaker-far-field-self-echo-baseline','method':'methods/roles/smart-speaker-far-field-self-echo-baseline.json',
+    'suite':'golden/roles/R055/golden.json','scope':'Supplied smart-speaker self-echo, wakeword SNR, array aliasing, talker, room-mode and AEC-tail screening; no wakeword or physical acceptance.'}
 
 # A role may own several independently evidenced bounded capabilities.  The
 # ordered list is authored source truth; aggregate maturity must never hide a
 # missing member or let one shared receipt qualify its neighbors.
 ROLE_DOMAIN_CONTRACTS={role:[contract] for role,contract in _SINGLE_ROLE_DOMAIN_CONTRACTS.items()}
+ROLE_DOMAIN_CONTRACTS['R072'].append({
+    'skill_id':'tablet-orientation-case-table-domain-review','method':'methods/roles/tablet-orientation-case-table-domain-review.json',
+    'suite':'golden/roles/R072/tablet.json','scope':'Independent tablet orientation/case/table assertion review; no measured transfer, case population, speech quality or Human approval.'})
+ROLE_DOMAIN_CONTRACTS['R073'].append({
+    'skill_id':'laptop-fan-hinge-coupling-domain-review','method':'methods/roles/laptop-fan-hinge-coupling-domain-review.json',
+    'suite':'golden/roles/R073/laptop.json','scope':'Independent laptop fan/hinge/structural-coupling assertion review; no physical path, AEC, call-quality or Human approval.'})
+ROLE_DOMAIN_CONTRACTS['R076']=[{
+    'skill_id':'monitor-aio-usb-desk-domain-review','method':'methods/roles/monitor-aio-usb-desk-domain-review.json',
+    'suite':'golden/roles/R076/monitor-aio.json','scope':'Independent monitor/AIO hum, USB, desk and bezel assertion review; no physical coupling, continuity, call-quality or Human approval.'}]
+ROLE_DOMAIN_CONTRACTS['R035'].append({
+    'skill_id':'smart-speaker-far-field-self-echo-domain-review','method':'methods/roles/smart-speaker-far-field-self-echo-domain-review.json',
+    'suite':'golden/roles/R035/smart-speaker.json','scope':'Independent smart-speaker far-field/self-echo assertion review; no wakeword corpus, room population, AEC or Human approval.'})
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',

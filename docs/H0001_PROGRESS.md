@@ -736,6 +736,36 @@ measurement, perceptual acceptance, role-wide L3, H0001 or P02 completion. No
 Core/main/PR32 mutation, raw `.aeris` Evidence, SQLite, credential, private
 measurement or binary is included.
 
+## Twenty-fifth checkpoint — Product Chief wave 2 continuation
+
+R052 now distinguishes tablet portrait/landscape/table placement, edge-port
+case blockage and clearance, table-reflection delay, stereo balance and array
+steering. R072 independently reviews that product contract without promoting
+its room-decay expertise into physical tablet acceptance. R053 separates fan
+harmonics, hinge-angle coverage, bezel-array transfer, keyboard/body coupling,
+speaker headroom and AEC-reference alignment; R073 independently reviews those
+assertions without treating a scalar coupling level as physical causality.
+
+R054 now separates power/ground hum, bezel-array spread, desk reflection, USB
+audio latency, display orientation and echo-reference alignment. R076 performs
+the exact independent review and cannot turn a spectral level into a proven EMI
+source. R055 now separates woofer/microphone coupling, wakeword SNR, array
+aliasing, talker coverage, room-mode spread and AEC-tail coverage. R035 reviews
+that smart-speaker contract without claiming wakeword-corpus or physical-room
+acceptance.
+
+The first focused run correctly failed because the R054 applicability label did
+not exactly match the canonical role name; no reviewer was selected. The label
+was corrected without weakening policy, after which 54/54 focused tests passed.
+Fixed-source regression passed 474/474 tests in 1878.254 seconds. Six semantic
+and six dark/light screenshot/basic-accessibility routes passed.
+
+Inventory is 115 executable Skills, 115 Methods, 73 role suites and 513 cases.
+Sixty-five roles have a suite and 35 do not; Product Chief coverage is 11/24.
+Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0. No Core/main/PR32
+mutation, raw `.aeris`, SQLite, credential, private measurement or binary is
+included, and H0001/P02 remains unfinished.
+
 ## Twenty-second checkpoint — Microphone CoE suite coverage 18/18
 
 Eight remaining Microphone CoE seats now have bounded role-specific domain

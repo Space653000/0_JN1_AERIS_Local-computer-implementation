@@ -21,22 +21,26 @@
   "inputs": {
     "room-ir-decay": "skills/room-ir-decay/input.schema.json",
     "fractional-octave": "skills/fractional-octave/input.schema.json",
-    "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/input.schema.json"
+    "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/input.schema.json",
+    "tablet-orientation-case-table-domain-review": "skills/tablet-orientation-case-table-domain-review/input.schema.json"
   },
   "outputs": {
     "room-ir-decay": "skills/room-ir-decay/output.schema.json",
     "fractional-octave": "skills/fractional-octave/output.schema.json",
-    "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/output.schema.json"
+    "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/output.schema.json",
+    "tablet-orientation-case-table-domain-review": "skills/tablet-orientation-case-table-domain-review/output.schema.json"
   },
   "required_skills": [
     "room-ir-decay",
     "fractional-octave",
-    "room-decay-spatial-domain-review"
+    "room-decay-spatial-domain-review",
+    "tablet-orientation-case-table-domain-review"
   ],
   "required_methods": [
     "methods/engineering/room-ir-decay.json",
     "methods/engineering/fractional-octave.json",
-    "methods/roles/room-decay-spatial-domain-review.json"
+    "methods/roles/room-decay-spatial-domain-review.json",
+    "methods/roles/tablet-orientation-case-table-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/room-ir-decay.json",
@@ -156,12 +160,14 @@
     "required_methods": [
       "methods/engineering/room-ir-decay.json",
       "methods/engineering/fractional-octave.json",
-      "methods/roles/room-decay-spatial-domain-review.json"
+      "methods/roles/room-decay-spatial-domain-review.json",
+      "methods/roles/tablet-orientation-case-table-domain-review.json"
     ],
     "required_skills": [
       "room-ir-decay",
       "fractional-octave",
-      "room-decay-spatial-domain-review"
+      "room-decay-spatial-domain-review",
+      "tablet-orientation-case-table-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -183,6 +189,12 @@
       "method": "methods/roles/room-decay-spatial-domain-review.json",
       "suite": "golden/roles/R072/golden.json",
       "scope": "Independent multi-position decay-fit and spatial assertion review; no room-wide, diffuse-field, calibrated IR or physical acceptance."
+    },
+    {
+      "skill_id": "tablet-orientation-case-table-domain-review",
+      "method": "methods/roles/tablet-orientation-case-table-domain-review.json",
+      "suite": "golden/roles/R072/tablet.json",
+      "scope": "Independent tablet orientation/case/table assertion review; no measured transfer, case population, speech quality or Human approval."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -202,7 +214,8 @@
     "calculation_schemas": {
       "room-ir-decay": "skills/room-ir-decay/input.schema.json",
       "fractional-octave": "skills/fractional-octave/input.schema.json",
-      "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/input.schema.json"
+      "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/input.schema.json",
+      "tablet-orientation-case-table-domain-review": "skills/tablet-orientation-case-table-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -217,7 +230,8 @@
     "calculation_schemas": {
       "room-ir-decay": "skills/room-ir-decay/output.schema.json",
       "fractional-octave": "skills/fractional-octave/output.schema.json",
-      "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/output.schema.json"
+      "room-decay-spatial-domain-review": "skills/room-decay-spatial-domain-review/output.schema.json",
+      "tablet-orientation-case-table-domain-review": "skills/tablet-orientation-case-table-domain-review/output.schema.json"
     }
   },
   "report_sections": [

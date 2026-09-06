@@ -311,3 +311,18 @@ included.
   P02, physical, calibrated, perceptual, network/interoperability or Human
   acceptance. No raw `.aeris`, SQLite, credentials, measurements or binaries
   are included.
+
+## Product Chief wave 2 continuation — R052 through R055
+
+- Added distinct tablet case/table/orientation, laptop fan/hinge/body,
+  monitor/AIO hum/USB/desk, and smart-speaker far-field/self-echo decisions.
+- Added exact capability-driven reviewers R072, R073, R076 and R035. The first
+  R054 routing run failed closed on a canonical product-name mismatch; the
+  identity was corrected without weakening applicability.
+- Focused 54/54 PASS; full fixed-source 474/474 PASS in 1878.254 seconds; six
+  semantic and six dark/light visual/accessibility routes PASS.
+- Inventory: 115 Skills, 115 Methods, 73 suites, 513 cases; 65 roles have a
+  suite, 35 do not; Product Chiefs 11/24.
+- Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0. H0001/P02 remains
+  unfinished; no private/raw `.aeris`, SQLite, credential, measurement or
+  binary is included.

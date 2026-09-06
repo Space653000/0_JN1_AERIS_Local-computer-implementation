@@ -1,0 +1,1 @@
+{"type":"object","required":["skill_id","values","input_sha256","implementation_sha256","physical_measurement_verified"],"properties":{"values":{"type":"object","required":["array_topology","checks","disposition","wakeword_quality_verified","array_calibration_verified","aec_verified","physical_smart_speaker_verified"]},"physical_measurement_verified":{"const":false}}}

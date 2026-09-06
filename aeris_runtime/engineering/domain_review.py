@@ -37,6 +37,10 @@ REQUIRED_DOMAINS={
     'over-ear-anc-seal-stability-baseline':['over-ear-anc-seal-stability'],
     'gaming-headset-communication-baseline':['gaming-communication-latency'],
     'smartphone-port-mesh-echo-baseline':['smartphone-port-mesh-echo'],
+    'tablet-orientation-case-table-baseline':['tablet-orientation-case-table'],
+    'laptop-fan-hinge-coupling-baseline':['laptop-fan-hinge-coupling'],
+    'monitor-aio-usb-desk-baseline':['monitor-aio-usb-desk'],
+    'smart-speaker-far-field-self-echo-baseline':['smart-speaker-far-field-self-echo'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -65,9 +69,13 @@ def applicable(domain,context):
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
                 and context.get('transducer') in {'Speaker','Both'}
                 and context.get('product') in {'R049','ANC Over-Ear Headphone'})
-    if domain in {'gaming-communication-latency','smartphone-port-mesh-echo'}:
+    if domain in {'gaming-communication-latency','smartphone-port-mesh-echo','tablet-orientation-case-table','laptop-fan-hinge-coupling','monitor-aio-usb-desk','smart-speaker-far-field-self-echo'}:
         products={'gaming-communication-latency':{'R050','Gaming / Communication Headset'},
-                  'smartphone-port-mesh-echo':{'R051','Smartphone'}}
+                  'smartphone-port-mesh-echo':{'R051','Smartphone'},
+                  'tablet-orientation-case-table':{'R052','Tablet'},
+                  'laptop-fan-hinge-coupling':{'R053','Laptop'},
+                  'monitor-aio-usb-desk':{'R054','Monitor / All-in-One'},
+                  'smart-speaker-far-field-self-echo':{'R055','Smart Speaker'}}
         return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
                 and context.get('transducer')=='Both' and context.get('product') in products[domain])
@@ -252,6 +260,18 @@ def review(domain,request):
     if domain=='smartphone-port-mesh-echo':
         from .personal_device_products_review import review_smartphone
         return review_smartphone(p,candidate)
+    if domain=='tablet-orientation-case-table':
+        from .personal_device_products_review import review_tablet
+        return review_tablet(p,candidate)
+    if domain=='laptop-fan-hinge-coupling':
+        from .personal_device_products_review import review_laptop
+        return review_laptop(p,candidate)
+    if domain=='monitor-aio-usb-desk':
+        from .conference_products_review import review_monitor
+        return review_monitor(p,candidate)
+    if domain=='smart-speaker-far-field-self-echo':
+        from .conference_products_review import review_smart_speaker
+        return review_smart_speaker(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -408,6 +428,10 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'over-ear-anc-seal-stability':('overear_anc_product_review.py','overear_anc_product.py'),
     'gaming-communication-latency':('personal_device_products_review.py','personal_device_products.py'),
     'smartphone-port-mesh-echo':('personal_device_products_review.py','personal_device_products.py'),
+    'tablet-orientation-case-table':('personal_device_products_review.py','personal_device_products.py'),
+    'laptop-fan-hinge-coupling':('personal_device_products_review.py','personal_device_products.py'),
+    'monitor-aio-usb-desk':('conference_products_review.py','conference_products.py'),
+    'smart-speaker-far-field-self-echo':('conference_products_review.py','conference_products.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -453,7 +477,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','hearing-aid-acoustic-boundary','otc-self-fit-output-claims','auracast-transport-sync','over-ear-anc-seal-stability','gaming-communication-latency','smartphone-port-mesh-echo','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','hearing-aid-acoustic-boundary','otc-self-fit-output-claims','auracast-transport-sync','over-ear-anc-seal-stability','gaming-communication-latency','smartphone-port-mesh-echo','tablet-orientation-case-table','laptop-fan-hinge-coupling','monitor-aio-usb-desk','smart-speaker-far-field-self-echo','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -599,6 +623,14 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['SIDETONE_LATENCY','BOOM_DISTANCE_MINIMUM','BOOM_DISTANCE_MAXIMUM','PLAYBACK_CROSSTALK','VOICE_SNR','OUTPUT_HEADROOM']
     if skill=='smartphone-port-mesh-echo-baseline':
         return [c.get('id') for c in values['checks']]==['HAND_BLOCKAGE','WATER_MESH_LOSS','ECHO_COUPLING','ORIENTATION_COVERAGE','BOTTOM_SPEAKER_EXCURSION','HANDHELD_CALL_SNR']
+    if skill=='tablet-orientation-case-table-baseline':
+        return [c.get('id') for c in values['checks']]==['ORIENTATION_MODE_COVERAGE','CASE_BLOCKED_EDGE_PORTS','CASE_PORT_CLEARANCE','TABLE_REFLECTION_DELAY','STEREO_BALANCE','ARRAY_STEERING']
+    if skill=='laptop-fan-hinge-coupling-baseline':
+        return [c.get('id') for c in values['checks']]==['FAN_HARMONIC_CAPTURE','HINGE_ANGLE_COVERAGE','ARRAY_TRANSFER_SPREAD','KEYBOARD_BODY_COUPLING','SPEAKER_HEADROOM','AEC_REFERENCE_ALIGNMENT']
+    if skill=='monitor-aio-usb-desk-baseline':
+        return [c.get('id') for c in values['checks']]==['POWER_SUPPLY_HUM','BEZEL_ARRAY_SPREAD','DESK_REFLECTION_DELAY','USB_AUDIO_LATENCY','DISPLAY_ORIENTATION_COVERAGE','ECHO_REFERENCE_ALIGNMENT']
+    if skill=='smart-speaker-far-field-self-echo-baseline':
+        return [c.get('id') for c in values['checks']]==['WOOFER_MIC_COUPLING','WAKEWORD_SNR','ARRAY_ALIASING_FREQUENCY','TALKER_AZIMUTH_COVERAGE','ROOM_MODE_SPREAD','AEC_TAIL_COVERAGE']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

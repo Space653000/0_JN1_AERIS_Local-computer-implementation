@@ -22,25 +22,29 @@
     "product-system-plan": "skills/product-system-plan/input.schema.json",
     "engineering-requirements": "skills/engineering-requirements/input.schema.json",
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+    "laptop-fan-hinge-coupling-baseline": "skills/laptop-fan-hinge-coupling-baseline/input.schema.json"
   },
   "outputs": {
     "product-system-plan": "skills/product-system-plan/output.schema.json",
     "engineering-requirements": "skills/engineering-requirements/output.schema.json",
     "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+    "laptop-fan-hinge-coupling-baseline": "skills/laptop-fan-hinge-coupling-baseline/output.schema.json"
   },
   "required_skills": [
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "laptop-fan-hinge-coupling-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/laptop-fan-hinge-coupling-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -244,13 +248,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/laptop-fan-hinge-coupling-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "laptop-fan-hinge-coupling-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -266,7 +272,14 @@
       "neighbor_owns": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "laptop-fan-hinge-coupling-baseline",
+      "method": "methods/roles/laptop-fan-hinge-coupling-baseline.json",
+      "suite": "golden/roles/R053/golden.json",
+      "scope": "Supplied laptop fan, hinge, bezel-array, keyboard/body coupling, speaker-headroom and AEC-reference screening; no physical transfer."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Separate laptop fan, hinge and keyboard-body coupling from speaker/capture processing",
@@ -285,7 +298,8 @@
       "product-system-plan": "skills/product-system-plan/input.schema.json",
       "engineering-requirements": "skills/engineering-requirements/input.schema.json",
       "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+      "laptop-fan-hinge-coupling-baseline": "skills/laptop-fan-hinge-coupling-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -301,7 +315,8 @@
       "product-system-plan": "skills/product-system-plan/output.schema.json",
       "engineering-requirements": "skills/engineering-requirements/output.schema.json",
       "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+      "laptop-fan-hinge-coupling-baseline": "skills/laptop-fan-hinge-coupling-baseline/output.schema.json"
     }
   },
   "report_sections": [
