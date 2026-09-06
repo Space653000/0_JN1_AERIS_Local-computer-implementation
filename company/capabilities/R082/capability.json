@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "latency-budget": "skills/latency-budget/input.schema.json",
-    "transfer-coherence": "skills/transfer-coherence/input.schema.json"
+    "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+    "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/input.schema.json"
   },
   "outputs": {
     "latency-budget": "skills/latency-budget/output.schema.json",
-    "transfer-coherence": "skills/transfer-coherence/output.schema.json"
+    "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+    "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/output.schema.json"
   },
   "required_skills": [
     "latency-budget",
-    "transfer-coherence"
+    "transfer-coherence",
+    "gaming-communication-latency-domain-review"
   ],
   "required_methods": [
     "methods/engineering/latency-budget.json",
-    "methods/engineering/transfer-coherence.json"
+    "methods/engineering/transfer-coherence.json",
+    "methods/roles/gaming-communication-latency-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/latency-budget.json",
@@ -151,11 +155,13 @@
     "question": "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
     "required_methods": [
       "methods/engineering/latency-budget.json",
-      "methods/engineering/transfer-coherence.json"
+      "methods/engineering/transfer-coherence.json",
+      "methods/roles/gaming-communication-latency-domain-review.json"
     ],
     "required_skills": [
       "latency-budget",
-      "transfer-coherence"
+      "transfer-coherence",
+      "gaming-communication-latency-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -171,7 +177,14 @@
       "neighbor_owns": "Verify multichannel capture timestamps, channel ordering and buffer continuity"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "gaming-communication-latency-domain-review",
+      "method": "methods/roles/gaming-communication-latency-domain-review.json",
+      "suite": "golden/roles/R082/gaming-headset.json",
+      "scope": "Independent gaming communication budget assertion review; no codec/network, OS-driver, speech-quality or Human approval."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Locate OS audio scheduling, resampling and synchronization bottlenecks end to end",
@@ -188,7 +201,8 @@
     ],
     "calculation_schemas": {
       "latency-budget": "skills/latency-budget/input.schema.json",
-      "transfer-coherence": "skills/transfer-coherence/input.schema.json"
+      "transfer-coherence": "skills/transfer-coherence/input.schema.json",
+      "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -202,7 +216,8 @@
     ],
     "calculation_schemas": {
       "latency-budget": "skills/latency-budget/output.schema.json",
-      "transfer-coherence": "skills/transfer-coherence/output.schema.json"
+      "transfer-coherence": "skills/transfer-coherence/output.schema.json",
+      "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/output.schema.json"
     }
   },
   "report_sections": [

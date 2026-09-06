@@ -178,3 +178,19 @@
   P02 acceptance is claimed.
 - Local-only transcript: `.aeris/evidence/H0001-product-chiefs-wave1-full-tests.log`,
   SHA-256 `9000048c69dcc707764b0207b29baaf6a2beafa27cfd4880c0b50795c13d43bc`.
+
+## Product Chief wave 2 checkpoint
+
+- R050/R082: local gaming-headset sidetone, boom, crosstalk, voice-SNR and
+  output-headroom execution plus independent communication-budget review; no
+  network/codec, plosive, physical-call or Human acceptance.
+- R051/R077: smartphone hand-blockage, water-mesh, echo-coupling, orientation,
+  excursion and call-SNR execution plus independent port/mesh review; no
+  physical transfer, AEC, population or Human acceptance.
+- Focused regression: 38/38 PASS. Fixed-source regression: 458/458 PASS in
+  1600.379 seconds. Six semantic routes and six dark/light screenshot/basic-
+  accessibility routes: PASS.
+- Inventory: 107 executable Skills, 107 Methods, 65 role suites, 477 cases;
+  60 roles have a suite and 40 do not. Product Chief coverage is 7/24.
+- Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0; H0001/P02 remains
+  unfinished and no physical/calibrated/perceptual/Human acceptance is claimed.

@@ -712,6 +712,30 @@ The private transcript remains local at
 No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is in
 this checkpoint.
 
+## Twenty-fourth checkpoint — Product Chief wave 2 (interactive/handheld)
+
+R050 now owns a gaming/communication-headset decision that separately checks
+local sidetone buffering, boom near-field placement, playback crosstalk, voice
+SNR and output headroom. R082 independently reconstructs those assertions and
+cannot convert the local budget into codec/network latency, plosive, call-
+quality or Human acceptance. R051 now owns smartphone hand-blockage, water-
+mesh, speaker/microphone echo-coupling, orientation, bottom-speaker excursion
+and handheld-call SNR decisions. R077 independently reviews that product
+contract and rejects physical mesh, user-population and AEC overclaims.
+
+Focused regression passed 38 tests. Fixed-source regression passed 458/458
+tests in 1600.379 seconds. Six live semantic routes and all six fixed-
+environment dark/light screenshot repeatability/basic-accessibility routes
+passed. Inventory is 107 executable Skills, 107 Methods, 65 role suites and
+477 cases. Sixty roles have at least one suite, 40 do not, and Product Chief
+coverage is 7/24.
+
+Installed truth remains L0=0, L1=100, L2=0, L3=0, L4=0. These supplied-data
+analytical baselines are not physical handset/headset verification, calibrated
+measurement, perceptual acceptance, role-wide L3, H0001 or P02 completion. No
+Core/main/PR32 mutation, raw `.aeris` Evidence, SQLite, credential, private
+measurement or binary is included.
+
 ## Twenty-second checkpoint — Microphone CoE suite coverage 18/18
 
 Eight remaining Microphone CoE seats now have bounded role-specific domain

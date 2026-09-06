@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
-    "monte-carlo": "skills/monte-carlo/input.schema.json"
+    "monte-carlo": "skills/monte-carlo/input.schema.json",
+    "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/input.schema.json"
   },
   "outputs": {
     "leakage-tolerance": "skills/leakage-tolerance/output.schema.json",
-    "monte-carlo": "skills/monte-carlo/output.schema.json"
+    "monte-carlo": "skills/monte-carlo/output.schema.json",
+    "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/output.schema.json"
   },
   "required_skills": [
     "leakage-tolerance",
-    "monte-carlo"
+    "monte-carlo",
+    "smartphone-port-mesh-echo-domain-review"
   ],
   "required_methods": [
     "methods/engineering/leakage-tolerance.json",
-    "methods/engineering/monte-carlo.json"
+    "methods/engineering/monte-carlo.json",
+    "methods/roles/smartphone-port-mesh-echo-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/leakage-tolerance.json",
@@ -151,11 +155,13 @@
     "question": "Evaluate acoustic tolerance and assembly leakage sensitivity across manufacturing distributions",
     "required_methods": [
       "methods/engineering/leakage-tolerance.json",
-      "methods/engineering/monte-carlo.json"
+      "methods/engineering/monte-carlo.json",
+      "methods/roles/smartphone-port-mesh-echo-domain-review.json"
     ],
     "required_skills": [
       "leakage-tolerance",
-      "monte-carlo"
+      "monte-carlo",
+      "smartphone-port-mesh-echo-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -171,7 +177,14 @@
       "neighbor_owns": "Separate supplier incoming quality, sampling and traceability from assembly/test-system variation"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "smartphone-port-mesh-echo-domain-review",
+      "method": "methods/roles/smartphone-port-mesh-echo-domain-review.json",
+      "suite": "golden/roles/R077/smartphone.json",
+      "scope": "Independent smartphone port/mesh/echo budget assertion review; no physical transfer, AEC, user-population or Human approval."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Evaluate acoustic tolerance and assembly leakage sensitivity across manufacturing distributions",
@@ -188,7 +201,8 @@
     ],
     "calculation_schemas": {
       "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
-      "monte-carlo": "skills/monte-carlo/input.schema.json"
+      "monte-carlo": "skills/monte-carlo/input.schema.json",
+      "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -202,7 +216,8 @@
     ],
     "calculation_schemas": {
       "leakage-tolerance": "skills/leakage-tolerance/output.schema.json",
-      "monte-carlo": "skills/monte-carlo/output.schema.json"
+      "monte-carlo": "skills/monte-carlo/output.schema.json",
+      "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/output.schema.json"
     }
   },
   "report_sections": [

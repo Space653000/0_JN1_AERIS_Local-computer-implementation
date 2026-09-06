@@ -240,6 +240,18 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS['R081']={
 _SINGLE_ROLE_DOMAIN_CONTRACTS['R049']={
     'skill_id':'over-ear-anc-seal-stability-baseline','method':'methods/roles/over-ear-anc-seal-stability-baseline.json',
     'suite':'golden/roles/R049/golden.json','scope':'Supplied circumaural fit/seal, feedback margin, excursion, cushion-compression and pressure-proxy screening; no full-loop or listener acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R050']={
+    'skill_id':'gaming-headset-communication-baseline','method':'methods/roles/gaming-headset-communication-baseline.json',
+    'suite':'golden/roles/R050/golden.json','scope':'Supplied local sidetone latency, boom distance, playback crosstalk, voice SNR and output-headroom screening; no network, plosive or call-quality acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R082']={
+    'skill_id':'gaming-communication-latency-domain-review','method':'methods/roles/gaming-communication-latency-domain-review.json',
+    'suite':'golden/roles/R082/gaming-headset.json','scope':'Independent gaming communication budget assertion review; no codec/network, OS-driver, speech-quality or Human approval.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R051']={
+    'skill_id':'smartphone-port-mesh-echo-baseline','method':'methods/roles/smartphone-port-mesh-echo-baseline.json',
+    'suite':'golden/roles/R051/golden.json','scope':'Supplied hand blockage, water-mesh loss, echo coupling, orientation, bottom-speaker excursion and handheld-call SNR screening; no handset acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R077']={
+    'skill_id':'smartphone-port-mesh-echo-domain-review','method':'methods/roles/smartphone-port-mesh-echo-domain-review.json',
+    'suite':'golden/roles/R077/smartphone.json','scope':'Independent smartphone port/mesh/echo budget assertion review; no physical transfer, AEC, user-population or Human approval.'}
 
 # A role may own several independently evidenced bounded capabilities.  The
 # ordered list is authored source truth; aggregate maturity must never hide a

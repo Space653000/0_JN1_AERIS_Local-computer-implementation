@@ -35,6 +35,8 @@ REQUIRED_DOMAINS={
     'otc-self-fit-output-baseline':['otc-self-fit-output-claims'],
     'auracast-latency-sync-baseline':['auracast-transport-sync'],
     'over-ear-anc-seal-stability-baseline':['over-ear-anc-seal-stability'],
+    'gaming-headset-communication-baseline':['gaming-communication-latency'],
+    'smartphone-port-mesh-echo-baseline':['smartphone-port-mesh-echo'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -63,6 +65,12 @@ def applicable(domain,context):
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
                 and context.get('transducer') in {'Speaker','Both'}
                 and context.get('product') in {'R049','ANC Over-Ear Headphone'})
+    if domain in {'gaming-communication-latency','smartphone-port-mesh-echo'}:
+        products={'gaming-communication-latency':{'R050','Gaming / Communication Headset'},
+                  'smartphone-port-mesh-echo':{'R051','Smartphone'}}
+        return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
+                and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
+                and context.get('transducer')=='Both' and context.get('product') in products[domain])
     if domain in {'structural-acoustic-path','room-decay-spatial','room-correction-spatial'}:
         return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
@@ -238,6 +246,12 @@ def review(domain,request):
     if domain=='over-ear-anc-seal-stability':
         from .overear_anc_product_review import review as review_overear
         return review_overear(p,candidate)
+    if domain=='gaming-communication-latency':
+        from .personal_device_products_review import review_gaming
+        return review_gaming(p,candidate)
+    if domain=='smartphone-port-mesh-echo':
+        from .personal_device_products_review import review_smartphone
+        return review_smartphone(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -392,6 +406,8 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'otc-self-fit-output-claims':('hearing_aid_product_review.py','hearing_aid_product.py'),
     'auracast-transport-sync':('auracast_product_review.py','auracast_product.py'),
     'over-ear-anc-seal-stability':('overear_anc_product_review.py','overear_anc_product.py'),
+    'gaming-communication-latency':('personal_device_products_review.py','personal_device_products.py'),
+    'smartphone-port-mesh-echo':('personal_device_products_review.py','personal_device_products.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -437,7 +453,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','hearing-aid-acoustic-boundary','otc-self-fit-output-claims','auracast-transport-sync','over-ear-anc-seal-stability','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','hearing-aid-acoustic-boundary','otc-self-fit-output-claims','auracast-transport-sync','over-ear-anc-seal-stability','gaming-communication-latency','smartphone-port-mesh-echo','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],
@@ -579,6 +595,10 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['END_TO_END_LATENCY','INTER_RECEIVER_SYNC','RECEIVER_DIVERSITY','PACKET_LOSS','RECEIVER_LEVEL_SPREAD']
     if skill=='over-ear-anc-seal-stability-baseline':
         return [c.get('id') for c in values['checks']]==['FIT_STATE_COVERAGE','CUSHION_LEAK_LOSS','FEEDBACK_PHASE_MARGIN','DRIVER_EXCURSION','CUSHION_COMPRESSION','EARCUP_PRESSURE_PROXY']
+    if skill=='gaming-headset-communication-baseline':
+        return [c.get('id') for c in values['checks']]==['SIDETONE_LATENCY','BOOM_DISTANCE_MINIMUM','BOOM_DISTANCE_MAXIMUM','PLAYBACK_CROSSTALK','VOICE_SNR','OUTPUT_HEADROOM']
+    if skill=='smartphone-port-mesh-echo-baseline':
+        return [c.get('id') for c in values['checks']]==['HAND_BLOCKAGE','WATER_MESH_LOSS','ECHO_COUPLING','ORIENTATION_COVERAGE','BOTTOM_SPEAKER_EXCURSION','HANDHELD_CALL_SNR']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

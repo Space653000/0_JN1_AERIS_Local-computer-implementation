@@ -296,3 +296,18 @@ Private transcript `.aeris/evidence/H0001-product-chiefs-wave1-full-tests.log`,
 SHA-256 `9000048c69dcc707764b0207b29baaf6a2beafa27cfd4880c0b50795c13d43bc`.
 No Core/main/PR32 mutation, raw Evidence, SQLite, measurement or binary is
 included.
+
+## Product Chief wave 2 — R050/R051
+
+- Added distinct R050 gaming-headset local sidetone/boom/crosstalk/SNR/headroom
+  execution and exact R082 independent review.
+- Added distinct R051 smartphone hand/mesh/echo/orientation/excursion/call-SNR
+  execution and exact R077 independent review.
+- Focused 38/38 PASS; full fixed-source 458/458 PASS in 1600.379 seconds; six
+  semantic and six fixed-environment dark/light visual/accessibility routes PASS.
+- Current inventory: 107 Skills, 107 Methods, 65 role suites, 477 cases; 60
+  roles have a suite, 40 do not; Product Chiefs 7/24.
+- Truth remains L0=0, L1=100, L2=0, L3=0, L4=0. This checkpoint is not H0001,
+  P02, physical, calibrated, perceptual, network/interoperability or Human
+  acceptance. No raw `.aeris`, SQLite, credentials, measurements or binaries
+  are included.
