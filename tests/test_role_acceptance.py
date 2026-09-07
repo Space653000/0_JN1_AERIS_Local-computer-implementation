@@ -65,9 +65,9 @@ class RoleAcceptanceTests(unittest.TestCase):
     def test_bounded_review_roles_require_their_own_sealed_decision_suites(self):
         from aeris_runtime.engineering.role_acceptance import RoleAcceptanceFactory
         runner=RoleAcceptanceFactory(self.root/'acceptance')
-        for role in ('R010','R075','R029','R028','R030'):
+        for role,skill in (('R010',None),('R075','speaker-thermal-domain-review'),('R029',None),('R028',None),('R030',None)):
             with self.subTest(role=role):
-                result=runner.evaluate(role)
+                result=runner.evaluate(role,skill)
                 self.assertTrue(result['execution_passed'])
                 self.assertEqual(result['level'],'L2')
                 self.assertGreaterEqual(result['case_count'],6)
@@ -129,8 +129,8 @@ class RoleAcceptanceTests(unittest.TestCase):
             self.assertEqual(row['executable_skills'],['tws-fit-anc-call-baseline'])
             self.assertEqual(row['coverage']['role_domain_cases'],8)
             self.assertEqual(row['coverage']['role_acceptance'],0)
-            self.assertEqual(matrix['total_role_golden_cases'],531)
-            self.assertEqual(matrix['total_role_golden_suites'],77)
+            self.assertEqual(matrix['total_role_golden_cases'],567)
+            self.assertEqual(matrix['total_role_golden_suites'],85)
             fixture=api.get('/api/v1/capabilities/fixture/R048?skill=tws-fit-anc-call-baseline')
             self.assertEqual(fixture['source_kind'],'SYNTHETIC')
             self.assertEqual(fixture['fixture']['input']['feedback_delay_ms'],0.5)

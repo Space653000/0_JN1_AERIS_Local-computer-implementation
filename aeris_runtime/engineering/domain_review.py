@@ -43,6 +43,10 @@ REQUIRED_DOMAINS={
     'smart-speaker-far-field-self-echo-baseline':['smart-speaker-far-field-self-echo'],
     'soundbar-crossover-wall-dialogue-baseline':['soundbar-crossover-wall-dialogue'],
     'home-theater-level-polarity-delay-baseline':['home-theater-level-polarity-delay'],
+    'thin-tv-panel-wall-dialogue-baseline':['thin-tv-panel-wall-dialogue'],
+    'doorbell-weather-intercom-baseline':['doorbell-weather-intercom'],
+    'appliance-motor-notification-voice-baseline':['appliance-motor-notification-voice'],
+    'ar-open-ear-leakage-tracking-wind-baseline':['ar-open-ear-leakage-tracking-wind'],
     'standards-metadata-applicability-baseline':['standards-metadata'],
     'requirement-association-baseline':['requirement-association'],
     'failure-hypothesis-experiment-baseline':['failure-hypothesis'],
@@ -71,7 +75,7 @@ def applicable(domain,context):
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
                 and context.get('transducer') in {'Speaker','Both'}
                 and context.get('product') in {'R049','ANC Over-Ear Headphone'})
-    if domain in {'gaming-communication-latency','smartphone-port-mesh-echo','tablet-orientation-case-table','laptop-fan-hinge-coupling','monitor-aio-usb-desk','smart-speaker-far-field-self-echo','soundbar-crossover-wall-dialogue','home-theater-level-polarity-delay'}:
+    if domain in {'gaming-communication-latency','smartphone-port-mesh-echo','tablet-orientation-case-table','laptop-fan-hinge-coupling','monitor-aio-usb-desk','smart-speaker-far-field-self-echo','soundbar-crossover-wall-dialogue','home-theater-level-polarity-delay','thin-tv-panel-wall-dialogue','doorbell-weather-intercom','appliance-motor-notification-voice','ar-open-ear-leakage-tracking-wind'}:
         products={'gaming-communication-latency':{'R050','Gaming / Communication Headset'},
                   'smartphone-port-mesh-echo':{'R051','Smartphone'},
                   'tablet-orientation-case-table':{'R052','Tablet'},
@@ -79,7 +83,11 @@ def applicable(domain,context):
                   'monitor-aio-usb-desk':{'R054','Monitor / All-in-One'},
                   'smart-speaker-far-field-self-echo':{'R055','Smart Speaker'},
                   'soundbar-crossover-wall-dialogue':{'R056','Soundbar'},
-                  'home-theater-level-polarity-delay':{'R057','Home Theater / Multichannel'}}
+                  'home-theater-level-polarity-delay':{'R057','Home Theater / Multichannel'},
+                  'thin-tv-panel-wall-dialogue':{'R058','TV / Display Audio'},
+                  'doorbell-weather-intercom':{'R059','Doorbell / Security Camera'},
+                  'appliance-motor-notification-voice':{'R060','IoT / Smart Appliance'},
+                  'ar-open-ear-leakage-tracking-wind':{'R061','AR Glasses'}}
         return (context.get('risk') in {'R0','R1'} and context.get('lifecycle') in {'Concept','Architecture','Prototype','EVT'}
                 and context.get('source_kind') in {'SYNTHETIC','USER_SUPPLIED_UNVERIFIED'}
                 and context.get('transducer')=='Both' and context.get('product') in products[domain])
@@ -282,6 +290,18 @@ def review(domain,request):
     if domain=='home-theater-level-polarity-delay':
         from .av_products_review import review_theater
         return review_theater(p,candidate)
+    if domain=='thin-tv-panel-wall-dialogue':
+        from .environment_products_review import review_tv
+        return review_tv(p,candidate)
+    if domain=='doorbell-weather-intercom':
+        from .environment_products_review import review_doorbell
+        return review_doorbell(p,candidate)
+    if domain=='appliance-motor-notification-voice':
+        from .environment_products_review import review_appliance
+        return review_appliance(p,candidate)
+    if domain=='ar-open-ear-leakage-tracking-wind':
+        from .environment_products_review import review_open_ear
+        return review_open_ear(p,candidate)
     if domain=='microphone-array-pattern':
         from .array_beam_review import review as review_pattern
         return review_pattern(p,candidate)
@@ -444,6 +464,10 @@ _DELEGATED_REVIEW_DEPENDENCIES={
     'smart-speaker-far-field-self-echo':('conference_products_review.py','conference_products.py'),
     'soundbar-crossover-wall-dialogue':('av_products_review.py','av_products.py'),
     'home-theater-level-polarity-delay':('av_products_review.py','av_products.py'),
+    'thin-tv-panel-wall-dialogue':('environment_products_review.py','environment_products.py'),
+    'doorbell-weather-intercom':('environment_products_review.py','environment_products.py'),
+    'appliance-motor-notification-voice':('environment_products_review.py','environment_products.py'),
+    'ar-open-ear-leakage-tracking-wind':('environment_products_review.py','environment_products.py'),
     'microphone-array-pattern':('array_beam_review.py','array_beam.py'),
     'microphone-capture-clock':('capture_clock_review.py','capture_clock.py'),
     'microphone-array-geometry':('array_doa_review.py','array_doa.py','numerical_policy.py'),
@@ -489,7 +513,7 @@ def execution_context(request,role_id,skill_id,source_kind):
 def _candidate(domain,output):
     """Project executor assertions, never recompute answers for the reviewer."""
     v=output['values']; checks={c['id']:c for c in v['checks']}
-    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','hearing-aid-acoustic-boundary','otc-self-fit-output-claims','auracast-transport-sync','over-ear-anc-seal-stability','gaming-communication-latency','smartphone-port-mesh-echo','tablet-orientation-case-table','laptop-fan-hinge-coupling','monitor-aio-usb-desk','smart-speaker-far-field-self-echo','soundbar-crossover-wall-dialogue','home-theater-level-polarity-delay','microphone-array-pattern','microphone-capture-clock'}:
+    if domain in {'speaker-fr-uncertainty','microphone-array-geometry','failure-hypothesis','requirement-association','standards-metadata','speaker-sealed-lumped','speaker-port-lumped','speaker-polar-spatial','speaker-tonal-context','speaker-signal-chain-headroom','speaker-bass-protection','structural-acoustic-path','room-decay-spatial','room-correction-spatial','speaker-digital-transport','speaker-filter-realization','microphone-architecture-acoustic-path','microphone-far-field-disturbance','microphone-tonal-intelligibility','microphone-aec-enhancement','hearing-aid-acoustic-boundary','otc-self-fit-output-claims','auracast-transport-sync','over-ear-anc-seal-stability','gaming-communication-latency','smartphone-port-mesh-echo','tablet-orientation-case-table','laptop-fan-hinge-coupling','monitor-aio-usb-desk','smart-speaker-far-field-self-echo','soundbar-crossover-wall-dialogue','home-theater-level-polarity-delay','thin-tv-panel-wall-dialogue','doorbell-weather-intercom','appliance-motor-notification-voice','ar-open-ear-leakage-tracking-wind','microphone-array-pattern','microphone-capture-clock'}:
         return {**copy.deepcopy(v),
                 'physical_measurement_verified':output['physical_measurement_verified']}
     truth={'physical_measurement_verified':output['physical_measurement_verified'],

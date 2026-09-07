@@ -1,0 +1,1 @@
+{"type":"object","required":["parameters","candidate","context"],"additionalProperties":false,"properties":{"parameters":{"type":"object"},"candidate":{"type":"object"},"context":{"type":"object"}}}

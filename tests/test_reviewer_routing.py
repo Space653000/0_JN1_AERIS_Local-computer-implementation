@@ -16,7 +16,7 @@ class ReviewerRoutingTests(unittest.TestCase):
             self.assertFalse(domain_review.select_reviewers(request,['R016'])['complete'])
             nonlinear=runner.evaluate('R010')
             self.assertFalse(domain_review.select_reviewers(request,['R016'])['complete'])
-            runner.evaluate('R075')
+            runner.evaluate('R075','speaker-thermal-domain-review')
             result=domain_review.select_reviewers(request,['R016'])
             self.assertTrue(result['complete'])
             self.assertEqual({r['role_id'] for r in result['reviewers']},{'R010','R075'})

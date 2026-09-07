@@ -22,25 +22,29 @@
     "product-system-plan": "skills/product-system-plan/input.schema.json",
     "engineering-requirements": "skills/engineering-requirements/input.schema.json",
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+    "ar-open-ear-leakage-tracking-wind-baseline": "skills/ar-open-ear-leakage-tracking-wind-baseline/input.schema.json"
   },
   "outputs": {
     "product-system-plan": "skills/product-system-plan/output.schema.json",
     "engineering-requirements": "skills/engineering-requirements/output.schema.json",
     "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+    "ar-open-ear-leakage-tracking-wind-baseline": "skills/ar-open-ear-leakage-tracking-wind-baseline/output.schema.json"
   },
   "required_skills": [
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "ar-open-ear-leakage-tracking-wind-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/ar-open-ear-leakage-tracking-wind-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -245,13 +249,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/ar-open-ear-leakage-tracking-wind-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "ar-open-ear-leakage-tracking-wind-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -267,7 +273,14 @@
       "neighbor_owns": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "ar-open-ear-leakage-tracking-wind-baseline",
+      "method": "methods/roles/ar-open-ear-leakage-tracking-wind-baseline.json",
+      "suite": "golden/roles/R061/golden.json",
+      "scope": "Supplied open-ear audibility, privacy leakage, pose, tracking, wind and fit-spread screening; no physical/listener acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Resolve AR open-ear audibility, sound leakage, head tracking and wind capture",
@@ -286,7 +299,8 @@
       "product-system-plan": "skills/product-system-plan/input.schema.json",
       "engineering-requirements": "skills/engineering-requirements/input.schema.json",
       "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+      "ar-open-ear-leakage-tracking-wind-baseline": "skills/ar-open-ear-leakage-tracking-wind-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -302,7 +316,8 @@
       "product-system-plan": "skills/product-system-plan/output.schema.json",
       "engineering-requirements": "skills/engineering-requirements/output.schema.json",
       "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+      "ar-open-ear-leakage-tracking-wind-baseline": "skills/ar-open-ear-leakage-tracking-wind-baseline/output.schema.json"
     }
   },
   "report_sections": [

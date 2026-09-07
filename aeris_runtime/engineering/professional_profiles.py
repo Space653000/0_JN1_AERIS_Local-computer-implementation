@@ -270,6 +270,18 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS['R056']={
 _SINGLE_ROLE_DOMAIN_CONTRACTS['R057']={
     'skill_id':'home-theater-level-polarity-delay-baseline','method':'methods/roles/home-theater-level-polarity-delay-baseline.json',
     'suite':'golden/roles/R057/golden.json','scope':'Supplied multichannel level, polarity, delay, seat-region, sub-crossover and calibration-position screening; no physical/listener acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R058']={
+    'skill_id':'thin-tv-panel-wall-dialogue-baseline','method':'methods/roles/thin-tv-panel-wall-dialogue-baseline.json',
+    'suite':'golden/roles/R058/golden.json','scope':'Supplied TV panel, dialogue, wall, excursion, mount-buzz and placement screening; no physical/listener acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R059']={
+    'skill_id':'doorbell-weather-intercom-baseline','method':'methods/roles/doorbell-weather-intercom-baseline.json',
+    'suite':'golden/roles/R059/golden.json','scope':'Supplied wet-mesh, wind, intercom feedback, echo, mount and weather-state screening; no outdoor/Human acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R060']={
+    'skill_id':'appliance-motor-notification-voice-baseline','method':'methods/roles/appliance-motor-notification-voice-baseline.json',
+    'suite':'golden/roles/R060/golden.json','scope':'Supplied appliance motor, state, notification, duty, leak and command-SNR screening; no physical/usability acceptance.'}
+_SINGLE_ROLE_DOMAIN_CONTRACTS['R061']={
+    'skill_id':'ar-open-ear-leakage-tracking-wind-baseline','method':'methods/roles/ar-open-ear-leakage-tracking-wind-baseline.json',
+    'suite':'golden/roles/R061/golden.json','scope':'Supplied open-ear audibility, privacy leakage, pose, tracking, wind and fit-spread screening; no physical/listener acceptance.'}
 
 # A role may own several independently evidenced bounded capabilities.  The
 # ordered list is authored source truth; aggregate maturity must never hide a
@@ -293,6 +305,18 @@ ROLE_DOMAIN_CONTRACTS['R024'].append({
 ROLE_DOMAIN_CONTRACTS['R026'].append({
     'skill_id':'home-theater-level-polarity-delay-domain-review','method':'methods/roles/home-theater-level-polarity-delay-domain-review.json',
     'suite':'golden/roles/R026/home-theater.json','scope':'Independent multichannel level/polarity/delay assertion review; no wiring, room-wide, listener or Human approval.'})
+ROLE_DOMAIN_CONTRACTS['R073'].append({
+    'skill_id':'thin-tv-panel-wall-dialogue-domain-review','method':'methods/roles/thin-tv-panel-wall-dialogue-domain-review.json',
+    'suite':'golden/roles/R073/thin-tv.json','scope':'Independent TV panel/wall/dialogue assertion review; no panel modal, physical display or Human approval.'})
+ROLE_DOMAIN_CONTRACTS['R074']=[{
+    'skill_id':'doorbell-weather-intercom-domain-review','method':'methods/roles/doorbell-weather-intercom-domain-review.json',
+    'suite':'golden/roles/R074/doorbell.json','scope':'Independent doorbell wet-mesh/wind/intercom assertion review; no weather population, outdoor product or Human approval.'}]
+ROLE_DOMAIN_CONTRACTS['R075'].append({
+    'skill_id':'appliance-motor-notification-voice-domain-review','method':'methods/roles/appliance-motor-notification-voice-domain-review.json',
+    'suite':'golden/roles/R075/appliance.json','scope':'Independent appliance motor/duty/voice assertion review; no thermal lifetime, command usability or Human approval.'})
+ROLE_DOMAIN_CONTRACTS['R080']=[{
+    'skill_id':'ar-open-ear-leakage-tracking-wind-domain-review','method':'methods/roles/ar-open-ear-leakage-tracking-wind-domain-review.json',
+    'suite':'golden/roles/R080/ar-open-ear.json','scope':'Independent open-ear leakage/tracking/wind assertion review; no privacy field, listener population or Human approval.'}]
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',

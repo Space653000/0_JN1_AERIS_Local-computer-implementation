@@ -22,25 +22,29 @@
     "product-system-plan": "skills/product-system-plan/input.schema.json",
     "engineering-requirements": "skills/engineering-requirements/input.schema.json",
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+    "appliance-motor-notification-voice-baseline": "skills/appliance-motor-notification-voice-baseline/input.schema.json"
   },
   "outputs": {
     "product-system-plan": "skills/product-system-plan/output.schema.json",
     "engineering-requirements": "skills/engineering-requirements/output.schema.json",
     "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+    "appliance-motor-notification-voice-baseline": "skills/appliance-motor-notification-voice-baseline/output.schema.json"
   },
   "required_skills": [
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "appliance-motor-notification-voice-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/appliance-motor-notification-voice-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -244,13 +248,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/appliance-motor-notification-voice-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "appliance-motor-notification-voice-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -266,7 +272,14 @@
       "neighbor_owns": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "appliance-motor-notification-voice-baseline",
+      "method": "methods/roles/appliance-motor-notification-voice-baseline.json",
+      "suite": "golden/roles/R060/golden.json",
+      "scope": "Supplied appliance motor, state, notification, duty, leak and command-SNR screening; no physical/usability acceptance."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Allocate appliance voice/notification performance over motor states and duty cycles",
@@ -285,7 +298,8 @@
       "product-system-plan": "skills/product-system-plan/input.schema.json",
       "engineering-requirements": "skills/engineering-requirements/input.schema.json",
       "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+      "appliance-motor-notification-voice-baseline": "skills/appliance-motor-notification-voice-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -301,7 +315,8 @@
       "product-system-plan": "skills/product-system-plan/output.schema.json",
       "engineering-requirements": "skills/engineering-requirements/output.schema.json",
       "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+      "appliance-motor-notification-voice-baseline": "skills/appliance-motor-notification-voice-baseline/output.schema.json"
     }
   },
   "report_sections": [

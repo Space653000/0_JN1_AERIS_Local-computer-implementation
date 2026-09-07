@@ -54,8 +54,8 @@ class RoleWorkflowExecutionTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'context override'):
                     run_role('R016','speaker-power-distortion-baseline',BASE,objective='Illegal override',context=override)
             self.assertEqual(len(controlplane.ControlStore().list_tasks()),1)
-            for role in ('R010','R075'):
-                self.assertTrue(role_acceptance.RoleAcceptanceFactory().evaluate(role)['execution_passed'])
+            for role,skill in (('R010',None),('R075','speaker-thermal-domain-review')):
+                self.assertTrue(role_acceptance.RoleAcceptanceFactory().evaluate(role,skill)['execution_passed'])
             rejected=run_role('R016','speaker-power-distortion-baseline',
                              {**BASE,'harmonic_rms_pa':[0.1,0.0]},objective='Review excessive distortion',source_kind='SYNTHETIC')
             self.assertEqual(rejected['review']['decision'],'DESIGN_REVISION_REQUIRED')

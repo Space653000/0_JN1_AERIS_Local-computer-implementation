@@ -20,19 +20,23 @@
   ],
   "inputs": {
     "porous-absorption": "skills/porous-absorption/input.schema.json",
-    "leakage-tolerance": "skills/leakage-tolerance/input.schema.json"
+    "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
+    "doorbell-weather-intercom-domain-review": "skills/doorbell-weather-intercom-domain-review/input.schema.json"
   },
   "outputs": {
     "porous-absorption": "skills/porous-absorption/output.schema.json",
-    "leakage-tolerance": "skills/leakage-tolerance/output.schema.json"
+    "leakage-tolerance": "skills/leakage-tolerance/output.schema.json",
+    "doorbell-weather-intercom-domain-review": "skills/doorbell-weather-intercom-domain-review/output.schema.json"
   },
   "required_skills": [
     "porous-absorption",
-    "leakage-tolerance"
+    "leakage-tolerance",
+    "doorbell-weather-intercom-domain-review"
   ],
   "required_methods": [
     "methods/engineering/porous-absorption.json",
-    "methods/engineering/leakage-tolerance.json"
+    "methods/engineering/leakage-tolerance.json",
+    "methods/roles/doorbell-weather-intercom-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/porous-absorption.json",
@@ -151,11 +155,13 @@
     "question": "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
     "required_methods": [
       "methods/engineering/porous-absorption.json",
-      "methods/engineering/leakage-tolerance.json"
+      "methods/engineering/leakage-tolerance.json",
+      "methods/roles/doorbell-weather-intercom-domain-review.json"
     ],
     "required_skills": [
       "porous-absorption",
-      "leakage-tolerance"
+      "leakage-tolerance",
+      "doorbell-weather-intercom-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -171,7 +177,14 @@
       "neighbor_owns": "Bound microphone port/mesh resonance and leakage before thermoviscous solver escalation"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "doorbell-weather-intercom-domain-review",
+      "method": "methods/roles/doorbell-weather-intercom-domain-review.json",
+      "suite": "golden/roles/R074/doorbell.json",
+      "scope": "Independent doorbell wet-mesh/wind/intercom assertion review; no weather population, outdoor product or Human approval."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Compare mesh/foam/porous acoustic tradeoffs with declared porosity and flow-resistivity assumptions",
@@ -188,7 +201,8 @@
     ],
     "calculation_schemas": {
       "porous-absorption": "skills/porous-absorption/input.schema.json",
-      "leakage-tolerance": "skills/leakage-tolerance/input.schema.json"
+      "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
+      "doorbell-weather-intercom-domain-review": "skills/doorbell-weather-intercom-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -202,7 +216,8 @@
     ],
     "calculation_schemas": {
       "porous-absorption": "skills/porous-absorption/output.schema.json",
-      "leakage-tolerance": "skills/leakage-tolerance/output.schema.json"
+      "leakage-tolerance": "skills/leakage-tolerance/output.schema.json",
+      "doorbell-weather-intercom-domain-review": "skills/doorbell-weather-intercom-domain-review/output.schema.json"
     }
   },
   "report_sections": [

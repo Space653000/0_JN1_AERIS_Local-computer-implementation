@@ -22,25 +22,29 @@
     "nvh-integration": "skills/nvh-integration/input.schema.json",
     "resonance-characterization": "skills/resonance-characterization/input.schema.json",
     "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/input.schema.json",
-    "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/input.schema.json"
+    "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/input.schema.json",
+    "thin-tv-panel-wall-dialogue-domain-review": "skills/thin-tv-panel-wall-dialogue-domain-review/input.schema.json"
   },
   "outputs": {
     "nvh-integration": "skills/nvh-integration/output.schema.json",
     "resonance-characterization": "skills/resonance-characterization/output.schema.json",
     "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/output.schema.json",
-    "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/output.schema.json"
+    "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/output.schema.json",
+    "thin-tv-panel-wall-dialogue-domain-review": "skills/thin-tv-panel-wall-dialogue-domain-review/output.schema.json"
   },
   "required_skills": [
     "nvh-integration",
     "resonance-characterization",
     "structural-acoustic-path-domain-review",
-    "laptop-fan-hinge-coupling-domain-review"
+    "laptop-fan-hinge-coupling-domain-review",
+    "thin-tv-panel-wall-dialogue-domain-review"
   ],
   "required_methods": [
     "methods/engineering/nvh-integration.json",
     "methods/engineering/resonance-characterization.json",
     "methods/roles/structural-acoustic-path-domain-review.json",
-    "methods/roles/laptop-fan-hinge-coupling-domain-review.json"
+    "methods/roles/laptop-fan-hinge-coupling-domain-review.json",
+    "methods/roles/thin-tv-panel-wall-dialogue-domain-review.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/nvh-integration.json",
@@ -161,13 +165,15 @@
       "methods/engineering/nvh-integration.json",
       "methods/engineering/resonance-characterization.json",
       "methods/roles/structural-acoustic-path-domain-review.json",
-      "methods/roles/laptop-fan-hinge-coupling-domain-review.json"
+      "methods/roles/laptop-fan-hinge-coupling-domain-review.json",
+      "methods/roles/thin-tv-panel-wall-dialogue-domain-review.json"
     ],
     "required_skills": [
       "nvh-integration",
       "resonance-characterization",
       "structural-acoustic-path-domain-review",
-      "laptop-fan-hinge-coupling-domain-review"
+      "laptop-fan-hinge-coupling-domain-review",
+      "thin-tv-panel-wall-dialogue-domain-review"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -195,6 +201,12 @@
       "method": "methods/roles/laptop-fan-hinge-coupling-domain-review.json",
       "suite": "golden/roles/R073/laptop.json",
       "scope": "Independent laptop fan/hinge/structural-coupling assertion review; no physical path, AEC, call-quality or Human approval."
+    },
+    {
+      "skill_id": "thin-tv-panel-wall-dialogue-domain-review",
+      "method": "methods/roles/thin-tv-panel-wall-dialogue-domain-review.json",
+      "suite": "golden/roles/R073/thin-tv.json",
+      "scope": "Independent TV panel/wall/dialogue assertion review; no panel modal, physical display or Human approval."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -215,7 +227,8 @@
       "nvh-integration": "skills/nvh-integration/input.schema.json",
       "resonance-characterization": "skills/resonance-characterization/input.schema.json",
       "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/input.schema.json",
-      "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/input.schema.json"
+      "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/input.schema.json",
+      "thin-tv-panel-wall-dialogue-domain-review": "skills/thin-tv-panel-wall-dialogue-domain-review/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -231,7 +244,8 @@
       "nvh-integration": "skills/nvh-integration/output.schema.json",
       "resonance-characterization": "skills/resonance-characterization/output.schema.json",
       "structural-acoustic-path-domain-review": "skills/structural-acoustic-path-domain-review/output.schema.json",
-      "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/output.schema.json"
+      "laptop-fan-hinge-coupling-domain-review": "skills/laptop-fan-hinge-coupling-domain-review/output.schema.json",
+      "thin-tv-panel-wall-dialogue-domain-review": "skills/thin-tv-panel-wall-dialogue-domain-review/output.schema.json"
     }
   },
   "report_sections": [
