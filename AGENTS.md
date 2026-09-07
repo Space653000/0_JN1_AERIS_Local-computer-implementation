@@ -1,5 +1,7 @@
 # AGENTS.md — AERIS Local FULL BUILD Autopilot Contract
 
+> **2026-09-07 審查優先：HOLD_FOR_SOL_RED_TEAM。** 先讀 [Astra → Sol → Astra 閘門](docs/ASTRA_SOL_REVIEW_GATE_V1.md)。下文 Full-Build／兩個 URL／缺口清零／續建命令只適用於閘門解除後的已授權有限批次。本次只修訂與發布文件；第 4 項等待使用者切換 GPT-5.6 Sol High，尚未執行本機總驗收。
+
 Canonical Core: `Space653000/0_JN1_AERIS@main` — READ ONLY.  
 Implementation: `Space653000/0_JN1_AERIS_Local-computer-implementation`.
 

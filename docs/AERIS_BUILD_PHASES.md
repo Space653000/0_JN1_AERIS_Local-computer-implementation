@@ -1,5 +1,9 @@
 # AERIS Build Phases — Persistent Cross-Machine Execution Memory
 
+**Current plan:** [v0.3.0-review.1](IMPLEMENTATION_PLAN_V0_3.md). P01/P02 below are suspended long-term targets; B00–B05 define planned finite delivery scopes, all disabled pending review and Human authorization.
+
+> **2026-09-07 審查優先：HOLD_FOR_SOL_RED_TEAM。** 先讀 [Astra → Sol → Astra 閘門](ASTRA_SOL_REVIEW_GATE_V1.md)。下文 Full-Build／兩個 URL／缺口清零／續建命令只適用於閘門解除後的已授權有限批次。本次只修訂與發布文件；第 4 項等待使用者切換 GPT-5.6 Sol High，尚未執行本機總驗收。
+
 This file is the durable continuation contract for AERIS construction.
 
 The Human should be able to open/select one safe local workspace and provide only:

@@ -3,7 +3,7 @@
   "canonical_core": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "82f4554623b2d87185dac39a3b93194af7dd5275"
+    "reviewed_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac"
   },
   "non_negotiable_invariants": {
     "human_authority": "Human Chief Engineer",
@@ -11,10 +11,22 @@
     "virtual_seats": 100,
     "seat_semantics": "capabilities_not_100_persistent_agents",
     "pod_targets": {
-      "ordinary_task": [2, 8],
-      "complex_task": [5, 15]
+      "ordinary_task": [
+        2,
+        8
+      ],
+      "complex_task": [
+        5,
+        15
+      ]
     },
-    "mic_algorithm_validation_axes": ["noise", "distance", "azimuth", "speaker", "language"],
+    "mic_algorithm_validation_axes": [
+      "noise",
+      "distance",
+      "azimuth",
+      "speaker",
+      "language"
+    ],
     "model_is_identity": false,
     "memory_is_evidence": false,
     "execution_is_completion": false,
@@ -37,6 +49,20 @@
     "core_policy_must_match_autopilot_contract": true,
     "tracked_truth_snapshots_must_match_reviewed_core_sha": true
   },
-  "operational_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
-  "change_policy": "If canonical Core SHA changes, remote drift gate must fail. Human reviews semantic changes before deliberately updating lock, alignment, Autopilot, company manifest and maturity evidence together; never auto-accept Core drift."
+  "operational_states": [
+    "CLOSED",
+    "BOOTSTRAPPING",
+    "BLOCKED",
+    "OPEN_WITH_LIMITS",
+    "OPEN_VERIFIED_SCOPE"
+  ],
+  "change_policy": "If canonical Core SHA changes, remote drift gate must fail. Human reviews semantic changes before deliberately updating lock, alignment, Autopilot, company manifest and maturity evidence together; never auto-accept Core drift.",
+  "review_alignment": {
+    "architecture_version": "0.6.0-review.1",
+    "implementation_plan_version": "0.3.0-review.1",
+    "document_alignment": "REVIEWED",
+    "runtime_alignment": "OPEN_FINDINGS",
+    "local_alignment": "NOT_REVIEWED",
+    "implementation_authorized": false
+  }
 }

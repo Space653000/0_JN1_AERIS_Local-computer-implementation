@@ -139,3 +139,12 @@ truth:
   ci: exact_test_scope_only
   supervisor_heartbeat: service_liveness_not_company_health
   open_verified_scope: named_scope_only_not_company_complete
+
+review_admission:
+  revision: 2026-09-07.1
+  contract: config/review_gate.v1.json
+  state: HOLD_FOR_SOL_RED_TEAM
+  implementation_authorized: false
+  overrides_all_legacy_trigger_and_resume_rules: true
+  runtime_enforcement_implemented: false
+  core_document_publication: explicitly_human_authorized_governance_only
