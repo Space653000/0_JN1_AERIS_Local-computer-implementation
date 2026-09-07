@@ -14,7 +14,9 @@
     "never_use_chat_prose_as_completion_evidence": true,
     "never_modify_canonical_core": true,
     "no_claude_required": true,
-    "paid_professional_software_required": false
+    "paid_professional_software_required": false,
+    "scope": "Only finite approved batch; all legacy continuation suspended during hold.",
+    "continuation_precondition": "Legacy continuation applies only after review admission and only among phases in the same frozen Human-authorized batch. No phase is eligible during HOLD."
   },
   "phases": [
     {
@@ -27,7 +29,9 @@
         ".aeris/state/LOCAL_ACCEPTANCE.json",
         ".aeris/state/AUTOPILOT_RESULT.json"
       ],
-      "completion_truth": "All safe zero-cost software-local gaps are closed; only genuine Human/External/Reboot/physical/license gates remain."
+      "completion_truth": "All safe zero-cost software-local gaps are closed; only genuine Human/External/Reboot/physical/license gates remain.",
+      "execution_enabled": false,
+      "status": "LONG_TERM_TARGET_SUSPENDED_BY_REVIEW_HOLD"
     },
     {
       "id": "P02",
@@ -41,7 +45,9 @@
         "methods/",
         "golden/"
       ],
-      "completion_truth": "All 100 canonical capability seats have real executable local capability paths at L2 or higher, with no persona/prompt-only seat counted as complete."
+      "completion_truth": "All 100 canonical capability seats have real executable local capability paths at L2 or higher, with no persona/prompt-only seat counted as complete.",
+      "execution_enabled": false,
+      "status": "LONG_TERM_TARGET_SUSPENDED_BY_REVIEW_HOLD"
     }
   ],
   "future_phase_policy": {
@@ -50,5 +56,47 @@
     "append_to_this_machine_readable_catalog": true,
     "preserve_core_read_only_and_evidence_truth_rules": true,
     "require_normal_implementation_pr_ci_governance": true
-  }
+  },
+  "plan_version": "0.3.0-review.1",
+  "admission": {
+    "contract": "config/review_gate.v1.json",
+    "state": "HOLD_FOR_SOL_RED_TEAM",
+    "enabled": false,
+    "evaluate_before_resume": true,
+    "runtime_enforcement_implemented": false,
+    "eligible_phase_ids": []
+  },
+  "current_plan": "docs/IMPLEMENTATION_PLAN_V0_3.md",
+  "planned_batches": [
+    {
+      "id": "B00",
+      "spec": "docs/IMPLEMENTATION_PLAN_V0_3.md",
+      "execution_enabled": false
+    },
+    {
+      "id": "B01",
+      "spec": "docs/IMPLEMENTATION_PLAN_V0_3.md",
+      "execution_enabled": false
+    },
+    {
+      "id": "B02",
+      "spec": "docs/IMPLEMENTATION_PLAN_V0_3.md",
+      "execution_enabled": false
+    },
+    {
+      "id": "B03",
+      "spec": "docs/IMPLEMENTATION_PLAN_V0_3.md",
+      "execution_enabled": false
+    },
+    {
+      "id": "B04",
+      "spec": "docs/IMPLEMENTATION_PLAN_V0_3.md",
+      "execution_enabled": false
+    },
+    {
+      "id": "B05",
+      "spec": "docs/IMPLEMENTATION_PLAN_V0_3.md",
+      "execution_enabled": false
+    }
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "contract_id": "AERIS-LOCAL-FULL-BUILD-AUTOPILOT-V5",
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "canonical_core_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
   "deployment_profile": "AERIS-ZERO-COST-NO-CLAUDE-V1",
   "trigger": {
     "required_urls": [
@@ -74,7 +74,8 @@
     "stop_conditions": [
       "no_safe_software_only_gap_remains",
       "genuine_human_or_external_gate"
-    ]
+    ],
+    "scope": "Frozen Human-authorized batch only; excludes new backlog and all work while review hold is active."
   },
   "reports": {
     "preflight": ".aeris/state/AUTOPILOT_PREFLIGHT.json",
@@ -147,6 +148,21 @@
     "ONE_TIME_REBOOT_OR_LOGOFF_REQUIRED_FOR_PERSISTENCE_ACCEPTANCE",
     "PRODUCTION_CUSTOMER_FORMAL_RELEASE"
   ],
-  "opening_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
-  "truth_rule": "Two canonical URLs plus a safe selected workspace are the full command. Codex must close every safely implementable zero-cost software-only gap before final opening. Paid/licensed professional tools, external credentials, hardware/calibration and Human-authority blockers remain explicit and never fabricated; Claude is optional and never required by the default path."
+  "opening_states": [
+    "CLOSED",
+    "BOOTSTRAPPING",
+    "BLOCKED",
+    "OPEN_WITH_LIMITS",
+    "OPEN_VERIFIED_SCOPE"
+  ],
+  "truth_rule": "Two canonical URLs plus a safe selected workspace are the full command. Codex must close every safely implementable zero-cost software-only gap before final opening. Paid/licensed professional tools, external credentials, hardware/calibration and Human-authority blockers remain explicit and never fabricated; Claude is optional and never required by the default path.",
+  "review_revision": "2026-09-07.1",
+  "admission_precondition": {
+    "state": "HOLD_FOR_SOL_RED_TEAM",
+    "contract": "config/review_gate.v1.json",
+    "evaluate_before_trigger": true,
+    "explicit_review_or_no_build_suppresses_trigger": true,
+    "requires_completed_review_and_human_scoped_authorization": true,
+    "runtime_enforcement_implemented": false
+  }
 }
