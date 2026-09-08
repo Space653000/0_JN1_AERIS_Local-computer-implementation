@@ -1,5 +1,7 @@
 # AERIS Local Verification SOP — 給沒有開發經驗的使用者
 
+> **2026-09-07 審查優先：HOLD_FOR_SOL_RED_TEAM。** 先讀 [Astra → Sol → Astra 閘門](ASTRA_SOL_REVIEW_GATE_V1.md)。下文 Full-Build／兩個 URL／缺口清零／續建命令只適用於閘門解除後的已授權有限批次。本次只修訂與發布文件；第 4 項等待使用者切換 GPT-5.6 Sol High，尚未執行本機總驗收。
+
 這份 SOP 的目的不是讓安裝看起來成功，而是回答：**這一台電腦上的 AERIS 到底真正能做什麼？**
 
 GitHub/CI 無法替你的實體電腦證明 GPU、驅動、模型、網路隔離、COMSOL/APx/KLIPPEL、校正或客戶資料環境。這些必須在目的機器留下 Evidence。

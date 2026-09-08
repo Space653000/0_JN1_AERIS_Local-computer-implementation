@@ -1,5 +1,9 @@
 # AERIS Portable Company Kernel — PRE-ALPHA
 
+**Implementation plan revision: v0.3.0-review.1** — [Execution plan](docs/IMPLEMENTATION_PLAN_V0_3.md) · [Audit findings](docs/reviews/ASTRA_REVIEW_20260907.md). Runtime package remains 0.2.0 / PRE_ALPHA. Known trust-chain defects are open; this documentation publication is not a runtime repair.
+
+> **2026-09-07 審查優先：HOLD_FOR_SOL_RED_TEAM。** 先讀 [Astra → Sol → Astra 閘門](docs/ASTRA_SOL_REVIEW_GATE_V1.md)。下文 Full-Build／兩個 URL／缺口清零／續建命令只適用於閘門解除後的已授權有限批次。本次只修訂與發布文件；第 4 項等待使用者切換 GPT-5.6 Sol High，尚未執行本機總驗收。
+
 > **AERIS — Acoustic Engineering & Research Intelligence System**  
 > 將 AERIS 的公司軟體、治理、執行核心與工程信任機制部署到明確支援的本機；不把「安裝完成」誤寫成「100 位成熟工程師／公司完成」。
 
@@ -33,6 +37,8 @@ Repository contract 要求 Codex 自動執行：
 → loopback supervisor + heartbeat
 → persistence/watchdog
 → Evidence/Audit handoff
+→ 讀 Persistent Build Phases
+→ 從第一個未完成階段續建
 ```
 
 Codex 主入口：
@@ -340,5 +346,36 @@ cloud/software trust baselines closed
 → optional licensed tool adapters as environments become available
 → signed/attested release + formal Human approval
 ```
+
+## 21. Persistent Build Phases：換電腦不用重走聊天歷史
+
+AERIS 後續建設不再依賴某一次 ChatGPT/Codex 對話內容。
+
+正式續建索引：
+
+- [`docs/AERIS_BUILD_PHASES.md`](docs/AERIS_BUILD_PHASES.md)
+- [`config/build_phases.v1.json`](config/build_phases.v1.json)
+
+已納入的正式階段：
+
+1. [`AERIS LOCAL SOFTWARE COMPLETION PASS`](docs/AERIS_LOCAL_SOFTWARE_COMPLETION_PASS.md)
+2. [`AERIS PROFESSIONAL COMPANY BUILD — 100-Engineer Capability Factory`](docs/AERIS_PROFESSIONAL_COMPANY_BUILD_100_ENGINEER_CAPABILITY_FACTORY.md)
+
+未來每一次大型 AERIS 擴建提示詞都必須沉澱成新的 versioned Build Phase，並加入上述兩個索引。
+
+因此未來任何支援電腦的正確流程是：
+
+```text
+選定唯一安全 local workspace
+→ 貼兩個 GitHub URL
+→ Codex 讀 Core + Implementation governance
+→ 讀 Build Phase catalog
+→ 查真實 local Evidence
+→ 已完成且相容的 phase 直接略過
+→ 從第一個未完成 phase 繼續
+→ 不重新依聊天紀錄摸索整條建設路徑
+```
+
+這是 AERIS 的跨機器持久建設記憶。完成狀態仍只能由 Evidence 判定，不能由 AI 自述判定。
 
 **Implemented is not Verified. CI green is not Company Complete. Supervisor serving is not Company Healthy. Dashboard is not Truth.**

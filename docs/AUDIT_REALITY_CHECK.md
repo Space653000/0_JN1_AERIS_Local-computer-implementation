@@ -1,9 +1,11 @@
 # AERIS Reality Check / Anti-Fantasy Audit
 
+> **2026-09-07: HOLD_FOR_SOL_RED_TEAM.** Current design source is Core PR #4 / architecture v0.6.0-review.1. Read [new findings](reviews/ASTRA_REVIEW_20260907.md) and [review gate](ASTRA_SOL_REVIEW_GATE_V1.md) first. Integrated release/evidence enforcement has open P0 findings; TESTED below refers to existing unit scopes only. No Local acceptance or runtime repair was performed.
+
 **Status date:** 2026-09-01 (Asia/Taipei)  
 **Applies to:** `Space653000/0_JN1_AERIS_Local-computer-implementation`  
 **Canonical design authority:** read-only `Space653000/0_JN1_AERIS@main`  
-**Reviewed Core SHA:** `82f4554623b2d87185dac39a3b93194af7dd5275`
+**Reviewed Core SHA:** `fa65e86a8612b227ef4c9e6976ef0060ca2221ac`
 
 Machine-readable truth remains `config/maturity.json`. This document is a human-readable audit boundary; it must never override the machine-readable state or turn CI evidence into real-machine evidence.
 
@@ -27,12 +29,12 @@ External/Human boundaries use `HUMAN_GATE`, `EXTERNAL_LICENSE`, `PHYSICAL_HARDWA
 Canonical Core `main` is reviewed at:
 
 ```text
-82f4554623b2d87185dac39a3b93194af7dd5275
+fa65e86a8612b227ef4c9e6976ef0060ca2221ac
 ```
 
 Implementation `core.lock.json`, Core alignment, Autopilot and company truth must remain identical to that SHA. Remote Core drift is a hard CI gate; implementation must not silently rewrite the Core lock merely to make CI green.
 
-Both repositories currently have active default-branch Rulesets that block deletion/non-fast-forward and require PRs, with no bypass actor. Required Human approval count and required AERIS CI checks are not encoded as strongly as the target policy; `docs/HUMAN_GITHUB_PROTECTION_REQUIRED.md` records that separate governance improvement. This does not permit bypassing the existing Rulesets.
+The 2026-09-01 audit reported active default-branch Rulesets in both repositories (not re-audited in this review) that block deletion/non-fast-forward and require PRs, with no bypass actor. Required Human approval count and required AERIS CI checks are not encoded as strongly as the target policy; `docs/HUMAN_GITHUB_PROTECTION_REQUIRED.md` records that separate governance improvement. This does not permit bypassing the existing Rulesets.
 
 ## 3. Core P0 trust foundation has executable TESTED baselines
 

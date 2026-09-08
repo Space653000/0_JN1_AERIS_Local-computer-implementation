@@ -7,7 +7,7 @@
   "core_target": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+    "reviewed_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
     "authority": "read_only_highest_design_target",
     "implementation_rule": "implementation_must_adapt_to_core; implementation_must_not_write_core"
   },
@@ -26,8 +26,14 @@
     "role_registry": "company/organization/roles.v1.json",
     "role_maturity": "DEFINED_NOT_ALL_EXECUTABLE",
     "runtime_active_role_target": {
-      "ordinary_task": {"min": 2, "max": 8},
-      "complex_task": {"min": 5, "max": 15},
+      "ordinary_task": {
+        "min": 2,
+        "max": 8
+      },
+      "complex_task": {
+        "min": 5,
+        "max": 15
+      },
       "all_100_available_as_capabilities": true,
       "not_100_persistent_processes": true
     },
@@ -59,7 +65,12 @@
     "human_gate_only_for_real_external_or_authority_blockers": true
   },
   "runtime": {
-    "modes": ["offline", "local", "cloud", "auto"],
+    "modes": [
+      "offline",
+      "local",
+      "cloud",
+      "auto"
+    ],
     "private_engineering": "local_only_by_application_router_and_endpoint_scope_policy",
     "public_research": "cloud_optional_explicit_channel",
     "default_strategy": "local_first",
@@ -71,7 +82,13 @@
     "provider_truth": "model_neutral_architecture_does_not_mean_every_provider_is_already_implemented"
   },
   "operations": {
-    "opening_states": ["CLOSED", "BOOTSTRAPPING", "BLOCKED", "OPEN_WITH_LIMITS", "OPEN_VERIFIED_SCOPE"],
+    "opening_states": [
+      "CLOSED",
+      "BOOTSTRAPPING",
+      "BLOCKED",
+      "OPEN_WITH_LIMITS",
+      "OPEN_VERIFIED_SCOPE"
+    ],
     "verified_scope_baseline": "LOCAL_PORTABLE_COMPANY_KERNEL_BASELINE",
     "verified_scope_requires_real_machine_acceptance": true,
     "company_complete_from_kernel_opening": false,
@@ -116,7 +133,14 @@
     "autopilot_report": ".aeris/state/AUTOPILOT_RESULT.json",
     "acceptance_report": ".aeris/state/LOCAL_ACCEPTANCE.json",
     "opening_report": ".aeris/state/COMPANY_OPENING.json",
-    "profiles": ["windows-cpu", "windows-nvidia-workstation", "linux-x86-cpu", "linux-x86-nvidia", "jetson-orin-family", "trusted-lan-ai-server"],
+    "profiles": [
+      "windows-cpu",
+      "windows-nvidia-workstation",
+      "linux-x86-cpu",
+      "linux-x86-nvidia",
+      "jetson-orin-family",
+      "trusted-lan-ai-server"
+    ],
     "unsupported_behavior": "no_profile_means_unsupported_not_guessed",
     "offline_prerequisite_behavior": "missing_required_staged_asset_blocks_install_instead_of_silently_using_network",
     "linux_offline_ollama_truth": "bootstrap_install_script_is_not_treated_as_self_contained_airgap_runtime",
@@ -124,7 +148,11 @@
   },
   "portability": {
     "software_image": "software_only_no_private_state_no_private_assets",
-    "software_release_metadata": ["SBOM.spdx.json", "PROVENANCE.json", "SHA256SUMS"],
+    "software_release_metadata": [
+      "SBOM.spdx.json",
+      "PROVENANCE.json",
+      "SHA256SUMS"
+    ],
     "core_airgap_cache": "checksum_manifested_read_only_snapshot_or_guarded_clean_git_cache",
     "core_snapshot_assurance": "integrity_only_unless_manifest_or_digest_is_independently_trusted_or_signed",
     "private_state": "age_encrypted_separate_artifact",
@@ -132,8 +160,34 @@
     "full_relocation_requires_destination_acceptance": true
   },
   "permanent_assets_semantics": "target inventory: listed items are required by final AERIS architecture; listing does not mean fully implemented or verified",
-  "permanent_assets": ["constitution", "role_contracts", "skills", "methods", "standards_registry", "workflows", "memory_contract", "knowledge_database", "evidence_contract", "verification", "risk_authority", "tool_adapters", "ui", "deployment", "audit", "reproduction"],
-  "portable_external_assets": ["local_model_weights", "inference_server_installer_or_verified_machine_specific_runtime_package", "offline_python_or_runtime_prerequisites", "proprietary_tool_licenses", "hardware_specific_drivers", "private_engineering_data", "calibration_assets", "credentials"],
+  "permanent_assets": [
+    "constitution",
+    "role_contracts",
+    "skills",
+    "methods",
+    "standards_registry",
+    "workflows",
+    "memory_contract",
+    "knowledge_database",
+    "evidence_contract",
+    "verification",
+    "risk_authority",
+    "tool_adapters",
+    "ui",
+    "deployment",
+    "audit",
+    "reproduction"
+  ],
+  "portable_external_assets": [
+    "local_model_weights",
+    "inference_server_installer_or_verified_machine_specific_runtime_package",
+    "offline_python_or_runtime_prerequisites",
+    "proprietary_tool_licenses",
+    "hardware_specific_drivers",
+    "private_engineering_data",
+    "calibration_assets",
+    "credentials"
+  ],
   "truth_rules": [
     "core_overrides_implementation_when_conflicting",
     "memory_is_not_evidence",
@@ -155,5 +209,6 @@
     "audit_hash_chain_is_not_worm",
     "evidence_hash_manifest_is_not_external_attestation",
     "commercial_release_requires_current_license_and_external_dependency_review"
-  ]
+  ],
+  "review_hold": "HOLD_FOR_SOL_RED_TEAM; config/review_gate.v1.json; no runtime compliance or Local acceptance implied."
 }

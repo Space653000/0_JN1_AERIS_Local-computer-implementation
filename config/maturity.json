@@ -3,7 +3,7 @@
   "product_stage": "PRE_ALPHA",
   "truth_rule": "Nothing is COMPLETE merely because code exists or CI is green. TESTED means the stated automated scope passed; VERIFIED additionally requires the specified real-machine, real-tool, physical, license, calibration or release evidence where applicable.",
   "evidence_snapshot": {
-    "canonical_core_reviewed_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+    "canonical_core_reviewed_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
     "truth_alignment_contract": "canonical_core_reviewed_sha must equal core.lock baseline, core_alignment reviewed_sha, autopilot canonical_core_sha and company manifest reviewed_sha; CI fails on any mismatch",
     "control_plane_main_commit": "54db59e40cc24e0e7b915966daf77a687a026947",
     "acoustic_skills_main_commit": "86dec79f9f97e0e1bdfdf42b10ee97f94a62a71c",
@@ -101,12 +101,14 @@
     },
     "task_identity_and_engineering_state_machine": {
       "state": "TESTED",
-      "evidence": "aeris_runtime/taskstate.py + tests/test_taskstate.py + dual-platform CI"
+      "evidence": "aeris_runtime/taskstate.py + tests/test_taskstate.py + dual-platform CI",
+      "review_limitation": "Existing TESTED unit scope only. Integrated authenticated gate/evidence enforcement has open F01/F02 findings; not production authority."
     },
     "risk_authority_and_approval_engine": {
       "state": "TESTED",
       "evidence": "aeris_runtime/authority.py + tests/test_authority.py + dual-platform CI",
-      "required": "real R2/R3/R4 cases before production-grade VERIFIED claim"
+      "required": "real R2/R3/R4 cases before production-grade VERIFIED claim",
+      "review_limitation": "Existing TESTED unit scope only. Integrated authenticated gate/evidence enforcement has open F01/F02 findings; not production authority."
     },
     "evidence_bundle_engine": {
       "state": "TESTED",
@@ -116,7 +118,8 @@
     "verification_g0_g5_engine": {
       "state": "TESTED",
       "evidence": "aeris_runtime/verification.py + tests/test_verification.py + workflow tests + dual-platform CI",
-      "note": "structured gates/authority are tested; complete production acoustic-domain G2/G3 logic is not."
+      "note": "structured gates/authority are tested; complete production acoustic-domain G2/G3 logic is not.",
+      "review_limitation": "Existing TESTED unit scope only. Integrated authenticated gate/evidence enforcement has open F01/F02 findings; not production authority."
     },
     "independent_reviewer_allocation_engine": {
       "state": "TESTED",
@@ -415,10 +418,38 @@
       "required": "HEAD/ACQUA licensed environment + exact automation interface + E2E Evidence"
     },
     "commercial_release_readiness": {
-      "state": "HUMAN_GATE",
-      "evidence": "local software baseline remains PRE_ALPHA and makes no commercial readiness claim",
-      "required": "production Golden/physical evidence, legal licenses, signing and Human R4 approval",
-      "gap_classification": "HUMAN_GATE"
+      "state": "NOT_IMPLEMENTED",
+      "required": "release-critical acoustic capabilities/production Golden cases VERIFIED + legal model/tool/data licenses + supported configuration frozen + signing/attestation + Human R4 approval"
+    },
+    "integrated_authenticated_release_gate": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "F01/F02: real task-bound sealed evidence, complete gate integration, authenticated reviewer/Human approval and invalidation/replay checks."
+    },
+    "voice_publishing": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "Core VOICE_PUBLISHING_CAPABILITY_V1; pending backend/license/language/resource decisions and VP acceptance."
+    },
+    "review_admission_runtime_enforcement": {
+      "state": "NOT_IMPLEMENTED",
+      "required": "Review hold is governance only; future B00 must enforce at every mutation entrypoint."
     }
+  },
+  "review_snapshot": {
+    "review_id": "AERIS-ASTRA-SOL-REVIEW-20260907",
+    "report": "docs/reviews/ASTRA_REVIEW_20260907.md",
+    "state": "HOLD_FOR_SOL_RED_TEAM",
+    "runtime_repairs_performed": false,
+    "local_acceptance": "NOT_RUN",
+    "open_findings": [
+      "F01",
+      "F02",
+      "F03",
+      "F04",
+      "F06",
+      "F07",
+      "F09",
+      "F10",
+      "F11"
+    ]
   }
 }

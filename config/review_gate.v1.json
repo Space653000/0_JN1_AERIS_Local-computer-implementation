@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "review_id": "AERIS-ASTRA-SOL-REVIEW-20260907",
+  "architecture_version": "0.6.0-review.1",
+  "implementation_plan_version": "0.3.0-review.1",
+  "state": "HOLD_FOR_SOL_RED_TEAM",
+  "implementation_authorized": false,
+  "source_blueprint_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_implementation_sha": "32ca69baa778959d01c10a72bba1a8f0c0ac7eb5",
+  "requested_models": {
+    "items_1_to_3": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "high"
+    },
+    "item_4": {
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "high"
+    },
+    "final_reconciliation": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "high"
+    }
+  },
+  "model_setting_evidence": "User-requested routing; documentation confirms model IDs/high support. This record does not attest the active UI model/effort. Verify host run metadata or user-selected model before attributing each review.",
+  "scope": "Documentation/configuration governance review and publication only; runtime behavior, installers, services and local target remain outside mutation scope.",
+  "precedence": "Explicit current Human review/no-build instructions and this hold precede every two-URL trigger, gap closure loop and persistent build phase.",
+  "allowed_during_hold": [
+    "read_remote_sources",
+    "read_the_two_user_supplied_proposals",
+    "edit_and_publish_review_documents",
+    "run_isolated_software_checks"
+  ],
+  "local_acceptance": "NOT_RUN_WAITING_FOR_USER_MODEL_SWITCH",
+  "independent_red_team": "NOT_RUN",
+  "astra_reconciliation": "NOT_RUN",
+  "release_requirements": [
+    "User switches to GPT-5.6 Sol High",
+    "Read-only Local comparison and independent Red-Team with immutable source references",
+    "Astra disposition of every P0/P1 finding",
+    "Blueprint/Implementation/Local baseline tuple and dirty-file hashes reconciled",
+    "Explicit Human authorization for a finite implementation scope"
+  ],
+  "enforcement": "Agent/governance contract only. Existing shell/runtime entrypoints do not enforce this new hold; do not invoke them. An executable admission gate remains a planned blocker, not an implemented safety claim."
+}

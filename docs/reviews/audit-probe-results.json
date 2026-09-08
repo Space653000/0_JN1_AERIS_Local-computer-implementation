@@ -1,0 +1,114 @@
+{
+  "F01": {
+    "observed_state": "RELEASED",
+    "gates": {
+      "task_id": "AUDIT-ONLY",
+      "outcomes": {
+        "G0_CONTRACT": "NOT_RUN",
+        "G1_NUMERICAL": "NOT_RUN",
+        "G2_DOMAIN": "NOT_RUN",
+        "G3_REGRESSION": "NOT_RUN",
+        "G4_INDEPENDENT_REVIEW": "NOT_RUN",
+        "G5_APPROVAL": "NOT_RUN"
+      },
+      "g0_g4_passed": false,
+      "all_g0_g5_passed": false,
+      "scope": "structured_gate_records_baseline_not_full_domain_verification_engine"
+    },
+    "actual_human_approval": false,
+    "real_evidence_created": false
+  },
+  "F02_gate": {
+    "outcome": "PASS",
+    "reviewer": "renamed-executor",
+    "reviewer_role": "independent_reviewer",
+    "evidence_refs": [
+      "evidence://DOES-NOT-EXIST"
+    ],
+    "note": "",
+    "at_utc": "2026-09-07T03:05:31.193849+00:00"
+  },
+  "F02_claim": {
+    "schema_version": 1,
+    "accepted": true,
+    "claim_authority": "SCHEMA_VALIDATED_WITH_EXPLICIT_EVIDENCE_REFS",
+    "claims": [
+      {
+        "statement": "Synthetic test passed",
+        "classification": "EVIDENCE",
+        "evidence_refs": [
+          "evidence://DOES-NOT-EXIST"
+        ],
+        "confidence": 1.0
+      }
+    ],
+    "missing_evidence": [],
+    "recommended_tests": [],
+    "errors": [],
+    "approved_evidence_refs": [
+      "evidence://DOES-NOT-EXIST"
+    ]
+  },
+  "F04": {
+    "import": {
+      "skill_id": "measurement-import-validation",
+      "result": "FAIL",
+      "input": "<SYNTHETIC_TEMP_INPUT>",
+      "points": 3,
+      "frequency_min_hz": 100.0,
+      "frequency_max_hz": 1000.0,
+      "duplicate_frequency_count": 1,
+      "strictly_increasing": false,
+      "issues": [
+        "DUPLICATE_FREQUENCIES:1",
+        "FREQUENCY_NOT_STRICTLY_INCREASING"
+      ],
+      "evidence_class": "DETERMINISTIC_FILE_VALIDATION"
+    },
+    "requirement": {
+      "skill_id": "requirement-verification",
+      "result": "PASS",
+      "input": "<SYNTHETIC_TEMP_INPUT>",
+      "band_hz": [
+        20.0,
+        20000.0
+      ],
+      "checks": [
+        {
+          "name": "max_peak_to_peak_db",
+          "actual": 0.0,
+          "operator": "<=",
+          "limit": 4.0,
+          "margin": 4.0,
+          "result": "PASS"
+        }
+      ],
+      "analysis": {
+        "skill_id": "frequency-response-analysis",
+        "result": "PASS",
+        "input": "<SYNTHETIC_TEMP_INPUT>",
+        "band_hz": [
+          20.0,
+          20000.0
+        ],
+        "points": 3,
+        "average_db": 80.0,
+        "minimum_db": 80.0,
+        "maximum_db": 80.0,
+        "peak_to_peak_db": 0.0,
+        "rms_deviation_db": 0.0,
+        "minimum_point": {
+          "frequency_hz": 100.0,
+          "level_db": 80.0
+        },
+        "maximum_point": {
+          "frequency_hz": 100.0,
+          "level_db": 80.0
+        },
+        "evidence_class": "DETERMINISTIC_NUMERICAL_ANALYSIS"
+      },
+      "evidence_class": "DETERMINISTIC_REQUIREMENT_CHECK"
+    }
+  },
+  "scope": "Synthetic probes of frozen GitHub source; no target-machine acceptance, real model call, release, or runtime repair."
+}
