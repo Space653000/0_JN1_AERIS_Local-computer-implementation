@@ -1,0 +1,42 @@
+{
+  "input": {
+    "candidate_points": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        2
+      ]
+    ],
+    "observations": [
+      {
+        "point": [
+          0
+        ],
+        "loss": 5
+      }
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "next_point.0",
+      "expected": 2,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "unexplored_count",
+      "expected": 2,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "63ba983bc04f4c7cad27b52a8395d0d3d99b1234c98d9775302f4c7f920a6821"
+}

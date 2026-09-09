@@ -55,7 +55,7 @@
     "soundcheck_adapter",
     "acqua_adapter"
   ],
-  "required_state_for_paid_or_external_professional_capabilities": "BLOCKED_EXTERNAL",
+  "required_state_for_paid_or_external_professional_capabilities": "EXTERNAL_LICENSE",
   "default_installer_forbidden_tokens": [
     "--accept-package-agreements",
     "--accept-source-agreements",

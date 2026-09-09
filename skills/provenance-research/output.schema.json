@@ -1,0 +1,102 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "matches": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "score": {
+                "type": "number"
+              },
+              "source": {
+                "type": "string"
+              },
+              "sha256": {
+                "type": "string"
+              },
+              "rights": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "score",
+              "source",
+              "sha256",
+              "rights"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "search_scope": {
+          "type": "string"
+        },
+        "legal_novelty_or_freedom_to_operate_opinion": {
+          "type": "boolean"
+        },
+        "standards_current_edition_verified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "matches",
+        "search_scope",
+        "legal_novelty_or_freedom_to_operate_opinion",
+        "standards_current_edition_verified"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

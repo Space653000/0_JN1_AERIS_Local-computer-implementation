@@ -1,0 +1,1 @@
+{"type":"object","required":["skill_id","values","input_sha256","implementation_sha256","physical_measurement_verified"],"properties":{"values":{"type":"object","required":["fan_operating_set","checks","disposition","fan_path_verified","hinge_transfer_verified","aec_verified","physical_laptop_verified"]},"physical_measurement_verified":{"const":false}}}

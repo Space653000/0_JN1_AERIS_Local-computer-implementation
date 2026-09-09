@@ -29,10 +29,20 @@ class LiveUiContractTests(unittest.TestCase):
 
     def test_frontend_assets_hot_reload_without_cache(self):
         js = (ROOT / "ui" / "web" / "live-refresh.js").read_text(encoding="utf-8")
-        for asset in ("/", "/assets/app.js", "/assets/styles.css", "/assets/live-refresh.js"):
+        for asset in ("/", "/assets/app.js", "/assets/styles.css", "/assets/themes.css", "/assets/live-refresh.js"):
             self.assertIn(asset, js)
         self.assertIn("cache:'no-store'", js)
         self.assertIn("location.reload()", js)
+
+    def test_dark_and_light_theme_urls_persist_across_spa_navigation(self):
+        html = (ROOT / "ui" / "web" / "index.html").read_text(encoding="utf-8")
+        js = (ROOT / "ui" / "web" / "app.js").read_text(encoding="utf-8")
+        css = (ROOT / "ui" / "web" / "themes.css").read_text(encoding="utf-8")
+        self.assertIn("requestedTheme==='light'?'light':'dark'", html)
+        self.assertIn('id="themeToggle"', html)
+        self.assertIn("?theme=${currentTheme()}", js)
+        self.assertIn('data-theme="light"', css)
+        self.assertIn("visual_baseline", js)
 
 
 if __name__ == "__main__":

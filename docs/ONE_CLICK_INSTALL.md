@@ -25,7 +25,7 @@ Windows installer 會：
 
 1. 找 Python 並確認 >= 3.10；
 2. 若無 Python，可使用 checksum-verified staged Python installer 或 online winget；
-3. 建立 `.venv`；
+3. 建立 `.venv`，並由該 interpreter 安裝 `requirements-engineering.txt` 的免費固定版本 NumPy／SciPy；
 4. 同步 read-only Core，或從 staged Core snapshot/cache 還原；
 5. 安裝/確認 Ollama；offline 時只接受預先存在或真正 staged 的本機資產，不以 silent network fallback 假裝成功；
 6. 安裝/匯入 local model；

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "speaker-bass-limiter-envelope-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/speaker-bass-limiter-envelope-baseline.json",
+  "input_schema": "skills/speaker-bass-limiter-envelope-baseline/input.schema.json",
+  "output_schema": "skills/speaker-bass-limiter-envelope-baseline/output.schema.json",
+  "role_mappings": ["R019"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Supplied bass-boost excursion, temperature, amplifier-voltage, attack/release and content-crest envelope screening; no dynamic detector, durability or physical acceptance"
+}

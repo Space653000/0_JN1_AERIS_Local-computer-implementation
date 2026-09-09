@@ -1,0 +1,32 @@
+{
+  "input": {
+    "positions_m": [
+      0,
+      0.02,
+      0.04,
+      0.06
+    ],
+    "frequency_hz": 1000,
+    "sound_speed_m_s": 343,
+    "steering_deg": 0
+  },
+  "expected_checks": [
+    {
+      "path": "normalized_power.180",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "alias_free_spacing",
+      "expected": true,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "8d50ff99503bd192358116fa48c985aee4d02759322fe3536f2a24ab19bd95b5"
+}

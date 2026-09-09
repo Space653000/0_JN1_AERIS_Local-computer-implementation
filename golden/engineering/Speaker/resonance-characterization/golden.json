@@ -1,0 +1,52 @@
+{
+  "id": "resonance-characterization-analytic-v1",
+  "skill_id": "resonance-characterization",
+  "suite": "Speaker",
+  "input": {
+    "frequency_hz": [
+      80,
+      90,
+      100,
+      110,
+      120
+    ],
+    "amplitude": [
+      0.1,
+      0.7071067811865475,
+      1,
+      0.7071067811865475,
+      0.1
+    ]
+  },
+  "checks": [
+    {
+      "path": "peak_frequency_hz",
+      "expected": 100,
+      "absolute_tolerance": 1e-08,
+      "unit": "Hz",
+      "reduction": null
+    },
+    {
+      "path": "q_estimate",
+      "expected": 5,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "amplitude": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "100 Hz resonance with half-power crossings at 90/110 Hz has Q=5.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "d8e543a68510d783d3371044500990305540a4d0f29bfca0b209bc8a0ebec2bd"
+}

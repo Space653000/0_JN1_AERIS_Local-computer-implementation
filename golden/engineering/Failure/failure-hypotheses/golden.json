@@ -1,0 +1,51 @@
+{
+  "id": "failure-hypotheses-analytic-v1",
+  "skill_id": "failure-hypotheses",
+  "suite": "Failure",
+  "input": {
+    "hypotheses": [
+      {
+        "id": "H1",
+        "support_refs": [
+          "E1"
+        ],
+        "refute_refs": [
+          "E2"
+        ],
+        "alternative_cause": "fixture leak",
+        "discriminating_test": "repeat with sealed fixture"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "path": "hypotheses.0.refutation_count",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "hypotheses.0.root_cause_verified",
+      "expected": false,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "hypotheses": [
+      {
+        "id": "H1",
+        "support_refs": [],
+        "refute_refs": []
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Contradictory evidence leaves the cause contested and generates a discriminating test.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "3c20896a2b1757421dfab6b60a0584bd50488cc9de46f5cabc227f36294e462b"
+}

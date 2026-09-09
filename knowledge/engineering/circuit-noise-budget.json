@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-circuit-noise-budget",
+  "category": "Methods",
+  "title": "circuit-noise-budget",
+  "text": "Ideal uniform quantization variance is one LSB squared divided by 12. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/circuit-noise-budget.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "eff4f0d4ef8469066e50d8bad4937c761b1c1db23e34b5e9e27e26b12badc055"
+}

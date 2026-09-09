@@ -1,0 +1,40 @@
+{
+  "id": "circuit-noise-budget-analytic-v1",
+  "skill_id": "circuit-noise-budget",
+  "suite": "Microphone",
+  "input": {
+    "resistance_ohm": 1000,
+    "temperature_k": 300,
+    "bandwidth_hz": 20000,
+    "amplifier_noise_v_per_sqrt_hz": 1e-09,
+    "adc_fullscale_v": 2,
+    "adc_bits": 16,
+    "signal_frequency_hz": 1000,
+    "jitter_rms_s": 1e-09
+  },
+  "checks": [
+    {
+      "path": "quantization_rms_v",
+      "expected": 8.809665972742094e-06,
+      "absolute_tolerance": 1e-08,
+      "unit": "V",
+      "reduction": null
+    },
+    {
+      "path": "jitter_snr_limit_db",
+      "expected": 104.0364026328377,
+      "absolute_tolerance": 1e-07,
+      "unit": "dB",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "adc_bits": 0
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Ideal uniform quantization variance is one LSB squared divided by 12.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "ed5cfde3159d49733edd180e43fea35858ab06038f17afc8d2e51e8b121f18f1"
+}

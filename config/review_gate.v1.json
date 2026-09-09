@@ -1,44 +1,31 @@
 {
   "schema_version": 1,
   "review_id": "AERIS-ASTRA-SOL-REVIEW-20260907",
-  "architecture_version": "0.6.0-review.1",
+  "architecture_version": "0.7.0-governance.4",
   "implementation_plan_version": "0.3.0-review.1",
-  "state": "HOLD_FOR_SOL_RED_TEAM",
+  "state": "GATE06_RETRY_R1_IN_PROGRESS",
   "implementation_authorized": false,
-  "source_blueprint_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_blueprint_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "source_implementation_sha": "32ca69baa778959d01c10a72bba1a8f0c0ac7eb5",
-  "requested_models": {
-    "items_1_to_3": {
-      "model": "gpt-6-astra",
-      "reasoning_effort": "high"
-    },
-    "item_4": {
-      "model": "gpt-5.6-sol",
-      "reasoning_effort": "high"
-    },
-    "final_reconciliation": {
-      "model": "gpt-6-astra",
-      "reasoning_effort": "high"
-    }
-  },
+  "requested_models": {},
   "model_setting_evidence": "User-requested routing; documentation confirms model IDs/high support. This record does not attest the active UI model/effort. Verify host run metadata or user-selected model before attributing each review.",
-  "scope": "Documentation/configuration governance review and publication only; runtime behavior, installers, services and local target remain outside mutation scope.",
+  "scope": "Human-authorized GATE-06 R1 compatibility and trust repair; no runtime cutover, E, main merge or acoustic expansion.",
   "precedence": "Explicit current Human review/no-build instructions and this hold precede every two-URL trigger, gap closure loop and persistent build phase.",
   "allowed_during_hold": [
     "read_remote_sources",
-    "read_the_two_user_supplied_proposals",
-    "edit_and_publish_review_documents",
-    "run_isolated_software_checks"
+    "repair_Gate06_compatibility_and_authority",
+    "run_isolated_software_checks",
+    "publish_exact_candidate_to_existing_Draft_PR_33_after_regression",
+    "publish_supervision_snapshot_after_exact_candidate_dual_platform_CI"
   ],
-  "local_acceptance": "NOT_RUN_WAITING_FOR_USER_MODEL_SWITCH",
+  "local_acceptance": "NOT_RUN_GATE06_FORBIDS_RUNTIME_CUTOVER",
   "independent_red_team": "NOT_RUN",
   "astra_reconciliation": "NOT_RUN",
   "release_requirements": [
-    "User switches to GPT-5.6 Sol High",
-    "Read-only Local comparison and independent Red-Team with immutable source references",
-    "Astra disposition of every P0/P1 finding",
-    "Blueprint/Implementation/Local baseline tuple and dirty-file hashes reconciled",
-    "Explicit Human authorization for a finite implementation scope"
+    "Exact candidate Windows and Ubuntu CI",
+    "Authoritative F01/F02 negative tests",
+    "Immutable V6 snapshot chain",
+    "Web Supervisor decision before any runtime gate"
   ],
-  "enforcement": "Agent/governance contract only. Existing shell/runtime entrypoints do not enforce this new hold; do not invoke them. An executable admission gate remains a planned blocker, not an implemented safety claim."
+  "enforcement": "Candidate installer/Autopilot entrypoints use deployment_admission before mutation. Formal release uses signed task-bound receipt resolution. This is not a runtime cutover or universal OS authorization boundary. Full regression/exact candidate CI remain pending."
 }

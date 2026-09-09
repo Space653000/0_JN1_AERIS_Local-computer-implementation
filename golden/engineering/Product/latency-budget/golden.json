@@ -1,0 +1,45 @@
+{
+  "id": "latency-budget-analytic-v1",
+  "skill_id": "latency-budget",
+  "suite": "Product",
+  "input": {
+    "sample_rate_hz": 48000,
+    "buffer_samples": [
+      480,
+      960
+    ],
+    "other_stage_ms": [
+      10,
+      20
+    ],
+    "clock_difference_ppm": 50
+  },
+  "checks": [
+    {
+      "path": "serial_latency_ms",
+      "expected": 60,
+      "absolute_tolerance": 1e-08,
+      "unit": "ms",
+      "reduction": null
+    },
+    {
+      "path": "uncompensated_drift_ms_per_hour",
+      "expected": 180,
+      "absolute_tolerance": 1e-08,
+      "unit": "ms/hour",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "buffer_samples": [
+      -480,
+      960
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Thirty ms of buffers plus thirty ms of other serial stages.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "b1c4fb5541ecab3b131fde80a5ab145056efa71574dbf61bf6ce8fd638fbab2f"
+}

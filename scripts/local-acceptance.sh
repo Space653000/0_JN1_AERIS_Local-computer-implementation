@@ -61,11 +61,12 @@ PY
 fi
 
 "$PY" - "$REPORT" "$NETWORK_STATE" "$PROFILE" "$PROBES_JSON" <<'PY'
-import datetime,json,os,platform,sys
+import datetime,json,os,platform,subprocess,sys
 path,network,profile,probes=sys.argv[1:]
 proxy={k:v for k,v in os.environ.items() if k.lower() in {'http_proxy','https_proxy','all_proxy'} and v}
 payload={
   'result':'PASS',
+  'implementation_sha':subprocess.check_output(['git','-C',os.path.dirname(os.path.dirname(os.path.dirname(path))),'rev-parse','HEAD'],text=True).strip(),
   'scope':'REAL_MACHINE_APPLICATION_ACCEPTANCE',
   'hard_offline_network_state':network,
   'hard_offline_claim_boundary':'Probe success would fail acceptance; blocked probes are evidence of tested paths, not mathematical proof that every OS process/path can never egress.',

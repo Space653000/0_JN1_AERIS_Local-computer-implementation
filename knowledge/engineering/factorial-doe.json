@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-factorial-doe",
+  "category": "Methods",
+  "title": "factorial-doe",
+  "text": "Single-factor effect equals high minus low response. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/factorial-doe.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "dd0a483fe02698fedbd5b2701cef2d059e25e24ed9b224d48745b6fb9039cb2d"
+}

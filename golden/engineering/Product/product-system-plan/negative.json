@@ -1,0 +1,27 @@
+{
+  "input": {
+    "product_index": 24,
+    "transducer": "Both",
+    "lifecycle": "EVT",
+    "risk": "R1",
+    "objective": "Verify earbud capture and playback baseline",
+    "requirements": [
+      {
+        "id": "FR1",
+        "minimum": -3,
+        "maximum": 3,
+        "unit": "dB"
+      }
+    ],
+    "observations": [
+      {
+        "requirement_id": "FR1",
+        "value": 1,
+        "unit": "dB",
+        "evidence_ref": "synthetic-fixture"
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "67d54a0c4c4b12bb58132d470d56539e76bc96fec0835090c9efe831a195678a"
+}

@@ -1,0 +1,20 @@
+{
+  "input": {
+    "area_m2": 0.001,
+    "effective_length_m": 0.1,
+    "volume_m3": 0.01,
+    "sound_speed_m_s": 343
+  },
+  "expected_checks": [
+    {
+      "path": "helmholtz_hz",
+      "expected": 54.5901454805201,
+      "absolute_tolerance": 1e-08,
+      "unit": "Hz",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "1cbb64784d6063bcb53f850ddda74bcd869c516d2eb140483748ac66b4722d72"
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "candidate_points": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "array",
+        "maxItems": 262144,
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "object",
+        "properties": {
+          "point": {
+            "type": "array",
+            "maxItems": 262144,
+            "items": {
+              "type": "number"
+            }
+          },
+          "loss": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "point",
+          "loss"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "candidate_points",
+    "observations"
+  ],
+  "additionalProperties": false
+}

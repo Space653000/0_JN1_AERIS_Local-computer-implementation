@@ -1,0 +1,43 @@
+{
+  "id": "level-statistics-analytic-v1",
+  "skill_id": "level-statistics",
+  "suite": "Microphone",
+  "input": {
+    "levels_db": [
+      60,
+      70
+    ],
+    "durations_s": [
+      1,
+      1
+    ]
+  },
+  "checks": [
+    {
+      "path": "leq_db",
+      "expected": 67.40362689494243,
+      "absolute_tolerance": 1e-08,
+      "unit": "dB",
+      "reduction": null
+    },
+    {
+      "path": "l10_db",
+      "expected": 70,
+      "absolute_tolerance": 1e-08,
+      "unit": "dB",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "durations_s": [
+      0,
+      1
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Equal-duration energies average linearly, not as decibels.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "37d744f5eef53ca613bf4af390bf6261346ddcf2ee28e95f75179fcbbc382913"
+}

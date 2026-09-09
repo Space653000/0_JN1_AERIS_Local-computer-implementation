@@ -1,0 +1,73 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "serial_latency_ms": {
+          "type": "number"
+        },
+        "uncompensated_drift_ms_per_hour": {
+          "type": "number"
+        },
+        "measured_latency": {
+          "type": "boolean"
+        },
+        "assumption": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "serial_latency_ms",
+        "uncompensated_drift_ms_per_hour",
+        "measured_latency",
+        "assumption"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "skill_id": "microphone-array-tdoa-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/microphone-array-tdoa-baseline.json",
+  "input_schema": "skills/microphone-array-tdoa-baseline/input.schema.json",
+  "output_schema": "skills/microphone-array-tdoa-baseline/output.schema.json",
+  "role_mappings": [
+    "R043"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded supplied two-channel delay/geometry assertions; not complete beamforming, calibrated DOA or unique 3D direction"
+}

@@ -1,0 +1,13 @@
+{
+  "input": {
+    "query": "microphone sensitivity",
+    "documents": [
+      {
+        "rights": "UNLICENSED_PAID_FULLTEXT",
+        "source": "unknown"
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "de2f975adfcc53600dd4fa8f541faf233c66b221ec67fd6db9a604cd34065ddb"
+}

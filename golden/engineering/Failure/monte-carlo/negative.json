@@ -1,0 +1,20 @@
+{
+  "input": {
+    "means": [
+      1,
+      2
+    ],
+    "standard_deviations": [
+      1,
+      1
+    ],
+    "coefficients": [
+      3,
+      4
+    ],
+    "trials": 10,
+    "seed": 7
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "20a424302e50d97d636541507282e0c179934eedf510abe51d709b8b38f2dc20"
+}

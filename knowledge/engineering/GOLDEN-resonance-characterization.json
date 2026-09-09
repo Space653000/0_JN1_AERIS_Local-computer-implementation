@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-resonance-characterization",
+  "category": "Golden cases",
+  "title": "GOLDEN-resonance-characterization",
+  "text": "[{\"path\": \"peak_frequency_hz\", \"expected\": 100, \"absolute_tolerance\": 1e-08, \"unit\": \"Hz\", \"reduction\": null}, {\"path\": \"q_estimate\", \"expected\": 5, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Speaker/resonance-characterization/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "7eba2d6807dd21540382b15572bade9b290ad478fb5f0290e551a366573ee7ab",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

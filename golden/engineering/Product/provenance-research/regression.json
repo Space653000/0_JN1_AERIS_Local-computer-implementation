@@ -1,0 +1,27 @@
+{
+  "input": {
+    "query": "microphone sensitivity",
+    "documents": [
+      {
+        "id": "K1",
+        "title": "Sensitivity definition",
+        "text": "Acoustic microphone sensitivity is voltage divided by sound pressure.",
+        "sha256": "685d4ca821ca38b828f1b6c41f06ebeb75649d85a8c745d8bbbd30123a69c80e",
+        "rights": "AERIS_AUTHORED",
+        "source": "generated-method-note"
+      }
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "matches.0.score",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "a42551a6925b04716d45d402e12aced1e11af1335c4d0b5e10866dde3ec1dfad"
+}

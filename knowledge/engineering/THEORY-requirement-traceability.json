@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-requirement-traceability",
+  "category": "Theory",
+  "title": "THEORY-requirement-traceability",
+  "text": "One of two requirements has a test/evidence link; missing coverage remains visible.",
+  "source": "methods/engineering/requirement-traceability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "b64bccfdd7a2fbcd269501e13578f478a16beb0fa9f79524310bbb75db42a527",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

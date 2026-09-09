@@ -16,4 +16,4 @@ The gate verifies:
 
 This is **not** a cross-version pixel-golden visual regression suite, not WCAG conformance certification, and not proof that every supported end-user display/browser/font stack is visually identical.
 
-The existing `browser_e2e_visual_regression` full-maturity item therefore remains incomplete until versioned cross-version golden images/tolerances, accessibility coverage and supported-browser/display acceptance are defined and evidenced.
+The `browser_e2e_visual_regression` local fixed-viewport, same-browser/environment scope is TESTED. This does not claim cross-browser or cross-version pixel identity; those release scopes require an explicitly declared support matrix and Human acceptance.

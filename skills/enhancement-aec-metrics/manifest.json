@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "skill_id": "enhancement-aec-metrics",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/enhancement-aec-metrics/implementation.py",
+  "input_schema": "skills/enhancement-aec-metrics/input.schema.json",
+  "output_schema": "skills/enhancement-aec-metrics/output.schema.json",
+  "method": "methods/engineering/enhancement-aec-metrics.json",
+  "applicability": "Orthogonal 10% error gives SI-SDR 20 dB; 10x echo attenuation gives ERLE 20 dB.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/Microphone/enhancement-aec-metrics/golden.json",
+  "negative_tests": "golden/engineering/Microphone/enhancement-aec-metrics/negative.json",
+  "regression_tests": "golden/engineering/Microphone/enhancement-aec-metrics/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R005",
+    "R035",
+    "R038",
+    "R042",
+    "R044",
+    "R070",
+    "R083"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

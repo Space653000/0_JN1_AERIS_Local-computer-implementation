@@ -1,0 +1,1 @@
+{"type":"object","required":["skill_id","values","physical_measurement_verified"],"properties":{"values":{"type":"object","required":["architecture","checks","disposition","privacy_field_verified","head_tracking_verified","physical_open_ear_verified"]},"physical_measurement_verified":{"const":false}}}

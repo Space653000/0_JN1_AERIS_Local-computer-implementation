@@ -1,0 +1,234 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "product_index": {
+          "type": "number"
+        },
+        "architecture": {
+          "type": "object",
+          "properties": {
+            "speaker_topology_considerations": {
+              "type": "string"
+            },
+            "microphone_topology_considerations": {
+              "type": "string"
+            },
+            "usage_scenarios": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "string"
+              }
+            },
+            "common_acoustic_failure_modes": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "string"
+              }
+            },
+            "lifecycle": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "string"
+              }
+            },
+            "measurement_plan": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "string"
+              }
+            },
+            "simulation_requirements": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "string"
+              }
+            },
+            "manufacturing_risks": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "string"
+              }
+            },
+            "standards_metadata_references": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {}
+            },
+            "standards_metadata_state": {
+              "type": "string"
+            },
+            "evidence_expectations": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "string"
+              }
+            },
+            "non_scope": {
+              "type": "array",
+              "maxItems": 262144,
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "speaker_topology_considerations",
+            "microphone_topology_considerations",
+            "usage_scenarios",
+            "common_acoustic_failure_modes",
+            "lifecycle",
+            "measurement_plan",
+            "simulation_requirements",
+            "manufacturing_risks",
+            "standards_metadata_references",
+            "standards_metadata_state",
+            "evidence_expectations",
+            "non_scope"
+          ],
+          "additionalProperties": false
+        },
+        "validation_matrix": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "outcome": {
+                "type": "string"
+              },
+              "margin_to_nearest_limit": {
+                "type": "number"
+              },
+              "evidence_ref": {
+                "type": "string"
+              },
+              "evidence_verified": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "outcome",
+              "margin_to_nearest_limit",
+              "evidence_ref",
+              "evidence_verified"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "needed_skills": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "string"
+          }
+        },
+        "requirement_coverage": {
+          "type": "number"
+        },
+        "task_draft": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "risk": {
+              "type": "string"
+            },
+            "product_index": {
+              "type": "number"
+            },
+            "lifecycle": {
+              "type": "string"
+            },
+            "transducer": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "risk",
+            "product_index",
+            "lifecycle",
+            "transducer"
+          ],
+          "additionalProperties": false
+        },
+        "human_release_gate": {
+          "type": "boolean"
+        },
+        "engineering_outcome": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "product_index",
+        "architecture",
+        "validation_matrix",
+        "needed_skills",
+        "requirement_coverage",
+        "task_draft",
+        "human_release_gate",
+        "engineering_outcome"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

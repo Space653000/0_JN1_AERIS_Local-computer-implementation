@@ -1,0 +1,32 @@
+{
+  "suite_id": "R005-FILTER-REALIZATION-REVIEW-V1", "role_id": "R005", "skill_id": "speaker-filter-realization-domain-review", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored independent quadratic-root and crossover-vector reconstruction for R024; no executor result, runtime or playback is Evidence.",
+  "scope": "Independent biquad stability, quantization, crossover, headroom and delay report consistency",
+  "base_input": {
+    "parameters": {"model": "SUPPLIED_SPEAKER_BIQUAD_CROSSOVER", "sections": [{"b": [0.25, 0.5, 0.25], "a": [1.0, -0.5, 0.25]}], "coefficient_fractional_bits": 16, "maximum_pole_radius": 0.9, "maximum_coefficient_quantization_error": 0.0001, "lowpass_gain_at_crossover": 0.5, "highpass_gain_at_crossover": 0.5, "relative_phase_deg": 0.0, "maximum_phase_mismatch_deg": 10.0, "maximum_crossover_sum_deviation_db": 0.5, "input_peak_linear": 0.5, "section_peak_gains": [1.5], "available_output_peak_linear": 1.0, "group_delay_ms": 4.0, "maximum_group_delay_ms": 8.0},
+    "candidate": {
+      "pole_radii": [0.5, 0.5], "maximum_pole_radius_actual": 0.5, "maximum_coefficient_quantization_error_actual": 0.0,
+      "crossover_sum_linear": 1.0, "crossover_sum_deviation_db": 0.0, "estimated_output_peak_linear": 0.75,
+      "checks": [
+        {"id": "POLE_STABILITY", "actual": 0.5, "limit": 0.9, "operator": "<=", "passed": true, "on_failure": "REVISE_BIQUAD_POLES_AND_RECHECK_QUANTIZED_STABILITY"},
+        {"id": "COEFFICIENT_QUANTIZATION", "actual": 0.0, "limit": 0.0001, "operator": "<=", "passed": true, "on_failure": "INCREASE_COEFFICIENT_PRECISION_OR_REDESIGN_SECTIONS"},
+        {"id": "CROSSOVER_SUM", "actual": 0.0, "limit": 0.5, "operator": "<=", "passed": true, "on_failure": "REVISE_CROSSOVER_MAGNITUDE_SUM"},
+        {"id": "CROSSOVER_PHASE", "actual": 0.0, "limit": 10.0, "operator": "<=", "passed": true, "on_failure": "REVISE_CROSSOVER_PHASE_OR_POLARITY"},
+        {"id": "OUTPUT_HEADROOM", "actual": 0.75, "limit": 1.0, "operator": "<=", "passed": true, "on_failure": "REDUCE_SECTION_GAIN_OR_INPUT_LEVEL"},
+        {"id": "GROUP_DELAY", "actual": 4.0, "limit": 8.0, "operator": "<=", "passed": true, "on_failure": "REDUCE_FILTER_ORDER_OR_REVISE_LATENCY_BUDGET"}
+      ],
+      "required_revisions": [], "disposition": "BOUNDED_BASELINE_ACCEPT", "realized_frequency_response_verified": false, "fixed_point_runtime_verified": false, "physical_playback_verified": false, "physical_measurement_verified": false,
+      "counter_hypotheses": ["Polarity or phase mismatch rather than magnitude-EQ error", "Coefficient quantization rather than acoustic variation", "Upstream clipping rather than unstable filter"],
+      "next_discriminating_experiment": "RENDER_QUANTIZED_IMPULSE_RESPONSE_AND_CAPTURE_INTERNAL_PEAKS_AT_WORST_CASE_INPUT",
+      "model_assumptions": ["Real normalized second-order denominator coefficients", "Declared per-section peak gains are conservative scalar bounds", "Crossover sum is evaluated only at one declared crossover sample"],
+      "unresolved": ["Full-band complex response and limit cycles", "Runtime coefficient arithmetic, saturation and denormal behavior", "Physical playback, calibrated response and qualified Human acceptance"]
+    },
+    "context": {"product": "Speaker crossover DSP", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {"id": "FILTER-REVIEW-INDEPENDENT", "kind": "positive", "question": "Can R005 independently reconstruct all filter assertions while withholding runtime and Human approval?", "input_overrides": {}, "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}, {"path": "human_approval", "expected": false, "absolute_tolerance": 0}, {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}]},
+    {"id": "FILTER-REVIEW-NUMERIC-TAIL", "kind": "boundary", "question": "Can a representation-scale pole-radius tail pass without weakening the filter verdict?", "input_overrides": {}, "input_mutations": [{"path": "candidate.maximum_pole_radius_actual", "value": 0.500000000001}], "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]},
+    {"id": "FILTER-REVIEW-RUNTIME-CLAIM", "kind": "counter_hypothesis", "question": "Does review reject an unsupported fixed-point runtime verification claim?", "input_overrides": {}, "input_mutations": [{"path": "candidate.fixed_point_runtime_verified", "value": true}], "checks": [{"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0}, {"path": "disagreements.0.field", "expected": "fixed_point_runtime_verified", "absolute_tolerance": 0}]},
+    {"id": "FILTER-REVIEW-R4", "kind": "negative", "question": "Must R4 require authority outside bounded automated filter review?", "input_overrides": {}, "input_mutations": [{"path": "context.risk", "value": "R4"}], "expected_error": "ValueError"}
+  ]
+}

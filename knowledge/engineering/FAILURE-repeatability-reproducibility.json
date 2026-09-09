@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-repeatability-reproducibility",
+  "category": "Failures",
+  "title": "FAILURE-repeatability-reproducibility",
+  "text": "{\"invalid_variant\": {\"groups\": [[1], [2]]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Failure/repeatability-reproducibility/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "4518253c58116d8c3945a22c12d7d6f63d127b829f7a1d42b970252612d1798b",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

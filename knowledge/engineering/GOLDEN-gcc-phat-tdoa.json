@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-gcc-phat-tdoa",
+  "category": "Golden cases",
+  "title": "GOLDEN-gcc-phat-tdoa",
+  "text": "[{\"path\": \"delay_samples\", \"expected\": 7, \"absolute_tolerance\": 1e-08, \"unit\": \"samples\", \"reduction\": null}, {\"path\": \"tdoa_s\", \"expected\": 0.00014583333333333335, \"absolute_tolerance\": 1e-08, \"unit\": \"s\", \"reduction\": null}]",
+  "source": "golden/engineering/Array/gcc-phat-tdoa/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "7060e32a3b59878b8ff6230ba9df4ba4ecd30c5cc62429fee887440081dbe568",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

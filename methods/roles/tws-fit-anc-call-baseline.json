@@ -1,0 +1,19 @@
+{
+  "method_id": "tws-fit-anc-call-baseline",
+  "version": "1.0.0",
+  "role": "R048",
+  "source_kind": "AERIS_AUTHORED",
+  "implementation": "aeris_runtime.engineering.domain_methods:tws_fit_anc_call",
+  "applicability": "Bounded TWS seal, hybrid ANC delay margin, outward call microphone noise, miniature-driver excursion and occlusion decisions",
+  "equations": {
+    "leak_loss_db": "10 log10(1 + (leak_pole_hz / bass_reference_hz)^2)",
+    "phase_margin_deg": "180 - plant_phase_lag_deg - 360 * crossover_hz * delay_ms / 1000",
+    "call_snr_db": "20 log10(speech_rms_pa / sqrt(ambient_rms_pa^2 + wind_rms_pa^2))"
+  },
+  "assumptions": ["single-pole leak model", "single unity-gain crossover", "uncorrelated noise sources", "outward microphone shared by FF and call capture"],
+  "excluded": ["actual ear-fit measurements", "complete nonlinear or multi-crossover stability proof", "licensed tool equivalence", "Human acceptance"],
+  "limits_policy": "Numerical limits are explicit caller requirements, not invented standards clauses.",
+  "uncertainty": "Input/model uncertainty and in-ear validation remain separate.",
+  "golden_tests": "tests/test_tws_domain_method.py",
+  "is_evidence": false
+}

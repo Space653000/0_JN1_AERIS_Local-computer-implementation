@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-uncertainty-propagation",
+  "category": "Methods",
+  "title": "uncertainty-propagation",
+  "text": "Independent variance terms are 0.01 and 0.16. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/uncertainty-propagation.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "6fccfb6873b6ace4a06008c52b2d87a089e52975adcce69aba8973441b32cd47"
+}

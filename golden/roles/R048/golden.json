@@ -1,0 +1,82 @@
+{
+  "suite_id": "R048-TWS-DOMAIN-V1",
+  "role_id": "R048",
+  "skill_id": "tws-fit-anc-call-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Independently authored engineering decisions and worked arithmetic; not imported from product_profile or the method output.",
+  "scope": "Bounded single-pole seal, single-crossover delay, outward wind/call noise, excursion and occlusion model; not complete TWS product acceptance.",
+  "base_input": {
+    "leak_pole_hz": 20.0, "bass_reference_hz": 100.0, "max_leak_loss_db": 3.0,
+    "feedback_crossover_hz": 100.0, "feedback_delay_ms": 0.5, "plant_phase_lag_deg": 90.0,
+    "min_phase_margin_deg": 45.0, "ff_wind_rms_pa": 0.001, "max_ff_wind_rms_pa": 0.003,
+    "call_speech_rms_pa": 0.02, "call_ambient_rms_pa": 0.001, "min_call_snr_db": 20.0,
+    "driver_peak_excursion_mm": 0.3, "safe_peak_excursion_mm": 0.5,
+    "occlusion_boost_db": 3.0, "max_occlusion_boost_db": 6.0
+  },
+  "cases": [
+    {
+      "id": "TWS-NOMINAL", "kind": "positive", "question": "Can the declared sealed-fit model support both ANC paths and outward call pickup?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "anc_topology_candidate", "expected": "HYBRID", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+        {"path": "phase_margin_deg", "expected": 72.0, "absolute_tolerance": 0.000001},
+        {"path": "call_snr_db", "expected": 23.0102999566398, "absolute_tolerance": 0.000001}
+      ]
+    },
+    {
+      "id": "TWS-DELAY-BOUNDARY", "kind": "boundary", "question": "Is the specified 45-degree minimum margin inclusive at 1.25 ms?",
+      "input_overrides": {"feedback_delay_ms": 1.25},
+      "checks": [
+        {"path": "phase_margin_deg", "expected": 45.0, "absolute_tolerance": 0.000001},
+        {"path": "anc_topology_candidate", "expected": "HYBRID", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "TWS-WRONG-DELAY-UNIT", "kind": "negative", "question": "Must a seconds field be rejected instead of silently interpreted as milliseconds?",
+      "input_overrides": {"feedback_delay_s": 0.0005}, "expected_error": "ValueError"
+    },
+    {
+      "id": "TWS-WIND-COUNTER", "kind": "counter_hypothesis", "question": "Does wind localized to the outward microphone require FF withdrawal even with viable FB?",
+      "input_overrides": {"ff_wind_rms_pa": 0.01},
+      "checks": [
+        {"path": "anc_topology_candidate", "expected": "FB_ONLY", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0},
+        {"path": "call_snr_db", "expected": 5.977386175998249, "absolute_tolerance": 0.000001}
+      ]
+    },
+    {
+      "id": "TWS-AMBIENT-COUNTER", "kind": "counter_hypothesis", "question": "Does equal call SNR caused by stationary ambient noise leave a different ANC decision?",
+      "input_overrides": {"call_ambient_rms_pa": 0.01},
+      "checks": [
+        {"path": "anc_topology_candidate", "expected": "HYBRID", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0},
+        {"path": "call_snr_db", "expected": 5.977386175998249, "absolute_tolerance": 0.000001}
+      ]
+    },
+    {
+      "id": "TWS-LEAK-REJECTION", "kind": "positive", "question": "Should poor seal be revised before adding bass EQ?",
+      "input_overrides": {"leak_pole_hz": 200.0},
+      "checks": [
+        {"path": "leak_loss_db", "expected": 6.989700043360188, "absolute_tolerance": 0.000001},
+        {"path": "required_revisions.0", "expected": "RECHECK_TIP_SEAL_BEFORE_BASS_EQ", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "TWS-MINIATURE-DRIVER", "kind": "boundary", "question": "Must miniature-driver excursion overrun remain distinct from a seal failure?",
+      "input_overrides": {"driver_peak_excursion_mm": 0.6},
+      "checks": [
+        {"path": "required_revisions.0", "expected": "LIMIT_BASS_DRIVE_OR_REVISE_RECEIVER", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "TWS-OCCLUSION", "kind": "positive", "question": "Does excessive occlusion require vent/sidetone reconsideration with a subsequent seal re-test?",
+      "input_overrides": {"occlusion_boost_db": 8.0},
+      "checks": [
+        {"path": "required_revisions.0", "expected": "REVISE_VENT_OR_SIDETONE_WITH_SEAL_RETEST", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+      ]
+    }
+  ]
+}

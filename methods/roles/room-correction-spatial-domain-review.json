@@ -1,0 +1,7 @@
+{
+  "method_id": "room-correction-spatial-domain-review", "version": "1.0.0", "role": "R071", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.room_correction_review:review", "applicability": "Independent consistency review of supplied multi-position room-correction assertions",
+  "equations": {"mean": "independent position sum/count", "spread": "independent max-min", "correction": "independent target-mean"},
+  "assumptions": ["Same declared matrix", "Independent arithmetic is not spatial acceptance"],
+  "excluded": ["HRTF and complex inversion", "realized filter", "calibration, physical and Human acceptance"], "golden_tests": "golden/roles/R071/golden.json"
+}

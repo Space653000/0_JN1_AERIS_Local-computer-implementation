@@ -1,0 +1,4 @@
+{
+  "type": "object", "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {"values": {"type": "object", "required": ["mean_response_db", "spatial_spread_db", "proposed_correction_db", "boost_upper_db", "cut_upper_db", "checks", "disposition", "realized_filter_verified"]}, "physical_measurement_verified": {"const": false}}
+}

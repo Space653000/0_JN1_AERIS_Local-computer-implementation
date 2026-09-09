@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "sensitivity_coefficients": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "standard_uncertainties": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "coverage_factor": {
+      "type": "number"
+    },
+    "correlation_matrix": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "sensitivity_coefficients",
+    "standard_uncertainties",
+    "coverage_factor"
+  ],
+  "additionalProperties": false
+}

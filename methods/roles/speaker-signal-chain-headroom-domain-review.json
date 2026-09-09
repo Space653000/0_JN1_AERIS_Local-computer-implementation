@@ -1,0 +1,10 @@
+{
+  "method_id": "speaker-signal-chain-headroom-domain-review", "version": "1.0.0", "role": "R013",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_signal_chain_review:review",
+  "applicability": "Independent consistency review of supplied speaker gain/noise/loading/headroom assertions",
+  "equations": {"gain": "independent downstream products", "noise": "independent RSS", "current": "independent peak voltage divided by minimum load"},
+  "assumptions": ["Same declared scalar chain", "Consistency review is not bench stability"],
+  "excluded": ["complex-load, rail and thermal behavior", "calibration", "physical and Human acceptance"],
+  "golden_tests": "golden/roles/R013/golden.json"
+}

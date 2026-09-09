@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R048",
+  "category": "Products",
+  "title": "PRODUCT-R048",
+  "text": "{\"speaker_topology_considerations\": \"sealed miniature dynamic/BA driver\", \"microphone_topology_considerations\": \"feedforward, feedback and voice microphones\", \"usage_scenarios\": [\"music and calls while walking\"], \"common_acoustic_failure_modes\": [\"seal leakage\", \"wind\", \"ANC instability\", \"occlusion\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [], \"standards_metadata_state\": \"TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED\", \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R048/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "3acb0091374405c23109188c90d87ed918c2ac27224f4a59197eb388e07c07c5",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

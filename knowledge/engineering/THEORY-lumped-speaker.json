@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-lumped-speaker",
+  "category": "Theory",
+  "title": "THEORY-lumped-speaker",
+  "text": "At resonance the motional reactances cancel: Re + Bl squared/Rms = 29 ohm.",
+  "source": "methods/engineering/lumped-speaker.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "923a3d489f30c3f975b5074feb913695eb92cdec836d9a4ef1a9aad7f54d9fb0",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

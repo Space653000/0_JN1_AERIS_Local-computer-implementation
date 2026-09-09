@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-psychoacoustic-descriptors",
+  "category": "Golden cases",
+  "title": "GOLDEN-psychoacoustic-descriptors",
+  "text": "[{\"path\": \"spectral_centroid_hz\", \"expected\": 2000, \"absolute_tolerance\": 1e-08, \"unit\": \"Hz\", \"reduction\": null}]",
+  "source": "golden/engineering/Speaker/psychoacoustic-descriptors/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "0b79c6908a12a8355a9a834e5d8dbf2a9ed70167cd44f967ad523e3545f464ea",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-correlation-outliers",
+  "category": "Theory",
+  "title": "THEORY-correlation-outliers",
+  "text": "Exact affine relation y=2x+1.",
+  "source": "methods/engineering/correlation-outliers.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "cca50bcaba8c7a2763d5d213b2c259ddccb4b6cbebb50eb0082700f9eafe62df",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

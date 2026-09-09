@@ -1,0 +1,85 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "direct_arrival_sample": {
+          "type": "number"
+        },
+        "method": {
+          "type": "string"
+        },
+        "edt_s": {
+          "type": "number"
+        },
+        "t20_s": {
+          "type": "number"
+        },
+        "t30_s": {
+          "type": "number"
+        },
+        "c50_db": {
+          "type": "number"
+        },
+        "c80_db": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "direct_arrival_sample",
+        "method",
+        "edt_s",
+        "t20_s",
+        "t30_s",
+        "c50_db",
+        "c80_db"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

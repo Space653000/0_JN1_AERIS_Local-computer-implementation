@@ -12,7 +12,7 @@ from .taskstate import load_task
 
 VERIFICATION_ROOT = ROOT / ".aeris" / "verification"
 GATES = ["G0_CONTRACT", "G1_NUMERICAL", "G2_DOMAIN", "G3_REGRESSION", "G4_INDEPENDENT_REVIEW", "G5_APPROVAL"]
-OUTCOMES = {"PASS", "FAIL", "BLOCKED", "NOT_RUN"}
+OUTCOMES = {"PASS", "BASELINE_PASS", "FAIL", "BLOCKED", "NOT_RUN"}
 
 
 def record_path(task_id: str) -> Path:
@@ -48,10 +48,27 @@ def record_gate(
         raise ValueError(f"unsupported gate: {gate}")
     if outcome not in OUTCOMES - {"NOT_RUN"}:
         raise ValueError(f"unsupported gate outcome: {outcome}")
+    if outcome == "BASELINE_PASS" and gate not in {"G0_CONTRACT", "G1_NUMERICAL"}:
+        raise ValueError("baseline execution cannot grant domain/reviewer/Human authority")
+
     task = load_task(task_id)
     refs = [str(x) for x in (evidence_refs or []) if str(x).strip()]
-    if outcome == "PASS" and not refs:
-        raise ValueError("PASS requires at least one evidence reference")
+    resolved = []
+    if outcome == "PASS":
+        if not refs:
+            raise ValueError("PASS requires at least one evidence reference")
+        from .release_evidence import require_refs
+        resolved = require_refs(refs, task, gate)
+
+    authoritative_subjects = sorted({
+        str(item.get("_resolved_authority", {}).get("reviewer_subject_id", "")).strip()
+        for item in resolved
+        if str(item.get("_resolved_authority", {}).get("reviewer_subject_id", "")).strip()
+    })
+    if outcome == "PASS" and gate in {"G4_INDEPENDENT_REVIEW", "G5_APPROVAL"}:
+        if len(authoritative_subjects) != 1:
+            raise ValueError("formal reviewer/Human gate requires one authenticated reviewer subject")
+
     if gate == "G4_INDEPENDENT_REVIEW" and outcome == "PASS":
         if reviewer.strip() == str(task.get("created_by", "")).strip():
             raise ValueError("G4 independent reviewer cannot be the task creator/executor identity")
@@ -65,6 +82,7 @@ def record_gate(
         "outcome": outcome,
         "reviewer": reviewer.strip(),
         "reviewer_role": reviewer_role,
+        "reviewer_subject_ids": authoritative_subjects,
         "evidence_refs": refs,
         "note": note.strip(),
         "at_utc": datetime.now(timezone.utc).isoformat(),
@@ -82,6 +100,14 @@ def record_gate(
 def gate_summary(task_id: str) -> dict[str, Any]:
     state = load_gates(task_id)
     outcomes = {gate: state["gates"].get(gate, {}).get("outcome", "NOT_RUN") for gate in GATES}
+    from .release_evidence import require_refs
+    task = load_task(task_id)
+    for gate, outcome in outcomes.items():
+        if outcome == "PASS":
+            try:
+                require_refs(state["gates"][gate].get("evidence_refs", []), task, gate)
+            except ValueError:
+                outcomes[gate] = "BLOCKED"
     return {
         "task_id": task_id,
         "outcomes": outcomes,

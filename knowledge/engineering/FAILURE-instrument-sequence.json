@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-instrument-sequence",
+  "category": "Failures",
+  "title": "FAILURE-instrument-sequence",
+  "text": "{\"invalid_variant\": {\"requested_rms_v\": 1}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Product/instrument-sequence/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "054e003954ab5ddb37dd4ab2a39e5040f3fb21cbda007dc307c438518eb92716",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required": [
+    "skill_id",
+    "values",
+    "input_sha256",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "values": {
+      "type": "object",
+      "required": [
+        "sensitivity_dbv_per_pa",
+        "self_noise_rms_pa",
+        "noise_resolved",
+        "electrical_headroom_db",
+        "checks",
+        "disposition",
+        "counter_hypotheses",
+        "capsule_overload_verified"
+      ]
+    },
+    "physical_measurement_verified": {
+      "const": false
+    }
+  }
+}

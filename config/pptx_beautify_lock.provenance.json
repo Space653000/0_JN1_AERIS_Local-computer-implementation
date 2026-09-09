@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "upstream_repository": "https://github.com/Space653000/pptx-beautify-lock-Skill",
+  "upstream_ref": "fix/separate-skill-exe-backup-v062",
+  "upstream_commit": "d3f2eac0e20496c489e287ed48ed3eb6fd5c374b",
+  "source_root": ".aeris/review-sources/pptx-beautify-lock-Skill-v062",
+  "source_files": {
+    "pptx-beautify-lock/SKILL.md": "320D7EB0AD5108D1D6444464C14668B383E74BA71C2B886A1CF67ABE83C97336",
+    "README.md": "852D58621306EE1225664AA63D51FBFFD9B451249141D7A27D9C58B25963384F",
+    ".claude-plugin/plugin.json": "BE69E7B6B8F4A66F1AC6E456FEDA04E779394278BBF9E3C0A6D13AF262D9D25D"
+  },
+  "executable": {
+    "path": ".aeris/review-artifacts/pptx-beautify-d3f2eac/dist/PPTX-Beautify-Offline.exe",
+    "sha256": "B3631AAE5C0E2ECE225C46504432052C65DD346D0F6330AAB39E0D08E2CD10B0",
+    "bytes": 23900124,
+    "authenticode": "NOT_SIGNED"
+  },
+  "acceptance": "PACKAGE_PROVENANCE_VERIFIED_NOT_DECK_PRODUCTION_ACCEPTED",
+  "truth": "The local executable is unsigned and must not be described as a trusted signed binary. No input PPTX means no per-deck production acceptance claim."
+}

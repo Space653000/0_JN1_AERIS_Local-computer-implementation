@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": [
+    "skill_id",
+    "values",
+    "input_sha256",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "values": {
+      "type": "object",
+      "required": [
+        "checks",
+        "channels",
+        "alignment_intervals_samples",
+        "required_revisions",
+        "disposition",
+        "limitations",
+        "absolute_oscillator_accuracy_verified"
+      ]
+    },
+    "physical_measurement_verified": {
+      "const": false
+    }
+  }
+}

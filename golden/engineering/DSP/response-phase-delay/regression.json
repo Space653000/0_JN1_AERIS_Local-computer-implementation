@@ -1,0 +1,32 @@
+{
+  "input": {
+    "frequency_hz": [
+      100,
+      200,
+      300
+    ],
+    "magnitude_db": [
+      0,
+      0,
+      0
+    ],
+    "phase_rad": [
+      -0.6283185307179586,
+      -1.2566370614359172,
+      -1.8849555921538759
+    ],
+    "smoothing_octaves": 0
+  },
+  "expected_checks": [
+    {
+      "path": "group_delay_s",
+      "expected": 0.001,
+      "absolute_tolerance": 1e-08,
+      "unit": "s",
+      "reduction": "all"
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "d2059fe319b64384847e561c37d1e783e72844ad3fa37f5aa8834ff0b6b6440c"
+}

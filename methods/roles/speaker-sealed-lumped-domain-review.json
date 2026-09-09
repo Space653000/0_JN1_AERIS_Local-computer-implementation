@@ -1,0 +1,31 @@
+{
+  "method_id": "speaker-sealed-lumped-domain-review",
+  "version": "1.0.0",
+  "role": "R021",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.sealed_alignment_review:review",
+  "applicability": "Independent transfer-polynomial, extrema and geometry report consistency; no physical model validation",
+  "equations": {
+    "alignment": "alpha=1+Vas/Vb; Fc=Fs*sqrt(alpha); Qtc=Qts*sqrt(alpha)",
+    "half_power": "y=(F3/Fs)^2; y^2+(2*alpha-1/Qts^2)*y-alpha^2=0",
+    "extrema": "F3 increases with Fs, decreases with Qts; alpha minimum at 1/(2*Qts^2), maxima at endpoints",
+    "geometry": "largest_dimension*analysis_max/sound_speed_lower; analysis_max >= max(Fc_upper,F3_upper)"
+  },
+  "assumptions": [
+    "Independent supplied bounds, not calibrated probability distributions",
+    "F3 relative to mathematical asymptotic high-pass gain",
+    "Ideal linear sealed compliance, supplied effective volume"
+  ],
+  "excluded": [
+    "Ported/leaky model and nonlinear/thermal/large-excursion verification",
+    "Actual T/S identification or spatial-mode simulation",
+    "Production, physical or Human acceptance"
+  ],
+  "golden_tests": "golden/roles/R021/golden.json",
+  "numerical_policy": {
+    "frequency_decimals": 9,
+    "dimensionless_decimals": 12,
+    "scope": "Output representation only, not physical uncertainty"
+  }
+}

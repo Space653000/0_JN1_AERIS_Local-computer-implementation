@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-level-statistics",
+  "category": "Methods",
+  "title": "level-statistics",
+  "text": "Equal-duration energies average linearly, not as decibels. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/level-statistics.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "544452b8d8961f70067faaf147f6c049a057ac66664e259379a606d10b8c6559"
+}

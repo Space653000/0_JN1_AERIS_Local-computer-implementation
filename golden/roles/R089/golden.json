@@ -1,0 +1,598 @@
+{
+  "suite_id": "R089-METADATA-V1",
+  "role_id": "R089",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Fictitious family/example.invalid metadata and hand-authored exact scope, 180-day freshness, access and impact decision oracles; no real standard edition or live retrieval asserted.",
+  "scope": "Supplied metadata policy only, not source authenticity/current-edition/customer acceptance",
+  "skill_id": "standards-metadata-applicability-baseline",
+  "base_input": {
+    "as_of": "2026-09-01T00:00:00Z",
+    "freshness_days": 180,
+    "intended_use": "METADATA_ONLY",
+    "region": "TW",
+    "domain_tags": [
+      "speaker"
+    ],
+    "requirements": [
+      {
+        "id": "REQ-SPL",
+        "family": "SYNTHETIC-SPEAKER-STANDARD",
+        "region": "TW",
+        "domain_tags": [
+          "speaker"
+        ]
+      }
+    ],
+    "previous": {
+      "metadata": {
+        "family": "SYNTHETIC-SPEAKER-STANDARD",
+        "edition": "fixture-2",
+        "status": "CURRENT",
+        "superseded_by": null,
+        "regions": [
+          "TW"
+        ],
+        "domain_tags": [
+          "speaker"
+        ],
+        "normative_informative": "NORMATIVE",
+        "license_access": "METADATA_ONLY",
+        "requirement_ids": [
+          "REQ-SPL"
+        ]
+      },
+      "source": {
+        "record_id": "SYN-PREVIOUS",
+        "publisher": "Synthetic fixture publisher",
+        "url": "https://example.invalid/fixture-metadata",
+        "retrieved_at": "2024-01-01T00:00:00Z",
+        "source_kind": "SYNTHETIC",
+        "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+      }
+    },
+    "current": {
+      "metadata": {
+        "family": "SYNTHETIC-SPEAKER-STANDARD",
+        "edition": "fixture-2",
+        "status": "CURRENT",
+        "superseded_by": null,
+        "regions": [
+          "TW"
+        ],
+        "domain_tags": [
+          "speaker"
+        ],
+        "normative_informative": "NORMATIVE",
+        "license_access": "METADATA_ONLY",
+        "requirement_ids": [
+          "REQ-SPL"
+        ]
+      },
+      "source": {
+        "record_id": "SYN-NEW",
+        "publisher": "Synthetic fixture publisher",
+        "url": "https://example.invalid/fixture-metadata",
+        "retrieved_at": "2026-08-01T00:00:00Z",
+        "source_kind": "SYNTHETIC",
+        "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "STANDARD-SUPPLIED-CURRENT",
+      "kind": "positive",
+      "question": "Does supplied current metadata permit only bounded review readiness?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "live_verified",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-STALE",
+      "kind": "counter_hypothesis",
+      "question": "Does an old supplied retrieval remain stale despite a CURRENT label?",
+      "input_overrides": {
+        "current": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-OLD",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2025-01-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+          }
+        }
+      },
+      "checks": [
+        {
+          "path": "metadata_blockers.0",
+          "expected": "SOURCE_STALE",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-FRESHNESS-BOUNDARY",
+      "kind": "boundary",
+      "question": "Is the pinned 180-day freshness boundary inclusive?",
+      "input_overrides": {
+        "current": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-NEW",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2026-03-05T00:00:00+00:00",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+          }
+        }
+      },
+      "checks": [
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REGION-EXCLUDED",
+      "kind": "counter_hypothesis",
+      "question": "Does an explicit nonmatching region remain excluded rather than globally applicable?",
+      "input_overrides": {
+        "region": "US"
+      },
+      "checks": [
+        {
+          "path": "applicability",
+          "expected": "NOT_APPLICABLE",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-SCOPE-UNKNOWN",
+      "kind": "counter_hypothesis",
+      "question": "Does absent region scope remain unknown rather than excluded?",
+      "input_overrides": {
+        "current": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-NEW",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2026-08-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "1962e4b56687a76dc3c2b633631e07fddfe936c48c718eb4a60e6fd6b6b9eb7a"
+          }
+        }
+      },
+      "checks": [
+        {
+          "path": "applicability",
+          "expected": "UNKNOWN",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-REMOVED-SCOPE-IMPACT",
+      "kind": "counter_hypothesis",
+      "question": "Does a requirement removed from current scope remain in old/new change impact?",
+      "input_overrides": {
+        "current": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-3",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "US"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": []
+          },
+          "source": {
+            "record_id": "SYN-NEW",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2026-08-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "8326c0544abe4238583481aa8524d3af16a69067ff9f2a319d008767328fe30c"
+          }
+        }
+      },
+      "checks": [
+        {
+          "path": "impacted_requirement_ids.0",
+          "expected": "REQ-SPL",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-SUPERSEDED",
+      "kind": "counter_hypothesis",
+      "question": "Can a superseded declaration be metadata ready?",
+      "input_overrides": {
+        "current": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "SUPERSEDED",
+            "superseded_by": "fixture-3",
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-NEW",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2026-08-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "66f5b6a99f03f49b587a009c861f669b849254ba6a1ce2bdde5cd31a1f2c6f56"
+          }
+        }
+      },
+      "checks": [
+        {
+          "path": "metadata_blockers.0",
+          "expected": "DECLARED_STATUS_NOT_CURRENT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-NORMATIVE-NO-ACCESS",
+      "kind": "counter_hypothesis",
+      "question": "Can metadata-only access satisfy normative use?",
+      "input_overrides": {
+        "intended_use": "NORMATIVE_USE"
+      },
+      "checks": [
+        {
+          "path": "license_blockers.0",
+          "expected": "NORMATIVE_TEXT_ACCESS_UNCONFIRMED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-INFORMATIVE-NOT-LICENSE",
+      "kind": "counter_hypothesis",
+      "question": "Can informative classification grant normative permission or full-text access?",
+      "input_overrides": {
+        "previous": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "INFORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-PREVIOUS",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2024-01-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "66ad2be23392dbc220e589c2d38e9cea718f1f7cb4cce6194058bd24135a22eb"
+          }
+        },
+        "current": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "INFORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-NEW",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2026-08-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "66ad2be23392dbc220e589c2d38e9cea718f1f7cb4cce6194058bd24135a22eb"
+          }
+        },
+        "intended_use": "NORMATIVE_USE"
+      },
+      "checks": [
+        {
+          "path": "license_blockers.0",
+          "expected": "CLASSIFICATION_INCOMPATIBLE_WITH_NORMATIVE_USE",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "license_blockers.1",
+          "expected": "NORMATIVE_TEXT_ACCESS_UNCONFIRMED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-CONTENT-PRESERVING-REFRESH",
+      "kind": "positive",
+      "question": "Does same-content refresh leave semantic impacts empty and live verification false?",
+      "input_overrides": {
+        "previous": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-OLDER",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2025-01-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+          }
+        }
+      },
+      "checks": [
+        {
+          "path": "semantic_changes",
+          "expected": [],
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "impacted_requirement_ids",
+          "expected": [],
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "live_verified",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "STANDARD-BAD-HASH",
+      "kind": "negative",
+      "question": "Must a mismatched embedded metadata hash fail closed?",
+      "input_overrides": {
+        "current": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-NEW",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2026-08-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "STANDARD-FUTURE-RETRIEVAL",
+      "kind": "negative",
+      "question": "Can a future retrieval be called fresh at a pinned earlier date?",
+      "input_overrides": {
+        "current": {
+          "metadata": {
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-NEW",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2027-01-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "2ce5db620b67b8be9ed2414b1fce92e8cb9d1c9fb5a390a0b2499ac9c1e35d09"
+          }
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "STANDARD-FAKE-REAL-FAMILY",
+      "kind": "negative",
+      "question": "Must a synthetic fixture refuse to impersonate an actual standard?",
+      "input_overrides": {
+        "current": {
+          "metadata": {
+            "family": "IEC 60268-5",
+            "edition": "fixture-2",
+            "status": "CURRENT",
+            "superseded_by": null,
+            "regions": [
+              "TW"
+            ],
+            "domain_tags": [
+              "speaker"
+            ],
+            "normative_informative": "NORMATIVE",
+            "license_access": "METADATA_ONLY",
+            "requirement_ids": [
+              "REQ-SPL"
+            ]
+          },
+          "source": {
+            "record_id": "SYN-NEW",
+            "publisher": "Synthetic fixture publisher",
+            "url": "https://example.invalid/fixture-metadata",
+            "retrieved_at": "2026-08-01T00:00:00Z",
+            "source_kind": "SYNTHETIC",
+            "content_sha256": "c228be8037758c1ad439b22d9e40a12dcf5eb91bcf166c8bb8da08a48dbaa61d"
+          }
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "STANDARD-DUPLICATE-REQUIREMENT",
+      "kind": "negative",
+      "question": "Can duplicate independent requirement identities alter impact counts?",
+      "input_overrides": {
+        "requirements": [
+          {
+            "id": "REQ-SPL",
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "region": "TW",
+            "domain_tags": [
+              "speaker"
+            ]
+          },
+          {
+            "id": "REQ-SPL",
+            "family": "SYNTHETIC-SPEAKER-STANDARD",
+            "region": "TW",
+            "domain_tags": [
+              "speaker"
+            ]
+          }
+        ]
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

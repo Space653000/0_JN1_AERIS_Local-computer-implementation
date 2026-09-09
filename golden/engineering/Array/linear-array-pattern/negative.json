@@ -1,0 +1,15 @@
+{
+  "input": {
+    "positions_m": [
+      0,
+      0,
+      0.04,
+      0.06
+    ],
+    "frequency_hz": 1000,
+    "sound_speed_m_s": 343,
+    "steering_deg": 0
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "83da09c9aaf91aa916ca879c054c56cd02f24a99b2344c33cdf856e6fc4d81db"
+}

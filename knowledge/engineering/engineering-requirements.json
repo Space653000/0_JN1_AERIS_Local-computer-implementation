@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-engineering-requirements",
+  "category": "Methods",
+  "title": "engineering-requirements",
+  "text": "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/engineering-requirements.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "86a5cfc140117577130c484477a2ec639a0702dba6997641e2a9fd7b1fcef9cf"
+}

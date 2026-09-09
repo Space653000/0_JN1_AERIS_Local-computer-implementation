@@ -14,7 +14,9 @@ NOT_IMPLEMENTED
 → VERIFIED
 ```
 
-外部商用工具/硬體尚未具備時可用 `BLOCKED_EXTERNAL`。
+外部商用工具/硬體尚未具備時可用 `BLOCKED_EXTERNAL`。細分 gate 狀態為
+`HUMAN_GATE`、`EXTERNAL_LICENSE`、`PHYSICAL_HARDWARE`、`REBOOT_LOGOFF_REQUIRED`；
+它們只能用於無法由本機純軟體安全完成的剩餘條件，且必須列明 required evidence。
 
 `VERIFIED` 必須有與該 capability 相符的 evidence；不能用 README、UI badge 或 LLM judgment 升級。
 

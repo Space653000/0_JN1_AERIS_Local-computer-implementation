@@ -1,0 +1,73 @@
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+.theme-toggle {
+  margin-top: auto;
+}
+
+:root[data-theme="light"] {
+  color: #17231d;
+  background: #edf4ef;
+  color-scheme: light;
+  --panel: #ffffff;
+  --panel2: #f4f8f5;
+  --line: #cfdcd4;
+  --muted: #5d7166;
+  --accent: #087f62;
+  --accent2: #0a6f58;
+  --danger: #b3261e;
+  --warn: #8a5c00;
+}
+
+:root[data-theme="light"] body {
+  background: radial-gradient(circle at 20% 0, #ffffff 0, #eef5f0 42%, #e5eee8 100%);
+}
+
+:root[data-theme="light"] .rail { background: #f7faf8; }
+:root[data-theme="light"] .brand { background: #d9f1e8; color: #075b47; }
+:root[data-theme="light"] .nav { color: #52695d; }
+:root[data-theme="light"] .nav:hover,
+:root[data-theme="light"] .nav.active { background: #d7eee5; color: #075f49; }
+:root[data-theme="light"] .card {
+  background: linear-gradient(180deg, #ffffff, #f8fbf9);
+  box-shadow: 0 12px 34px rgba(35, 68, 52, .09);
+}
+:root[data-theme="light"] .status,
+:root[data-theme="light"] .hero-badge {
+  border-color: #8cc7b3;
+  background: #e1f4ed;
+  color: #075d48;
+}
+:root[data-theme="light"] .metric strong { color: #13231b; }
+:root[data-theme="light"] button {
+  border-color: #aac4b6;
+  background: #edf6f1;
+  color: #174c3c;
+}
+:root[data-theme="light"] button:hover { border-color: #6ea98f; background: #deefe7; }
+:root[data-theme="light"] .primary { background: #087f62; border-color: #087f62; color: #fff; }
+:root[data-theme="light"] input,
+:root[data-theme="light"] textarea,
+:root[data-theme="light"] select {
+  background: #fff;
+  border-color: #bdcec4;
+  color: #17231d;
+}
+:root[data-theme="light"] label { color: #50685b; }
+:root[data-theme="light"] .pre { background: #f3f7f4; border-color: #ccd9d1; color: #344d40; }
+:root[data-theme="light"] .maturity-row { color: #40594c; }
+:root[data-theme="light"] .bar { background: #dbe6df; }
+:root[data-theme="light"] .chip { border-color: #a9beb2; color: #456052; }
+:root[data-theme="light"] .role-card,
+:root[data-theme="light"] .task-card,
+:root[data-theme="light"] .search-item,
+:root[data-theme="light"] .audit-item { border-color: #d3dfd7; background: #fbfdfc; }
+:root[data-theme="light"] .role-card small,
+:root[data-theme="light"] .task-card small,
+:root[data-theme="light"] .search-item small,
+:root[data-theme="light"] .audit-item small { color: #60756a; }
+:root[data-theme="light"] .empty { color: #63796d; border-color: #b8cbc0; }
+:root[data-theme="light"] .search-item p,
+:root[data-theme="light"] .audit-item p { color: #455e51; }
+:root[data-theme="light"] .audit-item code { color: #08745a; }

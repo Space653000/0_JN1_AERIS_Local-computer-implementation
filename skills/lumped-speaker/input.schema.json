@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "moving_mass_kg": {
+      "type": "number"
+    },
+    "compliance_m_per_n": {
+      "type": "number"
+    },
+    "mechanical_resistance_ns_per_m": {
+      "type": "number"
+    },
+    "force_factor_n_per_a": {
+      "type": "number"
+    },
+    "dc_resistance_ohm": {
+      "type": "number"
+    },
+    "diaphragm_area_m2": {
+      "type": "number"
+    },
+    "frequency_hz": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "box_volume_m3": {
+      "type": "number"
+    },
+    "voltage_rms_v": {
+      "type": "number"
+    },
+    "xmax_m": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "moving_mass_kg",
+    "compliance_m_per_n",
+    "mechanical_resistance_ns_per_m",
+    "force_factor_n_per_a",
+    "dc_resistance_ohm",
+    "diaphragm_area_m2",
+    "frequency_hz",
+    "box_volume_m3",
+    "voltage_rms_v",
+    "xmax_m"
+  ],
+  "additionalProperties": false
+}

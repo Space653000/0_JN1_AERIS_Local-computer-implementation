@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-uncertainty-propagation",
+  "category": "Failures",
+  "title": "FAILURE-uncertainty-propagation",
+  "text": "{\"invalid_variant\": {\"standard_uncertainties\": [-0.1, 0.2]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Failure/uncertainty-propagation/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "a10ae107739a53702b3333d6742212e93bfa1fae9cfdb05ba4a550b09f7f1346",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

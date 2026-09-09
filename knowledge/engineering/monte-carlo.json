@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-monte-carlo",
+  "category": "Methods",
+  "title": "monte-carlo",
+  "text": "Sum of independent normals has mean 11 and standard deviation 5. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/monte-carlo.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "434fa38d9fec010a053ba2ab73bb6de985919862b047d5f21a2cbefc838189b4"
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "room-correction-spatial-domain-review", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/room-correction-spatial-domain-review.json",
+  "input_schema": "skills/room-correction-spatial-domain-review/input.schema.json", "output_schema": "skills/room-correction-spatial-domain-review/output.schema.json",
+  "role_mappings": ["R071"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Independent multi-position response, correction, spatial and realizability-boundary assertion review", "review_domain": "room-correction-spatial"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-product-system-plan",
+  "category": "Theory",
+  "title": "THEORY-product-system-plan",
+  "text": "A valid product plan includes both transducer workstreams and preserves requirement coverage.",
+  "source": "methods/engineering/product-system-plan.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "63d5bb10a6188f024dafba11785dc88d80137820125a98e5f3d63122dd84b0f1",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

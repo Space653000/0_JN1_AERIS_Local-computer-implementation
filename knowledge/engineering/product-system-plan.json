@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-product-system-plan",
+  "category": "Methods",
+  "title": "product-system-plan",
+  "text": "A valid product plan includes both transducer workstreams and preserves requirement coverage. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/product-system-plan.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "91c6eaaf35f3fcfff6bba1b5001c317d048ae361970c818b7f6bee6cf3025729"
+}

@@ -1,0 +1,9 @@
+{
+  "method_id": "room-decay-spatial-baseline", "version": "1.0.0", "role": "R023",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false, "implementation": "aeris_runtime.engineering.room_decay:analyze",
+  "applicability": "Supplied multi-position linear decay-rate fits with explicit fit span, noise margin, fit quality and IR window",
+  "equations": {"rt60": "60 / positive decay-rate magnitude", "coverage": "valid positions / supplied positions", "spread": "max(valid RT60) - min(valid RT60)"},
+  "assumptions": ["Linear fit interval", "Positive slope magnitude", "Sampled positions only"],
+  "excluded": ["diffuse-field and room-wide inference", "ray simulation", "calibrated IR, physical and Human acceptance"],
+  "golden_tests": "golden/roles/R023/golden.json"
+}

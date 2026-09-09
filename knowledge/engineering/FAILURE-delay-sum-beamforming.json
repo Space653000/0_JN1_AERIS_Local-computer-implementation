@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-delay-sum-beamforming",
+  "category": "Failures",
+  "title": "FAILURE-delay-sum-beamforming",
+  "text": "{\"invalid_variant\": {\"positions_m\": [0, 0]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Array/delay-sum-beamforming/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "c6d8c46d519d534b189ed25d39d92b652827e962955851878c843701648ce44f",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

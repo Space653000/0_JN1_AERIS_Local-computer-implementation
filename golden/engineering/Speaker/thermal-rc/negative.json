@@ -1,0 +1,16 @@
+{
+  "input": {
+    "power_w": 2,
+    "thermal_resistance_k_w": 10,
+    "thermal_capacity_j_k": 0,
+    "ambient_c": 20,
+    "limit_c": 60,
+    "time_s": [
+      0,
+      50,
+      100
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "1450d52b69f082cfc855b77aedf7cace3efc8bd5cd9997487732030d8cc41081"
+}

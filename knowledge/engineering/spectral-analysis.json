@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-spectral-analysis",
+  "category": "Methods",
+  "title": "spectral-analysis",
+  "text": "Coherent bin-64 sinusoid has unit peak amplitude and 1/sqrt(2) RMS. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/spectral-analysis.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "380ce0662e48f084e9807c299af37ef02030ee4c8669398dbfdc807750c3d5c7"
+}

@@ -1,0 +1,14 @@
+{
+  "method_id": "speaker-tonal-eq-baseline", "version": "1.0.0", "role": "R018",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_tonal:analyze",
+  "applicability": "Supplied absolute level-matched sampled response and target with declared spatial spread, uncertainty and headroom",
+  "equations": {
+    "correction": "target_level_db - measured_level_db",
+    "boost_bound": "max(max(0, correction) + spatial_spread + level_uncertainty)",
+    "headroom": "boost_bound + headroom_reserve"
+  },
+  "assumptions": ["Pointwise supplied samples only", "Conservative additive dB screening", "No filter realization or audibility inference"],
+  "excluded": ["filter coefficients and phase", "listening preference", "calibrated physical or Human acceptance"],
+  "golden_tests": "golden/roles/R018/golden.json"
+}

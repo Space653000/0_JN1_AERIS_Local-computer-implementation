@@ -1,0 +1,1187 @@
+{
+  "suite_id": "R021-SEALED-BASELINE-V1",
+  "role_id": "R021",
+  "skill_id": "speaker-sealed-lumped-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored alpha=3 case: Fc=50sqrt(3), Qtc=.4sqrt(3), positive root of y^2-.25y-9=0 gives F3=88.42515249302765. Alpha=2..5 interval minimum at 3.125 gives 88.38834764831844; maximum at 5 gives 93.07258378308104. Candidate constants and contradictions authored independently; not copied from executor output.",
+  "scope": "Independent sealed transfer-polynomial/model-scope report consistency",
+  "base_input": {
+    "parameters": {
+      "model": "IDEAL_SEALED_SMALL_SIGNAL",
+      "fs_hz": 50,
+      "fs_lower_hz": 50,
+      "fs_upper_hz": 50,
+      "qts": 0.4,
+      "qts_lower": 0.4,
+      "qts_upper": 0.4,
+      "vas_m3": 0.02,
+      "vas_lower_m3": 0.02,
+      "vas_upper_m3": 0.02,
+      "box_m3": 0.01,
+      "box_lower_m3": 0.01,
+      "box_upper_m3": 0.01,
+      "maximum_f3_hz": 100,
+      "minimum_qtc": 0.5,
+      "maximum_qtc": 1,
+      "maximum_box_m3": 0.025,
+      "largest_dimension_m": 0.3,
+      "analysis_max_hz": 150,
+      "sound_speed_lower_m_s": 340,
+      "maximum_dimension_wavelength_ratio": 0.2
+    },
+    "candidate": {
+      "alpha": 3,
+      "alpha_interval": [
+        3,
+        3
+      ],
+      "fc_hz": 86.60254037844386,
+      "fc_interval_hz": [
+        86.60254037844386,
+        86.60254037844386
+      ],
+      "qtc": 0.6928203230275509,
+      "qtc_interval": [
+        0.6928203230275509,
+        0.6928203230275509
+      ],
+      "f3_hz": 88.42515249302765,
+      "f3_interval_hz": [
+        88.42515249302765,
+        88.42515249302765
+      ],
+      "dimension_wavelength_ratio": 0.1323529411764706,
+      "required_analysis_max_hz": 88.42515249302765,
+      "checks": [
+        {
+          "id": "F3_UPPER_BOUND",
+          "actual": 88.42515249302765,
+          "limit": 100,
+          "passed": true,
+          "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+        },
+        {
+          "id": "QTC_INTERVAL",
+          "actual": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "limit": [
+            0.5,
+            1
+          ],
+          "passed": true,
+          "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+        },
+        {
+          "id": "EFFECTIVE_BOX_VOLUME",
+          "actual": 0.01,
+          "limit": 0.025,
+          "passed": true,
+          "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+        },
+        {
+          "id": "ANALYSIS_FREQUENCY_COVERAGE",
+          "actual": 150,
+          "limit": 88.42515249302765,
+          "passed": true,
+          "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+        },
+        {
+          "id": "LUMPED_GEOMETRY_VALIDITY",
+          "actual": 0.1323529411764706,
+          "limit": 0.2,
+          "passed": true,
+          "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+        }
+      ],
+      "required_revisions": [],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "excursion_verified": false,
+      "ported_alignment_verified": false,
+      "physical_measurement_verified": false,
+      "counter_hypotheses": [
+        "Enclosure leakage rather than T/S parameter drift",
+        "Amplifier voltage droop rather than sealed-box roll-off"
+      ],
+      "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+      "model_assumptions": [
+        "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+        "Independent supplied bounds, not calibrated probability distributions",
+        "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+        "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+      ],
+      "unresolved": [
+        "Measured T/S, effective compliance and leakage",
+        "Excursion, thermal capacity and nonlinear distortion",
+        "Higher spatial modes, physical and qualified Human acceptance"
+      ]
+    },
+    "context": {
+      "product": "Sealed bookshelf speaker",
+      "transducer": "Speaker",
+      "lifecycle": "Prototype",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "LUMPED-CONSISTENT",
+      "kind": "positive",
+      "question": "Does an independent polynomial confirm the supplied linear alignment without awarding physical approval?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "role_l3_awarded",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-TAIL",
+      "kind": "boundary",
+      "question": "May sub-nanohertz representation tails be compared without changing any engineering policy?",
+      "input_overrides": {
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 88.42515249302765,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.42515249302765
+          ],
+          "dimension_wavelength_ratio": 0.1323529411764706,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249312765,
+              "limit": 100,
+              "passed": true,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.1323529411764706,
+              "limit": 0.2,
+              "passed": true,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "excursion_verified": false,
+          "ported_alignment_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "Enclosure leakage rather than T/S parameter drift",
+            "Amplifier voltage droop rather than sealed-box roll-off"
+          ],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-VALID-REVISION",
+      "kind": "positive",
+      "question": "Can an honestly reported spatial-model violation receive consistent review while requiring design revision?",
+      "input_overrides": {
+        "parameters": {
+          "model": "IDEAL_SEALED_SMALL_SIGNAL",
+          "fs_hz": 50,
+          "fs_lower_hz": 50,
+          "fs_upper_hz": 50,
+          "qts": 0.4,
+          "qts_lower": 0.4,
+          "qts_upper": 0.4,
+          "vas_m3": 0.02,
+          "vas_lower_m3": 0.02,
+          "vas_upper_m3": 0.02,
+          "box_m3": 0.01,
+          "box_lower_m3": 0.01,
+          "box_upper_m3": 0.01,
+          "maximum_f3_hz": 100,
+          "minimum_qtc": 0.5,
+          "maximum_qtc": 1,
+          "maximum_box_m3": 0.025,
+          "largest_dimension_m": 1,
+          "analysis_max_hz": 150,
+          "sound_speed_lower_m_s": 340,
+          "maximum_dimension_wavelength_ratio": 0.2
+        },
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 88.42515249302765,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.42515249302765
+          ],
+          "dimension_wavelength_ratio": 0.4411764705882353,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249302765,
+              "limit": 100,
+              "passed": true,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.4411764705882353,
+              "limit": 0.2,
+              "passed": false,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [
+            "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "excursion_verified": false,
+          "ported_alignment_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "Enclosure leakage rather than T/S parameter drift",
+            "Amplifier voltage droop rather than sealed-box roll-off"
+          ],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-FC-AS-F3",
+      "kind": "counter_hypothesis",
+      "question": "Does assuming F3=Fc outside Butterworth alignment fail independent review?",
+      "input_overrides": {
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 86.60254037844386,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.42515249302765
+          ],
+          "dimension_wavelength_ratio": 0.1323529411764706,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249302765,
+              "limit": 100,
+              "passed": true,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.1323529411764706,
+              "limit": 0.2,
+              "passed": true,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "excursion_verified": false,
+          "ported_alignment_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "Enclosure leakage rather than T/S parameter drift",
+            "Amplifier voltage droop rather than sealed-box roll-off"
+          ],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-EXCURSION",
+      "kind": "counter_hypothesis",
+      "question": "Can a compliance model establish large-signal excursion?",
+      "input_overrides": {
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 88.42515249302765,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.42515249302765
+          ],
+          "dimension_wavelength_ratio": 0.1323529411764706,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249302765,
+              "limit": 100,
+              "passed": true,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.1323529411764706,
+              "limit": 0.2,
+              "passed": true,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "excursion_verified": true,
+          "ported_alignment_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "Enclosure leakage rather than T/S parameter drift",
+            "Amplifier voltage droop rather than sealed-box roll-off"
+          ],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-PORTED",
+      "kind": "counter_hypothesis",
+      "question": "Can the ideal sealed model establish ported-system acceptance?",
+      "input_overrides": {
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 88.42515249302765,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.42515249302765
+          ],
+          "dimension_wavelength_ratio": 0.1323529411764706,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249302765,
+              "limit": 100,
+              "passed": true,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.1323529411764706,
+              "limit": 0.2,
+              "passed": true,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "excursion_verified": false,
+          "ported_alignment_verified": true,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "Enclosure leakage rather than T/S parameter drift",
+            "Amplifier voltage droop rather than sealed-box roll-off"
+          ],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-PHYSICAL",
+      "kind": "counter_hypothesis",
+      "question": "Can numerical agreement establish real measured performance?",
+      "input_overrides": {
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 88.42515249302765,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.42515249302765
+          ],
+          "dimension_wavelength_ratio": 0.1323529411764706,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249302765,
+              "limit": 100,
+              "passed": true,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.1323529411764706,
+              "limit": 0.2,
+              "passed": true,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "excursion_verified": false,
+          "ported_alignment_verified": false,
+          "physical_measurement_verified": true,
+          "counter_hypotheses": [
+            "Enclosure leakage rather than T/S parameter drift",
+            "Amplifier voltage droop rather than sealed-box roll-off"
+          ],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-HIDDEN-POLICY",
+      "kind": "counter_hypothesis",
+      "question": "Does falsely reporting a policy result fail even when all numeric values are correct?",
+      "input_overrides": {
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 88.42515249302765,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.42515249302765
+          ],
+          "dimension_wavelength_ratio": 0.1323529411764706,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249302765,
+              "limit": 100,
+              "passed": false,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.1323529411764706,
+              "limit": 0.2,
+              "passed": true,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "excursion_verified": false,
+          "ported_alignment_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "Enclosure leakage rather than T/S parameter drift",
+            "Amplifier voltage droop rather than sealed-box roll-off"
+          ],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-HIDDEN-GEOMETRY",
+      "kind": "counter_hypothesis",
+      "question": "Does changing internal dimension invalidate an old report even if its bass result still agrees?",
+      "input_overrides": {
+        "parameters": {
+          "model": "IDEAL_SEALED_SMALL_SIGNAL",
+          "fs_hz": 50,
+          "fs_lower_hz": 50,
+          "fs_upper_hz": 50,
+          "qts": 0.4,
+          "qts_lower": 0.4,
+          "qts_upper": 0.4,
+          "vas_m3": 0.02,
+          "vas_lower_m3": 0.02,
+          "vas_upper_m3": 0.02,
+          "box_m3": 0.01,
+          "box_lower_m3": 0.01,
+          "box_upper_m3": 0.01,
+          "maximum_f3_hz": 100,
+          "minimum_qtc": 0.5,
+          "maximum_qtc": 1,
+          "maximum_box_m3": 0.025,
+          "largest_dimension_m": 1,
+          "analysis_max_hz": 150,
+          "sound_speed_lower_m_s": 340,
+          "maximum_dimension_wavelength_ratio": 0.2
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-COUNTERHYPOTHESIS",
+      "kind": "counter_hypothesis",
+      "question": "Must a report retain leakage and amplifier alternatives to T/S drift?",
+      "input_overrides": {
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 88.42515249302765,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.42515249302765
+          ],
+          "dimension_wavelength_ratio": 0.1323529411764706,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249302765,
+              "limit": 100,
+              "passed": true,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.1323529411764706,
+              "limit": 0.2,
+              "passed": true,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "excursion_verified": false,
+          "ported_alignment_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-LIMIT",
+      "kind": "boundary",
+      "question": "Does the reviewer reject an altered numeric upper bound?",
+      "input_overrides": {
+        "candidate": {
+          "alpha": 3,
+          "alpha_interval": [
+            3,
+            3
+          ],
+          "fc_hz": 86.60254037844386,
+          "fc_interval_hz": [
+            86.60254037844386,
+            86.60254037844386
+          ],
+          "qtc": 0.6928203230275509,
+          "qtc_interval": [
+            0.6928203230275509,
+            0.6928203230275509
+          ],
+          "f3_hz": 88.42515249302765,
+          "f3_interval_hz": [
+            88.42515249302765,
+            88.426
+          ],
+          "dimension_wavelength_ratio": 0.1323529411764706,
+          "required_analysis_max_hz": 88.42515249302765,
+          "checks": [
+            {
+              "id": "F3_UPPER_BOUND",
+              "actual": 88.42515249302765,
+              "limit": 100,
+              "passed": true,
+              "on_failure": "REVISE_SEALED_ALIGNMENT_WITH_PARAMETER_TOLERANCES"
+            },
+            {
+              "id": "QTC_INTERVAL",
+              "actual": [
+                0.6928203230275509,
+                0.6928203230275509
+              ],
+              "limit": [
+                0.5,
+                1
+              ],
+              "passed": true,
+              "on_failure": "REVISE_DAMPING_OR_EFFECTIVE_BOX_COMPLIANCE"
+            },
+            {
+              "id": "EFFECTIVE_BOX_VOLUME",
+              "actual": 0.01,
+              "limit": 0.025,
+              "passed": true,
+              "on_failure": "RESOLVE_AVAILABLE_EFFECTIVE_VOLUME"
+            },
+            {
+              "id": "ANALYSIS_FREQUENCY_COVERAGE",
+              "actual": 150,
+              "limit": 88.42515249302765,
+              "passed": true,
+              "on_failure": "EXTEND_VALIDATED_ANALYSIS_RANGE_TO_ALIGNMENT_BOUNDS"
+            },
+            {
+              "id": "LUMPED_GEOMETRY_VALIDITY",
+              "actual": 0.1323529411764706,
+              "limit": 0.2,
+              "passed": true,
+              "on_failure": "REDUCE_GEOMETRIC_SCALE_OR_USE_A_SPATIALLY_VALID_MODEL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "excursion_verified": false,
+          "ported_alignment_verified": false,
+          "physical_measurement_verified": false,
+          "counter_hypotheses": [
+            "Enclosure leakage rather than T/S parameter drift",
+            "Amplifier voltage droop rather than sealed-box roll-off"
+          ],
+          "next_discriminating_experiment": "MEASURE_SMALL_SIGNAL_IMPEDANCE_AND_SEALED_VOLUME_LEAKAGE_AT_FIXED_DRIVE",
+          "model_assumptions": [
+            "Ideal sealed linear compliance; no port, leakage or large-signal terms",
+            "Independent supplied bounds, not calibrated probability distributions",
+            "F3 relative to mathematical asymptotic high-pass gain, not a measured flat high-frequency response",
+            "9-decimal Hz and 12-decimal dimensionless comparison representation, separate from model uncertainty"
+          ],
+          "unresolved": [
+            "Measured T/S, effective compliance and leakage",
+            "Excursion, thermal capacity and nonlinear distortion",
+            "Higher spatial modes, physical and qualified Human acceptance"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "LUMPED-NEG-CONTEXT",
+      "kind": "negative",
+      "question": "Must high-risk analysis require qualification outside this bounded baseline?",
+      "input_overrides": {
+        "context": {
+          "product": "Sealed bookshelf speaker",
+          "transducer": "Speaker",
+          "lifecycle": "Prototype",
+          "risk": "R4",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "LUMPED-NEG-MODEL",
+      "kind": "negative",
+      "question": "Must a leaking enclosure model fail instead of receiving a sealed equation review?",
+      "input_overrides": {
+        "parameters": {
+          "model": "LEAKY",
+          "fs_hz": 50,
+          "fs_lower_hz": 50,
+          "fs_upper_hz": 50,
+          "qts": 0.4,
+          "qts_lower": 0.4,
+          "qts_upper": 0.4,
+          "vas_m3": 0.02,
+          "vas_lower_m3": 0.02,
+          "vas_upper_m3": 0.02,
+          "box_m3": 0.01,
+          "box_lower_m3": 0.01,
+          "box_upper_m3": 0.01,
+          "maximum_f3_hz": 100,
+          "minimum_qtc": 0.5,
+          "maximum_qtc": 1,
+          "maximum_box_m3": 0.025,
+          "largest_dimension_m": 0.3,
+          "analysis_max_hz": 150,
+          "sound_speed_lower_m_s": 340,
+          "maximum_dimension_wavelength_ratio": 0.2
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "LUMPED-NEG-SCHEMA",
+      "kind": "negative",
+      "question": "Must missing candidate fields fail closed?",
+      "input_overrides": {
+        "candidate": {
+          "f3_hz": 88.425
+        }
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

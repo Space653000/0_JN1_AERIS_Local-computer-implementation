@@ -1,0 +1,92 @@
+{
+  "suite_id": "R013-SPEAKER-SIGNAL-CHAIN-REVIEW-V1",
+  "role_id": "R013",
+  "skill_id": "speaker-signal-chain-headroom-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored independent reconstruction oracle for a two-stage scalar signal chain. Candidate constants are analytic fixtures, not copied from an executor run or bench measurement.",
+  "scope": "Independent speaker gain/noise/loading/peak-headroom report consistency only",
+  "base_input": {
+    "parameters": {
+      "model": "SUPPLIED_SPEAKER_SIGNAL_CHAIN",
+      "stage_voltage_gains": [2.0, 5.0],
+      "stage_input_noise_rms_v": [0.00001, 0.00002],
+      "source_noise_rms_v": 0.000005,
+      "source_signal_rms_v": 0.5,
+      "source_impedance_ohm": 100.0,
+      "chain_input_impedance_ohm": 10000.0,
+      "minimum_loading_ratio": 20.0,
+      "crest_factor": 2.0,
+      "load_impedance_min_ohm": 4.0,
+      "minimum_supported_load_ohm": 3.2,
+      "available_output_peak_v": 12.0,
+      "available_output_peak_a": 3.0,
+      "maximum_output_noise_rms_v": 0.001,
+      "noise_relative_bound": 0.1,
+      "phase_margin_deg": 55.0,
+      "minimum_phase_margin_deg": 45.0
+    },
+    "candidate": {
+      "total_voltage_gain": 10.0,
+      "output_noise_contributions_rms_v": [0.00005, 0.0001, 0.0001],
+      "nominal_output_noise_rms_v": 0.00015,
+      "output_noise_upper_rms_v": 0.000165,
+      "nominal_output_signal_rms_v": 5.0,
+      "required_output_peak_v": 10.0,
+      "required_output_peak_a": 2.5,
+      "loading_ratio": 100.0,
+      "checks": [
+        {"id": "OUTPUT_NOISE_BUDGET", "actual": 0.000165, "limit": 0.001, "operator": "<=", "passed": true, "on_failure": "REDUCE_REFERRED_NOISE_OR_GAIN_BANDWIDTH"},
+        {"id": "VOLTAGE_HEADROOM", "actual": 10.0, "limit": 12.0, "operator": "<=", "passed": true, "on_failure": "REDUCE_GAIN_OR_INCREASE_AVAILABLE_RAIL_HEADROOM"},
+        {"id": "CURRENT_HEADROOM", "actual": 2.5, "limit": 3.0, "operator": "<=", "passed": true, "on_failure": "REDUCE_PEAK_DRIVE_OR_INCREASE_CURRENT_CAPABILITY"},
+        {"id": "LOAD_STABILITY", "actual": 4.0, "limit": 3.2, "operator": ">=", "passed": true, "on_failure": "REVISE_LOAD_OR_VALIDATE_AMPLIFIER_STABILITY"},
+        {"id": "SOURCE_LOADING", "actual": 100.0, "limit": 20.0, "operator": ">=", "passed": true, "on_failure": "INCREASE_INPUT_IMPEDANCE_OR_BUFFER_SOURCE"},
+        {"id": "PHASE_MARGIN", "actual": 55.0, "limit": 45.0, "operator": ">=", "passed": true, "on_failure": "REVISE_LOOP_COMPENSATION_AND_LOAD_NETWORK"}
+      ],
+      "required_revisions": [],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "stability_measurement_verified": false,
+      "physical_measurement_verified": false,
+      "counter_hypotheses": ["Ground-loop pickup rather than intrinsic stage noise", "Reactive load or cable network rather than nominal resistance", "Supply droop rather than small-signal gain error"],
+      "next_discriminating_experiment": "MEASURE_STAGE_REFERRED_NOISE_AND_COMPLEX_LOAD_RAIL_CURRENT_AT_DECLARED_CREST_FACTOR",
+      "model_assumptions": ["Stage input-noise contributions are mutually uncorrelated and bandwidth-integrated", "All voltage gains are positive scalar RMS gains", "Peak load current uses the declared minimum resistive magnitude only", "Declared phase margin is supplied metadata, not measured by this adapter"],
+      "unresolved": ["Noise correlation, spectral density and ground/coupling paths", "Complex load, cable, rail droop and transient protection behavior", "Bench stability, calibrated measurement and qualified Human acceptance"]
+    },
+    "context": {"product": "Speaker gain and load chain", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {
+      "id": "CHAIN-REVIEW-INDEPENDENT", "kind": "positive",
+      "question": "Can the reviewer independently reconstruct every gain, referred-noise, loading and headroom assertion while withholding physical approval?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0},
+        {"path": "human_approval", "expected": false, "absolute_tolerance": 0},
+        {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "CHAIN-REVIEW-NUMERIC-TAIL", "kind": "boundary",
+      "question": "Can a representation-scale numeric tail pass without changing an engineering verdict?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.required_output_peak_a", "value": 2.500000000001}],
+      "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "CHAIN-REVIEW-HIDDEN-CURRENT", "kind": "counter_hypothesis",
+      "question": "Does independent review reject a candidate that hides load current behind a lower asserted value?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.required_output_peak_a", "value": 1.0}],
+      "checks": [
+        {"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0},
+        {"path": "disagreements.0.field", "expected": "required_output_peak_a", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "CHAIN-REVIEW-R4-REJECTED", "kind": "negative",
+      "question": "Must R4 require authority outside this bounded automated review?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "context.risk", "value": "R4"}],
+      "expected_error": "ValueError"
+    }
+  ]
+}

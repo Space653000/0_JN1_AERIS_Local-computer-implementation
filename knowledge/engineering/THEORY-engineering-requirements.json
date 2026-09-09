@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-engineering-requirements",
+  "category": "Theory",
+  "title": "THEORY-engineering-requirements",
+  "text": "A 1 dB observation is 2 dB inside the nearest +/-3 dB bound.",
+  "source": "methods/engineering/engineering-requirements.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "b5988f7b92ecf38fe6ae99f0893a1c367dc7a00ca139f33e3ad97f87c8a9b639",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,5 +1,10 @@
 $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent $PSScriptRoot
+$AdmissionPython=Join-Path $Root '.venv\Scripts\python.exe'
+if(-not (Test-Path -LiteralPath $AdmissionPython)){ $AdmissionPython='python' }
+Push-Location -LiteralPath $Root
+try { & $AdmissionPython -B -m aeris_runtime.deployment_admission; if($LASTEXITCODE -ne 0){ throw 'Core runtime cache migration is not authorized in GATE06.' } }
+finally { Pop-Location }
 $Core = Join-Path $Root '.aeris/core-reference'
 $State = Join-Path $Root '.aeris/state/core-target.json'
 $Url = 'https://github.com/Space653000/0_JN1_AERIS.git'
@@ -9,12 +14,15 @@ New-Item -ItemType Directory -Force -Path (Split-Path $Core -Parent),(Split-Path
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) { throw 'git is required for core sync.' }
 
 if (-not (Test-Path (Join-Path $Core '.git'))) {
-  git clone --no-tags --filter=blob:none --branch main $Url $Core
+  git clone --filter=blob:none --branch v0.7.0-blueprint.1 $Url $Core
 } else {
-  git -C $Core fetch --prune origin main
+  git -C $Core fetch origin tag v0.7.0-blueprint.1
 }
 
-git -C $Core checkout --detach origin/main
+$Target='64576bdbe680170fc1ea27306d1a2ab494cac733'
+$Resolved=(git -C $Core rev-parse 'v0.7.0-blueprint.1^{commit}').Trim()
+if($LASTEXITCODE -ne 0 -or $Resolved -ne $Target){ throw 'Frozen Blueprint mismatch; no checkout.' }
+git -C $Core checkout --detach $Target
 # Local mechanism-level write guard against the canonical core repository.
 git -C $Core remote set-url --push origin 'DISABLED://AERIS-CORE-READ-ONLY'
 $Hook = Join-Path $Core '.git/hooks/pre-push'
@@ -24,7 +32,7 @@ echo "DENIED: AERIS canonical core repository is read-only for Codex/local imple
 exit 1
 '@ | Set-Content -Path $Hook -Encoding ascii
 
-$Sha = (git -C $Core rev-parse origin/main).Trim()
+$Sha = (git -C $Core rev-parse HEAD).Trim()
 $Payload = [ordered]@{
   repository = 'Space653000/0_JN1_AERIS'
   branch = 'main'

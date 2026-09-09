@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "sensitivity_mv_per_pa": {
+      "type": "number"
+    },
+    "noise_rms_v": {
+      "type": "number"
+    },
+    "signal_rms_v": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "sensitivity_mv_per_pa",
+    "noise_rms_v",
+    "signal_rms_v"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "required": [
+    "skill_id",
+    "values",
+    "input_sha256",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "values": {
+      "type": "object",
+      "required": [
+        "delay_samples",
+        "direction_cosine_interval",
+        "checks",
+        "disposition",
+        "counter_hypotheses"
+      ]
+    },
+    "physical_measurement_verified": {
+      "const": false
+    }
+  }
+}

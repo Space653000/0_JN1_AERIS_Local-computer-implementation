@@ -1,0 +1,14 @@
+{
+  "input": {
+    "levels_db": [
+      60,
+      70
+    ],
+    "durations_s": [
+      0,
+      1
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "468fa3b9f11df733ae7438c04923805b93d12907ce482ca343659f8738860700"
+}

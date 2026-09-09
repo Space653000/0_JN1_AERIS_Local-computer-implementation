@@ -1,0 +1,10 @@
+{
+  "method_id": "structural-acoustic-path-domain-review", "version": "1.0.0", "role": "R073",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.structural_acoustic_review:review",
+  "applicability": "Independent consistency review of supplied synchronized structural/acoustic band assertions",
+  "equations": {"transfer": "independent pressure/acceleration", "identifiability": "independent dual-SNR and coherence predicate", "spread": "independent identifiable max/min"},
+  "assumptions": ["Same declared aligned bands", "Independent arithmetic is not path causality"],
+  "excluded": ["causal direction and mode shapes", "radiation efficiency", "calibration, physical and Human acceptance"],
+  "golden_tests": "golden/roles/R073/golden.json"
+}

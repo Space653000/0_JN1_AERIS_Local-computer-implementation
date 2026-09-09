@@ -1,0 +1,10 @@
+{
+  "schema_version": 1, "skill_id": "structural-acoustic-path-domain-review", "version": "1.0.0",
+  "domain_factory_contract": true, "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/structural-acoustic-path-domain-review.json",
+  "input_schema": "skills/structural-acoustic-path-domain-review/input.schema.json",
+  "output_schema": "skills/structural-acoustic-path-domain-review/output.schema.json",
+  "role_mappings": ["R073"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Independent structural/acoustic SNR, coherence, transfer and causal-boundary assertion review",
+  "review_domain": "structural-acoustic-path"
+}

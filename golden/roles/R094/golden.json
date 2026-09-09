@@ -1,0 +1,523 @@
+{
+  "suite_id": "R094-FACA-V1",
+  "role_id": "R094",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored two-mechanism likelihood tables; Bayes posterior 0.9/(0.1+0.9), binary entropy information 1-H2(0.1)=0.5310044064107188 and independent contradiction assertions. No executor output copied.",
+  "scope": "Bounded supplied FACA model; no physical causal proof",
+  "base_input": {
+    "hypotheses": [
+      {
+        "id": "FIXTURE",
+        "mechanism": "Fixture ground loop",
+        "category": "TEST_SYSTEM",
+        "prior": 0.5
+      },
+      {
+        "id": "AMPLIFIER",
+        "mechanism": "Amplifier internal noise",
+        "category": "PRODUCT",
+        "prior": 0.5
+      }
+    ],
+    "observations": [
+      {
+        "id": "OBS-1",
+        "source_record_id": "SYN-1",
+        "source_kind": "SYNTHETIC",
+        "conditional_independence_assumed": true,
+        "likelihoods": {
+          "FIXTURE": 0.5,
+          "AMPLIFIER": 0.5
+        }
+      }
+    ],
+    "experiments": [
+      {
+        "id": "ISOLATE",
+        "intervention": "Isolate fixture ground path",
+        "control": "Same amplifier, gain and load",
+        "cost": 1,
+        "risk": "R1",
+        "local_available": true,
+        "outcomes": [
+          {
+            "id": "PERSISTS",
+            "likelihoods": {
+              "FIXTURE": 0.1,
+              "AMPLIFIER": 0.9
+            }
+          },
+          {
+            "id": "CLEARS",
+            "likelihoods": {
+              "FIXTURE": 0.9,
+              "AMPLIFIER": 0.1
+            }
+          }
+        ]
+      }
+    ],
+    "minimum_leading_posterior": 0.8,
+    "minimum_leading_margin": 0.5
+  },
+  "cases": [
+    {
+      "id": "FACA-AMBIGUOUS-NOISE",
+      "kind": "positive",
+      "question": "Which controlled intervention separates ground-loop and amplifier mechanisms despite equal symptom likelihood?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "posterior.FIXTURE",
+          "expected": 0.5,
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "selected_experiment_id",
+          "expected": "ISOLATE",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "experiments.0.expected_information_bits",
+          "expected": 0.5310044064107188,
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-HYPOTHETICAL-PERSISTS",
+      "kind": "positive",
+      "question": "Does hypothetical persistence shift the model without claiming recurrence validation?",
+      "input_overrides": {
+        "observations": [
+          {
+            "id": "OBS-1",
+            "source_record_id": "SYN-1",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "FIXTURE": 0.5,
+              "AMPLIFIER": 0.5
+            }
+          },
+          {
+            "id": "OBS-2",
+            "source_record_id": "SYN-2",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "FIXTURE": 0.1,
+              "AMPLIFIER": 0.9
+            },
+            "experiment_id": "ISOLATE",
+            "outcome_id": "PERSISTS"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "posterior.AMPLIFIER",
+          "expected": 0.9,
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "root_cause_verified",
+          "expected": false,
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "recurrence_validated",
+          "expected": false,
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-POLICY-BOUNDARY",
+      "kind": "boundary",
+      "question": "Is the explicit posterior/margin policy inclusive but still not calibrated confidence?",
+      "input_overrides": {
+        "observations": [
+          {
+            "id": "OBS-1",
+            "source_record_id": "SYN-1",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "FIXTURE": 0.5,
+              "AMPLIFIER": 0.5
+            }
+          },
+          {
+            "id": "OBS-2",
+            "source_record_id": "SYN-2",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "FIXTURE": 0.1,
+              "AMPLIFIER": 0.9
+            },
+            "experiment_id": "ISOLATE",
+            "outcome_id": "PERSISTS"
+          }
+        ],
+        "minimum_leading_posterior": 0.9,
+        "minimum_leading_margin": 0.8
+      },
+      "checks": [
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "posterior_calibrated",
+          "expected": false,
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-TIED-LOW-THRESHOLD",
+      "kind": "boundary",
+      "question": "Can zero margin policy improperly close a tie?",
+      "input_overrides": {
+        "minimum_leading_posterior": 0.5,
+        "minimum_leading_margin": 0
+      },
+      "checks": [
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-NONDISCRIMINATING",
+      "kind": "counter_hypothesis",
+      "question": "Does a repeated symptom test with identical mechanism likelihoods provide no discrimination?",
+      "input_overrides": {
+        "experiments": [
+          {
+            "id": "ISOLATE",
+            "intervention": "Isolate fixture ground path",
+            "control": "Same amplifier, gain and load",
+            "cost": 1,
+            "risk": "R1",
+            "local_available": true,
+            "outcomes": [
+              {
+                "id": "PERSISTS",
+                "likelihoods": {
+                  "FIXTURE": 0.5,
+                  "AMPLIFIER": 0.5
+                }
+              },
+              {
+                "id": "CLEARS",
+                "likelihoods": {
+                  "FIXTURE": 0.5,
+                  "AMPLIFIER": 0.5
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "selected_experiment_id",
+          "expected": null,
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "experiments.0.expected_information_bits",
+          "expected": 0,
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-UNAVAILABLE-CONTROL",
+      "kind": "counter_hypothesis",
+      "question": "Does useful information justify selecting an unavailable intervention?",
+      "input_overrides": {
+        "experiments": [
+          {
+            "id": "ISOLATE",
+            "intervention": "Isolate fixture ground path",
+            "control": "Same amplifier, gain and load",
+            "cost": 1,
+            "risk": "R1",
+            "local_available": false,
+            "outcomes": [
+              {
+                "id": "PERSISTS",
+                "likelihoods": {
+                  "FIXTURE": 0.1,
+                  "AMPLIFIER": 0.9
+                }
+              },
+              {
+                "id": "CLEARS",
+                "likelihoods": {
+                  "FIXTURE": 0.9,
+                  "AMPLIFIER": 0.1
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "selected_experiment_id",
+          "expected": null,
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REUSED-OBSERVATION",
+      "kind": "negative",
+      "question": "Can duplicated fixture capture count twice as independent evidence?",
+      "input_overrides": {
+        "observations": [
+          {
+            "id": "OBS-1",
+            "source_record_id": "SYN-1",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "FIXTURE": 0.5,
+              "AMPLIFIER": 0.5
+            }
+          },
+          {
+            "id": "OBS-1",
+            "source_record_id": "SYN-1",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "FIXTURE": 0.5,
+              "AMPLIFIER": 0.5
+            }
+          }
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FACA-DEPENDENT-OBSERVATION",
+      "kind": "negative",
+      "question": "Must acknowledged dependence stop unsupported likelihood multiplication?",
+      "input_overrides": {
+        "observations": [
+          {
+            "id": "OBS-1",
+            "source_record_id": "SYN-1",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": false,
+            "likelihoods": {
+              "FIXTURE": 0.5,
+              "AMPLIFIER": 0.5
+            }
+          }
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FACA-ALL-MODELS-CONTRADICTED",
+      "kind": "negative",
+      "question": "Does zero probability under every declared mechanism require model revision?",
+      "input_overrides": {
+        "observations": [
+          {
+            "id": "OBS-1",
+            "source_record_id": "SYN-1",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "FIXTURE": 0,
+              "AMPLIFIER": 0
+            }
+          }
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FACA-OMITTED-ALTERNATIVE",
+      "kind": "negative",
+      "question": "Can one observation silently omit the test-system counter-hypothesis?",
+      "input_overrides": {
+        "observations": [
+          {
+            "id": "OBS-1",
+            "source_record_id": "SYN-1",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "AMPLIFIER": 0.9
+            }
+          }
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FACA-PRIORS-NOT-OBSERVATION",
+      "kind": "counter_hypothesis",
+      "question": "Can a dominant prior be represented only as a model policy, never verified cause?",
+      "input_overrides": {
+        "observations": [],
+        "hypotheses": [
+          {
+            "id": "FIXTURE",
+            "mechanism": "Fixture ground loop",
+            "category": "TEST_SYSTEM",
+            "prior": 0.1
+          },
+          {
+            "id": "AMPLIFIER",
+            "mechanism": "Amplifier internal noise",
+            "category": "PRODUCT",
+            "prior": 0.9
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "posterior.AMPLIFIER",
+          "expected": 0.9,
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "root_cause_verified",
+          "expected": false,
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-SUBRESOLUTION-TIE",
+      "kind": "boundary",
+      "question": "Do extremely small near-identical likelihoods preserve reproducible ID tie-breaking?",
+      "input_overrides": {
+        "observations": [
+          {
+            "id": "OBS-1",
+            "source_record_id": "SYN-1",
+            "source_kind": "SYNTHETIC",
+            "conditional_independence_assumed": true,
+            "likelihoods": {
+              "FIXTURE": 1.000000000000001e-100,
+              "AMPLIFIER": 1e-100
+            }
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "ranking.0",
+          "expected": "AMPLIFIER",
+          "absolute_tolerance": 1e-10
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-ROUNDING-MARGIN-TIE",
+      "kind": "boundary",
+      "question": "Can two equal quantized posterior ranks manufacture model separation through a raw-difference rounding step?",
+      "input_overrides": {
+        "hypotheses": [
+          {
+            "id": "FIXTURE",
+            "mechanism": "Fixture ground loop",
+            "category": "TEST_SYSTEM",
+            "prior": 0.4999999999996
+          },
+          {
+            "id": "AMPLIFIER",
+            "mechanism": "Amplifier internal noise",
+            "category": "PRODUCT",
+            "prior": 0.5000000000004
+          }
+        ],
+        "minimum_leading_posterior": 0.5,
+        "minimum_leading_margin": 0
+      },
+      "checks": [
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FACA-NORMALIZATION-NO-INFORMATION",
+      "kind": "boundary",
+      "question": "Does harmless outcome normalization roundoff remain zero discriminating information even at very low cost?",
+      "input_overrides": {
+        "observations": [],
+        "experiments": [
+          {
+            "id": "ISOLATE",
+            "intervention": "Isolate fixture ground path",
+            "control": "Same amplifier, gain and load",
+            "cost": 1e-12,
+            "risk": "R1",
+            "local_available": true,
+            "outcomes": [
+              {
+                "id": "PERSISTS",
+                "likelihoods": {
+                  "FIXTURE": 0.4999999999996,
+                  "AMPLIFIER": 0.4999999999996
+                }
+              },
+              {
+                "id": "CLEARS",
+                "likelihoods": {
+                  "FIXTURE": 0.4999999999996,
+                  "AMPLIFIER": 0.4999999999996
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "selected_experiment_id",
+          "expected": null,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "experiments.0.expected_information_bits",
+          "expected": 0,
+          "absolute_tolerance": 0
+        }
+      ]
+    }
+  ],
+  "skill_id": "failure-hypothesis-experiment-baseline"
+}

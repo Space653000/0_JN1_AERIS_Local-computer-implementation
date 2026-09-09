@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-frequency-weighting",
+  "category": "Golden cases",
+  "title": "GOLDEN-frequency-weighting",
+  "text": "[{\"path\": \"rms\", \"expected\": 0.7071067811865476, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/DSP/frequency-weighting/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "679a52b8a7cb22b02dd731338032054e9778458c1acd1832d78aaf84609a542b",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

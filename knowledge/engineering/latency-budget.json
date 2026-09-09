@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-latency-budget",
+  "category": "Methods",
+  "title": "latency-budget",
+  "text": "Thirty ms of buffers plus thirty ms of other serial stages. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/latency-budget.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "9079d359b9050df13eb642957ce0a6c60990667f1d983ff6b12c341a9de06255"
+}

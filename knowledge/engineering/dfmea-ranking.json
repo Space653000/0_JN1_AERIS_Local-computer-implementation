@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-dfmea-ranking",
+  "category": "Methods",
+  "title": "dfmea-ranking",
+  "text": "High-severity mode remains Human-review required regardless of RPN ranking. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/dfmea-ranking.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "7eaec70ab43079d35eab9fba4d577a997666556477c91380fe51a001996b1f11"
+}

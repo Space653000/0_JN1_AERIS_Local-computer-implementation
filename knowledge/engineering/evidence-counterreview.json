@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-evidence-counterreview",
+  "category": "Methods",
+  "title": "evidence-counterreview",
+  "text": "An independent rule-based reviewer rejects an unsupported Evidence claim. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/evidence-counterreview.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "06531f3613b7e78cf6d89c84d638ba53343637d43aea0f46dea2f8ff35de1e65"
+}

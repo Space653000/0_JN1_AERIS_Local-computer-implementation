@@ -1,0 +1,4 @@
+{
+  "type": "object", "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {"values": {"type": "object", "required": ["pole_radii", "crossover_sum_deviation_db", "estimated_output_peak_linear", "checks", "disposition", "fixed_point_runtime_verified"]}, "physical_measurement_verified": {"const": false}}
+}

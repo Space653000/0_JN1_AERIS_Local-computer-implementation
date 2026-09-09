@@ -1,0 +1,37 @@
+{
+  "input": {
+    "frequency_hz": [
+      80,
+      90,
+      100,
+      110,
+      120
+    ],
+    "amplitude": [
+      0.1,
+      0.7071067811865475,
+      1,
+      0.7071067811865475,
+      0.1
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "peak_frequency_hz",
+      "expected": 100,
+      "absolute_tolerance": 1e-08,
+      "unit": "Hz",
+      "reduction": null
+    },
+    {
+      "path": "q_estimate",
+      "expected": 5,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "8cfbf9f9c1a8dc2dbd84fea91e0369177d03ca332d0a13243b69b34927da153c"
+}

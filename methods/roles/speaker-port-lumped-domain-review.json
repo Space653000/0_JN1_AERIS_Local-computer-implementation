@@ -1,0 +1,13 @@
+{
+  "method_id": "speaker-port-lumped-domain-review",
+  "version": "1.0.0",
+  "role": "R021",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.ported_alignment_review:review",
+  "applicability": "Independent consistency review of ideal bounded Helmholtz port assertions",
+  "equations": {"tuning": "Decimal c/(2*pi)*sqrt(S/(V*Leff))", "velocity": "Q/S", "mode": "c/(2*Leff)"},
+  "assumptions": ["Same declared ideal model and supplied bounds", "Independent arithmetic path, not independent physical evidence"],
+  "excluded": ["turbulent-flow verification", "waveguide directivity", "physical and Human acceptance"],
+  "golden_tests": "golden/roles/R021/ported.json"
+}

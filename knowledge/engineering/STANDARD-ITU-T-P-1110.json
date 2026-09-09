@@ -1,0 +1,11 @@
+{
+  "id": "STANDARD-ITU-T-P-1110",
+  "category": "Standards metadata",
+  "title": "STANDARD-ITU-T-P-1110",
+  "text": "{\"standard_id\": \"ITU-T P.1110\", \"title\": \"Wideband hands-free communication in motor vehicles\", \"keywords\": [\"automotive\", \"hands-free\", \"wideband\", \"speech\"], \"edition\": null, \"status\": \"UNKNOWN_UNTIL_LIVE_VERIFIED\", \"verification_state\": \"NEEDS_LIVE_VERIFICATION\", \"verified_at_utc\": null, \"source_url\": null, \"note\": \"Formal automotive use requires current recommendation verification.\"}",
+  "source": "standards/registry.v1.json",
+  "rights": "PUBLIC_METADATA",
+  "sha256": "902678f822d42f4fd537236012ccebd9995720e947ba31ac89f5563b5de04012",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

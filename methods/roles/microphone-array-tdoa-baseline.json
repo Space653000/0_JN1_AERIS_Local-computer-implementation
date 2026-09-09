@@ -1,0 +1,38 @@
+{
+  "method_id": "microphone-array-tdoa-baseline",
+  "version": "1.0.0",
+  "role": "R043",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.array_doa:analyze",
+  "applicability": "Synchronized, same-polarity, far-field linear pair; supplied samples and unverified estimator error bound",
+  "numerical_path": "Real numpy FFT, zero-padded PHAT over supported declared-band bins",
+  "sign": "positive lag means channel 2 arrives later",
+  "peak_contract": {
+    "score": "absolute correlation; signed dominant peak must be positive",
+    "support": "contiguous score >= support_fraction * maximum",
+    "competitor": "outside contiguous support and peak_exclusion_samples guard",
+    "qualification": "single dominant score, bounded support width, inclusive minimum_peak_ratio",
+    "tie_relative_resolution": 1e-10,
+    "spectral_relative_floor": 1e-10,
+    "absolute_spectral_floor": 1e-24,
+    "ratio_comparison_resolution": 1e-10,
+    "numerical_truth": "Support/competitor ratio representation only; separate from timing/estimator model uncertainty, not measured confidence"
+  },
+  "delay_interval": "full selected support plus timing_bound_samples and supplied estimator_error_bound_samples",
+  "geometry": "extrema of tau*c/d over interval endpoints; no clipping or unique 3D angle claim",
+  "geometry_comparison_resolution": 1e-12,
+  "geometry_numerical_truth": "Round dimensionless direction-cosine endpoints and worst-case alias ratio to 12 decimals before comparison; representation only, separate from physical bounds. Never clip a resolved exceedance to [-1,1].",
+  "assumptions": [
+    "Model and error bounds are not measured or statistical confidence",
+    "Front/back and 3D cone ambiguity remain",
+    "Declared band must be alias-free at worst-case speed and spacing",
+    "Full-lag search before physical admissibility"
+  ],
+  "excluded": [
+    "Calibrated or unique 3D direction",
+    "Complete beamformer/AEC/NR product acceptance",
+    "Causal proof of direct versus reflected arrival"
+  ],
+  "golden_tests": "golden/roles/R043/golden.json"
+}

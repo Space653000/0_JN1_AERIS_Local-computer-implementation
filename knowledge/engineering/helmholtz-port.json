@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-helmholtz-port",
+  "category": "Methods",
+  "title": "helmholtz-port",
+  "text": "Area/(length*volume)=1/m2 in the ideal Helmholtz model. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/helmholtz-port.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "e390815827c3f05b29aae339af539ebdf60e72e3c0838df944676fe5b5cb161d"
+}

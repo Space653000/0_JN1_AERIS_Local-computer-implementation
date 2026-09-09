@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {
+    "values": {"type": "object", "required": ["boosted_peak_excursion_mm", "worst_excursion_upper_mm", "coil_temperature_upper_c", "checks", "disposition"]},
+    "physical_measurement_verified": {"const": false}
+  }
+}

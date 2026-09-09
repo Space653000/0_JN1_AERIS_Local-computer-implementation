@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "skill_id": "nvh-integration",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/nvh-integration/implementation.py",
+  "input_schema": "skills/nvh-integration/input.schema.json",
+  "output_schema": "skills/nvh-integration/output.schema.json",
+  "method": "methods/engineering/nvh-integration.json",
+  "applicability": "Integration of a sine divides amplitude by angular frequency.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/Speaker/nvh-integration/golden.json",
+  "negative_tests": "golden/engineering/Speaker/nvh-integration/negative.json",
+  "regression_tests": "golden/engineering/Speaker/nvh-integration/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R022",
+    "R029",
+    "R041",
+    "R073"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

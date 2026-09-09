@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-frequency-weighting",
+  "category": "Methods",
+  "title": "frequency-weighting",
+  "text": "Z weighting is unity gain. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/frequency-weighting.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "f27cbf0426b76eda79c5f4f78ab1a9969dd2f9a19e84bc18ae5fe4537dc50e5a"
+}

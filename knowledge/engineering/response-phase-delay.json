@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-response-phase-delay",
+  "category": "Methods",
+  "title": "response-phase-delay",
+  "text": "Linear phase of a 1 ms delay has constant group delay. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/response-phase-delay.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "3981cc4d9e2737206342174dc06e32946983828902f8c59844ddb74e214e4114"
+}

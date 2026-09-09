@@ -1,0 +1,10 @@
+{
+  "method_id": "speaker-polar-spatial-domain-review", "version": "1.0.0", "role": "R034",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_polar_review:review",
+  "applicability": "Independent consistency review of supplied discrete absolute horizontal speaker polar assertions",
+  "equations": {"coordinate_map": "sorted angle-to-level pairs", "symmetry": "independent paired lookup", "uncertainty": "two level bounds per difference"},
+  "assumptions": ["Same declared absolute sample set", "Independent arithmetic is not physical evidence"],
+  "excluded": ["continuous/directivity balloon acceptance", "calibration", "physical and Human acceptance"],
+  "golden_tests": "golden/roles/R034/speaker-polar.json"
+}

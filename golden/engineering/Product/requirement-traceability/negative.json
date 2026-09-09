@@ -1,0 +1,19 @@
+{
+  "input": {
+    "requirement_ids": [
+      "R1",
+      "R2"
+    ],
+    "test_ids": [
+      "T1"
+    ],
+    "links": [
+      {
+        "requirement_id": "UNKNOWN",
+        "test_id": "T1"
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "7bccc76f188d461deb1da1c50d88d1f75e633ed9c8a956e0724d9959a3405aa4"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-frequency-weighting",
+  "category": "Failures",
+  "title": "FAILURE-frequency-weighting",
+  "text": "{\"invalid_variant\": {\"weighting\": \"FAKE\"}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/DSP/frequency-weighting/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "0a85152dc43940d1047eb7a44e056beef42d0bafcb716cc0e79f690e0894c30b",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

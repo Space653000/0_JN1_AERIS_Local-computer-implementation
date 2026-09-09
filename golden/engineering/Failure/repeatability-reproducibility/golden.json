@@ -1,0 +1,51 @@
+{
+  "id": "repeatability-reproducibility-analytic-v1",
+  "skill_id": "repeatability-reproducibility",
+  "suite": "Failure",
+  "input": {
+    "groups": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        3,
+        4,
+        5
+      ]
+    ]
+  },
+  "checks": [
+    {
+      "path": "repeatability_sd",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "between_group_sd",
+      "expected": 1.2909944487358056,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "groups": [
+      [
+        1
+      ],
+      [
+        2
+      ]
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Balanced random-effects calculation separates within-group variance from group means.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "24055e4257f3a68af7a793c626a18a063df17f196951191f41bdb92b64f5a7a8"
+}

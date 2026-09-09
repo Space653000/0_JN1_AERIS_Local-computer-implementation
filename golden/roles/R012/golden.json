@@ -1,0 +1,68 @@
+{
+  "suite_id": "R012-SPEAKER-SIGNAL-CHAIN-V1",
+  "role_id": "R012",
+  "skill_id": "speaker-signal-chain-noise-headroom-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored two-stage scalar gain chain with analytically derived uncorrelated RMS noise, source loading, peak voltage/current and minimum-load constraints; no acquired electrical data.",
+  "scope": "Supplied scalar speaker signal-chain noise, loading and peak-headroom budget only",
+  "base_input": {
+    "model": "SUPPLIED_SPEAKER_SIGNAL_CHAIN",
+    "stage_voltage_gains": [2.0, 5.0],
+    "stage_input_noise_rms_v": [0.00001, 0.00002],
+    "source_noise_rms_v": 0.000005,
+    "source_signal_rms_v": 0.5,
+    "source_impedance_ohm": 100.0,
+    "chain_input_impedance_ohm": 10000.0,
+    "minimum_loading_ratio": 20.0,
+    "crest_factor": 2.0,
+    "load_impedance_min_ohm": 4.0,
+    "minimum_supported_load_ohm": 3.2,
+    "available_output_peak_v": 12.0,
+    "available_output_peak_a": 3.0,
+    "maximum_output_noise_rms_v": 0.001,
+    "noise_relative_bound": 0.1,
+    "phase_margin_deg": 55.0,
+    "minimum_phase_margin_deg": 45.0
+  },
+  "cases": [
+    {
+      "id": "CHAIN-REFERRED-NOISE-AND-PEAK", "kind": "positive",
+      "question": "Does the role refer every uncorrelated noise term through its own downstream gain before comparing voltage/current headroom?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "total_voltage_gain", "expected": 10.0, "absolute_tolerance": 1e-12},
+        {"path": "output_noise_contributions_rms_v", "expected": [0.00005, 0.0001, 0.0001], "absolute_tolerance": 1e-12},
+        {"path": "required_output_peak_v", "expected": 10.0, "absolute_tolerance": 1e-12},
+        {"path": "required_output_peak_a", "expected": 2.5, "absolute_tolerance": 1e-12},
+        {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "CHAIN-INCLUSIVE-LIMITS", "kind": "boundary",
+      "question": "Are exact voltage, current and declared phase-margin limits inclusive without claiming extra physical margin?",
+      "input_overrides": {"available_output_peak_v": 10.0, "available_output_peak_a": 2.5, "phase_margin_deg": 45.0},
+      "checks": [
+        {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "checks.2.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "checks.5.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "stability_measurement_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "CHAIN-LOW-LOAD-ALTERNATIVE", "kind": "counter_hypothesis",
+      "question": "Does a low load force stability/current revision instead of attributing output loss to the transducer?",
+      "input_overrides": {"load_impedance_min_ohm": 3.0},
+      "checks": [
+        {"path": "checks.2.passed", "expected": false, "absolute_tolerance": 0},
+        {"path": "checks.3.passed", "expected": false, "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "CHAIN-CORRELATED-NOISE-REJECTED", "kind": "negative",
+      "question": "Is an undeclared correlated-noise model rejected instead of silently using RSS?",
+      "input_overrides": {"noise_model": "CORRELATED"},
+      "expected_error": "ValueError"
+    }
+  ]
+}

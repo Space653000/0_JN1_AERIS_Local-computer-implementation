@@ -1,0 +1,32 @@
+{
+  "input": {
+    "sensitivity_coefficients": [
+      1,
+      2
+    ],
+    "standard_uncertainties": [
+      0.1,
+      0.2
+    ],
+    "coverage_factor": 2
+  },
+  "expected_checks": [
+    {
+      "path": "combined_standard_uncertainty",
+      "expected": 0.41231056256176607,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "expanded_uncertainty",
+      "expected": 0.8246211251235321,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "70f60cb67428709ae44db1f1668f70222f2b551e90ac9431f7367af116202d3c"
+}

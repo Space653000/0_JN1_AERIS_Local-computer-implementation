@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-failure-hypotheses",
+  "category": "Theory",
+  "title": "THEORY-failure-hypotheses",
+  "text": "Contradictory evidence leaves the cause contested and generates a discriminating test.",
+  "source": "methods/engineering/failure-hypotheses.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "b526c34777bc2f7fb6160f3ec4465d3f6b0b7f54b5f5a3ccf029f952f0a27bd7",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-room-ir-decay",
+  "category": "Theory",
+  "title": "THEORY-room-ir-decay",
+  "text": "Exponential amplitude decay of 60 dB in 0.6 s yields the same extrapolated RT.",
+  "source": "methods/engineering/room-ir-decay.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "4f88ac5943b47919ccf82f94a1786af128d83f2e46472eed50b77ffe9c23520a",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

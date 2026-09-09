@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-process-quality",
+  "category": "Methods",
+  "title": "process-quality",
+  "text": "Sample SD=sqrt(0.5); centered Ppk=3/(3*SD). Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/process-quality.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "c871b39d8fb9b98119c68f8703e4f7b56b9f0dc11df644f06b46bef5044378ea"
+}

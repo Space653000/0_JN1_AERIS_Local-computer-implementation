@@ -1,0 +1,14 @@
+{
+  "method_id": "speaker-polar-spatial-baseline", "version": "1.0.0", "role": "R017",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_polar:analyze",
+  "applicability": "Symmetric supplied absolute horizontal polar samples with bounded level and angle alignment uncertainty",
+  "equations": {
+    "coverage": "max(angle)-min(angle)", "sampling": "max adjacent angle gap",
+    "edge_attenuation": "on_axis-edge-2*level_uncertainty",
+    "symmetry": "max(abs(L(theta)-L(-theta)))+2*level_uncertainty"
+  },
+  "assumptions": ["Discrete horizontal samples only", "Common absolute level reference", "No interpolation"],
+  "excluded": ["continuous/full-sphere directivity", "waveguide causal attribution", "physical or Human acceptance"],
+  "golden_tests": "golden/roles/R017/golden.json"
+}

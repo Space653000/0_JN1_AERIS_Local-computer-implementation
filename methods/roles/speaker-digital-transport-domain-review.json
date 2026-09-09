@@ -1,0 +1,7 @@
+{
+  "method_id": "speaker-digital-transport-domain-review", "version": "1.0.0", "role": "R032", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_digital_transport_review:review", "applicability": "Independent serial-audio format, clock, slot-map and service-buffer assertion review",
+  "equations": {"bit_clock": "independent frame bit count times sample rate", "buffer_margin": "capacity minus service-interval production"},
+  "assumptions": ["Same declared transport contract", "Arithmetic consistency is not physical continuity"],
+  "excluded": ["electrical timing and jitter", "driver telemetry", "physical playback and Human acceptance"], "golden_tests": "golden/roles/R032/speaker-digital-transport.json"
+}

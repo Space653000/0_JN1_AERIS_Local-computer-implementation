@@ -1,0 +1,19 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["reference_voltage_rms_v","drive_voltage_rms_v","reference_fundamental_rms_pa","fundamental_rms_pa","harmonic_rms_pa","input_power_w","thermal_resistance_k_per_w","thermal_capacity_j_per_k","duration_s","ambient_temperature_c","max_thd_percent","max_compression_db","max_coil_temperature_c"],
+  "properties": {
+    "reference_voltage_rms_v":{"type":"number","minimum":1e-12,"maximum":1000},
+    "drive_voltage_rms_v":{"type":"number","minimum":1e-12,"maximum":1000},
+    "reference_fundamental_rms_pa":{"type":"number","minimum":1e-12,"maximum":100000},
+    "fundamental_rms_pa":{"type":"number","minimum":1e-12,"maximum":100000},
+    "harmonic_rms_pa":{"type":"array","minItems":1,"maxItems":19,"items":{"type":"number","minimum":0,"maximum":100000}},
+    "input_power_w":{"type":"number","minimum":0,"maximum":10000},
+    "thermal_resistance_k_per_w":{"type":"number","minimum":1e-9,"maximum":10000},
+    "thermal_capacity_j_per_k":{"type":"number","minimum":1e-9,"maximum":1000000},
+    "duration_s":{"type":"number","minimum":0,"maximum":10000000},
+    "ambient_temperature_c":{"type":"number","minimum":-100,"maximum":200},
+    "max_thd_percent":{"type":"number","minimum":0,"maximum":100},
+    "max_compression_db":{"type":"number","minimum":0,"maximum":60},
+    "max_coil_temperature_c":{"type":"number","minimum":-100,"maximum":500}
+  }
+}

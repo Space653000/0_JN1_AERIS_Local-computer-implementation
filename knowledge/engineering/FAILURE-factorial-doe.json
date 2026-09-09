@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-factorial-doe",
+  "category": "Failures",
+  "title": "FAILURE-factorial-doe",
+  "text": "{\"invalid_variant\": {\"factors\": {\"gain\": [2, 0]}}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Product/factorial-doe/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "ae2e2f5dbe60cad733bdc99cdd57dd7858c5f45838b29a057f6d4980f3f783a9",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

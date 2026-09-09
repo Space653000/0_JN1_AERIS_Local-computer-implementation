@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-thermal-rc",
+  "category": "Golden cases",
+  "title": "GOLDEN-thermal-rc",
+  "text": "[{\"path\": \"steady_temperature_c\", \"expected\": 40, \"absolute_tolerance\": 1e-08, \"unit\": \"degC\", \"reduction\": null}, {\"path\": \"temperature_c.1\", \"expected\": 32.64241117657115, \"absolute_tolerance\": 1e-08, \"unit\": \"degC\", \"reduction\": null}]",
+  "source": "golden/engineering/Speaker/thermal-rc/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "f245476261b59a5f441bab9f3a661f7690f7ced536b486f2310b260055a2ef9c",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

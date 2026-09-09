@@ -1,0 +1,132 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "frequency_hz",
+    "spl_db",
+    "lower_mask_db",
+    "upper_mask_db",
+    "distance_m",
+    "distance_lower_m",
+    "distance_upper_m",
+    "reference_distance_m",
+    "drive_voltage_v",
+    "drive_lower_v",
+    "drive_upper_v",
+    "reference_voltage_v",
+    "level_bound_db",
+    "gate_seconds",
+    "minimum_cycles",
+    "propagation_model",
+    "drive_model"
+  ],
+  "properties": {
+    "frequency_hz": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 1024,
+      "items": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 100000
+      }
+    },
+    "spl_db": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 1024,
+      "items": {
+        "type": "number",
+        "minimum": -120,
+        "maximum": 200
+      }
+    },
+    "lower_mask_db": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 1024,
+      "items": {
+        "type": "number",
+        "minimum": -120,
+        "maximum": 200
+      }
+    },
+    "upper_mask_db": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 1024,
+      "items": {
+        "type": "number",
+        "minimum": -120,
+        "maximum": 200
+      }
+    },
+    "distance_m": {
+      "type": "number",
+      "minimum": 0.0001,
+      "maximum": 1000
+    },
+    "distance_lower_m": {
+      "type": "number",
+      "minimum": 0.0001,
+      "maximum": 1000
+    },
+    "distance_upper_m": {
+      "type": "number",
+      "minimum": 0.0001,
+      "maximum": 1000
+    },
+    "reference_distance_m": {
+      "type": "number",
+      "minimum": 0.0001,
+      "maximum": 1000
+    },
+    "drive_voltage_v": {
+      "type": "number",
+      "minimum": 0.000001,
+      "maximum": 1000
+    },
+    "drive_lower_v": {
+      "type": "number",
+      "minimum": 0.000001,
+      "maximum": 1000
+    },
+    "drive_upper_v": {
+      "type": "number",
+      "minimum": 0.000001,
+      "maximum": 1000
+    },
+    "reference_voltage_v": {
+      "type": "number",
+      "minimum": 0.000001,
+      "maximum": 1000
+    },
+    "level_bound_db": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 60
+    },
+    "gate_seconds": {
+      "type": "number",
+      "minimum": 0.000001,
+      "maximum": 100
+    },
+    "minimum_cycles": {
+      "type": "number",
+      "minimum": 2,
+      "maximum": 100
+    },
+    "propagation_model": {
+      "type": "string",
+      "enum": [
+        "FREE_FIELD_FAR_FIELD"
+      ]
+    },
+    "drive_model": {
+      "type": "string",
+      "enum": [
+        "LINEAR_SMALL_SIGNAL_SAME_CONFIG_NO_LIMITER"
+      ]
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "suite_id": "R019-SPEAKER-BASS-LIMITER-V1", "role_id": "R019",
+  "skill_id": "speaker-bass-limiter-envelope-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored three-band static bass-boost fixture with analytic voltage/excursion scaling and declared deterministic excursion, thermal, amplifier and limiter-time limits; no acquired measurement.",
+  "scope": "Supplied bass boost, excursion, temperature and static limiter envelope only",
+  "base_input": {
+    "model": "SUPPLIED_BASS_LIMITER_ENVELOPE", "frequency_hz": [40.0, 60.0, 100.0],
+    "requested_boost_db": [0.0, 3.0, 0.0], "baseline_peak_excursion_mm": [2.0, 1.5, 0.8],
+    "maximum_peak_excursion_mm": 2.5, "excursion_relative_bound": 0.1,
+    "predicted_coil_temperature_c": 92.0, "maximum_coil_temperature_c": 100.0, "temperature_bound_c": 5.0,
+    "required_amplifier_peak_v": 8.0, "available_amplifier_peak_v": 10.0,
+    "attack_ms": 2.0, "maximum_attack_ms": 3.0, "release_ms": 120.0,
+    "minimum_release_ms": 80.0, "maximum_release_ms": 200.0,
+    "content_crest_factor": 3.0, "minimum_crest_factor": 2.5
+  },
+  "cases": [
+    {
+      "id": "BASS-EXCURSION-THERMAL-ENVELOPE", "kind": "positive",
+      "question": "Does the role convert requested boost to peak excursion before checking thermal, rail and limiter envelopes?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "boosted_peak_excursion_mm", "expected": [2.0, 2.1188063169341316, 0.8], "absolute_tolerance": 1e-12},
+        {"path": "worst_excursion_upper_mm", "expected": 2.330686948627545, "absolute_tolerance": 1e-12},
+        {"path": "coil_temperature_upper_c", "expected": 97.0, "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "BASS-INCLUSIVE-TIME-LIMITS", "kind": "boundary",
+      "question": "Are exact attack, release and crest limits inclusive without claiming limiter audio quality?",
+      "input_overrides": {"attack_ms": 3.0, "release_ms": 80.0, "content_crest_factor": 2.5},
+      "checks": [
+        {"path": "checks.3.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "checks.4.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "checks.6.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "limiter_audio_quality_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "BASS-SLOW-ATTACK", "kind": "counter_hypothesis",
+      "question": "Does slow attack force revision rather than blaming excessive excursion on the transducer alone?",
+      "input_overrides": {"attack_ms": 4.0},
+      "checks": [
+        {"path": "checks.3.passed", "expected": false, "absolute_tolerance": 0},
+        {"path": "required_revisions.0", "expected": "SHORTEN_ATTACK_TO_INTERCEPT_DECLARED_PEAK", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "BASS-INVALID-RELEASE-WINDOW", "kind": "negative",
+      "question": "Is an inverted release interval rejected rather than normalized silently?",
+      "input_overrides": {"minimum_release_ms": 220.0},
+      "expected_error": "ValueError"
+    }
+  ]
+}

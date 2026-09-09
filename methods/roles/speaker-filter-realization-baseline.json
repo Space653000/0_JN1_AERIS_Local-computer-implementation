@@ -1,0 +1,7 @@
+{
+  "method_id": "speaker-filter-realization-baseline", "version": "1.0.0", "role": "R024", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_filter_realization:analyze", "applicability": "Supplied normalized real biquads, fixed-point resolution, crossover sample, peak-gain and delay bounds",
+  "equations": {"poles": "roots of z^2 + a1*z + a2", "quantization": "round(c*2^fractional_bits)/2^fractional_bits", "crossover_sum": "magnitude of low + high*exp(j*phase)"},
+  "assumptions": ["Declared peak gains are conservative", "One crossover sample", "No runtime arithmetic is executed"],
+  "excluded": ["full-band complex response and limit cycles", "fixed-point runtime saturation", "physical playback and Human acceptance"], "golden_tests": "golden/roles/R024/golden.json"
+}

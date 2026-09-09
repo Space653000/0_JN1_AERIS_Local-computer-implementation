@@ -1,5 +1,12 @@
 # AERIS Reality Check / Anti-Fantasy Audit
 
+## GATE-06 R1 current candidate boundary
+
+Frozen target: `v0.7.0-blueprint.1` / `64576bdbe680170fc1ea27306d1a2ab494cac733`.
+The following 2026-09-01/07 audit is historical. Current source repairs are in
+`handoff/construction/GATE06-R1/`; focused tests are not full regression or exact
+candidate CI. Running service remains old and DRIFT; no runtime acceptance here.
+
 > **2026-09-07: HOLD_FOR_SOL_RED_TEAM.** Current design source is Core PR #4 / architecture v0.6.0-review.1. Read [new findings](reviews/ASTRA_REVIEW_20260907.md) and [review gate](ASTRA_SOL_REVIEW_GATE_V1.md) first. Integrated release/evidence enforcement has open P0 findings; TESTED below refers to existing unit scopes only. No Local acceptance or runtime repair was performed.
 
 **Status date:** 2026-09-01 (Asia/Taipei)  
@@ -15,7 +22,7 @@ Machine-readable truth remains `config/maturity.json`. This document is a human-
 NOT_IMPLEMENTED → IMPLEMENTED → TESTED → VERIFIED
 ```
 
-External dependencies may use `BLOCKED_EXTERNAL`.
+External/Human boundaries use `HUMAN_GATE`, `EXTERNAL_LICENSE`, `PHYSICAL_HARDWARE`, or `REBOOT_LOGOFF_REQUIRED`.
 
 - `IMPLEMENTED` = code/config exists but required acceptance evidence is still missing.
 - `TESTED` = automated tests exercise the explicitly stated scope and pass.
@@ -64,10 +71,10 @@ These are TESTED baselines only. They do not establish whole-company maturity, p
 
 PR #20 added a machine-readable baseline role-contract framework and task-aware reviewer candidates for all 100 capability seats. The framework can be TESTED while the broad capability remains incomplete.
 
-Still incomplete:
+The local executable contract/free-baseline software is complete; independent specialty approval remains:
 
 ```text
-100_role_executable_domain_contracts = NOT_IMPLEMENTED
+100_role_executable_domain_contracts = HUMAN_GATE
 ```
 
 A fully mature seat still needs domain-specific Skills, Methods, standards/tool permissions, evidence rubrics, Golden/negative/regression tests and independent review. A callable seat is not a human-equivalent verified acoustic engineer.
@@ -82,13 +89,13 @@ That does **not** prove sustained inference stability, latency, thermal headroom
 
 `golden/acoustics/v1/manifest.json` is a versioned SHA-256-pinned deterministic regression baseline. It currently covers valid measurement import, deterministic FR analysis, a passing requirement case, an intentionally failing regression case and malformed duplicate-frequency rejection.
 
-That automated baseline may be `TESTED`. The production-complete Speaker/Microphone Golden Dataset remains `NOT_IMPLEMENTED` because it still requires product/transducer/fixture/chamber/direction/distance/noise/language/tolerance/uncertainty/calibration coverage and reviewed provenance.
+That automated baseline is `TESTED`. The production-complete Speaker/Microphone Golden Dataset is `PHYSICAL_HARDWARE` because it requires real product/transducer/fixture/chamber/direction/distance/noise/tolerance/calibration evidence and reviewed provenance.
 
 ## 7. Browser/UI truth
 
 Real installed Chrome/Chromium/Edge headless semantic E2E runs on Windows 2025 and Ubuntu 24.04, loads Dashboard / Workspace / Services, executes the SPA and verifies the intended active view. That semantic baseline is TESTED.
 
-Pixel visual regression and full accessibility regression remain separate unfinished scope. Semantic browser success must not be relabeled as visual-regression VERIFIED evidence.
+Fixed-viewport dark/light screenshot and accessibility regression is TESTED for the same browser/environment. It is not a cross-version or cross-browser pixel-golden guarantee.
 
 ## 8. Zero-cost / no-Claude default truth
 
@@ -122,7 +129,7 @@ latest CI-passed Core + Implementation
 → one necessary real-machine acceptance cycle
 ```
 
-## 10. Remaining legitimate software/domain gaps
+## 10. Remaining legitimate Human/external/domain gates
 
 The following are deliberately **not** upgraded merely because adjacent baselines exist:
 
@@ -130,7 +137,7 @@ The following are deliberately **not** upgraded merely because adjacent baseline
 - production-complete Speaker/Microphone Golden Dataset;
 - broad mature Skills and Methods libraries;
 - full live licensed/legal standards corpus and professional acoustic corpus;
-- pixel visual/accessibility regression;
+- cross-browser/cross-version release-matrix acceptance;
 - pre-login/system-service deployment mode;
 - OS-wide network egress/DLP enforcement;
 - self-contained Linux/Jetson air-gap local-model runtime package;
@@ -138,7 +145,7 @@ The following are deliberately **not** upgraded merely because adjacent baseline
 - full-company relocation acceptance;
 - commercial release readiness.
 
-These are development scopes, not evidence that existing baselines failed.
+All purely local software items in the current Completion Pass are closed before release of its report. These remaining items require new Human authority, external rights, physical evidence, or reboot/logoff proof.
 
 ## 11. Real-machine acceptance remains a separate gate
 
@@ -158,7 +165,7 @@ Do not spend cloud or local AI effort pretending these can be VERIFIED without t
 
 ## 12. Professional tools remain external
 
-The following remain `BLOCKED_EXTERNAL` until their exact legal/licensed environment exists and a real adapter/E2E Evidence cycle is possible:
+The following remain `EXTERNAL_LICENSE` until their exact legal/licensed environment exists and a real adapter/E2E Evidence cycle is possible:
 
 - COMSOL
 - MATLAB

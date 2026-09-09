@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-leakage-tolerance",
+  "category": "Golden cases",
+  "title": "GOLDEN-leakage-tolerance",
+  "text": "[{\"path\": \"flow_resistance_pa_s_m3\", \"expected\": 458366.2361046586, \"absolute_tolerance\": 1e-06, \"unit\": \"Pa s/m3\", \"reduction\": null}]",
+  "source": "golden/engineering/Microphone/leakage-tolerance/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "efdeeb659e43157cf9a71abf8d6d710f8a8ada01b9727b1b14877b80b59cd202",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

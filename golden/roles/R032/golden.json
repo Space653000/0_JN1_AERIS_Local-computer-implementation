@@ -1,0 +1,682 @@
+{
+  "suite_id": "R032-CAPTURE-CLOCK-V1",
+  "role_id": "R032",
+  "skill_id": "microphone-capture-continuity-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored integer sample/counter scenarios: 480 samples / 10 ms = 48 kHz; PDM 3072000 / 64 = 48000. Missing-frame cases preserve endpoint sample/time rate. Timestamp endpoint quantization gives difference +/- resolution. Expected dispositions and review candidates are authored from these equations, not captured executor results.",
+  "scope": "Capture metadata continuity and relative-clock intervals only; no physical or profession-wide acceptance",
+  "base_input": {
+    "model": "FIRST_SAMPLE_CAPTURE_TIMESTAMP_V1",
+    "reference_rate_assumption": "UNVERIFIED_REFERENCE_TIMESCALE",
+    "capture_clock_id": "reference-A",
+    "delivery_clock_id": "reference-A",
+    "timestamp_kind": "FIRST_SAMPLE_ACQUISITION",
+    "clock_mode": "PDM_INTEGER_DECIMATION",
+    "pdm_clock_hz": 3072000,
+    "decimation_ratio": 64,
+    "sample_rate_hz": 48000,
+    "frame_samples": 480,
+    "sample_width_bits": 24,
+    "slot_width_bits": 32,
+    "expected_channel_ids": [
+      "left",
+      "right"
+    ],
+    "observed_slot_order": [
+      "left",
+      "right"
+    ],
+    "timestamp_resolution_ns": 1,
+    "allowed_rate_error_ppm": 50,
+    "allowed_alignment_skew_samples": 0.1,
+    "maximum_delivery_latency_ms": 5,
+    "maximum_nominal_rate_timing_residual_ns": 1000,
+    "channels": [
+      {
+        "channel_id": "left",
+        "frames": [
+          {
+            "frame_seq": 0,
+            "first_sample_index": 0,
+            "sample_count": 480,
+            "capture_timestamp_ns": 0,
+            "delivery_timestamp_ns": 1000000
+          },
+          {
+            "frame_seq": 1,
+            "first_sample_index": 480,
+            "sample_count": 480,
+            "capture_timestamp_ns": 10000000,
+            "delivery_timestamp_ns": 11000000
+          },
+          {
+            "frame_seq": 2,
+            "first_sample_index": 960,
+            "sample_count": 480,
+            "capture_timestamp_ns": 20000000,
+            "delivery_timestamp_ns": 21000000
+          }
+        ]
+      },
+      {
+        "channel_id": "right",
+        "frames": [
+          {
+            "frame_seq": 0,
+            "first_sample_index": 0,
+            "sample_count": 480,
+            "capture_timestamp_ns": 0,
+            "delivery_timestamp_ns": 1000000
+          },
+          {
+            "frame_seq": 1,
+            "first_sample_index": 480,
+            "sample_count": 480,
+            "capture_timestamp_ns": 10000000,
+            "delivery_timestamp_ns": 11000000
+          },
+          {
+            "frame_seq": 2,
+            "first_sample_index": 960,
+            "sample_count": 480,
+            "capture_timestamp_ns": 20000000,
+            "delivery_timestamp_ns": 21000000
+          }
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "CAPTURE-NOMINAL",
+      "kind": "positive",
+      "question": "Can correctly packed 48 kHz stereo with 3.072 MHz / 64 PDM satisfy only the supplied capture metadata contract?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "channels.0.relative_rate_error_ppm",
+          "expected": 0,
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "absolute_oscillator_accuracy_verified",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "FRAME-LOSS-NOT-DRIFT",
+      "kind": "counter_hypothesis",
+      "question": "Does a dropped packet fail continuity without inventing oscillator drift?",
+      "input_overrides": {
+        "channels": [
+          {
+            "channel_id": "left",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 21000000
+              },
+              {
+                "frame_seq": 3,
+                "first_sample_index": 1440,
+                "sample_count": 480,
+                "capture_timestamp_ns": 30000000,
+                "delivery_timestamp_ns": 31000000
+              }
+            ]
+          },
+          {
+            "channel_id": "right",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 21000000
+              },
+              {
+                "frame_seq": 3,
+                "first_sample_index": 1440,
+                "sample_count": 480,
+                "capture_timestamp_ns": 30000000,
+                "delivery_timestamp_ns": 31000000
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "checks.0.state",
+          "expected": "FAIL",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.1.state",
+          "expected": "PASS",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "channels.0.relative_rate_error_ppm",
+          "expected": 0,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "DELIVERY-NOT-SKEW",
+      "kind": "counter_hypothesis",
+      "question": "Can scheduling fail while capture alignment remains inside its supplied bound?",
+      "input_overrides": {
+        "channels": [
+          {
+            "channel_id": "left",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 480,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10000000,
+                "delivery_timestamp_ns": 11000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 21000000
+              }
+            ]
+          },
+          {
+            "channel_id": "right",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 11000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 480,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10000000,
+                "delivery_timestamp_ns": 21000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 31000000
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "checks.4.state",
+          "expected": "FAIL",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.3.state",
+          "expected": "PASS",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SLOT-SWAP",
+      "kind": "counter_hypothesis",
+      "question": "Must swapped declared slots remain a mapping defect rather than an acoustic source movement?",
+      "input_overrides": {
+        "observed_slot_order": [
+          "right",
+          "left"
+        ]
+      },
+      "checks": [
+        {
+          "path": "checks.5.state",
+          "expected": "FAIL",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "ONE-SAMPLE-SKEW",
+      "kind": "boundary",
+      "question": "Does a timestamp skew just greater than one 48 kHz sample exceed the 0.1 sample budget?",
+      "input_overrides": {
+        "channels": [
+          {
+            "channel_id": "left",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 480,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10000000,
+                "delivery_timestamp_ns": 11000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 21000000
+              }
+            ]
+          },
+          {
+            "channel_id": "right",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20834,
+                "delivery_timestamp_ns": 1020834
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 480,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10020834,
+                "delivery_timestamp_ns": 11020834
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20020834,
+                "delivery_timestamp_ns": 21020834
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "checks.3.state",
+          "expected": "FAIL",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "RESOLUTION-CROSSES-LIMIT",
+      "kind": "boundary",
+      "question": "Is 150 +/- 100 ns incompatible with a guaranteed <=100 ns residual even though possible values comply?",
+      "input_overrides": {
+        "channels": [
+          {
+            "channel_id": "left",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 480,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10000150,
+                "delivery_timestamp_ns": 11000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 21000000
+              }
+            ]
+          },
+          {
+            "channel_id": "right",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 480,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10000150,
+                "delivery_timestamp_ns": 11000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 21000000
+              }
+            ]
+          }
+        ],
+        "timestamp_resolution_ns": 100,
+        "maximum_nominal_rate_timing_residual_ns": 100
+      },
+      "checks": [
+        {
+          "path": "checks.2.state",
+          "expected": "INCONCLUSIVE",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "RATE-UNIDENTIFIABLE",
+      "kind": "boundary",
+      "question": "Can a resolution interval larger than the observation duration support a rate accuracy claim?",
+      "input_overrides": {
+        "timestamp_resolution_ns": 100000000
+      },
+      "checks": [
+        {
+          "path": "checks.1.state",
+          "expected": "INCONCLUSIVE",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "channels.0.relative_rate_interval_ppm",
+          "expected": null,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PCM-SLOT-TOO-NARROW",
+      "kind": "positive",
+      "question": "Should a declared 24-bit sample in a 16-bit slot require format correction?",
+      "input_overrides": {
+        "slot_width_bits": 16
+      },
+      "checks": [
+        {
+          "path": "checks.6.state",
+          "expected": "FAIL",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "PDM-RATIO-MISMATCH",
+      "kind": "positive",
+      "question": "Does a wrong PDM clock/decimation relationship remain a digital clock contract defect?",
+      "input_overrides": {
+        "pdm_clock_hz": 3000000
+      },
+      "checks": [
+        {
+          "path": "checks.7.state",
+          "expected": "FAIL",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "SAMPLE-OVERLAP",
+      "kind": "counter_hypothesis",
+      "question": "Can one overlapped sample and later gap be hidden by correct endpoint average rate?",
+      "input_overrides": {
+        "channels": [
+          {
+            "channel_id": "left",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 479,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10000000,
+                "delivery_timestamp_ns": 11000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 21000000
+              }
+            ]
+          },
+          {
+            "channel_id": "right",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 479,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10000000,
+                "delivery_timestamp_ns": 11000000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20000000,
+                "delivery_timestamp_ns": 21000000
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "checks.0.state",
+          "expected": "FAIL",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "checks.1.state",
+          "expected": "PASS",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "REAL-RELATIVE-RATE-OFFSET",
+      "kind": "positive",
+      "question": "Does a 0.1 percent reference-duration offset fail a 50 ppm relative rate budget?",
+      "input_overrides": {
+        "channels": [
+          {
+            "channel_id": "left",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 480,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10010000,
+                "delivery_timestamp_ns": 11010000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20020000,
+                "delivery_timestamp_ns": 21020000
+              }
+            ]
+          },
+          {
+            "channel_id": "right",
+            "frames": [
+              {
+                "frame_seq": 0,
+                "first_sample_index": 0,
+                "sample_count": 480,
+                "capture_timestamp_ns": 0,
+                "delivery_timestamp_ns": 1000000
+              },
+              {
+                "frame_seq": 1,
+                "first_sample_index": 480,
+                "sample_count": 480,
+                "capture_timestamp_ns": 10010000,
+                "delivery_timestamp_ns": 11010000
+              },
+              {
+                "frame_seq": 2,
+                "first_sample_index": 960,
+                "sample_count": 480,
+                "capture_timestamp_ns": 20020000,
+                "delivery_timestamp_ns": 21020000
+              }
+            ]
+          }
+        ]
+      },
+      "checks": [
+        {
+          "path": "checks.1.state",
+          "expected": "FAIL",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "channels.0.relative_rate_error_ppm",
+          "expected": -999.000999001,
+          "absolute_tolerance": 1e-8
+        }
+      ]
+    },
+    {
+      "id": "DELIVERY-UNCERTAINTY",
+      "kind": "boundary",
+      "question": "Can nominal latency exactly at the policy limit be accepted despite a positive timestamp interval?",
+      "input_overrides": {
+        "maximum_delivery_latency_ms": 1
+      },
+      "checks": [
+        {
+          "path": "checks.4.state",
+          "expected": "INCONCLUSIVE",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "CALLBACK-REFUSAL",
+      "kind": "negative",
+      "question": "Are callback arrival timestamps rejected as acquisition evidence?",
+      "input_overrides": {
+        "timestamp_kind": "CALLBACK_ARRIVAL"
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "CLOCK-DOMAIN-REFUSAL",
+      "kind": "negative",
+      "question": "Is cross-clock delivery subtraction rejected?",
+      "input_overrides": {
+        "delivery_clock_id": "other"
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "BOOL-RATE-REFUSAL",
+      "kind": "negative",
+      "question": "Is a boolean rejected as PCM sample rate?",
+      "input_overrides": {
+        "sample_rate_hz": true
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "EMPTY-STREAM-REFUSAL",
+      "kind": "negative",
+      "question": "Are missing stream records rejected?",
+      "input_overrides": {
+        "channels": []
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "ABSOLUTE-CLAIM-REFUSAL",
+      "kind": "negative",
+      "question": "Is an unsupported absolute frequency claim rejected?",
+      "input_overrides": {
+        "absolute_oscillator_accuracy_verified": true
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "input": {
+    "executor_role": "R015",
+    "reviewer_role": "R015",
+    "approved_evidence_refs": [],
+    "claims": [
+      {
+        "classification": "EVIDENCE",
+        "evidence_refs": [
+          "invented"
+        ],
+        "uncertainty": "not quantified",
+        "counter_hypothesis": "fixture error"
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "99ae523e4680223bf20dca7098b1c5d6030638d2f1f9383f33dabd4a21933fed"
+}

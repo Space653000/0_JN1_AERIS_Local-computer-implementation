@@ -1,0 +1,287 @@
+{
+  "suite_id": "R005-BOUNDED-REVIEW-V1",
+  "role_id": "R005",
+  "skill_id": "tws-anc-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "AERIS manually authored report candidates and expected engineering review decisions. RMS 3-4-5 triangle, zero-time RC, 45 degree delay margin, and 3-4-5 noise triangle worked examples; no executor-generated verdict oracle.",
+  "scope": "Review FF wind and FB delay independently without extrapolating one crossover to full-loop stability; bounded review capability only, not whole-role acceptance.",
+  "base_input": {
+    "parameters": {
+      "leak_pole_hz": 0,
+      "bass_reference_hz": 100,
+      "max_leak_loss_db": 3,
+      "feedback_crossover_hz": 100,
+      "feedback_delay_ms": 1.25,
+      "plant_phase_lag_deg": 90,
+      "min_phase_margin_deg": 45,
+      "ff_wind_rms_pa": 0.004,
+      "max_ff_wind_rms_pa": 0.003,
+      "call_speech_rms_pa": 0.02,
+      "call_ambient_rms_pa": 0.003,
+      "min_call_snr_db": 20,
+      "driver_peak_excursion_mm": 0.3,
+      "safe_peak_excursion_mm": 0.5,
+      "occlusion_boost_db": 3,
+      "max_occlusion_boost_db": 6
+    },
+    "candidate": {
+      "phase_margin_deg": 45,
+      "feedback_passed": true,
+      "feedforward_passed": false,
+      "anc_topology_candidate": "FB_ONLY",
+      "full_loop_stability_verified": false,
+      "physical_measurement_verified": false,
+      "lifetime_verified": false,
+      "counter_hypotheses": [
+        "seal leakage rather than insufficient bass EQ",
+        "feedback delay rather than feedforward filter magnitude",
+        "outward-mic wind rather than stationary ambient noise"
+      ]
+    },
+    "context": {
+      "product": "R048",
+      "transducer": "Both",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "R005-REPORT",
+      "kind": "positive",
+      "question": "Review FF wind and FB delay independently without extrapolating one crossover to full-loop stability",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R005-LIMIT",
+      "kind": "boundary",
+      "question": "Does the inclusive domain limit and its neighboring failure preserve the stated decision?",
+      "input_overrides": {
+        "parameters": {
+          "leak_pole_hz": 0,
+          "bass_reference_hz": 100,
+          "max_leak_loss_db": 3,
+          "feedback_crossover_hz": 100,
+          "feedback_delay_ms": 1.2501,
+          "plant_phase_lag_deg": 90,
+          "min_phase_margin_deg": 45,
+          "ff_wind_rms_pa": 0.004,
+          "max_ff_wind_rms_pa": 0.003,
+          "call_speech_rms_pa": 0.02,
+          "call_ambient_rms_pa": 0.003,
+          "min_call_snr_db": 20,
+          "driver_peak_excursion_mm": 0.3,
+          "safe_peak_excursion_mm": 0.5,
+          "occlusion_boost_db": 3,
+          "max_occlusion_boost_db": 6
+        },
+        "candidate": {
+          "phase_margin_deg": 44.9964,
+          "feedback_passed": false,
+          "feedforward_passed": false,
+          "anc_topology_candidate": "PASSIVE",
+          "full_loop_stability_verified": false,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "seal leakage rather than insufficient bass EQ",
+            "feedback delay rather than feedforward filter magnitude",
+            "outward-mic wind rather than stationary ambient noise"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R005-WRONG-REPORT",
+      "kind": "positive",
+      "question": "Does the reviewer challenge this domain-specific incorrect numerical or topology assertion?",
+      "input_overrides": {
+        "candidate": {
+          "phase_margin_deg": 45,
+          "feedback_passed": true,
+          "feedforward_passed": false,
+          "anc_topology_candidate": "HYBRID",
+          "full_loop_stability_verified": false,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "seal leakage rather than insufficient bass EQ",
+            "feedback delay rather than feedforward filter magnitude",
+            "outward-mic wind rather than stationary ambient noise"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R005-ALTERNATIVE",
+      "kind": "counter_hypothesis",
+      "question": "Does a valid single-crossover margin still reject a full-loop stability claim?",
+      "input_overrides": {
+        "candidate": {
+          "phase_margin_deg": 45,
+          "feedback_passed": true,
+          "feedforward_passed": false,
+          "anc_topology_candidate": "FB_ONLY",
+          "full_loop_stability_verified": true,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "seal leakage rather than insufficient bass EQ",
+            "feedback delay rather than feedforward filter magnitude",
+            "outward-mic wind rather than stationary ambient noise"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R005-PHYSICAL",
+      "kind": "counter_hypothesis",
+      "question": "Can synthetic report review establish physical measurement verification?",
+      "input_overrides": {
+        "candidate": {
+          "phase_margin_deg": 45,
+          "feedback_passed": true,
+          "feedforward_passed": false,
+          "anc_topology_candidate": "FB_ONLY",
+          "full_loop_stability_verified": false,
+          "physical_measurement_verified": true,
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "seal leakage rather than insufficient bass EQ",
+            "feedback delay rather than feedforward filter magnitude",
+            "outward-mic wind rather than stationary ambient noise"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R005-UNIT",
+      "kind": "negative",
+      "question": "Are undeclared input units rejected?",
+      "input_overrides": {
+        "parameters": {
+          "leak_pole_hz": 0,
+          "bass_reference_hz": 100,
+          "max_leak_loss_db": 3,
+          "feedback_crossover_hz": 100,
+          "feedback_delay_ms": 1.25,
+          "plant_phase_lag_deg": 90,
+          "min_phase_margin_deg": 45,
+          "ff_wind_rms_pa": 0.004,
+          "max_ff_wind_rms_pa": 0.003,
+          "call_speech_rms_pa": 0.02,
+          "call_ambient_rms_pa": 0.003,
+          "min_call_snr_db": 20,
+          "driver_peak_excursion_mm": 0.3,
+          "safe_peak_excursion_mm": 0.5,
+          "occlusion_boost_db": 3,
+          "max_occlusion_boost_db": 6,
+          "voltage_dbv": 6
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R005-RELEASE",
+      "kind": "negative",
+      "question": "Must automated software review reject production release authority?",
+      "input_overrides": {
+        "context": {
+          "product": "R048",
+          "transducer": "Both",
+          "lifecycle": "EVT",
+          "risk": "R3",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R005-UNSUPPORTED-HYPOTHESIS",
+      "kind": "counter_hypothesis",
+      "question": "Must a numerically correct report reject this unsupported professional inference: One crossover proves all-loop stability?",
+      "input_overrides": {
+        "candidate": {
+          "phase_margin_deg": 45,
+          "feedback_passed": true,
+          "feedforward_passed": false,
+          "anc_topology_candidate": "FB_ONLY",
+          "full_loop_stability_verified": false,
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "counter_hypotheses": [
+            "One crossover proves all-loop stability"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "train_features": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "array",
+        "maxItems": 262144,
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "train_targets": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "validation_features": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "array",
+        "maxItems": 262144,
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "validation_targets": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "train_ids": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "string"
+      }
+    },
+    "validation_ids": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "string"
+      }
+    },
+    "ridge": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "train_features",
+    "train_targets",
+    "validation_features",
+    "validation_targets",
+    "train_ids",
+    "validation_ids",
+    "ridge"
+  ],
+  "additionalProperties": false
+}

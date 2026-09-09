@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "skill_id": "failure-hypothesis-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/failure-hypothesis-domain-review.json",
+  "input_schema": "skills/failure-hypothesis-domain-review/input.schema.json",
+  "output_schema": "skills/failure-hypothesis-domain-review/output.schema.json",
+  "role_mappings": [
+    "R098"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Supplied hypothesis likelihood and hypothetical discriminating experiment model; not causal closure, calibrated posterior or physical intervention",
+  "review_domain": "failure-hypothesis"
+}
+

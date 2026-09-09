@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-butterworth-filter",
+  "category": "Methods",
+  "title": "butterworth-filter",
+  "text": "Stable unit-DC-gain lowpass impulse response sums to one. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/butterworth-filter.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "5b612fa024c6f4bff6db597b999fa5f53772b1ff126aeb2a391e4384424e74b9"
+}

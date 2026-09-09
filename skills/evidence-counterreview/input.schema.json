@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "executor_role": {
+      "type": "string"
+    },
+    "reviewer_role": {
+      "type": "string"
+    },
+    "approved_evidence_refs": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {}
+    },
+    "claims": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "object",
+        "properties": {
+          "classification": {
+            "type": "string"
+          },
+          "evidence_refs": {
+            "type": "array",
+            "maxItems": 262144,
+            "items": {
+              "type": "string"
+            }
+          },
+          "uncertainty": {
+            "type": "string"
+          },
+          "counter_hypothesis": {
+            "type": "string"
+          },
+          "source_kind": {
+            "type": "string"
+          },
+          "real_measurement_verified": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "classification"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "executor_role",
+    "reviewer_role",
+    "approved_evidence_refs",
+    "claims"
+  ],
+  "additionalProperties": false
+}

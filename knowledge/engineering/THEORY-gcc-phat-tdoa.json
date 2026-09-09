@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-gcc-phat-tdoa",
+  "category": "Theory",
+  "title": "THEORY-gcc-phat-tdoa",
+  "text": "A seven-sample shifted impulse establishes correlation lag sign and magnitude.",
+  "source": "methods/engineering/gcc-phat-tdoa.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "78c6095e81d40197f9370b1520e99c1c0567ba90e3a4ad135e185a28d8f98dbe",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

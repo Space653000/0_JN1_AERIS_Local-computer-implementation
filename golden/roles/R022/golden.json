@@ -1,0 +1,52 @@
+{
+  "suite_id": "R022-STRUCTURAL-ACOUSTIC-V1", "role_id": "R022", "skill_id": "structural-acoustic-transfer-baseline",
+  "source_kind": "SYNTHETIC", "oracle_provenance": "Authored three-band synchronized acceleration/pressure fixture with explicit noise floors and coherence; analytic ratios only, no acquired sensor data.",
+  "scope": "Supplied structural/acoustic band transfer identifiability only",
+  "base_input": {
+    "model": "SUPPLIED_STRUCTURAL_ACOUSTIC_BANDS", "frequency_hz": [100.0, 200.0, 400.0],
+    "acceleration_rms_m_s2": [0.2, 0.4, 0.1], "pressure_rms_pa": [0.02, 0.08, 0.005],
+    "coherence": [0.8, 0.95, 0.3], "acceleration_noise_floor_m_s2": [0.01, 0.01, 0.01],
+    "pressure_noise_floor_pa": [0.001, 0.001, 0.001], "minimum_acceleration_snr_ratio": 5.0,
+    "minimum_pressure_snr_ratio": 5.0, "minimum_coherence": 0.7,
+    "minimum_identifiable_band_fraction": 0.6, "maximum_transfer_spread_ratio": 2.5,
+    "frequency_alignment_bound_hz": 1.0, "maximum_frequency_alignment_bound_hz": 2.0
+  },
+  "cases": [
+    {
+      "id": "STRUCTURAL-TRANSFER-IDENTIFIABLE", "kind": "positive",
+      "question": "Does the role require both signal paths and coherence to be identifiable before reporting descriptive transfer?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "identifiable_band_indices", "expected": [0, 1], "absolute_tolerance": 0},
+        {"path": "transfer_pa_per_m_s2", "expected": [0.1, 0.2, 0.05], "absolute_tolerance": 1e-12},
+        {"path": "identifiable_band_fraction", "expected": 0.6666666666666666, "absolute_tolerance": 1e-12},
+        {"path": "causal_path_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "STRUCTURAL-INCLUSIVE-ALIGNMENT", "kind": "boundary",
+      "question": "Are exact coherence and frequency-alignment limits inclusive without implying a causal path?",
+      "input_overrides": {"coherence": [0.7, 0.7, 0.3], "frequency_alignment_bound_hz": 2.0},
+      "checks": [
+        {"path": "checks.2.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "checks.3.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "radiation_efficiency_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "STRUCTURAL-LOW-COHERENCE", "kind": "counter_hypothesis",
+      "question": "Does low coherence withhold transfer interpretation instead of declaring a vibration-to-sound cause?",
+      "input_overrides": {"coherence": [0.2, 0.3, 0.1]},
+      "checks": [
+        {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+        {"path": "required_revisions.0", "expected": "ADD_IDENTIFIABLE_BANDS_OR_WITHHOLD_TRANSFER_INTERPRETATION", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "STRUCTURAL-DB-UNIT-REJECTED", "kind": "negative",
+      "question": "Is an undeclared dB pressure array rejected instead of mixed with RMS pascals?",
+      "input_overrides": {"pressure_rms_db_spl": [60, 70, 50]}, "expected_error": "ValueError"
+    }
+  ]
+}

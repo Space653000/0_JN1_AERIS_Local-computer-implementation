@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-requirement-traceability",
+  "category": "Methods",
+  "title": "requirement-traceability",
+  "text": "One of two requirements has a test/evidence link; missing coverage remains visible. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/requirement-traceability.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "885d74414f25bbb3c21c1473a34f8d197122e7c310b98354da22c90f02118402"
+}

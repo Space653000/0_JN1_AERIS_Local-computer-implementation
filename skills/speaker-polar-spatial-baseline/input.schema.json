@@ -1,0 +1,15 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "angles_deg", "levels_db", "supplied_on_axis_reference_db", "level_uncertainty_db", "minimum_coverage_deg", "maximum_angular_gap_deg", "maximum_on_axis_reference_error_db", "minimum_edge_attenuation_db", "maximum_symmetry_error_db", "angle_alignment_bound_deg", "maximum_angle_alignment_bound_deg", "normalization_mode"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_HORIZONTAL_POLAR_ABSOLUTE"},
+    "angles_deg": {"type": "array", "minItems": 3, "maxItems": 721, "items": {"type": "number"}},
+    "levels_db": {"type": "array", "minItems": 3, "maxItems": 721, "items": {"type": "number"}},
+    "supplied_on_axis_reference_db": {"type": "number"}, "level_uncertainty_db": {"type": "number"},
+    "minimum_coverage_deg": {"type": "number"}, "maximum_angular_gap_deg": {"type": "number"},
+    "maximum_on_axis_reference_error_db": {"type": "number"}, "minimum_edge_attenuation_db": {"type": "number"},
+    "maximum_symmetry_error_db": {"type": "number"}, "angle_alignment_bound_deg": {"type": "number"},
+    "maximum_angle_alignment_bound_deg": {"type": "number"},
+    "normalization_mode": {"type": "string", "const": "ABSOLUTE_NOT_PEAK_NORMALIZED"}
+  }
+}

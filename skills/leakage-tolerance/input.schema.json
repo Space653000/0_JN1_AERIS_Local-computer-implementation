@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "radius_m": {
+      "type": "number"
+    },
+    "length_m": {
+      "type": "number"
+    },
+    "viscosity_pa_s": {
+      "type": "number"
+    },
+    "radius_standard_uncertainty_m": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "radius_m",
+    "length_m",
+    "viscosity_pa_s",
+    "radius_standard_uncertainty_m"
+  ],
+  "additionalProperties": false
+}

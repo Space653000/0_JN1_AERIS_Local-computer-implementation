@@ -1,0 +1,14 @@
+{
+  "input": {
+    "resistance_ohm": 1000,
+    "temperature_k": 300,
+    "bandwidth_hz": 20000,
+    "amplifier_noise_v_per_sqrt_hz": 1e-09,
+    "adc_fullscale_v": 2,
+    "adc_bits": 0,
+    "signal_frequency_hz": 1000,
+    "jitter_rms_s": 1e-09
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "407cf46f125d0889d157d70ef17b789dfe8e204d5cc651044fcd5f8efee0fe0c"
+}

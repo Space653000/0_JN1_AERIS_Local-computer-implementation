@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-gcc-phat-tdoa",
+  "category": "Failures",
+  "title": "FAILURE-gcc-phat-tdoa",
+  "text": "{\"invalid_variant\": {\"spacing_m\": 0}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Array/gcc-phat-tdoa/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "d799599467cb3f2e6720b8a0efa6405a8d9dcea0fe27beccc86b6d4ae0a01275",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

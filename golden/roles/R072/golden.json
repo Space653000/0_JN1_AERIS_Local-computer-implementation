@@ -1,0 +1,57 @@
+{
+  "suite_id": "R072-ROOM-DECAY-REVIEW-V1", "role_id": "R072", "skill_id": "room-decay-spatial-domain-review",
+  "source_kind": "SYNTHETIC", "oracle_provenance": "Authored independent arithmetic oracle for the R023 three-position decay fixture; candidate values are analytic and not executor evidence.",
+  "scope": "Independent multi-position room decay-fit report consistency",
+  "base_input": {
+    "parameters": {
+      "model": "SUPPLIED_ROOM_DECAY_POSITION_FITS", "frequency_band_hz": 500.0,
+      "position_ids": ["front", "center", "rear"], "decay_rate_db_per_s": [40.0, 30.0, 20.0],
+      "fit_span_db": [35.0, 30.0, 20.0], "noise_margin_db": [12.0, 8.0, 3.0], "fit_r_squared": [0.98, 0.95, 0.8],
+      "minimum_fit_span_db": 25.0, "minimum_noise_margin_db": 6.0, "minimum_fit_r_squared": 0.9,
+      "minimum_valid_position_fraction": 0.6666666666666666, "maximum_valid_rt60_s": 2.5,
+      "maximum_valid_rt60_spread_s": 1.0, "window_duration_s": 2.2, "minimum_window_duration_s": 2.0
+    },
+    "candidate": {
+      "rt60_s": [1.5, 2.0, 3.0], "valid_position_ids": ["front", "center"],
+      "valid_position_fraction": 0.6666666666666666, "maximum_valid_rt60_s": 2.0, "valid_rt60_spread_s": 0.5,
+      "checks": [
+        {"id": "VALID_POSITION_COVERAGE", "actual": 0.6666666666666666, "limit": 0.6666666666666666, "operator": ">=", "passed": true, "on_failure": "ADD_POSITIONS_WITH_VALID_DECAY_FITS"},
+        {"id": "VALID_RT60_MAXIMUM", "actual": 2.0, "limit": 2.5, "operator": "<=", "passed": true, "on_failure": "REVISE_ABSORPTION_PLACEMENT_OR_DECLARED_DECAY_TARGET"},
+        {"id": "SPATIAL_DECAY_SPREAD", "actual": 0.5, "limit": 1.0, "operator": "<=", "passed": true, "on_failure": "MAP_POSITION_DEPENDENCE_BEFORE_GLOBAL_ROOM_CLAIM"},
+        {"id": "WINDOW_DURATION", "actual": 2.2, "limit": 2.0, "operator": ">=", "passed": true, "on_failure": "EXTEND_IR_WINDOW_BEFORE_DECAY_EXTRAPOLATION"}
+      ],
+      "required_revisions": [], "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "diffuse_field_verified": false, "full_room_verified": false, "physical_measurement_verified": false,
+      "counter_hypotheses": ["Noise floor rather than long decay", "Local modal ringing rather than broadband reverberation", "Window truncation rather than absorption change"],
+      "next_discriminating_experiment": "REPEAT_CALIBRATED_IR_DECAY_AT_ADDITIONAL_POSITIONS_WITH_EXPLICIT_FIT_INTERVAL_AND_NOISE_FLOOR",
+      "model_assumptions": ["Each supplied positive slope is a linear decay-rate magnitude", "RT60 is 60/rate extrapolation only", "Valid-position screening does not prove a diffuse field"],
+      "unresolved": ["Frequency-band and position representativeness", "Late nonlinearity, modal structure and diffuse-field validity", "Calibrated IR acquisition and qualified Human acceptance"]
+    },
+    "context": {"product": "Multi-position room decay", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {
+      "id": "ROOM-REVIEW-INDEPENDENT", "kind": "positive",
+      "question": "Can the reviewer reconstruct valid-position decay without claiming full-room or Human acceptance?",
+      "input_overrides": {},
+      "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}, {"path": "human_approval", "expected": false, "absolute_tolerance": 0}, {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}]
+    },
+    {
+      "id": "ROOM-REVIEW-NUMERIC-TAIL", "kind": "boundary",
+      "question": "Can a representation-scale decay tail pass without changing the room decision?",
+      "input_overrides": {}, "input_mutations": [{"path": "candidate.valid_rt60_spread_s", "value": 0.500000000001}],
+      "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "ROOM-REVIEW-DIFFUSE-OVERCLAIM", "kind": "counter_hypothesis",
+      "question": "Does independent review reject a diffuse-field claim derived from three positions?",
+      "input_overrides": {}, "input_mutations": [{"path": "candidate.diffuse_field_verified", "value": true}],
+      "checks": [{"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0}, {"path": "disagreements.0.field", "expected": "diffuse_field_verified", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "ROOM-REVIEW-R4-REJECTED", "kind": "negative",
+      "question": "Must R4 require authority outside this bounded automated room review?",
+      "input_overrides": {}, "input_mutations": [{"path": "context.risk", "value": "R4"}], "expected_error": "ValueError"
+    }
+  ]
+}

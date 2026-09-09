@@ -1,0 +1,11 @@
+{
+  "id": "POLICY-Components",
+  "category": "Components",
+  "title": "POLICY-Components",
+  "text": "Component-specific sensitivity, geometry, impedance and uncertainty are inputs. No real vendor component data is invented.",
+  "source": "docs/PROFESSIONAL_COMPANY_BUILD.md",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "0ce860037d3204dee22b8202ce0a562ae118d2b51384ffa647cd7623d3021861",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

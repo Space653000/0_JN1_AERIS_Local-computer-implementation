@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-evidence-counterreview",
+  "category": "Theory",
+  "title": "THEORY-evidence-counterreview",
+  "text": "An independent rule-based reviewer rejects an unsupported Evidence claim.",
+  "source": "methods/engineering/evidence-counterreview.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "f1123f78fc367faaaa78470c9c9d48f21dfb73be83246372fb80e5b46353642e",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

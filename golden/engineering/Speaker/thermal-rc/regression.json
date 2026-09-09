@@ -1,0 +1,33 @@
+{
+  "input": {
+    "power_w": 2,
+    "thermal_resistance_k_w": 10,
+    "thermal_capacity_j_k": 5,
+    "ambient_c": 20,
+    "limit_c": 60,
+    "time_s": [
+      0,
+      50,
+      100
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "steady_temperature_c",
+      "expected": 40,
+      "absolute_tolerance": 1e-08,
+      "unit": "degC",
+      "reduction": null
+    },
+    {
+      "path": "temperature_c.1",
+      "expected": 32.64241117657115,
+      "absolute_tolerance": 1e-08,
+      "unit": "degC",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "861b60b865e3c63ef32214b61010c8ca1d8cdc4f8050e0fcd9d61c1cc6323d6a"
+}

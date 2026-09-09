@@ -30,14 +30,12 @@ class PreCodexCloudGateTests(unittest.TestCase):
         self.assertFalse(defaults["install_paid_software"])
         self.assertFalse(defaults["auto_accept_license_or_eula"])
 
-    def test_explicit_target_path_precedes_active_workspace(self):
+    def test_only_explicit_canonical_product_root_is_eligible(self):
         trigger = load("config/autopilot.json")["trigger"]
         self.assertTrue(trigger["explicit_target_path_overrides_active_workspace"])
         order = trigger["target_path_resolution_order"]
-        self.assertLess(
-            order.index("explicit_local_target_path_if_supplied"),
-            order.index("single_unambiguous_active_writable_workspace_root"),
-        )
+        self.assertEqual(order, ["explicit_canonical_product_root_only"])
+        self.assertTrue(trigger['requires_scoped_authorization'])
 
     def test_core_truth_is_atomic(self):
         expected = load("core.lock.json")["baseline_sha"]
@@ -55,22 +53,22 @@ class PreCodexCloudGateTests(unittest.TestCase):
 
         self.assertEqual(baselines["machine_resource_qualification_engine_baseline"]["state"], "TESTED")
         self.assertEqual(maturity["machine_resource_qualification_baseline"]["state"], "TESTED")
-        self.assertEqual(maturity["machine_resource_qualification"]["state"], "NOT_IMPLEMENTED")
+        self.assertEqual(maturity["machine_resource_qualification"]["state"], "REBOOT_LOGOFF_REQUIRED")
 
         self.assertEqual(baselines["golden_acoustic_regression_baseline"]["state"], "TESTED")
         self.assertEqual(maturity["golden_acoustic_regression_baseline"]["state"], "TESTED")
-        self.assertEqual(maturity["golden_acoustic_dataset_suite"]["state"], "NOT_IMPLEMENTED")
+        self.assertEqual(maturity["golden_acoustic_dataset_suite"]["state"], "PHYSICAL_HARDWARE")
 
         self.assertEqual(baselines["role_contract_framework_baseline"]["state"], "TESTED")
         self.assertEqual(maturity["100_role_contract_framework_baseline"]["state"], "TESTED")
-        self.assertEqual(maturity["100_role_executable_domain_contracts"]["state"], "NOT_IMPLEMENTED")
+        self.assertEqual(maturity["100_role_executable_domain_contracts"]["state"], "HUMAN_GATE")
 
         self.assertEqual(baselines["zero_cost_no_claude_default_deployment_policy"]["state"], "TESTED")
         self.assertEqual(maturity["zero_cost_no_claude_default_deployment"]["state"], "TESTED")
 
         self.assertEqual(baselines["browser_visual_accessibility_baseline"]["state"], "TESTED")
         self.assertEqual(maturity["real_browser_semantic_e2e"]["state"], "TESTED")
-        self.assertEqual(maturity["browser_e2e_visual_regression"]["state"], "NOT_IMPLEMENTED")
+        self.assertEqual(maturity["browser_e2e_visual_regression"]["state"], "TESTED")
 
     def test_pre_codex_gate_never_means_product_complete(self):
         gate = load("config/pre_codex_gate.v1.json")

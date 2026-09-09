@@ -1,0 +1,89 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "mean": {
+          "type": "number"
+        },
+        "standard_deviation": {
+          "type": "number"
+        },
+        "interval_95": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "seed": {
+          "type": "number"
+        },
+        "trials": {
+          "type": "number"
+        },
+        "analytic_mean": {
+          "type": "number"
+        },
+        "analytic_sd": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "mean",
+        "standard_deviation",
+        "interval_95",
+        "seed",
+        "trials",
+        "analytic_mean",
+        "analytic_sd"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

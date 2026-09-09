@@ -31,6 +31,8 @@ if (-not $SkipCoreSync -and (Get-Command git -ErrorAction SilentlyContinue)) {
 }
 
 $Python = Join-Path $Root '.venv/Scripts/python.exe'
+& $Python -B (Join-Path $PSScriptRoot 'bootstrap-engineering.py')
+if ($LASTEXITCODE -ne 0) { throw 'Pinned free engineering dependency bootstrap failed.' }
 & $Python -m unittest discover -s tests -v
 $testCode = $LASTEXITCODE
 & $Python -m aeris_runtime doctor

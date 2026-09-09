@@ -1,0 +1,24 @@
+{
+  "input": {
+    "frequency_hz": [
+      1000,
+      3000
+    ],
+    "power": [
+      1,
+      1
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "spectral_centroid_hz",
+      "expected": 2000,
+      "absolute_tolerance": 1e-08,
+      "unit": "Hz",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "cfd86db39b5245cea695c7a0ba22fdf891b5634dd19eb130ee7c52ae236c8f45"
+}

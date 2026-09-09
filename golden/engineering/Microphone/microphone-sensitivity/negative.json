@@ -1,0 +1,9 @@
+{
+  "input": {
+    "sensitivity_mv_per_pa": 0,
+    "noise_rms_v": 1e-05,
+    "signal_rms_v": 0.01
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "dfab7adb17dd5535d43d78c1be67a86dc14a2248aa9b8f8ccb80d1428380d8d6"
+}

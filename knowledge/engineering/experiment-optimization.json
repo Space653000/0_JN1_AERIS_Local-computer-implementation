@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-experiment-optimization",
+  "category": "Methods",
+  "title": "experiment-optimization",
+  "text": "Maximin exploration selects the farthest allowed unexplored point without hardware actions. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/experiment-optimization.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "642c044f319abf61d9a5aa870796a02a9bcdf2c9db49e4780bf7e2ce7725747e"
+}

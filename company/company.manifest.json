@@ -7,9 +7,10 @@
   "core_target": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
+    "reviewed_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
     "authority": "read_only_highest_design_target",
-    "implementation_rule": "implementation_must_adapt_to_core; implementation_must_not_write_core"
+    "implementation_rule": "implementation_must_adapt_to_core; implementation_must_not_write_core",
+    "tag": "v0.7.0-blueprint.1"
   },
   "human_ai_operating_model": {
     "human_chief_engineer": "final_authority",
@@ -48,8 +49,9 @@
   },
   "autopilot": {
     "contract": "config/autopilot.json",
-    "trigger": "two_canonical_urls_plus_selected_or_explicit_safe_target_path",
-    "interpretation": "AERIS_FULL_BUILD_AUTOPILOT_REQUEST",
+    "trigger": "explicit_scoped_authorization_at_canonical_product_root",
+    "interpretation": "PROJECT_IDENTIFICATION_ONLY",
+    "requires_scoped_authorization": true,
     "requires_additional_prompt": false,
     "requires_plan_confirmation": false,
     "software_gap_closure_before_final_opening": true,
@@ -205,10 +207,10 @@
     "ci_smoke_is_not_real_company_opening",
     "supervisor_heartbeat_is_not_company_health",
     "open_verified_scope_is_named_scope_only",
-    "safe_software_not_implemented_is_a_gap_to_close_not_a_reason_to_stop_full_build",
+    "safe_software_gap_closure_is_limited_to_current_human_authorized_batch",
     "audit_hash_chain_is_not_worm",
     "evidence_hash_manifest_is_not_external_attestation",
     "commercial_release_requires_current_license_and_external_dependency_review"
   ],
-  "review_hold": "HOLD_FOR_SOL_RED_TEAM; config/review_gate.v1.json; no runtime compliance or Local acceptance implied."
+  "review_hold": "GATE06_RETRY_R1_IN_PROGRESS; canonical Blueprint REVIEW_PENDING; config/review_gate.v1.json; no runtime compliance or Local acceptance implied."
 }

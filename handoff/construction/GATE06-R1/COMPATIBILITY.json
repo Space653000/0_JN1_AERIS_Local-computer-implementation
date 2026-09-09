@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "gate": "GATE-06 RETRY R1",
+  "target": "64576bdbe680170fc1ea27306d1a2ab494cac733",
+  "source_tag": "v0.7.0-blueprint.1",
+  "governance_revision": "0.7.0-governance.4",
+  "overall_acceptance": "PENDING_FULL_REGRESSION_AND_EXACT_CANDIDATE_CI",
+  "rows": [
+    {"consumer":"Core lock, canonical_roles pin, alignment, autopilot, company, maturity, review gate","current":"mixed legacy review policies","target":"one frozen candidate transaction","state":"COMPATIBLE","evidence":"tests/test_blueprint_compatibility.py; tests/test_company_image.py; tests/test_core_alignment.py"},
+    {"consumer":"schema readers","current":"no executable v3 interpretation","target":"autopilot schema 3, review schema 3, traceability schema 1 at frozen commit","state":"COMPATIBLE","evidence":"aeris_runtime/blueprint_compatibility.py; scripts/verify-blueprint-source.py","limitation":"public immutable contract mirrors; upstream byte comparison required in CI"},
+    {"consumer":"governance and admission","current":"two URLs authorize unbounded Full-Build","target":"PROJECT_IDENTIFICATION_ONLY and bounded Human batch","state":"COMPATIBLE","evidence":"tests/test_core_alignment.py; tests/test_pre_codex_gate.py; tests/test_deployment_admission.py"},
+    {"consumer":"Evidence resolver / G0-G5 / formal task transition","current":"nonempty caller references and labels","target":"resolve signed receipt, exact task/scope/artifact/bundle hash, time bounds and all required gates","state":"COMPATIBLE","evidence":"tests/test_release_evidence_authority.py; tests/test_taskstate.py; tests/test_verification.py","limitation":"operator-provisioned local trust store; no real Human keys provisioned or production release performed"},
+    {"consumer":"reviewer and Claim Guard","current":"caller-approved refs and renamed reviewer","target":"stable principal subject/context bound to signed task receipt","state":"COMPATIBLE","evidence":"tests/test_claim_guard.py; tests/test_release_evidence_authority.py","limitation":"semantic correctness of a claim is still subject to domain review; a valid receipt does not prove arbitrary prose"},
+    {"consumer":"workflow baseline","current":"local deterministic PASS conflated with formal gate PASS","target":"BASELINE_PASS does not authorize VERIFIED/APPROVED/RELEASED","state":"COMPATIBLE","evidence":"tests/test_workflow.py; tests/test_release_evidence_authority.py"},
+    {"consumer":"installer/deployment/Core cache synchronization","current":"entrypoints mutate before admission and follow moving Core main","target":"admission before mutation, frozen tag/SHA, no local cutover in this Gate","state":"COMPATIBLE","evidence":"tests/test_deployment_admission.py; scripts/sync-core.ps1; scripts/sync-core.sh","limitation":"runtime installation remains BLOCKED by this Gate; isolated hosted CI is not real-machine acceptance"},
+    {"consumer":"runtime truth / review / drift","current":"cache integrity or candidate lock can mask missing running identity","target":"separate actual Core identity, candidate target and alignment; no four-way alignment assertion","state":"COMPATIBLE","evidence":"aeris_runtime/corecache.py; aeris_runtime/review.py; aeris_runtime/operations.py; tests/test_blueprint_compatibility.py"},
+    {"consumer":"running Implementation/Core","current":"b7901fe7ca4c8bad295d52fed6ef3c12a50cd95d / 82f4554623b2d87185dac39a3b93194af7dd5275","target":"later separately authorized Local/Runtime Gate","state":"BLOCKED","evidence":"existing local Supervisor; final Publisher reobserves live state","reason":"GATE06 forbids runtime cutover; DRIFT is expected"},
+    {"consumer":"V6 Publisher chain","current":"S0002 -> S0003 verified by Web Supervisor","target":"next immutable snapshot linked to S0003 after exact CI success","state":"COMPATIBLE","evidence":"existing .aeris/supervision/AERIS_Supervision_Publisher.bat","limitation":"existing Publisher is retained unchanged; publication not performed yet"}
+  ],
+  "atomicity": {
+    "unit":"one exact candidate Git commit after local regression",
+    "validation":"company validation and deployment admission reject mixed pointers or altered source schemas",
+    "rollback":"new revert commit based on 20edb9a32d368fb254a3ed62cff450970a6ed743; retain both reconciliation parents",
+    "runtime_cache_migrated":false,
+    "four_way_aligned":false
+  }
+}

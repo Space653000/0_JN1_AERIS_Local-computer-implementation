@@ -1,0 +1,93 @@
+{
+  "suite_id": "R021-PORTED-LUMPED-REVIEW-V1",
+  "role_id": "R021",
+  "skill_id": "speaker-port-lumped-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored independent Decimal Helmholtz, Q/S, half-wave mode and compact-geometry candidate; deliberate assertion corruption is separate from executor output.",
+  "scope": "Independent ideal port report-consistency review only",
+  "base_input": {
+    "parameters": {
+      "model": "IDEAL_LUMPED_HELMHOLTZ_PORT",
+      "sound_speed_m_s": 343.0, "sound_speed_lower_m_s": 340.0, "sound_speed_upper_m_s": 346.0,
+      "cavity_volume_m3": 0.020, "cavity_volume_lower_m3": 0.019, "cavity_volume_upper_m3": 0.021,
+      "port_area_m2": 0.003, "port_area_lower_m2": 0.0028, "port_area_upper_m2": 0.0032,
+      "physical_length_m": 0.20, "end_correction_m": 0.04,
+      "effective_length_lower_m": 0.23, "effective_length_upper_m": 0.25,
+      "volume_velocity_peak_m3_s": 0.020, "volume_velocity_upper_m3_s": 0.022,
+      "minimum_tuning_hz": 35.0, "maximum_tuning_hz": 50.0, "maximum_port_velocity_m_s": 8.0,
+      "analysis_max_hz": 300.0, "minimum_longitudinal_mode_ratio": 2.0,
+      "largest_dimension_m": 0.20, "maximum_dimension_wavelength_ratio": 0.20
+    },
+    "candidate": {
+      "effective_length_m": 0.24000000000000002,
+      "tuning_hz": 43.15729937959763,
+      "tuning_interval_hz": [39.51831445301321, 47.12273632155087],
+      "port_velocity_m_s": 6.666666666666667,
+      "port_velocity_upper_m_s": 7.857142857142857,
+      "longitudinal_mode_lower_hz": 680.0,
+      "longitudinal_mode_ratio": 2.2666666666666666,
+      "dimension_wavelength_ratio": 0.17647058823529413,
+      "checks": [
+        {"id": "TUNING_INTERVAL", "actual": [39.51831445301321, 47.12273632155087], "limit": [35.0, 50.0], "passed": true, "on_failure": "REVISE_PORT_AREA_EFFECTIVE_LENGTH_OR_CAVITY_BOUNDS"},
+        {"id": "PORT_VELOCITY", "actual": 7.857142857142857, "limit": 8.0, "passed": true, "on_failure": "INCREASE_PORT_AREA_OR_REDUCE_VOLUME_VELOCITY"},
+        {"id": "LONGITUDINAL_MODE_SEPARATION", "actual": 2.2666666666666666, "limit": 2.0, "passed": true, "on_failure": "SHORTEN_PORT_OR_LIMIT_ANALYSIS_BAND_AND_MODEL_RESONANCE"},
+        {"id": "LUMPED_GEOMETRY_VALIDITY", "actual": 0.17647058823529413, "limit": 0.2, "passed": true, "on_failure": "ESCALATE_TO_SPATIALLY_VALID_PORT_OR_WAVEGUIDE_MODEL"}
+      ],
+      "required_revisions": [],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "chuffing_verified": false,
+      "waveguide_directivity_verified": false,
+      "physical_measurement_verified": false,
+      "counter_hypotheses": ["Turbulent port flow rather than driver harmonic distortion", "Boundary loading or end-correction error rather than incorrect physical port length"],
+      "next_discriminating_experiment": "MEASURE_PORT_PRESSURE_AND_VOLUME_VELOCITY_WITH_BOUNDARY_CONFIGURATION_RECORDED",
+      "model_assumptions": [
+        "Ideal lumped Helmholtz cavity and port with supplied effective-length bounds",
+        "Incompressible mean volume velocity divided by area is only a screening velocity",
+        "First longitudinal port mode uses a half-wave screening estimate",
+        "Independent supplied bounds are not calibrated probability distributions"
+      ],
+      "unresolved": [
+        "Actual end correction, leakage, damping and turbulent transition",
+        "Higher port modes, baffle loading and waveguide directivity",
+        "Calibrated acoustic measurement and qualified Human acceptance"
+      ]
+    },
+    "context": {"product": "Vented bookshelf speaker", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {
+      "id": "PORT-REVIEW-CONSISTENT", "kind": "positive",
+      "question": "Does an independent formulation confirm all bounded port assertions without granting physical approval?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0},
+        {"path": "human_approval", "expected": false, "absolute_tolerance": 0},
+        {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "PORT-REVIEW-REPRESENTATION", "kind": "boundary",
+      "question": "Can a sub-tolerance floating representation tail be accepted without changing engineering policy?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.tuning_hz", "value": 43.15729937960763}],
+      "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "PORT-REVIEW-FALSE-VELOCITY", "kind": "counter_hypothesis",
+      "question": "Does the reviewer reject a suppressed velocity bound that could hide turbulent port flow?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "candidate.port_velocity_upper_m_s", "value": 1.0}],
+      "checks": [
+        {"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0},
+        {"path": "disagreements.0.field", "expected": "port_velocity_upper_m_s", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "PORT-REVIEW-RISK-OUTSIDE", "kind": "negative",
+      "question": "Is an R4 request rejected from this automated bounded reviewer?",
+      "input_overrides": {},
+      "input_mutations": [{"path": "context.risk", "value": "R4"}],
+      "expected_error": "ValueError"
+    }
+  ]
+}

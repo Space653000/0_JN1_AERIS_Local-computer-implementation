@@ -1,0 +1,53 @@
+{
+  "id": "product-system-plan-analytic-v1",
+  "skill_id": "product-system-plan",
+  "suite": "Product",
+  "input": {
+    "product_index": 3,
+    "transducer": "Both",
+    "lifecycle": "EVT",
+    "risk": "R1",
+    "objective": "Verify earbud capture and playback baseline",
+    "requirements": [
+      {
+        "id": "FR1",
+        "minimum": -3,
+        "maximum": 3,
+        "unit": "dB"
+      }
+    ],
+    "observations": [
+      {
+        "requirement_id": "FR1",
+        "value": 1,
+        "unit": "dB",
+        "evidence_ref": "synthetic-fixture"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "path": "requirement_coverage",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "needed_skills",
+      "expected": 6,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": "length"
+    }
+  ],
+  "negative_patch": {
+    "product_index": 24
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "A valid product plan includes both transducer workstreams and preserves requirement coverage.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "b2288ee8e3a08ccb08704a15653a175769d86b30955b8d8ff90ebe42e4da9c05"
+}

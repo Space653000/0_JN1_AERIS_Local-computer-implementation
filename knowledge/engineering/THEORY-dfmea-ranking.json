@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-dfmea-ranking",
+  "category": "Theory",
+  "title": "THEORY-dfmea-ranking",
+  "text": "High-severity mode remains Human-review required regardless of RPN ranking.",
+  "source": "methods/engineering/dfmea-ranking.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "4eec4c894c6b315ec72ff522dbcae0c0dbac32a4a1c1faae96f0dd074a3be80e",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

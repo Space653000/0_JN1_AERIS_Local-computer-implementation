@@ -14,9 +14,10 @@ def load_json(relative: str) -> dict:
 
 
 class TruthDocumentationTests(unittest.TestCase):
-    def test_readme_exposes_two_url_default_without_claude_dependency(self):
+    def test_readme_exposes_bounded_authorization_without_claude_dependency(self):
         readme = read("README.md")
-        self.assertIn("two URLs are the complete Full-Build trigger", readme)
+        self.assertIn("two URLs do not authorize construction", readme)
+        self.assertIn("PROJECT_IDENTIFICATION_ONLY", readme)
         self.assertIn("Claude Code is optional", readme)
         self.assertIn("No Claude token is required", readme)
         self.assertNotIn("交給 Claude Code 獨立驗收", readme)
@@ -45,10 +46,10 @@ class TruthDocumentationTests(unittest.TestCase):
             self.assertEqual(caps[capability]["state"], "TESTED", capability)
             self.assertTrue(str(caps[capability].get("evidence", "")).strip(), capability)
 
-        self.assertEqual(caps["100_role_executable_domain_contracts"]["state"], "NOT_IMPLEMENTED")
-        self.assertEqual(caps["golden_acoustic_dataset_suite"]["state"], "NOT_IMPLEMENTED")
-        self.assertEqual(caps["browser_e2e_visual_regression"]["state"], "NOT_IMPLEMENTED")
-        self.assertEqual(caps["machine_resource_qualification"]["state"], "NOT_IMPLEMENTED")
+        self.assertEqual(caps["100_role_executable_domain_contracts"]["state"], "HUMAN_GATE")
+        self.assertEqual(caps["golden_acoustic_dataset_suite"]["state"], "PHYSICAL_HARDWARE")
+        self.assertEqual(caps["browser_e2e_visual_regression"]["state"], "TESTED")
+        self.assertEqual(caps["machine_resource_qualification"]["state"], "REBOOT_LOGOFF_REQUIRED")
 
     def test_company_and_baseline_snapshots_do_not_reintroduce_stale_closed_truth(self):
         company = load_json("company/company.manifest.json")
@@ -73,7 +74,7 @@ class TruthDocumentationTests(unittest.TestCase):
             "PRE_ALPHA",
             "real-machine acceptance",
             "production-complete Speaker/Microphone Golden Dataset",
-            "BLOCKED_EXTERNAL",
+            "EXTERNAL_LICENSE",
             "COMSOL",
             "MATLAB",
             "APx",

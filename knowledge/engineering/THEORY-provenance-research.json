@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-provenance-research",
+  "category": "Theory",
+  "title": "THEORY-provenance-research",
+  "text": "Local retrieval preserves document hash and rights classification.",
+  "source": "methods/engineering/provenance-research.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "4956aaa5e5521f1659c4747d402d6c87d16496acb9a623893b8b8f9b44fb389a",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-enhancement-aec-metrics",
+  "category": "Methods",
+  "title": "enhancement-aec-metrics",
+  "text": "Orthogonal 10% error gives SI-SDR 20 dB; 10x echo attenuation gives ERLE 20 dB. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/enhancement-aec-metrics.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "3816062e76c5dfabf8fa824c3de9ece20adb1f1c7308a4755adbb0caf3e88373"
+}

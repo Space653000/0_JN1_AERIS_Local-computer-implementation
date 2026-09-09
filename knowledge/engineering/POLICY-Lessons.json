@@ -1,0 +1,11 @@
+{
+  "id": "POLICY-Lessons",
+  "category": "Lessons",
+  "title": "POLICY-Lessons",
+  "text": "The Harness derives lessons from source event hashes and retains them as Memory, not original Evidence.",
+  "source": "docs/PROFESSIONAL_COMPANY_BUILD.md",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "8900a270d879df4bbc8ce6ccaef9d1796c66c9e625dab3386aa941bc4259bc63",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

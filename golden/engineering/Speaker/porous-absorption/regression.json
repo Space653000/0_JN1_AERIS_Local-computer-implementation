@@ -1,0 +1,34 @@
+{
+  "input": {
+    "frequency_hz": [
+      200,
+      500,
+      1000,
+      2000
+    ],
+    "flow_resistivity_pa_s_m2": 10000,
+    "thickness_m": 0.02
+  },
+  "expected_checks": [
+    {
+      "path": "absorption_normal_incidence",
+      "expected": [
+        0,
+        1
+      ],
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": "range"
+    },
+    {
+      "path": "absorption_normal_incidence.2",
+      "expected": 0.28505572817232716,
+      "absolute_tolerance": 1e-10,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "beaa55dea9ed5735bb35182daa988adea8a781ceeb5f8d1133001418fd326cf3"
+}

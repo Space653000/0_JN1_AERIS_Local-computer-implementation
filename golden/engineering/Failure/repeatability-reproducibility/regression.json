@@ -1,0 +1,35 @@
+{
+  "input": {
+    "groups": [
+      [
+        1,
+        2,
+        3
+      ],
+      [
+        3,
+        4,
+        5
+      ]
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "repeatability_sd",
+      "expected": 1,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "between_group_sd",
+      "expected": 1.2909944487358056,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "238c4cd532a3faed44a9372feaf86bd510dc2a23b8a4d0603d3a72caa0018330"
+}

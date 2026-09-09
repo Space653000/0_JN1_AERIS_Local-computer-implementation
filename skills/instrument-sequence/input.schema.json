@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "sample_rate_hz": {
+      "type": "number"
+    },
+    "duration_s": {
+      "type": "number"
+    },
+    "requested_rms_v": {
+      "type": "number"
+    },
+    "safe_rms_limit_v": {
+      "type": "number"
+    },
+    "mode": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "sample_rate_hz",
+    "duration_s",
+    "requested_rms_v",
+    "safe_rms_limit_v",
+    "mode"
+  ],
+  "additionalProperties": false
+}

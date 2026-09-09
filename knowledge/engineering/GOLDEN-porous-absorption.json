@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-porous-absorption",
+  "category": "Golden cases",
+  "title": "GOLDEN-porous-absorption",
+  "text": "[{\"path\": \"absorption_normal_incidence\", \"expected\": [0, 1], \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": \"range\"}, {\"path\": \"absorption_normal_incidence.2\", \"expected\": 0.28505572817232716, \"absolute_tolerance\": 1e-10, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Speaker/porous-absorption/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "385fd6051f99461b031cba06642f4b9a79de49871422b15153fce48692d8c372",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

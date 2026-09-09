@@ -1,0 +1,22 @@
+{
+  "input": {
+    "frequency_hz": [
+      100,
+      100,
+      300
+    ],
+    "magnitude_db": [
+      0,
+      0,
+      0
+    ],
+    "phase_rad": [
+      -0.6283185307179586,
+      -1.2566370614359172,
+      -1.8849555921538759
+    ],
+    "smoothing_octaves": 0
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "5bc00f11e5bcfd4be73a4e53288a86a73db94974ea6b424575d53291eabe0711"
+}

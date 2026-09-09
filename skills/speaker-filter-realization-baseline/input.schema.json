@@ -1,0 +1,11 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "sections", "coefficient_fractional_bits", "maximum_pole_radius", "maximum_coefficient_quantization_error", "lowpass_gain_at_crossover", "highpass_gain_at_crossover", "relative_phase_deg", "maximum_phase_mismatch_deg", "maximum_crossover_sum_deviation_db", "input_peak_linear", "section_peak_gains", "available_output_peak_linear", "group_delay_ms", "maximum_group_delay_ms"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_SPEAKER_BIQUAD_CROSSOVER"},
+    "sections": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"type": "object", "required": ["b", "a"], "additionalProperties": false, "properties": {"b": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}}, "a": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}}}}},
+    "coefficient_fractional_bits": {"type": "number"}, "maximum_pole_radius": {"type": "number"}, "maximum_coefficient_quantization_error": {"type": "number"},
+    "lowpass_gain_at_crossover": {"type": "number"}, "highpass_gain_at_crossover": {"type": "number"}, "relative_phase_deg": {"type": "number"}, "maximum_phase_mismatch_deg": {"type": "number"}, "maximum_crossover_sum_deviation_db": {"type": "number"},
+    "input_peak_linear": {"type": "number"}, "section_peak_gains": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"type": "number"}}, "available_output_peak_linear": {"type": "number"}, "group_delay_ms": {"type": "number"}, "maximum_group_delay_ms": {"type": "number"}
+  }
+}

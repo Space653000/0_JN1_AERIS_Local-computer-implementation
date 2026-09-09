@@ -1,0 +1,21 @@
+{
+  "method_id": "failure-hypothesis-domain-review",
+  "version": "1.0.0",
+  "role": "R098",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.faca_review:review",
+  "applicability": "Declared conditionally independent hypothetical or supplied-unverified observations; explicit product and test-system mechanisms, local-safe R0/R1 experimental suggestions",
+  "numerical_path": "60-digit Decimal likelihood products and joint entropy identity",
+  "normalization_policy": "After accepting at most 1e-12 outcome-total representation error, normalize each hypothesis outcome distribution to exactly one for inference and information calculations. Preserve raw table hashes and observation provenance; normalization is not calibration.",
+  "comparison_policy": "12 decimal posterior/margin/score representation; positive gain at 12 decimals required for selection; tied posterior ranks and experiment scores choose lexicographic ID. Tied hypotheses never satisfy separation. Not uncertainty or confidence.",
+  "provenance": "Observation IDs and likelihoods are supplied model statements, not measured Evidence. Challenge origin receipt must separately bind sealed first execution to exactly one appended selected outcome.",
+  "excluded": [
+    "Verified root cause",
+    "Calibrated posterior",
+    "Actual intervention",
+    "Recurrence validation",
+    "Qualified Human approval"
+  ],
+  "golden_tests": "golden/roles/R098/golden.json"
+}

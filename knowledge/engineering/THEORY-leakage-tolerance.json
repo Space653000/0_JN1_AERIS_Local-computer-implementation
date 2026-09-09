@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-leakage-tolerance",
+  "category": "Theory",
+  "title": "THEORY-leakage-tolerance",
+  "text": "Poiseuille resistance scales inversely with radius to the fourth power.",
+  "source": "methods/engineering/leakage-tolerance.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "6514a80dd1c076ee598564c3575d1514d5f4b404f0368535d56273e4ae45671e",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "sample_rate_hz", "slot_width_bits", "word_length_bits", "slots_per_frame", "bit_clock_hz", "bit_clock_relative_tolerance", "frame_sync_hz", "frame_sync_relative_tolerance", "buffer_capacity_frames", "worst_case_service_interval_ms", "minimum_buffer_margin_frames", "maximum_buffer_latency_ms", "expected_channel_count", "active_slot_indices", "packing"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_I2S_TDM_TRANSPORT"}, "sample_rate_hz": {"type": "number"},
+    "slot_width_bits": {"type": "number"}, "word_length_bits": {"type": "number"}, "slots_per_frame": {"type": "number"},
+    "bit_clock_hz": {"type": "number"}, "bit_clock_relative_tolerance": {"type": "number"}, "frame_sync_hz": {"type": "number"}, "frame_sync_relative_tolerance": {"type": "number"},
+    "buffer_capacity_frames": {"type": "number"}, "worst_case_service_interval_ms": {"type": "number"}, "minimum_buffer_margin_frames": {"type": "number"}, "maximum_buffer_latency_ms": {"type": "number"},
+    "expected_channel_count": {"type": "number"}, "active_slot_indices": {"type": "array", "minItems": 1, "maxItems": 64, "items": {"type": "number"}}, "packing": {"type": "string"}
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-monte-carlo",
+  "category": "Golden cases",
+  "title": "GOLDEN-monte-carlo",
+  "text": "[{\"path\": \"analytic_mean\", \"expected\": 11, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"analytic_sd\", \"expected\": 5, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"mean\", \"expected\": 11, \"absolute_tolerance\": 0.2, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Failure/monte-carlo/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "761ce35cb7afecc56ee48e5a2afa8115891aece5cdb369b5ba3460cb8c8ef401",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

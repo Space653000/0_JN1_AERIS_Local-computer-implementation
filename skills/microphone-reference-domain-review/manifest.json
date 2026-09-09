@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "skill_id": "microphone-reference-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/microphone-reference-domain-review.json",
+  "input_schema": "skills/microphone-reference-domain-review/input.schema.json",
+  "output_schema": "skills/microphone-reference-domain-review/output.schema.json",
+  "role_mappings": [
+    "R028"
+  ],
+  "review_domain": "microphone-reference",
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Scoped analytical report review only; no calibration or whole-role L3"
+}

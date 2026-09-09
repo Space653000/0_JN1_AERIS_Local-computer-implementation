@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "skill_id": "standards-metadata-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/standards-metadata-domain-review.json",
+  "input_schema": "skills/standards-metadata-domain-review/input.schema.json",
+  "output_schema": "skills/standards-metadata-domain-review/output.schema.json",
+  "role_mappings": [
+    "R090"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Supplied metadata applicability/access/change-impact policy; never authoritative current-edition, live-source, physical or customer verification",
+  "review_domain": "standards-metadata"
+}

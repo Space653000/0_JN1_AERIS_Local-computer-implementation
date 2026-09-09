@@ -1,0 +1,172 @@
+{
+  "type": "object",
+  "required": [
+    "model",
+    "noise_model",
+    "weights",
+    "channel_gains",
+    "channel_delays_s",
+    "gain_bounds",
+    "delay_bounds_s",
+    "position_bounds_m",
+    "spacing_m",
+    "frequencies_hz",
+    "angles_deg",
+    "steering_deg",
+    "sound_speed_m_s",
+    "source_range_m",
+    "minimum_range_aperture_ratio",
+    "minimum_fraunhofer_ratio",
+    "main_lobe_exclusion_deg",
+    "maximum_grid_gap_deg",
+    "minimum_desired_amplitude",
+    "maximum_sampled_sidelobe_amplitude",
+    "minimum_white_noise_gain"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "model": {
+      "type": "string",
+      "const": "FAR_FIELD_ULA_TRUE_TIME_DELAY"
+    },
+    "noise_model": {
+      "type": "string",
+      "const": "UNCORRELATED_EQUAL_VARIANCE_BEFORE_GAIN"
+    },
+    "spacing_m": {
+      "type": "number",
+      "minimum": 0.00001,
+      "maximum": 10
+    },
+    "steering_deg": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "sound_speed_m_s": {
+      "type": "number",
+      "minimum": 200,
+      "maximum": 500
+    },
+    "source_range_m": {
+      "type": "number",
+      "minimum": 0.0001,
+      "maximum": 100000
+    },
+    "minimum_range_aperture_ratio": {
+      "type": "number",
+      "minimum": 2,
+      "maximum": 100
+    },
+    "minimum_fraunhofer_ratio": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "main_lobe_exclusion_deg": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 89
+    },
+    "maximum_grid_gap_deg": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 90
+    },
+    "minimum_desired_amplitude": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "maximum_sampled_sidelobe_amplitude": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "minimum_white_noise_gain": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 32
+    },
+    "weights": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1000000
+      }
+    },
+    "channel_gains": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {
+        "type": "number",
+        "minimum": 0.0001,
+        "maximum": 100
+      }
+    },
+    "channel_delays_s": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {
+        "type": "number",
+        "minimum": -0.1,
+        "maximum": 0.1
+      }
+    },
+    "gain_bounds": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 100
+      }
+    },
+    "delay_bounds_s": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 0.1
+      }
+    },
+    "position_bounds_m": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 10
+      }
+    },
+    "frequencies_hz": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 96000
+      }
+    },
+    "angles_deg": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 721,
+      "items": {
+        "type": "number",
+        "minimum": -90,
+        "maximum": 90
+      }
+    }
+  }
+}

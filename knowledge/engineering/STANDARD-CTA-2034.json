@@ -1,0 +1,11 @@
+{
+  "id": "STANDARD-CTA-2034",
+  "category": "Standards metadata",
+  "title": "STANDARD-CTA-2034",
+  "text": "{\"standard_id\": \"CTA-2034\", \"title\": \"Standard Method of Measurement for In-Home Loudspeakers\", \"keywords\": [\"speaker\", \"spinorama\", \"directivity\"], \"edition\": null, \"status\": \"UNKNOWN_UNTIL_LIVE_VERIFIED\", \"verification_state\": \"NEEDS_LIVE_VERIFICATION\", \"verified_at_utc\": null, \"source_url\": null, \"note\": \"Formal use requires live source verification.\"}",
+  "source": "standards/registry.v1.json",
+  "rights": "PUBLIC_METADATA",
+  "sha256": "6319b7cc18997687237924415b0df8d3fc27c08e78c64ff98d733106b6d6cfb1",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

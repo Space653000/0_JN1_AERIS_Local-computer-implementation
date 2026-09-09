@@ -1,0 +1,3 @@
+# Free local numerical runtime. Install/cache only inside the AERIS root.
+numpy==2.2.6
+scipy==1.15.3

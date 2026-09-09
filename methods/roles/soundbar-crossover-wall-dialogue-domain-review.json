@@ -1,0 +1,1 @@
+{"method_id":"soundbar-crossover-wall-dialogue-domain-review","version":"1.0.0","role":"R024","source_kind":"AERIS_AUTHORED","is_evidence":false,"implementation":"aeris_runtime.engineering.av_products_review:review_soundbar","independence":"Does not invoke R056 executor","excluded":["physical/listener acceptance"],"golden_tests":"golden/roles/R024/soundbar.json"}

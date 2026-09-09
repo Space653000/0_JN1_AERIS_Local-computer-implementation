@@ -1,0 +1,11 @@
+{
+  "id": "POLICY-Root-causes",
+  "category": "Root causes",
+  "title": "POLICY-Root-causes",
+  "text": "Use failure-hypotheses to keep support and refutation separate; root cause is not verified from a ranked hypothesis.",
+  "source": "docs/PROFESSIONAL_COMPANY_BUILD.md",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "c3601b0ecb49d5e34c3c32a328e26e5df84c907896123d3a06d599217b267a74",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

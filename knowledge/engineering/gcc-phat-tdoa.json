@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-gcc-phat-tdoa",
+  "category": "Methods",
+  "title": "gcc-phat-tdoa",
+  "text": "A seven-sample shifted impulse establishes correlation lag sign and magnitude. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/gcc-phat-tdoa.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "6e5817238fc3ed09bc1bb75dd12937fb01fccdc643b0e68306f93c0ec4ac0dff"
+}

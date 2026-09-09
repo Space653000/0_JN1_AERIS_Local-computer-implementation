@@ -2,8 +2,7 @@ $ErrorActionPreference='Stop'
 $Root=(Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 . (Join-Path $Root 'scripts\windows-zero-cost-bootstrap.ps1')
 
-$Temp=Join-Path $env:RUNNER_TEMP ("aeris-winget-zero-cost-" + [guid]::NewGuid().ToString('N'))
-if(-not $env:RUNNER_TEMP){ $Temp=Join-Path $env:TEMP ("aeris-winget-zero-cost-" + [guid]::NewGuid().ToString('N')) }
+$Temp=Join-Path $Root (".aeris\test-temp\aeris-winget-zero-cost-" + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Force -Path $Temp | Out-Null
 $Log=Join-Path $Temp 'args.txt'
 $Shim=Join-Path $Temp 'winget.cmd'

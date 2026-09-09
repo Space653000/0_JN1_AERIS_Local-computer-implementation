@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "failure_modes": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "number"
+          },
+          "occurrence": {
+            "type": "number"
+          },
+          "detection": {
+            "type": "number"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "countermeasure": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "severity",
+          "occurrence",
+          "detection",
+          "owner",
+          "countermeasure"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "failure_modes"
+  ],
+  "additionalProperties": false
+}

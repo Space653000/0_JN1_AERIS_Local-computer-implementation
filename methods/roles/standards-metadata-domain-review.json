@@ -1,0 +1,15 @@
+{
+  "method_id": "standards-metadata-domain-review",
+  "version": "1.0.0",
+  "role": "R090",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.standard_metadata_review:review",
+  "applicability": "Explicit supplied previous/current metadata, independent requirements, intended use and pinned timezone-aware as-of time",
+  "numerical_path": "Independent field-condition table, exact duration tuple and old/new scope traversal",
+  "truth": "Content hash identifies supplied metadata only. Registry projections preserve unknowns. Synthetic families must be fictitious and use example.invalid. No source fetching, licensed text import, authenticity or current-edition verification.",
+  "access_policy": "Classification and declared access are independent: NORMATIVE_USE requires NORMATIVE classification and declared full-text access; informative classification grants no license. All normative rights remain unverified.",
+  "change_policy": "Freshness-only same-content retrieval cannot remove semantic change review; impacts include union of previous/current scope and mappings, including removed requirements.",
+  "revision_policy": "Same previous/context/content/policy; only newer synthetic source retrieval timestamp and new source record ID may change.",
+  "golden_tests": "golden/roles/R090/golden.json"
+}

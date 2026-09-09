@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-requirement-traceability",
+  "category": "Golden cases",
+  "title": "GOLDEN-requirement-traceability",
+  "text": "[{\"path\": \"coverage\", \"expected\": 0.5, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Product/requirement-traceability/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "da1300eb102e4d18734a6c8342e93a4ec6271d08086bf29a69bb8fb7832e8a80",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-circuit-noise-budget",
+  "category": "Theory",
+  "title": "THEORY-circuit-noise-budget",
+  "text": "Ideal uniform quantization variance is one LSB squared divided by 12.",
+  "source": "methods/engineering/circuit-noise-budget.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "5773625824091b6b7d5f538112d77dfcbcd7d86b97bc31566c62c3aa2bceae66",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

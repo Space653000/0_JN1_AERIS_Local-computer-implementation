@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-time-frequency-analysis",
+  "category": "Theory",
+  "title": "THEORY-time-frequency-analysis",
+  "text": "Welch integration of a coherent unit sine conserves mean-square power.",
+  "source": "methods/engineering/time-frequency-analysis.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "81bc50649e01cdbc4385ce529a082f42066afdf90722793355aed9ada879a2ce",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

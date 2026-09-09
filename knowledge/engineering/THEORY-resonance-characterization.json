@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-resonance-characterization",
+  "category": "Theory",
+  "title": "THEORY-resonance-characterization",
+  "text": "100 Hz resonance with half-power crossings at 90/110 Hz has Q=5.",
+  "source": "methods/engineering/resonance-characterization.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "29182418f79065ff77c5b51c98b629a56a02a6a6e60252701b35ff1ddf48443d",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

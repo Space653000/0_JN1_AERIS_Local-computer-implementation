@@ -1,0 +1,11 @@
+{
+  "type":"object",
+  "required":["skill_id","version","result","values","input_sha256","implementation_sha256","capability_maturity","physical_measurement_verified","professional_tool_verified"],
+  "properties":{
+    "skill_id":{"const":"speaker-power-distortion-baseline"},
+    "result":{"const":"PASS"},
+    "values":{"type":"object","required":["thd_percent","compression_db","predicted_coil_temperature_c","checks","disposition","required_revisions","counter_hypotheses","next_discriminating_experiment","model_assumptions","unresolved"]},
+    "physical_measurement_verified":{"const":false},
+    "professional_tool_verified":{"const":false}
+  }
+}

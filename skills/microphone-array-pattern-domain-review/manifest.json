@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "skill_id": "microphone-array-pattern-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/microphone-array-pattern-domain-review.json",
+  "input_schema": "skills/microphone-array-pattern-domain-review/input.schema.json",
+  "output_schema": "skills/microphone-array-pattern-domain-review/output.schema.json",
+  "role_mappings": [
+    "R034"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Independent sampled pattern and channel-mismatch consistency; no full-angle or physical validation",
+  "review_domain": "microphone-array-pattern"
+}

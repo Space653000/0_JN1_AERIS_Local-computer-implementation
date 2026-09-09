@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-monte-carlo",
+  "category": "Failures",
+  "title": "FAILURE-monte-carlo",
+  "text": "{\"invalid_variant\": {\"trials\": 10}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Failure/monte-carlo/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "13fea91a1375de1d06659636684857ae6dcddb4766b5043912f8c0546bf1f672",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

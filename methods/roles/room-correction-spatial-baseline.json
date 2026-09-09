@@ -1,0 +1,7 @@
+{
+  "method_id": "room-correction-spatial-baseline", "version": "1.0.0", "role": "R026", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.room_correction:analyze", "applicability": "Supplied aligned multi-position response matrix, target and bounded correction policy",
+  "equations": {"mean": "arithmetic mean of supplied dB samples", "spread": "position max-min at each frequency", "correction": "target minus mean"},
+  "assumptions": ["Screening dB mean only", "No interpolation", "Deterministic response uncertainty"],
+  "excluded": ["complex transfer and minimum-phase proof", "realized filter", "calibration, physical and Human acceptance"], "golden_tests": "golden/roles/R026/golden.json"
+}

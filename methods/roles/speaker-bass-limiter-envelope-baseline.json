@@ -1,0 +1,10 @@
+{
+  "method_id": "speaker-bass-limiter-envelope-baseline", "version": "1.0.0", "role": "R019",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_bass_limiter:analyze",
+  "applicability": "Supplied bass boost and baseline excursion samples with declared deterministic excursion, thermal, voltage and limiter-time envelopes",
+  "equations": {"boosted_excursion": "baseline excursion times 10^(boost_db/20)", "excursion_upper": "maximum boosted excursion times (1 + relative bound)", "temperature_upper": "predicted coil temperature plus bound"},
+  "assumptions": ["Pointwise voltage/excursion proportionality", "Static deterministic bounds", "No program-dependent detector simulation"],
+  "excluded": ["dynamic limiter audio quality", "frequency-dependent load and rail feedback", "calibrated durability, physical or Human acceptance"],
+  "golden_tests": "golden/roles/R019/golden.json"
+}

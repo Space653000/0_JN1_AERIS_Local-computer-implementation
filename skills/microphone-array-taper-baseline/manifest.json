@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "skill_id": "microphone-array-taper-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/microphone-array-taper-baseline.json",
+  "input_schema": "skills/microphone-array-taper-baseline/input.schema.json",
+  "output_schema": "skills/microphone-array-taper-baseline/output.schema.json",
+  "role_mappings": [
+    "R037"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "ULA amplitude taper and steering with supplied mismatch bounds and uncorrelated white-noise gain; not speech quality"
+}

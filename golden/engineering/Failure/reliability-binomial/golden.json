@@ -1,0 +1,28 @@
+{
+  "id": "reliability-binomial-analytic-v1",
+  "skill_id": "reliability-binomial",
+  "suite": "Failure",
+  "input": {
+    "trials": 100,
+    "failures": 0,
+    "confidence": 0.95
+  },
+  "checks": [
+    {
+      "path": "one_sided_upper_failure_probability",
+      "expected": 0.029513049607039932,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "failures": 101
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Zero failures in 100 trials gives exact one-sided binomial bound.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "89fadd431754066b390618e3bc3234446ae35f72e17c7aafe2b0d07d4dc2d2a4"
+}

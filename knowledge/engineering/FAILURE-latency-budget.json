@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-latency-budget",
+  "category": "Failures",
+  "title": "FAILURE-latency-budget",
+  "text": "{\"invalid_variant\": {\"buffer_samples\": [-480, 960]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Product/latency-budget/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "64d672f57860798806a8fb65bdb01e4fa8d1808ef240cb93fae35e351df05172",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

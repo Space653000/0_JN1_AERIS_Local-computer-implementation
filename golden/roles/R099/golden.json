@@ -1,0 +1,1368 @@
+{
+  "suite_id": "R099-REQUIREMENT-ASSOCIATION-V1",
+  "role_id": "R099",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored fixed requirement/test associations and 80 +/- 1 exact interval with independent denominator and contradiction assertions. Candidate values are hand-authored, not copied from executor output.",
+  "scope": "Supplied requirement/result content and interval identity; no physical/source authenticity acceptance",
+  "skill_id": "requirement-association-domain-review",
+  "base_input": {
+    "parameters": {
+      "configuration": {
+        "product": "SYNTHETIC_SPEAKER",
+        "revision": "A"
+      },
+      "requirements": [
+        {
+          "id": "FR",
+          "revision": "1",
+          "measurand": "on_axis_level",
+          "unit": "dB",
+          "reference": "20uPa_1m_1Vrms",
+          "lower": 78,
+          "upper": 82,
+          "combination": "ALL",
+          "required_tests": [
+            {
+              "id": "T-LOW",
+              "revision": "1"
+            },
+            {
+              "id": "T-HIGH",
+              "revision": "1"
+            }
+          ]
+        }
+      ],
+      "tests": [
+        {
+          "id": "T-LOW",
+          "revision": "1",
+          "measurand": "on_axis_level",
+          "unit": "dB",
+          "reference": "20uPa_1m_1Vrms"
+        },
+        {
+          "id": "T-HIGH",
+          "revision": "1",
+          "measurand": "on_axis_level",
+          "unit": "dB",
+          "reference": "20uPa_1m_1Vrms"
+        }
+      ],
+      "results": [
+        {
+          "id": "RESULT-T-LOW",
+          "payload": {
+            "test_id": "T-LOW",
+            "test_revision": "1",
+            "configuration": {
+              "product": "SYNTHETIC_SPEAKER",
+              "revision": "A"
+            },
+            "measurand": "on_axis_level",
+            "unit": "dB",
+            "reference": "20uPa_1m_1Vrms",
+            "observed": 80,
+            "uncertainty": 1,
+            "source_record_id": "SYN-T-LOW",
+            "source_kind": "SYNTHETIC",
+            "status": "COMPLETE"
+          },
+          "sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+        },
+        {
+          "id": "RESULT-T-HIGH",
+          "payload": {
+            "test_id": "T-HIGH",
+            "test_revision": "1",
+            "configuration": {
+              "product": "SYNTHETIC_SPEAKER",
+              "revision": "A"
+            },
+            "measurand": "on_axis_level",
+            "unit": "dB",
+            "reference": "20uPa_1m_1Vrms",
+            "observed": 80,
+            "uncertainty": 1,
+            "source_record_id": "SYN-T-HIGH",
+            "source_kind": "SYNTHETIC",
+            "status": "COMPLETE"
+          },
+          "sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+        }
+      ],
+      "links": [
+        {
+          "requirement_id": "FR",
+          "requirement_revision": "1",
+          "test_id": "T-LOW",
+          "test_revision": "1",
+          "result_id": "RESULT-T-LOW",
+          "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+        },
+        {
+          "requirement_id": "FR",
+          "requirement_revision": "1",
+          "test_id": "T-HIGH",
+          "test_revision": "1",
+          "result_id": "RESULT-T-HIGH",
+          "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+        }
+      ]
+    },
+    "candidate": {
+      "requirements_total": 1,
+      "required_associations": 2,
+      "linked_associations": 2,
+      "complete_requirements": 1,
+      "current_associations": 2,
+      "bounded_associations": 2,
+      "requirements": [
+        {
+          "requirement_id": "FR",
+          "requirement_revision": "1",
+          "associations": [
+            {
+              "test_id": "T-LOW",
+              "test_revision": "1",
+              "result_id": "RESULT-T-LOW",
+              "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d",
+              "interval": [
+                79.0,
+                81.0
+              ],
+              "interval_exact": [
+                "79",
+                "81"
+              ],
+              "linked": true,
+              "current_semantics": true,
+              "bounded_interval_passed": true,
+              "reasons": []
+            },
+            {
+              "test_id": "T-HIGH",
+              "test_revision": "1",
+              "result_id": "RESULT-T-HIGH",
+              "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32",
+              "interval": [
+                79.0,
+                81.0
+              ],
+              "interval_exact": [
+                "79",
+                "81"
+              ],
+              "linked": true,
+              "current_semantics": true,
+              "bounded_interval_passed": true,
+              "reasons": []
+            }
+          ],
+          "bounded_requirement_passed": true
+        }
+      ],
+      "unlinked_result_ids": [],
+      "checks": [
+        {
+          "id": "REQUIRED_ASSOCIATION_COVERAGE",
+          "actual": 2,
+          "limit": 2,
+          "passed": true,
+          "on_failure": "LINK_EVERY_DECLARED_REQUIRED_TEST"
+        },
+        {
+          "id": "CURRENT_REVISION_AND_SEMANTICS",
+          "actual": 2,
+          "limit": 2,
+          "passed": true,
+          "on_failure": "RECONCILE_VERSION_CONFIGURATION_AND_REFERENCE"
+        },
+        {
+          "id": "BOUNDED_REQUIREMENT_INTERVALS",
+          "actual": 2,
+          "limit": 2,
+          "passed": true,
+          "on_failure": "RESOLVE_MISSING_OR_UNSATISFIED_REQUIREMENT_INTERVAL"
+        }
+      ],
+      "required_revisions": [],
+      "disposition": "BOUNDED_BASELINE_ACCEPT",
+      "real_evidence_count": 0,
+      "physical_measurement_verified": false,
+      "source_authenticity_verified": false,
+      "customer_approval": false,
+      "counter_hypotheses": [
+        "Missing or stale linkage rather than a failing product",
+        "Reference or configuration mismatch rather than acoustic drift"
+      ],
+      "next_discriminating_experiment": "RECONCILE_EXACT_REQUIRED_ASSOCIATIONS_AND_CONFIGURATION",
+      "model_assumptions": [
+        "ALL expected associations fixed independently of actual links",
+        "Exact unit, measurand and reference identity; no inferred conversion",
+        "Exact rational supplied bounds; float interval is presentation only, not measured statistical confidence"
+      ],
+      "unresolved": [
+        "Source authenticity, calibration and physical acquisition",
+        "Qualified requirement and customer approval"
+      ]
+    },
+    "context": {
+      "product": "SYNTHETIC_SPEAKER",
+      "transducer": "Speaker",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "TRACE-REVIEW-COMPLETE",
+      "kind": "positive",
+      "question": "Do fixed two-association denominator and exact 80 +/- 1 intervals justify only supplied-policy acceptance?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-REQUIRED_ASSOCIATIONS",
+      "kind": "counter_hypothesis",
+      "question": "Does review reject an unsupported required_associations claim?",
+      "input_overrides": {
+        "candidate": {
+          "requirements_total": 1,
+          "required_associations": 1,
+          "linked_associations": 2,
+          "complete_requirements": 1,
+          "current_associations": 2,
+          "bounded_associations": 2,
+          "requirements": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "associations": [
+                {
+                  "test_id": "T-LOW",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-LOW",
+                  "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                },
+                {
+                  "test_id": "T-HIGH",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-HIGH",
+                  "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                }
+              ],
+              "bounded_requirement_passed": true
+            }
+          ],
+          "unlinked_result_ids": [],
+          "checks": [
+            {
+              "id": "REQUIRED_ASSOCIATION_COVERAGE",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "LINK_EVERY_DECLARED_REQUIRED_TEST"
+            },
+            {
+              "id": "CURRENT_REVISION_AND_SEMANTICS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RECONCILE_VERSION_CONFIGURATION_AND_REFERENCE"
+            },
+            {
+              "id": "BOUNDED_REQUIREMENT_INTERVALS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RESOLVE_MISSING_OR_UNSATISFIED_REQUIREMENT_INTERVAL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "real_evidence_count": 0,
+          "physical_measurement_verified": false,
+          "source_authenticity_verified": false,
+          "customer_approval": false,
+          "counter_hypotheses": [
+            "Missing or stale linkage rather than a failing product",
+            "Reference or configuration mismatch rather than acoustic drift"
+          ],
+          "next_discriminating_experiment": "RECONCILE_EXACT_REQUIRED_ASSOCIATIONS_AND_CONFIGURATION",
+          "model_assumptions": [
+            "ALL expected associations fixed independently of actual links",
+            "Exact unit, measurand and reference identity; no inferred conversion",
+            "Exact rational supplied bounds; float interval is presentation only, not measured statistical confidence"
+          ],
+          "unresolved": [
+            "Source authenticity, calibration and physical acquisition",
+            "Qualified requirement and customer approval"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-COMPLETE_REQUIREMENTS",
+      "kind": "counter_hypothesis",
+      "question": "Does review reject an unsupported complete_requirements claim?",
+      "input_overrides": {
+        "candidate": {
+          "requirements_total": 1,
+          "required_associations": 2,
+          "linked_associations": 2,
+          "complete_requirements": 0,
+          "current_associations": 2,
+          "bounded_associations": 2,
+          "requirements": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "associations": [
+                {
+                  "test_id": "T-LOW",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-LOW",
+                  "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                },
+                {
+                  "test_id": "T-HIGH",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-HIGH",
+                  "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                }
+              ],
+              "bounded_requirement_passed": true
+            }
+          ],
+          "unlinked_result_ids": [],
+          "checks": [
+            {
+              "id": "REQUIRED_ASSOCIATION_COVERAGE",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "LINK_EVERY_DECLARED_REQUIRED_TEST"
+            },
+            {
+              "id": "CURRENT_REVISION_AND_SEMANTICS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RECONCILE_VERSION_CONFIGURATION_AND_REFERENCE"
+            },
+            {
+              "id": "BOUNDED_REQUIREMENT_INTERVALS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RESOLVE_MISSING_OR_UNSATISFIED_REQUIREMENT_INTERVAL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "real_evidence_count": 0,
+          "physical_measurement_verified": false,
+          "source_authenticity_verified": false,
+          "customer_approval": false,
+          "counter_hypotheses": [
+            "Missing or stale linkage rather than a failing product",
+            "Reference or configuration mismatch rather than acoustic drift"
+          ],
+          "next_discriminating_experiment": "RECONCILE_EXACT_REQUIRED_ASSOCIATIONS_AND_CONFIGURATION",
+          "model_assumptions": [
+            "ALL expected associations fixed independently of actual links",
+            "Exact unit, measurand and reference identity; no inferred conversion",
+            "Exact rational supplied bounds; float interval is presentation only, not measured statistical confidence"
+          ],
+          "unresolved": [
+            "Source authenticity, calibration and physical acquisition",
+            "Qualified requirement and customer approval"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-REAL_EVIDENCE_COUNT",
+      "kind": "counter_hypothesis",
+      "question": "Does review reject an unsupported real_evidence_count claim?",
+      "input_overrides": {
+        "candidate": {
+          "requirements_total": 1,
+          "required_associations": 2,
+          "linked_associations": 2,
+          "complete_requirements": 1,
+          "current_associations": 2,
+          "bounded_associations": 2,
+          "requirements": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "associations": [
+                {
+                  "test_id": "T-LOW",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-LOW",
+                  "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                },
+                {
+                  "test_id": "T-HIGH",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-HIGH",
+                  "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                }
+              ],
+              "bounded_requirement_passed": true
+            }
+          ],
+          "unlinked_result_ids": [],
+          "checks": [
+            {
+              "id": "REQUIRED_ASSOCIATION_COVERAGE",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "LINK_EVERY_DECLARED_REQUIRED_TEST"
+            },
+            {
+              "id": "CURRENT_REVISION_AND_SEMANTICS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RECONCILE_VERSION_CONFIGURATION_AND_REFERENCE"
+            },
+            {
+              "id": "BOUNDED_REQUIREMENT_INTERVALS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RESOLVE_MISSING_OR_UNSATISFIED_REQUIREMENT_INTERVAL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "real_evidence_count": 2,
+          "physical_measurement_verified": false,
+          "source_authenticity_verified": false,
+          "customer_approval": false,
+          "counter_hypotheses": [
+            "Missing or stale linkage rather than a failing product",
+            "Reference or configuration mismatch rather than acoustic drift"
+          ],
+          "next_discriminating_experiment": "RECONCILE_EXACT_REQUIRED_ASSOCIATIONS_AND_CONFIGURATION",
+          "model_assumptions": [
+            "ALL expected associations fixed independently of actual links",
+            "Exact unit, measurand and reference identity; no inferred conversion",
+            "Exact rational supplied bounds; float interval is presentation only, not measured statistical confidence"
+          ],
+          "unresolved": [
+            "Source authenticity, calibration and physical acquisition",
+            "Qualified requirement and customer approval"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-SOURCE_AUTHENTICITY_VERIFIED",
+      "kind": "counter_hypothesis",
+      "question": "Does review reject an unsupported source_authenticity_verified claim?",
+      "input_overrides": {
+        "candidate": {
+          "requirements_total": 1,
+          "required_associations": 2,
+          "linked_associations": 2,
+          "complete_requirements": 1,
+          "current_associations": 2,
+          "bounded_associations": 2,
+          "requirements": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "associations": [
+                {
+                  "test_id": "T-LOW",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-LOW",
+                  "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                },
+                {
+                  "test_id": "T-HIGH",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-HIGH",
+                  "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                }
+              ],
+              "bounded_requirement_passed": true
+            }
+          ],
+          "unlinked_result_ids": [],
+          "checks": [
+            {
+              "id": "REQUIRED_ASSOCIATION_COVERAGE",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "LINK_EVERY_DECLARED_REQUIRED_TEST"
+            },
+            {
+              "id": "CURRENT_REVISION_AND_SEMANTICS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RECONCILE_VERSION_CONFIGURATION_AND_REFERENCE"
+            },
+            {
+              "id": "BOUNDED_REQUIREMENT_INTERVALS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RESOLVE_MISSING_OR_UNSATISFIED_REQUIREMENT_INTERVAL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "real_evidence_count": 0,
+          "physical_measurement_verified": false,
+          "source_authenticity_verified": true,
+          "customer_approval": false,
+          "counter_hypotheses": [
+            "Missing or stale linkage rather than a failing product",
+            "Reference or configuration mismatch rather than acoustic drift"
+          ],
+          "next_discriminating_experiment": "RECONCILE_EXACT_REQUIRED_ASSOCIATIONS_AND_CONFIGURATION",
+          "model_assumptions": [
+            "ALL expected associations fixed independently of actual links",
+            "Exact unit, measurand and reference identity; no inferred conversion",
+            "Exact rational supplied bounds; float interval is presentation only, not measured statistical confidence"
+          ],
+          "unresolved": [
+            "Source authenticity, calibration and physical acquisition",
+            "Qualified requirement and customer approval"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-CUSTOMER_APPROVAL",
+      "kind": "counter_hypothesis",
+      "question": "Does review reject an unsupported customer_approval claim?",
+      "input_overrides": {
+        "candidate": {
+          "requirements_total": 1,
+          "required_associations": 2,
+          "linked_associations": 2,
+          "complete_requirements": 1,
+          "current_associations": 2,
+          "bounded_associations": 2,
+          "requirements": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "associations": [
+                {
+                  "test_id": "T-LOW",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-LOW",
+                  "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                },
+                {
+                  "test_id": "T-HIGH",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-HIGH",
+                  "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                }
+              ],
+              "bounded_requirement_passed": true
+            }
+          ],
+          "unlinked_result_ids": [],
+          "checks": [
+            {
+              "id": "REQUIRED_ASSOCIATION_COVERAGE",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "LINK_EVERY_DECLARED_REQUIRED_TEST"
+            },
+            {
+              "id": "CURRENT_REVISION_AND_SEMANTICS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RECONCILE_VERSION_CONFIGURATION_AND_REFERENCE"
+            },
+            {
+              "id": "BOUNDED_REQUIREMENT_INTERVALS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RESOLVE_MISSING_OR_UNSATISFIED_REQUIREMENT_INTERVAL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "real_evidence_count": 0,
+          "physical_measurement_verified": false,
+          "source_authenticity_verified": false,
+          "customer_approval": true,
+          "counter_hypotheses": [
+            "Missing or stale linkage rather than a failing product",
+            "Reference or configuration mismatch rather than acoustic drift"
+          ],
+          "next_discriminating_experiment": "RECONCILE_EXACT_REQUIRED_ASSOCIATIONS_AND_CONFIGURATION",
+          "model_assumptions": [
+            "ALL expected associations fixed independently of actual links",
+            "Exact unit, measurand and reference identity; no inferred conversion",
+            "Exact rational supplied bounds; float interval is presentation only, not measured statistical confidence"
+          ],
+          "unresolved": [
+            "Source authenticity, calibration and physical acquisition",
+            "Qualified requirement and customer approval"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-NEXT_DISCRIMINATING_EXPERIMENT",
+      "kind": "counter_hypothesis",
+      "question": "Does review reject an unsupported next_discriminating_experiment claim?",
+      "input_overrides": {
+        "candidate": {
+          "requirements_total": 1,
+          "required_associations": 2,
+          "linked_associations": 2,
+          "complete_requirements": 1,
+          "current_associations": 2,
+          "bounded_associations": 2,
+          "requirements": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "associations": [
+                {
+                  "test_id": "T-LOW",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-LOW",
+                  "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                },
+                {
+                  "test_id": "T-HIGH",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-HIGH",
+                  "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                }
+              ],
+              "bounded_requirement_passed": true
+            }
+          ],
+          "unlinked_result_ids": [],
+          "checks": [
+            {
+              "id": "REQUIRED_ASSOCIATION_COVERAGE",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "LINK_EVERY_DECLARED_REQUIRED_TEST"
+            },
+            {
+              "id": "CURRENT_REVISION_AND_SEMANTICS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RECONCILE_VERSION_CONFIGURATION_AND_REFERENCE"
+            },
+            {
+              "id": "BOUNDED_REQUIREMENT_INTERVALS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RESOLVE_MISSING_OR_UNSATISFIED_REQUIREMENT_INTERVAL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "real_evidence_count": 0,
+          "physical_measurement_verified": false,
+          "source_authenticity_verified": false,
+          "customer_approval": false,
+          "counter_hypotheses": [
+            "Missing or stale linkage rather than a failing product",
+            "Reference or configuration mismatch rather than acoustic drift"
+          ],
+          "next_discriminating_experiment": "CERTIFY",
+          "model_assumptions": [
+            "ALL expected associations fixed independently of actual links",
+            "Exact unit, measurand and reference identity; no inferred conversion",
+            "Exact rational supplied bounds; float interval is presentation only, not measured statistical confidence"
+          ],
+          "unresolved": [
+            "Source authenticity, calibration and physical acquisition",
+            "Qualified requirement and customer approval"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-UNRESOLVED",
+      "kind": "counter_hypothesis",
+      "question": "Does review reject an unsupported unresolved claim?",
+      "input_overrides": {
+        "candidate": {
+          "requirements_total": 1,
+          "required_associations": 2,
+          "linked_associations": 2,
+          "complete_requirements": 1,
+          "current_associations": 2,
+          "bounded_associations": 2,
+          "requirements": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "associations": [
+                {
+                  "test_id": "T-LOW",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-LOW",
+                  "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                },
+                {
+                  "test_id": "T-HIGH",
+                  "test_revision": "1",
+                  "result_id": "RESULT-T-HIGH",
+                  "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32",
+                  "interval": [
+                    79.0,
+                    81.0
+                  ],
+                  "interval_exact": [
+                    "79",
+                    "81"
+                  ],
+                  "linked": true,
+                  "current_semantics": true,
+                  "bounded_interval_passed": true,
+                  "reasons": []
+                }
+              ],
+              "bounded_requirement_passed": true
+            }
+          ],
+          "unlinked_result_ids": [],
+          "checks": [
+            {
+              "id": "REQUIRED_ASSOCIATION_COVERAGE",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "LINK_EVERY_DECLARED_REQUIRED_TEST"
+            },
+            {
+              "id": "CURRENT_REVISION_AND_SEMANTICS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RECONCILE_VERSION_CONFIGURATION_AND_REFERENCE"
+            },
+            {
+              "id": "BOUNDED_REQUIREMENT_INTERVALS",
+              "actual": 2,
+              "limit": 2,
+              "passed": true,
+              "on_failure": "RESOLVE_MISSING_OR_UNSATISFIED_REQUIREMENT_INTERVAL"
+            }
+          ],
+          "required_revisions": [],
+          "disposition": "BOUNDED_BASELINE_ACCEPT",
+          "real_evidence_count": 0,
+          "physical_measurement_verified": false,
+          "source_authenticity_verified": false,
+          "customer_approval": false,
+          "counter_hypotheses": [
+            "Missing or stale linkage rather than a failing product",
+            "Reference or configuration mismatch rather than acoustic drift"
+          ],
+          "next_discriminating_experiment": "RECONCILE_EXACT_REQUIRED_ASSOCIATIONS_AND_CONFIGURATION",
+          "model_assumptions": [
+            "ALL expected associations fixed independently of actual links",
+            "Exact unit, measurand and reference identity; no inferred conversion",
+            "Exact rational supplied bounds; float interval is presentation only, not measured statistical confidence"
+          ],
+          "unresolved": []
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-INCLUSIVE",
+      "kind": "boundary",
+      "question": "Do exact endpoint limits retain the same interval verdict?",
+      "input_overrides": {
+        "parameters": {
+          "configuration": {
+            "product": "SYNTHETIC_SPEAKER",
+            "revision": "A"
+          },
+          "requirements": [
+            {
+              "id": "FR",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms",
+              "lower": 79,
+              "upper": 81,
+              "combination": "ALL",
+              "required_tests": [
+                {
+                  "id": "T-LOW",
+                  "revision": "1"
+                },
+                {
+                  "id": "T-HIGH",
+                  "revision": "1"
+                }
+              ]
+            }
+          ],
+          "tests": [
+            {
+              "id": "T-LOW",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms"
+            },
+            {
+              "id": "T-HIGH",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms"
+            }
+          ],
+          "results": [
+            {
+              "id": "RESULT-T-LOW",
+              "payload": {
+                "test_id": "T-LOW",
+                "test_revision": "1",
+                "configuration": {
+                  "product": "SYNTHETIC_SPEAKER",
+                  "revision": "A"
+                },
+                "measurand": "on_axis_level",
+                "unit": "dB",
+                "reference": "20uPa_1m_1Vrms",
+                "observed": 80,
+                "uncertainty": 1,
+                "source_record_id": "SYN-T-LOW",
+                "source_kind": "SYNTHETIC",
+                "status": "COMPLETE"
+              },
+              "sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+            },
+            {
+              "id": "RESULT-T-HIGH",
+              "payload": {
+                "test_id": "T-HIGH",
+                "test_revision": "1",
+                "configuration": {
+                  "product": "SYNTHETIC_SPEAKER",
+                  "revision": "A"
+                },
+                "measurand": "on_axis_level",
+                "unit": "dB",
+                "reference": "20uPa_1m_1Vrms",
+                "observed": 80,
+                "uncertainty": 1,
+                "source_record_id": "SYN-T-HIGH",
+                "source_kind": "SYNTHETIC",
+                "status": "COMPLETE"
+              },
+              "sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+            }
+          ],
+          "links": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "test_id": "T-LOW",
+              "test_revision": "1",
+              "result_id": "RESULT-T-LOW",
+              "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+            },
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "test_id": "T-HIGH",
+              "test_revision": "1",
+              "result_id": "RESULT-T-HIGH",
+              "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+            }
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TRACE-REVIEW-HIGH-RISK",
+      "kind": "negative",
+      "question": "Does automated review refuse R4?",
+      "input_overrides": {
+        "context": {
+          "product": "SYNTHETIC_SPEAKER",
+          "transducer": "Speaker",
+          "lifecycle": "EVT",
+          "risk": "R4",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "TRACE-REVIEW-HASH-TAMPER",
+      "kind": "negative",
+      "question": "Can an embedded result hash mismatch bypass reviewer input integrity?",
+      "input_overrides": {
+        "parameters": {
+          "configuration": {
+            "product": "SYNTHETIC_SPEAKER",
+            "revision": "A"
+          },
+          "requirements": [
+            {
+              "id": "FR",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms",
+              "lower": 78,
+              "upper": 82,
+              "combination": "ALL",
+              "required_tests": [
+                {
+                  "id": "T-LOW",
+                  "revision": "1"
+                },
+                {
+                  "id": "T-HIGH",
+                  "revision": "1"
+                }
+              ]
+            }
+          ],
+          "tests": [
+            {
+              "id": "T-LOW",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms"
+            },
+            {
+              "id": "T-HIGH",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms"
+            }
+          ],
+          "results": [
+            {
+              "id": "RESULT-T-LOW",
+              "payload": {
+                "test_id": "T-LOW",
+                "test_revision": "1",
+                "configuration": {
+                  "product": "SYNTHETIC_SPEAKER",
+                  "revision": "A"
+                },
+                "measurand": "on_axis_level",
+                "unit": "dB",
+                "reference": "20uPa_1m_1Vrms",
+                "observed": 80,
+                "uncertainty": 1,
+                "source_record_id": "SYN-T-LOW",
+                "source_kind": "SYNTHETIC",
+                "status": "COMPLETE"
+              },
+              "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "id": "RESULT-T-HIGH",
+              "payload": {
+                "test_id": "T-HIGH",
+                "test_revision": "1",
+                "configuration": {
+                  "product": "SYNTHETIC_SPEAKER",
+                  "revision": "A"
+                },
+                "measurand": "on_axis_level",
+                "unit": "dB",
+                "reference": "20uPa_1m_1Vrms",
+                "observed": 80,
+                "uncertainty": 1,
+                "source_record_id": "SYN-T-HIGH",
+                "source_kind": "SYNTHETIC",
+                "status": "COMPLETE"
+              },
+              "sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+            }
+          ],
+          "links": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "test_id": "T-LOW",
+              "test_revision": "1",
+              "result_id": "RESULT-T-LOW",
+              "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+            },
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "test_id": "T-HIGH",
+              "test_revision": "1",
+              "result_id": "RESULT-T-HIGH",
+              "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+            }
+          ]
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "TRACE-REVIEW-DUPLICATE-EXPECTATION",
+      "kind": "negative",
+      "question": "Can duplicate expected tests inflate denominator?",
+      "input_overrides": {
+        "parameters": {
+          "configuration": {
+            "product": "SYNTHETIC_SPEAKER",
+            "revision": "A"
+          },
+          "requirements": [
+            {
+              "id": "FR",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms",
+              "lower": 78,
+              "upper": 82,
+              "combination": "ALL",
+              "required_tests": [
+                {
+                  "id": "T-LOW",
+                  "revision": "1"
+                },
+                {
+                  "id": "T-HIGH",
+                  "revision": "1"
+                },
+                {
+                  "id": "T-LOW",
+                  "revision": "1"
+                }
+              ]
+            }
+          ],
+          "tests": [
+            {
+              "id": "T-LOW",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms"
+            },
+            {
+              "id": "T-HIGH",
+              "revision": "1",
+              "measurand": "on_axis_level",
+              "unit": "dB",
+              "reference": "20uPa_1m_1Vrms"
+            }
+          ],
+          "results": [
+            {
+              "id": "RESULT-T-LOW",
+              "payload": {
+                "test_id": "T-LOW",
+                "test_revision": "1",
+                "configuration": {
+                  "product": "SYNTHETIC_SPEAKER",
+                  "revision": "A"
+                },
+                "measurand": "on_axis_level",
+                "unit": "dB",
+                "reference": "20uPa_1m_1Vrms",
+                "observed": 80,
+                "uncertainty": 1,
+                "source_record_id": "SYN-T-LOW",
+                "source_kind": "SYNTHETIC",
+                "status": "COMPLETE"
+              },
+              "sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+            },
+            {
+              "id": "RESULT-T-HIGH",
+              "payload": {
+                "test_id": "T-HIGH",
+                "test_revision": "1",
+                "configuration": {
+                  "product": "SYNTHETIC_SPEAKER",
+                  "revision": "A"
+                },
+                "measurand": "on_axis_level",
+                "unit": "dB",
+                "reference": "20uPa_1m_1Vrms",
+                "observed": 80,
+                "uncertainty": 1,
+                "source_record_id": "SYN-T-HIGH",
+                "source_kind": "SYNTHETIC",
+                "status": "COMPLETE"
+              },
+              "sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+            }
+          ],
+          "links": [
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "test_id": "T-LOW",
+              "test_revision": "1",
+              "result_id": "RESULT-T-LOW",
+              "result_sha256": "0a7ce3d0f388a170fe584d0d3e8909a81d5301ef846b6b6a90ed84d1c1c46e4d"
+            },
+            {
+              "requirement_id": "FR",
+              "requirement_revision": "1",
+              "test_id": "T-HIGH",
+              "test_revision": "1",
+              "result_id": "RESULT-T-HIGH",
+              "result_sha256": "cee9c5b880f1a3a988f587c542d49752d8dc2418c543b3a9d2cdb011d4731a32"
+            }
+          ]
+        }
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

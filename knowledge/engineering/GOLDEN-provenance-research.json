@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-provenance-research",
+  "category": "Golden cases",
+  "title": "GOLDEN-provenance-research",
+  "text": "[{\"path\": \"matches.0.score\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Product/provenance-research/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "7f93e677a06affd5005bd8d7f634fe1fc4f02a97f991580aa959983c8bc90f52",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

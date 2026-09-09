@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R055",
+  "category": "Products",
+  "title": "PRODUCT-R055",
+  "text": "{\"speaker_topology_considerations\": \"woofer/tweeter with compact enclosure\", \"microphone_topology_considerations\": \"circular far-field array\", \"usage_scenarios\": [\"voice assistant with concurrent playback\"], \"common_acoustic_failure_modes\": [\"self-echo\", \"room modes\", \"grating lobes\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [], \"standards_metadata_state\": \"TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED\", \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R055/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "0bea170fb6f3f5d7492dc39f01801be91eb32ed1ea8ca396754d55d0e512c0ef",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

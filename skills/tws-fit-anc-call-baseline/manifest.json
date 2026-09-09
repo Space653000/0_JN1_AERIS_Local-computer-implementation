@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "tws-fit-anc-call-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/tws-fit-anc-call-baseline.json",
+  "input_schema": "skills/tws-fit-anc-call-baseline/input.schema.json",
+  "output_schema": "skills/tws-fit-anc-call-baseline/output.schema.json",
+  "role_mappings": ["R048"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Skill/domain calculation only; separate role acceptance required"
+}

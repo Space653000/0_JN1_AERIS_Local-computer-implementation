@@ -106,6 +106,14 @@ def transition_task(
         raise ValueError("APPROVED requires authority='Human Chief Engineer'")
     if new_state == "RELEASED" and authority != "Human Chief Engineer":
         raise ValueError("RELEASED requires Human Chief Engineer authority")
+    if new_state in {'VERIFIED', 'APPROVED', 'RELEASED'}:
+        from .verification import gate_summary
+        from .release_evidence import require_refs
+        summary = gate_summary(task_id)
+        complete = summary['g0_g4_passed'] if new_state == 'VERIFIED' else summary['all_g0_g5_passed']
+        if not complete:
+            raise ValueError('incomplete or invalid authoritative G0-G5 Evidence')
+        require_refs(refs, task, 'G4_INDEPENDENT_REVIEW' if new_state == 'VERIFIED' else 'G5_APPROVAL')
 
     event = {
         "from": current,

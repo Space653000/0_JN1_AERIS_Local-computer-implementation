@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "frequency_hz": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "flow_resistivity_pa_s_m2": {
+      "type": "number"
+    },
+    "thickness_m": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "frequency_hz",
+    "flow_resistivity_pa_s_m2",
+    "thickness_m"
+  ],
+  "additionalProperties": false
+}

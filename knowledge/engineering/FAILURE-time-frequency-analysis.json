@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-time-frequency-analysis",
+  "category": "Failures",
+  "title": "FAILURE-time-frequency-analysis",
+  "text": "{\"invalid_variant\": {\"segment_samples\": 4}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/DSP/time-frequency-analysis/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "c8fd24262dd0904e0af1f2231c1db2fcfe7b0d912c32d8b80d6280e4a4029cdd",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

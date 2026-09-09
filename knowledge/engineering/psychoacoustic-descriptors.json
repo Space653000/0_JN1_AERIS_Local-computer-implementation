@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-psychoacoustic-descriptors",
+  "category": "Methods",
+  "title": "psychoacoustic-descriptors",
+  "text": "Equal energy at 1 and 3 kHz has a 2 kHz centroid; no MOS inference. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/psychoacoustic-descriptors.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "75b9a2d86c1176bf9fd61761bdd3385364ac1607cb2eb61e6999a44a0d994519"
+}

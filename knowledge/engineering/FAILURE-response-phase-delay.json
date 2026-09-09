@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-response-phase-delay",
+  "category": "Failures",
+  "title": "FAILURE-response-phase-delay",
+  "text": "{\"invalid_variant\": {\"frequency_hz\": [100, 100, 300]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/DSP/response-phase-delay/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "63b59d961db88aaf9971aad3b5b9835684dd0065d321e84651a4db3a3be0e984",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

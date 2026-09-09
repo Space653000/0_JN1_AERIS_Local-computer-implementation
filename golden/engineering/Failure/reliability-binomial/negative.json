@@ -1,0 +1,9 @@
+{
+  "input": {
+    "trials": 100,
+    "failures": 101,
+    "confidence": 0.95
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "68090a3b49da78fc3377346810fb269a385c7aade94ac18267ff56ce9f720072"
+}

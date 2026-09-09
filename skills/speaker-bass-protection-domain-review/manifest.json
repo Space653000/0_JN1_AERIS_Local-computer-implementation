@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill_id": "speaker-bass-protection-domain-review",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/speaker-bass-protection-domain-review.json",
+  "input_schema": "skills/speaker-bass-protection-domain-review/input.schema.json",
+  "output_schema": "skills/speaker-bass-protection-domain-review/output.schema.json",
+  "role_mappings": ["R025"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Independent bass-boost excursion, thermal, voltage and limiter-envelope assertion review",
+  "review_domain": "speaker-bass-protection"
+}

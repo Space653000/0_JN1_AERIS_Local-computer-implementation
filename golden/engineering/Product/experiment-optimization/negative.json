@@ -1,0 +1,25 @@
+{
+  "input": {
+    "candidate_points": [
+      [
+        0
+      ],
+      [
+        1
+      ],
+      [
+        2
+      ]
+    ],
+    "observations": [
+      {
+        "point": [
+          9
+        ],
+        "loss": 0
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "add9f736bfa1e158c402556dfdaf88871a3336c61800eff7c7cd1dbb9220343f"
+}

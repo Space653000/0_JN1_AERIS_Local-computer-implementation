@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": [
+    "skill_id",
+    "values",
+    "input_sha256",
+    "implementation_sha256"
+  ],
+  "properties": {
+    "values": {
+      "type": "object",
+      "required": [
+        "applicability",
+        "metadata_blockers",
+        "license_blockers",
+        "semantic_changes",
+        "impacted_requirement_ids",
+        "live_verified",
+        "disposition"
+      ]
+    },
+    "physical_measurement_verified": {
+      "const": false
+    }
+  }
+}

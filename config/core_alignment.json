@@ -3,7 +3,8 @@
   "canonical_core": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac"
+    "reviewed_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
+    "tag": "v0.7.0-blueprint.1"
   },
   "non_negotiable_invariants": {
     "human_authority": "Human Chief Engineer",
@@ -39,11 +40,12 @@
     "claude_default_launch": false,
     "codex_scheduler_for_continuity": false,
     "reviewer_same_context_self_repair_and_approval_allowed": false,
-    "autopilot_trigger": "two_canonical_urls_plus_selected_or_explicit_safe_target_path",
+    "autopilot_trigger": "PROJECT_IDENTIFICATION_ONLY",
+    "autopilot_requires_scoped_authorization": true,
     "autopilot_requires_additional_prompt": false,
     "autopilot_requires_plan_confirmation": false,
     "software_gap_closure_before_final_opening": true,
-    "do_not_stop_on_safe_software_not_implemented": true,
+    "do_not_stop_on_safe_software_not_implemented": false,
     "installation_equals_company_opening": false,
     "opening_requires_evidence_supported_scope": true,
     "core_policy_must_match_autopilot_contract": true,
@@ -58,7 +60,7 @@
   ],
   "change_policy": "If canonical Core SHA changes, remote drift gate must fail. Human reviews semantic changes before deliberately updating lock, alignment, Autopilot, company manifest and maturity evidence together; never auto-accept Core drift.",
   "review_alignment": {
-    "architecture_version": "0.6.0-review.1",
+    "architecture_version": "0.7.0-governance.4",
     "implementation_plan_version": "0.3.0-review.1",
     "document_alignment": "REVIEWED",
     "runtime_alignment": "OPEN_FINDINGS",

@@ -1,0 +1,1 @@
+{"type":"object","required":["skill_id","values","input_sha256","implementation_sha256","physical_measurement_verified"],"properties":{"values":{"type":"object","required":["placement_set","checks","disposition","case_transfer_verified","table_reflection_verified","orientation_population_verified","physical_tablet_verified"]},"physical_measurement_verified":{"const":false}}}

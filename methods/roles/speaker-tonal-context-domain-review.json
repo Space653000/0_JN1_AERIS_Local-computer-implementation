@@ -1,0 +1,10 @@
+{
+  "method_id": "speaker-tonal-context-domain-review", "version": "1.0.0", "role": "R020",
+  "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.speaker_tonal_review:review",
+  "applicability": "Independent consistency review of supplied sampled tonal, uncertainty and headroom assertions",
+  "equations": {"correction": "independent target minus measured", "headroom": "independent boost upper plus reserve", "decision": "exact assertion comparison"},
+  "assumptions": ["Same declared sample set", "Numerical review does not demonstrate listening preference"],
+  "excluded": ["audibility and preference", "realized filter", "calibration, physical and Human acceptance"],
+  "golden_tests": "golden/roles/R020/golden.json"
+}

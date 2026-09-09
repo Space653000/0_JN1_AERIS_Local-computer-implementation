@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-fractional-octave",
+  "category": "Theory",
+  "title": "THEORY-fractional-octave",
+  "text": "Nonoverlapping band power contains the coherent tone energy once.",
+  "source": "methods/engineering/fractional-octave.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "f94e6080aa984914eea9003e493dc5cc7d465512043babe08be80bfd3d76ea24",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

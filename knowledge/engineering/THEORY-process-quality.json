@@ -1,0 +1,11 @@
+{
+  "id": "THEORY-process-quality",
+  "category": "Theory",
+  "title": "THEORY-process-quality",
+  "text": "Sample SD=sqrt(0.5); centered Ppk=3/(3*SD).",
+  "source": "methods/engineering/process-quality.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "0bd067bfdfe38e62b7a7352df58420088a777550a5f6ceb3e86fa291d0c86ac6",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-engineering-requirements",
+  "category": "Golden cases",
+  "title": "GOLDEN-engineering-requirements",
+  "text": "[{\"path\": \"coverage\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"checks.0.margin_to_nearest_limit\", \"expected\": 2, \"absolute_tolerance\": 1e-08, \"unit\": \"dB\", \"reduction\": null}]",
+  "source": "golden/engineering/Product/engineering-requirements/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "5be547948746f2d70faabd7686008a82d5529ca346b702cc6767ac12b7364a23",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

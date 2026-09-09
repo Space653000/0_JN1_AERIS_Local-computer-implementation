@@ -1,0 +1,42 @@
+{
+  "suite_id": "R026-ROOM-CORRECTION-V1", "role_id": "R026", "skill_id": "room-correction-spatial-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored three-position by three-frequency dB response matrix with analytic means, spreads and correction limits; no acquired response or realized filter.",
+  "scope": "Supplied multi-position room-correction feasibility only",
+  "base_input": {
+    "model": "SUPPLIED_MULTI_POSITION_ROOM_CORRECTION", "frequency_hz": [100.0, 500.0, 2000.0],
+    "position_response_db": [[-2.0, 1.0, 0.0], [-1.0, 0.0, 1.0], [-3.0, 0.5, -1.0]], "target_response_db": [0.0, 0.0, 0.0],
+    "response_uncertainty_db": 0.5, "minimum_position_count": 3, "maximum_spatial_spread_db": 3.0,
+    "maximum_boost_db": 3.5, "maximum_cut_db": 3.0, "deep_notch_depth_db": 5.0, "maximum_boostable_notch_depth_db": 6.0,
+    "required_filter_latency_ms": 8.0, "maximum_filter_latency_ms": 10.0, "nonminimum_phase_band_count": 0, "maximum_nonminimum_phase_band_count": 0
+  },
+  "cases": [
+    {
+      "id": "ROOM-CORRECTION-SPATIAL-MEAN", "kind": "positive",
+      "question": "Does the role preserve position spread while deriving a bounded target correction and headroom demand?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "mean_response_db", "expected": [-2.0, 0.5, 0.0], "absolute_tolerance": 1e-12},
+        {"path": "spatial_spread_db", "expected": [2.0, 1.0, 2.0], "absolute_tolerance": 1e-12},
+        {"path": "proposed_correction_db", "expected": [2.0, -0.5, 0.0], "absolute_tolerance": 1e-12},
+        {"path": "realized_filter_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "ROOM-CORRECTION-INCLUSIVE-LIMITS", "kind": "boundary",
+      "question": "Are exact spatial, boost, latency and nonminimum-phase limits inclusive without proving realization?",
+      "input_overrides": {"maximum_spatial_spread_db": 2.0, "maximum_boost_db": 2.5, "maximum_filter_latency_ms": 8.0},
+      "checks": [{"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0}, {"path": "checks.2.passed", "expected": true, "absolute_tolerance": 0}, {"path": "checks.5.passed", "expected": true, "absolute_tolerance": 0}]
+    },
+    {
+      "id": "ROOM-CORRECTION-DEEP-NULL", "kind": "counter_hypothesis",
+      "question": "Does a deep position-dependent null prohibit inversion rather than being called a loudspeaker deficit?",
+      "input_overrides": {"deep_notch_depth_db": 8.0},
+      "checks": [{"path": "checks.4.passed", "expected": false, "absolute_tolerance": 0}, {"path": "required_revisions.0", "expected": "DO_NOT_INVERT_DEEP_POSITION_DEPENDENT_NULL", "absolute_tolerance": 0}, {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}]
+    },
+    {
+      "id": "ROOM-CORRECTION-RAGGED-MATRIX", "kind": "negative",
+      "question": "Is a ragged position/frequency matrix rejected instead of silently dropping samples?",
+      "input_overrides": {"position_response_db": [[-2.0, 1.0], [-1.0, 0.0, 1.0]]}, "expected_error": "ValueError"
+    }
+  ]
+}

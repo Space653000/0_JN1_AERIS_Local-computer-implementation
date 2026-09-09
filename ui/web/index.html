@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AERIS — Local Acoustic Engineering Company</title>
+  <script>const requestedTheme=new URLSearchParams(location.search).get('theme');document.documentElement.dataset.theme=requestedTheme==='light'?'light':'dark';</script>
   <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/themes.css">
 </head>
 <body>
   <aside class="rail" aria-label="AERIS 主要導覽">
@@ -12,6 +14,7 @@
     <button type="button" class="nav active" data-view="dashboard" title="Dashboard" aria-label="儀表板">◫</button>
     <button type="button" class="nav" data-view="workspace" title="Workspace" aria-label="工作區">⌁</button>
     <button type="button" class="nav" data-view="services" title="Services" aria-label="服務">⚙</button>
+    <button type="button" class="nav theme-toggle" id="themeToggle" title="切換深淺色" aria-label="切換深淺色">☀</button>
   </aside>
   <main id="mainContent">
     <header>

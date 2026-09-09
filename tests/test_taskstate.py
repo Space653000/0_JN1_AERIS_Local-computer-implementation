@@ -23,12 +23,13 @@ class TaskStateTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 taskstate.transition_task("T2", "EVIDENCED", "Codex")
             taskstate.transition_task("T2", "EVIDENCED", "Codex", evidence_refs=["run://1"])
-            taskstate.transition_task("T2", "VERIFIED", "Claude", evidence_refs=["review://1"], authority="Independent Reviewer")
+            with self.assertRaises(ValueError):
+                taskstate.transition_task("T2", "VERIFIED", "Reviewer", evidence_refs=["review://1"], authority="Independent Reviewer")
             with self.assertRaises(ValueError):
                 taskstate.transition_task("T2", "APPROVED", "Codex", evidence_refs=["review://1"], authority="Codex")
-            approved = taskstate.transition_task("T2", "APPROVED", "Human", evidence_refs=["approval://1"], authority="Human Chief Engineer")
-            self.assertEqual(approved["state"], "APPROVED")
-            self.assertEqual(taskstate.validate_task(approved), [])
+            with self.assertRaises(ValueError):
+                taskstate.transition_task("T2", "APPROVED", "Human", evidence_refs=["approval://1"], authority="Human Chief Engineer")
+            self.assertEqual(taskstate.load_task("T2")["state"], "EVIDENCED")
 
 
 if __name__ == "__main__":

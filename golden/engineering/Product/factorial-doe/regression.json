@@ -1,0 +1,26 @@
+{
+  "input": {
+    "factors": {
+      "gain": [
+        0,
+        2
+      ]
+    },
+    "responses": [
+      0,
+      4
+    ]
+  },
+  "expected_checks": [
+    {
+      "path": "main_effects.gain",
+      "expected": 4,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "1bc4092ad72cf38bad1bbfd231583c8a28a3baa763020b5290bad322e4441d29"
+}

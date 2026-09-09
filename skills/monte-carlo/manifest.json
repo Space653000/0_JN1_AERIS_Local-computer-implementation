@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "skill_id": "monte-carlo",
+  "version": "1.0.0",
+  "factory_contract": true,
+  "implementation": "skills/monte-carlo/implementation.py",
+  "input_schema": "skills/monte-carlo/input.schema.json",
+  "output_schema": "skills/monte-carlo/output.schema.json",
+  "method": "methods/engineering/monte-carlo.json",
+  "applicability": "Sum of independent normals has mean 11 and standard deviation 5.",
+  "assumptions": [
+    "inputs meet named SI-unit schema",
+    "bounded analytic/synthetic domain, not physical qualification"
+  ],
+  "units": "SI quantities in explicitly suffixed fields; dB references declared per method; uncalibrated waveform samples are dimensionless",
+  "uncertainty": "Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "failure_modes": [
+    "wrong unit/reference",
+    "insufficient excitation or data coverage",
+    "nonfinite input",
+    "model outside applicability",
+    "synthetic results mistaken for measured results"
+  ],
+  "golden_tests": "golden/engineering/Failure/monte-carlo/golden.json",
+  "negative_tests": "golden/engineering/Failure/monte-carlo/negative.json",
+  "regression_tests": "golden/engineering/Failure/monte-carlo/regression.json",
+  "evidence_output": "sealed AERIS bundle with input/output/method/source hashes and numerical check results",
+  "role_mappings": [
+    "R077",
+    "R078",
+    "R100"
+  ],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false
+}

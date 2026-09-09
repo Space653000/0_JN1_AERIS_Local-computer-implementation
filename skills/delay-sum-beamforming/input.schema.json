@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "positions_m": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "channels": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "array",
+        "maxItems": 262144,
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "sample_rate_hz": {
+      "type": "number"
+    },
+    "sound_speed_m_s": {
+      "type": "number"
+    },
+    "steering_deg": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "positions_m",
+    "channels",
+    "sample_rate_hz",
+    "sound_speed_m_s",
+    "steering_deg"
+  ],
+  "additionalProperties": false
+}

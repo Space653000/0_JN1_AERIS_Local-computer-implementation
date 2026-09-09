@@ -1,0 +1,39 @@
+{
+  "suite_id": "R071-ROOM-CORRECTION-REVIEW-V1", "role_id": "R071", "skill_id": "room-correction-spatial-domain-review", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored independent reconstruction oracle for the R026 three-position response matrix; candidate constants are analytic and not executor evidence.",
+  "scope": "Independent multi-position room-correction report consistency",
+  "base_input": {
+    "parameters": {
+      "model": "SUPPLIED_MULTI_POSITION_ROOM_CORRECTION", "frequency_hz": [100.0, 500.0, 2000.0],
+      "position_response_db": [[-2.0, 1.0, 0.0], [-1.0, 0.0, 1.0], [-3.0, 0.5, -1.0]], "target_response_db": [0.0, 0.0, 0.0],
+      "response_uncertainty_db": 0.5, "minimum_position_count": 3, "maximum_spatial_spread_db": 3.0,
+      "maximum_boost_db": 3.5, "maximum_cut_db": 3.0, "deep_notch_depth_db": 5.0, "maximum_boostable_notch_depth_db": 6.0,
+      "required_filter_latency_ms": 8.0, "maximum_filter_latency_ms": 10.0, "nonminimum_phase_band_count": 0, "maximum_nonminimum_phase_band_count": 0
+    },
+    "candidate": {
+      "mean_response_db": [-2.0, 0.5, 0.0], "spatial_spread_db": [2.0, 1.0, 2.0], "maximum_spatial_spread_db": 2.0,
+      "proposed_correction_db": [2.0, -0.5, 0.0], "boost_upper_db": 2.5, "cut_upper_db": 1.0,
+      "checks": [
+        {"id": "POSITION_COVERAGE", "actual": 3, "limit": 3, "operator": ">=", "passed": true, "on_failure": "ADD_SPATIALLY_DISTRIBUTED_POSITIONS"},
+        {"id": "SPATIAL_SPREAD", "actual": 2.0, "limit": 3.0, "operator": "<=", "passed": true, "on_failure": "WITHHOLD_GLOBAL_EQ_AND_RESOLVE_POSITION_DEPENDENCE"},
+        {"id": "BOOST_BOUND", "actual": 2.5, "limit": 3.5, "operator": "<=", "passed": true, "on_failure": "REDUCE_BOOST_OR_REVISE_ACOUSTIC_PLACEMENT"},
+        {"id": "CUT_BOUND", "actual": 1.0, "limit": 3.0, "operator": "<=", "passed": true, "on_failure": "REVISE_TARGET_OR_FILTER_ALLOCATION"},
+        {"id": "DEEP_NOTCH_POLICY", "actual": 5.0, "limit": 6.0, "operator": "<=", "passed": true, "on_failure": "DO_NOT_INVERT_DEEP_POSITION_DEPENDENT_NULL"},
+        {"id": "FILTER_LATENCY", "actual": 8.0, "limit": 10.0, "operator": "<=", "passed": true, "on_failure": "REDUCE_FILTER_ORDER_OR_REVISE_LATENCY_BUDGET"},
+        {"id": "NONMINIMUM_PHASE_BANDS", "actual": 0, "limit": 0, "operator": "<=", "passed": true, "on_failure": "WITHHOLD_MAGNITUDE_INVERSION_FOR_NONMINIMUM_PHASE_BANDS"}
+      ],
+      "required_revisions": [], "disposition": "BOUNDED_BASELINE_ACCEPT", "realized_filter_verified": false, "minimum_phase_verified": false, "physical_measurement_verified": false,
+      "counter_hypotheses": ["Position-dependent cancellation rather than loudspeaker deficit", "Late reflection rather than minimum-phase peak", "Measurement alignment rather than stable room response"],
+      "next_discriminating_experiment": "MEASURE_DENSE_MULTI_POSITION_COMPLEX_RESPONSE_AND_BYPASS_REALIZED_FILTER_WITH_LATENCY_HEADROOM_LOGGING",
+      "model_assumptions": ["Arithmetic mean of supplied dB samples is a screening statistic", "No interpolation or complex transfer-function inversion", "Spatial spread and response uncertainty are deterministic bounds"],
+      "unresolved": ["Complex phase and mixed-phase causality", "Realized filter response, stability, latency and headroom", "Calibrated multi-position measurement and qualified Human acceptance"]
+    },
+    "context": {"product": "Multi-position room correction", "transducer": "Speaker", "lifecycle": "Prototype", "risk": "R1", "source_kind": "SYNTHETIC"}
+  },
+  "cases": [
+    {"id": "ROOM-CORRECTION-REVIEW-INDEPENDENT", "kind": "positive", "question": "Can the reviewer independently reconstruct every spatial and correction assertion while withholding realization and Human approval?", "input_overrides": {}, "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}, {"path": "human_approval", "expected": false, "absolute_tolerance": 0}, {"path": "role_l3_awarded", "expected": false, "absolute_tolerance": 0}]},
+    {"id": "ROOM-CORRECTION-REVIEW-TAIL", "kind": "boundary", "question": "Can a representation-scale spread tail pass without changing the spatial verdict?", "input_overrides": {}, "input_mutations": [{"path": "candidate.maximum_spatial_spread_db", "value": 2.000000000001}], "checks": [{"path": "decision", "expected": "BOUNDED_REVIEW_ACCEPT", "absolute_tolerance": 0}]},
+    {"id": "ROOM-CORRECTION-REVIEW-REALIZATION", "kind": "counter_hypothesis", "question": "Does independent review reject a realized-filter claim unsupported by the sampled response matrix?", "input_overrides": {}, "input_mutations": [{"path": "candidate.realized_filter_verified", "value": true}], "checks": [{"path": "decision", "expected": "CHANGES_REQUIRED", "absolute_tolerance": 0}, {"path": "disagreements.0.field", "expected": "realized_filter_verified", "absolute_tolerance": 0}]},
+    {"id": "ROOM-CORRECTION-REVIEW-R4", "kind": "negative", "question": "Must R4 require authority outside this bounded automated spatial review?", "input_overrides": {}, "input_mutations": [{"path": "context.risk", "value": "R4"}], "expected_error": "ValueError"}
+  ]
+}

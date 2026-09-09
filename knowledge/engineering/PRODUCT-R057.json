@@ -1,0 +1,11 @@
+{
+  "id": "PRODUCT-R057",
+  "category": "Products",
+  "title": "PRODUCT-R057",
+  "text": "{\"speaker_topology_considerations\": \"multichannel satellites and subwoofer\", \"microphone_topology_considerations\": \"calibration microphone plus optional voice mic\", \"usage_scenarios\": [\"room-scale immersive playback\"], \"common_acoustic_failure_modes\": [\"channel polarity\", \"time alignment\", \"room modes\"], \"lifecycle\": [\"Concept\", \"EVT\", \"DVT\", \"PVT\", \"MP\", \"Field\"], \"measurement_plan\": [\"declare fixture/geometry and calibration state\", \"capture raw FR/noise/IR and electrical limits\", \"repeat across fit/orientation/operating conditions\", \"compare required bands and uncertainty margins\"], \"simulation_requirements\": [\"linear speaker/port baseline where topology applies\", \"array propagation and room/latency budgets where capture applies\"], \"manufacturing_risks\": [\"assembly leakage and tolerances\", \"component sensitivity variation\", \"EOL limits without justified guard bands\"], \"standards_metadata_references\": [], \"standards_metadata_state\": \"TASK_SPECIFIC_PUBLIC_METADATA_RESEARCH_REQUIRED\", \"evidence_expectations\": [\"raw-data hash\", \"fixture and calibration provenance\", \"method version\", \"uncertainty\", \"counter-hypothesis review\"], \"non_scope\": [\"clinical efficacy or patient fitting\", \"licensed-tool equivalence\", \"physical qualification without measurements\"]}",
+  "source": "company/capabilities/R057/capability.json",
+  "rights": "AERIS_AUTHORED",
+  "sha256": "16b4ec25fb28100315535ccefc59516ccad278d475894a9c1c895ca974096930",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

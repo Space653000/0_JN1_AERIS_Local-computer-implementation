@@ -1,0 +1,49 @@
+{
+  "id": "dfmea-ranking-analytic-v1",
+  "skill_id": "dfmea-ranking",
+  "suite": "Failure",
+  "input": {
+    "failure_modes": [
+      {
+        "id": "F1",
+        "severity": 10,
+        "occurrence": 2,
+        "detection": 5,
+        "owner": "Chief",
+        "countermeasure": "limit voltage"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "path": "ranked_modes.0.rpn",
+      "expected": 100,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "ranked_modes.0.human_review_required",
+      "expected": true,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "failure_modes": [
+      {
+        "id": "F1",
+        "severity": 11,
+        "occurrence": 2,
+        "detection": 5
+      }
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "High-severity mode remains Human-review required regardless of RPN ranking.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "53d8d316bd8cd67c10ff730334e75f4c5d5d4e0004199221caeb2aba005250c6"
+}

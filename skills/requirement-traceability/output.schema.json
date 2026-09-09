@@ -1,0 +1,79 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "coverage": {
+          "type": "number"
+        },
+        "missing_requirement_ids": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_pending_test_ids": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {}
+        },
+        "raw_evidence_changed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "coverage",
+        "missing_requirement_ids",
+        "evidence_pending_test_ids",
+        "raw_evidence_changed"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

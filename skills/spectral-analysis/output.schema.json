@@ -1,0 +1,113 @@
+{
+  "type": "object",
+  "properties": {
+    "skill_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "properties": {
+        "frequency_hz": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "amplitude": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "phase_rad": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "fft_real": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "fft_imag": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "ifft_reconstructed_windowed_samples": {
+          "type": "array",
+          "maxItems": 262144,
+          "items": {
+            "type": "number"
+          }
+        },
+        "window_coherent_gain": {
+          "type": "number"
+        },
+        "rms": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "frequency_hz",
+        "amplitude",
+        "phase_rad",
+        "fft_real",
+        "fft_imag",
+        "ifft_reconstructed_windowed_samples",
+        "window_coherent_gain",
+        "rms"
+      ],
+      "additionalProperties": false
+    },
+    "capability_maturity": {
+      "type": "string"
+    },
+    "evidence_class": {
+      "type": "string"
+    },
+    "input_sha256": {
+      "type": "string"
+    },
+    "implementation_sha256": {
+      "type": "string"
+    },
+    "uncertainty": {
+      "type": "string"
+    },
+    "professional_tool_verified": {
+      "type": "boolean"
+    },
+    "physical_measurement_verified": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "skill_id",
+    "version",
+    "result",
+    "values",
+    "capability_maturity",
+    "evidence_class",
+    "input_sha256",
+    "implementation_sha256",
+    "uncertainty",
+    "professional_tool_verified",
+    "physical_measurement_verified"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,22 @@
+{
+  "method_id": "microphone-reference-domain-review",
+  "version": "1.0.0",
+  "role": "R028",
+  "source_kind": "AERIS_AUTHORED",
+  "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_review:review",
+  "review_domain": "microphone-reference",
+  "applicability": "Challenge microphone sensitivity reference frames, gain ownership and uncertainty intervals",
+  "executor_calls_permitted": false,
+  "assumptions": [
+    "common bandwidth and electrical output frame",
+    "supplied pressure reference and conservative relative bounds"
+  ],
+  "excluded": [
+    "instrument calibration",
+    "capsule acoustic overload proof",
+    "combined noise-peak immunity",
+    "Human approval"
+  ],
+  "golden_tests": "golden/roles/R028/golden.json"
+}

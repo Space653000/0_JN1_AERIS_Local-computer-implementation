@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-local-audio-regression",
+  "category": "Failures",
+  "title": "FAILURE-local-audio-regression",
+  "text": "{\"invalid_variant\": {\"validation_ids\": [\"a\", \"v2\"]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Microphone/local-audio-regression/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "f0edbd1b4616683119375125de437b94550e43d62683024100a4a0127f7e200a",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

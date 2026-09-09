@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "means": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "standard_deviations": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "coefficients": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "trials": {
+      "type": "integer"
+    },
+    "seed": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "means",
+    "standard_deviations",
+    "coefficients",
+    "trials",
+    "seed"
+  ],
+  "additionalProperties": false
+}

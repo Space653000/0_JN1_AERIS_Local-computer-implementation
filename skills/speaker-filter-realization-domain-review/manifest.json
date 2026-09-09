@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "speaker-filter-realization-domain-review", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/speaker-filter-realization-domain-review.json",
+  "input_schema": "skills/speaker-filter-realization-domain-review/input.schema.json", "output_schema": "skills/speaker-filter-realization-domain-review/output.schema.json",
+  "role_mappings": ["R005"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Independent biquad stability, quantization, crossover, headroom and delay assertion review", "review_domain": "speaker-filter-realization"
+}

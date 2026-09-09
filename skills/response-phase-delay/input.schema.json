@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "frequency_hz": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "magnitude_db": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "phase_rad": {
+      "type": "array",
+      "maxItems": 262144,
+      "items": {
+        "type": "number"
+      }
+    },
+    "smoothing_octaves": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "frequency_hz",
+    "magnitude_db",
+    "phase_rad",
+    "smoothing_octaves"
+  ],
+  "additionalProperties": false
+}

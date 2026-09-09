@@ -2,9 +2,18 @@
   "schema_version": 2,
   "core_repository": "https://github.com/Space653000/0_JN1_AERIS.git",
   "branch": "main",
-  "baseline_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
+  "baseline_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
+  "canonical_roles": {
+    "core_commit": "64576bdbe680170fc1ea27306d1a2ab494cac733",
+    "source_path": "aeris-data.js",
+    "source_sha256_lf": "16e2bb2bfba5a31e39540361a4743041649adc58a16461868332ce2c8ab81815",
+    "extraction": "AERIS_ROLE_GROUPS_ORDERED_V1",
+    "ordered_groups_sha256": "647f97d5a142e4f74fe4e90114548f38b0fbe02f60c36efa0dc6f9739b3f35a5",
+    "assurance": "Offline consistency only; CI compares source at pinned upstream commit. CRLF is normalized to LF."
+  },
   "role": "read_only_target",
-  "reviewed_change": "Human-authorized 2026-09-07 Core PR #4: architecture v0.6 review, stable R-ID design registry, specialist/Voice proposal integration and Astra/Sol/Astra hold.",
-  "implementation_obligation": "Track the reviewed design source, retain active review hold, complete Sol Local Red-Team and Astra reconciliation, then obtain Human authorization for a finite repair batch. This SHA alignment is not runtime compliance or Local acceptance.",
-  "note": "Deliberate document baseline update; no automatic drift acceptance. Known runtime trust defects remain open in docs/reviews/ASTRA_REVIEW_20260907.md."
+  "reviewed_change": "GATE-06 R1 finalized Blueprint migration; role source bytes unchanged, schema-v3 admission must fail closed until consumer validation.",
+  "implementation_obligation": "Pinned Blueprint WHAT; scoped GATE-06 compatibility repair only. Runtime cutover and E forbidden.",
+  "note": "Runtime Core remains separately observed; never infer alignment from this lock.",
+  "tag": "v0.7.0-blueprint.1"
 }

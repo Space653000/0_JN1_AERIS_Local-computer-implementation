@@ -1,0 +1,11 @@
+{
+  "input": {
+    "sample_rate_hz": 48000,
+    "duration_s": 1,
+    "requested_rms_v": 1,
+    "safe_rms_limit_v": 0.2,
+    "mode": "SYNTHETIC_DRY_RUN"
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "eaee301597d62c56ecfcbca45a10474a7e608a5feff15e1e70f3856781d852e7"
+}

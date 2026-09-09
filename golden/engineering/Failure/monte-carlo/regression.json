@@ -1,0 +1,44 @@
+{
+  "input": {
+    "means": [
+      1,
+      2
+    ],
+    "standard_deviations": [
+      1,
+      1
+    ],
+    "coefficients": [
+      3,
+      4
+    ],
+    "trials": 10000,
+    "seed": 7
+  },
+  "expected_checks": [
+    {
+      "path": "analytic_mean",
+      "expected": 11,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "analytic_sd",
+      "expected": 5,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "mean",
+      "expected": 11,
+      "absolute_tolerance": 0.2,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "e1ca778bb8d03335f10ff2c9219a9a1527b4a5e20f394b9a560a0091a5e56968"
+}

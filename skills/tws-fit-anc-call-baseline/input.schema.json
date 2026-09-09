@@ -1,0 +1,104 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "leak_pole_hz",
+    "bass_reference_hz",
+    "max_leak_loss_db",
+    "feedback_crossover_hz",
+    "feedback_delay_ms",
+    "plant_phase_lag_deg",
+    "min_phase_margin_deg",
+    "ff_wind_rms_pa",
+    "max_ff_wind_rms_pa",
+    "call_speech_rms_pa",
+    "call_ambient_rms_pa",
+    "min_call_snr_db",
+    "driver_peak_excursion_mm",
+    "safe_peak_excursion_mm",
+    "occlusion_boost_db",
+    "max_occlusion_boost_db"
+  ],
+  "properties": {
+    "leak_pole_hz": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 20000
+    },
+    "bass_reference_hz": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 20000
+    },
+    "max_leak_loss_db": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 40
+    },
+    "feedback_crossover_hz": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 4000
+    },
+    "feedback_delay_ms": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "plant_phase_lag_deg": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 180
+    },
+    "min_phase_margin_deg": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 120
+    },
+    "ff_wind_rms_pa": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "max_ff_wind_rms_pa": {
+      "type": "number",
+      "minimum": 1e-12,
+      "maximum": 100
+    },
+    "call_speech_rms_pa": {
+      "type": "number",
+      "minimum": 1e-12,
+      "maximum": 100
+    },
+    "call_ambient_rms_pa": {
+      "type": "number",
+      "minimum": 1e-12,
+      "maximum": 100
+    },
+    "min_call_snr_db": {
+      "type": "number",
+      "minimum": -40,
+      "maximum": 100
+    },
+    "driver_peak_excursion_mm": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "safe_peak_excursion_mm": {
+      "type": "number",
+      "minimum": 0.000001,
+      "maximum": 10
+    },
+    "occlusion_boost_db": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 40
+    },
+    "max_occlusion_boost_db": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 40
+    }
+  }
+}

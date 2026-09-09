@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-resonance-characterization",
+  "category": "Failures",
+  "title": "FAILURE-resonance-characterization",
+  "text": "{\"invalid_variant\": {\"amplitude\": [1, 1, 1, 1, 1]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Speaker/resonance-characterization/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "b2efa29d3d6510bee43a45a32ffdb0db989ac745f1d62bf862f7283c1f213503",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

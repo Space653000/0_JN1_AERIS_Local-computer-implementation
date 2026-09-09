@@ -1,0 +1,20 @@
+{
+  "input": {
+    "frequency_hz": [
+      80,
+      90,
+      100,
+      110,
+      120
+    ],
+    "amplitude": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "f201af0984423e02e0e941eacc1d732b23b05b750ce86c1bf5122f03bbb192f9"
+}

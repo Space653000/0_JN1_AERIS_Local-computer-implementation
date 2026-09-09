@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-failure-hypotheses",
+  "category": "Failures",
+  "title": "FAILURE-failure-hypotheses",
+  "text": "{\"invalid_variant\": {\"hypotheses\": [{\"id\": \"H1\", \"support_refs\": [], \"refute_refs\": []}]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Failure/failure-hypotheses/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "1885fdb1e26de233354b866ed35240f06e9dc5eb187cdb87d2e3727cb904bf5c",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

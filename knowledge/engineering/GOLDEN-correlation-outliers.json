@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-correlation-outliers",
+  "category": "Golden cases",
+  "title": "GOLDEN-correlation-outliers",
+  "text": "[{\"path\": \"slope\", \"expected\": 2, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"intercept\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"pearson_r\", \"expected\": 1, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Failure/correlation-outliers/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "15ed4f8b45217c97ab4ca997a8ca564eabc55f6e88fb4029831919c2cddde937",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

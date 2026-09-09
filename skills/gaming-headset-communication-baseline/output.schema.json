@@ -1,0 +1,1 @@
+{"type":"object","required":["skill_id","values","input_sha256","implementation_sha256","physical_measurement_verified"],"properties":{"values":{"type":"object","required":["sidetone_latency_ms","microphone_topology","checks","disposition","plosive_performance_verified","communication_quality_verified","physical_call_verified"]},"physical_measurement_verified":{"const":false}}}

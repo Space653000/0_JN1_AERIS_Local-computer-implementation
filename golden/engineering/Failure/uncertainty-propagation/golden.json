@@ -1,0 +1,44 @@
+{
+  "id": "uncertainty-propagation-analytic-v1",
+  "skill_id": "uncertainty-propagation",
+  "suite": "Failure",
+  "input": {
+    "sensitivity_coefficients": [
+      1,
+      2
+    ],
+    "standard_uncertainties": [
+      0.1,
+      0.2
+    ],
+    "coverage_factor": 2
+  },
+  "checks": [
+    {
+      "path": "combined_standard_uncertainty",
+      "expected": 0.41231056256176607,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    },
+    {
+      "path": "expanded_uncertainty",
+      "expected": 0.8246211251235321,
+      "absolute_tolerance": 1e-08,
+      "unit": "1",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "standard_uncertainties": [
+      -0.1,
+      0.2
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Independent variance terms are 0.01 and 0.16.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "62cd9f949bfbb662340e4b2ef06737b7d1ab002fda8a86f68876ddbfd1cbb4a9"
+}

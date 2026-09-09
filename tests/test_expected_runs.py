@@ -1,5 +1,8 @@
 import tempfile
 import unittest
+import threading
+import urllib.request
+from http.server import ThreadingHTTPServer
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
@@ -48,6 +51,35 @@ class ExpectedRunTests(unittest.TestCase):
         er.register("job", max_age_sec=60)
         er.mark("job", True)
         self.assertEqual(er.mark("job", False, error="boom")["state"], "FAILED")
+
+    def test_transient_windows_replace_lock_does_not_drop_page(self):
+        from aeris_runtime import operations
+        er.ensure_defaults(audit_event=False)
+        original=Path.replace
+        failures=[]
+        def busy_once(source,target):
+            if target==self.path and not failures:
+                failures.append(True)
+                raise PermissionError(5,'simulated Windows reader sharing denial')
+            return original(source,target)
+        server=ThreadingHTTPServer(('127.0.0.1',0),operations._Handler)
+        thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start()
+        try:
+            with patch.object(operations,'_read_json',return_value={'operational_state':'OPEN_WITH_LIMITS'}), patch.object(operations,'HEARTBEAT_FILE',Path(self.tmp.name)/'heartbeat.json'), patch.object(Path,'replace',busy_once):
+                with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}/services?theme=light',timeout=5) as response:
+                    self.assertEqual(response.status,200)
+                    self.assertIn(b'/assets/aeris-live.js',response.read())
+            self.assertEqual(failures,[True])
+            self.assertEqual(er.assess_all()['runs'][1]['last_result'],'SUCCESS')
+        finally:
+            server.shutdown(); server.server_close(); thread.join()
+
+    def test_permanent_replace_denial_is_not_reported_as_success(self):
+        er.ensure_defaults(audit_event=False)
+        before=self.path.read_bytes()
+        with patch.object(Path,'replace',side_effect=PermissionError(5,'persistent denial')), patch.object(er.time,'sleep'):
+            with self.assertRaises(PermissionError): er.mark('supervisor-heartbeat',True,audit_event=False)
+        self.assertEqual(self.path.read_bytes(),before)
 
 
 if __name__ == "__main__":

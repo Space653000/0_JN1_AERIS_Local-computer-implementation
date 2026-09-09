@@ -1,0 +1,11 @@
+{
+  "id": "GOLDEN-dfmea-ranking",
+  "category": "Golden cases",
+  "title": "GOLDEN-dfmea-ranking",
+  "text": "[{\"path\": \"ranked_modes.0.rpn\", \"expected\": 100, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}, {\"path\": \"ranked_modes.0.human_review_required\", \"expected\": true, \"absolute_tolerance\": 1e-08, \"unit\": \"1\", \"reduction\": null}]",
+  "source": "golden/engineering/Failure/dfmea-ranking/golden.json",
+  "rights": "SYNTHETIC",
+  "sha256": "d4a7444db1ab738164d03e0e79e042df39f86f7ec12d8f8c5fd5d92911c8800c",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

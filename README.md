@@ -1,5 +1,12 @@
 # AERIS Portable Company Kernel — PRE-ALPHA
 
+> **GATE-06 RETRY R1 candidate — not accepted yet.** Frozen Blueprint:
+> `v0.7.0-blueprint.1` → `64576bdbe680170fc1ea27306d1a2ab494cac733`.
+> **PROJECT_IDENTIFICATION_ONLY**: two URLs do not authorize construction.
+> Current Human authorization is compatibility/trust repair and Draft PR #33 only.
+> No main merge, runtime cutover, E acceptance or new acoustic capability work.
+> Older Full-Build instructions below are historical and do not override this gate.
+
 **Implementation plan revision: v0.3.0-review.1** — [Execution plan](docs/IMPLEMENTATION_PLAN_V0_3.md) · [Audit findings](docs/reviews/ASTRA_REVIEW_20260907.md). Runtime package remains 0.2.0 / PRE_ALPHA. Known trust-chain defects are open; this documentation publication is not a runtime repair.
 
 > **2026-09-07 審查優先：HOLD_FOR_SOL_RED_TEAM。** 先讀 [Astra → Sol → Astra 閘門](docs/ASTRA_SOL_REVIEW_GATE_V1.md)。下文 Full-Build／兩個 URL／缺口清零／續建命令只適用於閘門解除後的已授權有限批次。本次只修訂與發布文件；第 4 項等待使用者切換 GPT-5.6 Sol High，尚未執行本機總驗收。

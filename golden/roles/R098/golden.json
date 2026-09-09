@@ -1,0 +1,920 @@
+{
+  "suite_id": "R098-FACA-V1",
+  "role_id": "R098",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored two-mechanism likelihood tables; Bayes posterior 0.9/(0.1+0.9), binary entropy information 1-H2(0.1)=0.5310044064107188 and independent contradiction assertions. No executor output copied.",
+  "scope": "Bounded supplied FACA model; no physical causal proof",
+  "base_input": {
+    "parameters": {
+      "hypotheses": [
+        {
+          "id": "FIXTURE",
+          "mechanism": "Fixture ground loop",
+          "category": "TEST_SYSTEM",
+          "prior": 0.5
+        },
+        {
+          "id": "AMPLIFIER",
+          "mechanism": "Amplifier internal noise",
+          "category": "PRODUCT",
+          "prior": 0.5
+        }
+      ],
+      "observations": [
+        {
+          "id": "OBS-1",
+          "source_record_id": "SYN-1",
+          "source_kind": "SYNTHETIC",
+          "conditional_independence_assumed": true,
+          "likelihoods": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          }
+        }
+      ],
+      "experiments": [
+        {
+          "id": "ISOLATE",
+          "intervention": "Isolate fixture ground path",
+          "control": "Same amplifier, gain and load",
+          "cost": 1,
+          "risk": "R1",
+          "local_available": true,
+          "outcomes": [
+            {
+              "id": "PERSISTS",
+              "likelihoods": {
+                "FIXTURE": 0.1,
+                "AMPLIFIER": 0.9
+              }
+            },
+            {
+              "id": "CLEARS",
+              "likelihoods": {
+                "FIXTURE": 0.9,
+                "AMPLIFIER": 0.1
+              }
+            }
+          ]
+        }
+      ],
+      "minimum_leading_posterior": 0.8,
+      "minimum_leading_margin": 0.5
+    },
+    "candidate": {
+      "prior": {
+        "FIXTURE": 0.5,
+        "AMPLIFIER": 0.5
+      },
+      "posterior": {
+        "FIXTURE": 0.5,
+        "AMPLIFIER": 0.5
+      },
+      "ranking": [
+        "AMPLIFIER",
+        "FIXTURE"
+      ],
+      "eliminated_hypotheses": [],
+      "experiments": [
+        {
+          "id": "ISOLATE",
+          "expected_information_bits": 0.5310044064107188,
+          "information_per_cost": 0.5310044064107188,
+          "eligible": true
+        }
+      ],
+      "selected_experiment_id": "ISOLATE",
+      "checks": [
+        {
+          "id": "LEADING_MODEL_POSTERIOR",
+          "actual": 0.5,
+          "limit": 0.8,
+          "passed": false,
+          "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+        },
+        {
+          "id": "MODEL_SEPARATION_MARGIN",
+          "actual": 0,
+          "limit": 0.5,
+          "passed": false,
+          "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+        }
+      ],
+      "disposition": "DESIGN_REVISION_REQUIRED",
+      "next_discriminating_experiment": "ISOLATE",
+      "root_cause_verified": false,
+      "recurrence_validated": false,
+      "posterior_calibrated": false,
+      "physical_measurement_verified": false,
+      "model_assumptions": [
+        "Supplied uncalibrated likelihoods and priors",
+        "Conditional independence is declared, not verified",
+        "Information-gain ranking is model-derived; no experiment executed"
+      ],
+      "unresolved": [
+        "Unmodeled mechanisms and dependent observations",
+        "Physical intervention and recurrence validation",
+        "Qualified domain Human causal approval"
+      ],
+      "counter_hypotheses": [
+        "FIXTURE: Fixture ground loop",
+        "AMPLIFIER: Amplifier internal noise"
+      ],
+      "required_revisions": [
+        "ACQUIRE_DISCRIMINATING_OBSERVATION",
+        "SEPARATE_COMPETING_MECHANISMS"
+      ]
+    },
+    "context": {
+      "product": "Failure analysis",
+      "transducer": "Both",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "FACA-REVIEW-SYMMETRIC",
+      "kind": "positive",
+      "question": "Does equal-prior binary entropy 1-H2(0.1) support the stated experiment rather than cause closure?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-CAUSAL",
+      "kind": "counter_hypothesis",
+      "question": "Will independent FACA review reject a contradictory root_cause_verified assertion?",
+      "input_overrides": {
+        "candidate": {
+          "prior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "posterior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "ranking": [
+            "AMPLIFIER",
+            "FIXTURE"
+          ],
+          "eliminated_hypotheses": [],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "expected_information_bits": 0.5310044064107188,
+              "information_per_cost": 0.5310044064107188,
+              "eligible": true
+            }
+          ],
+          "selected_experiment_id": "ISOLATE",
+          "checks": [
+            {
+              "id": "LEADING_MODEL_POSTERIOR",
+              "actual": 0.5,
+              "limit": 0.8,
+              "passed": false,
+              "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+            },
+            {
+              "id": "MODEL_SEPARATION_MARGIN",
+              "actual": 0,
+              "limit": 0.5,
+              "passed": false,
+              "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+            }
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "next_discriminating_experiment": "ISOLATE",
+          "root_cause_verified": true,
+          "recurrence_validated": false,
+          "posterior_calibrated": false,
+          "physical_measurement_verified": false,
+          "model_assumptions": [
+            "Supplied uncalibrated likelihoods and priors",
+            "Conditional independence is declared, not verified",
+            "Information-gain ranking is model-derived; no experiment executed"
+          ],
+          "unresolved": [
+            "Unmodeled mechanisms and dependent observations",
+            "Physical intervention and recurrence validation",
+            "Qualified domain Human causal approval"
+          ],
+          "counter_hypotheses": [
+            "FIXTURE: Fixture ground loop",
+            "AMPLIFIER: Amplifier internal noise"
+          ],
+          "required_revisions": [
+            "ACQUIRE_DISCRIMINATING_OBSERVATION",
+            "SEPARATE_COMPETING_MECHANISMS"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-POSTERIOR",
+      "kind": "counter_hypothesis",
+      "question": "Will independent FACA review reject a contradictory posterior assertion?",
+      "input_overrides": {
+        "candidate": {
+          "prior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "posterior": {
+            "FIXTURE": 0.1,
+            "AMPLIFIER": 0.9
+          },
+          "ranking": [
+            "AMPLIFIER",
+            "FIXTURE"
+          ],
+          "eliminated_hypotheses": [],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "expected_information_bits": 0.5310044064107188,
+              "information_per_cost": 0.5310044064107188,
+              "eligible": true
+            }
+          ],
+          "selected_experiment_id": "ISOLATE",
+          "checks": [
+            {
+              "id": "LEADING_MODEL_POSTERIOR",
+              "actual": 0.5,
+              "limit": 0.8,
+              "passed": false,
+              "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+            },
+            {
+              "id": "MODEL_SEPARATION_MARGIN",
+              "actual": 0,
+              "limit": 0.5,
+              "passed": false,
+              "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+            }
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "next_discriminating_experiment": "ISOLATE",
+          "root_cause_verified": false,
+          "recurrence_validated": false,
+          "posterior_calibrated": false,
+          "physical_measurement_verified": false,
+          "model_assumptions": [
+            "Supplied uncalibrated likelihoods and priors",
+            "Conditional independence is declared, not verified",
+            "Information-gain ranking is model-derived; no experiment executed"
+          ],
+          "unresolved": [
+            "Unmodeled mechanisms and dependent observations",
+            "Physical intervention and recurrence validation",
+            "Qualified domain Human causal approval"
+          ],
+          "counter_hypotheses": [
+            "FIXTURE: Fixture ground loop",
+            "AMPLIFIER: Amplifier internal noise"
+          ],
+          "required_revisions": [
+            "ACQUIRE_DISCRIMINATING_OBSERVATION",
+            "SEPARATE_COMPETING_MECHANISMS"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-RECURRENCE",
+      "kind": "counter_hypothesis",
+      "question": "Will independent FACA review reject a contradictory recurrence_validated assertion?",
+      "input_overrides": {
+        "candidate": {
+          "prior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "posterior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "ranking": [
+            "AMPLIFIER",
+            "FIXTURE"
+          ],
+          "eliminated_hypotheses": [],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "expected_information_bits": 0.5310044064107188,
+              "information_per_cost": 0.5310044064107188,
+              "eligible": true
+            }
+          ],
+          "selected_experiment_id": "ISOLATE",
+          "checks": [
+            {
+              "id": "LEADING_MODEL_POSTERIOR",
+              "actual": 0.5,
+              "limit": 0.8,
+              "passed": false,
+              "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+            },
+            {
+              "id": "MODEL_SEPARATION_MARGIN",
+              "actual": 0,
+              "limit": 0.5,
+              "passed": false,
+              "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+            }
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "next_discriminating_experiment": "ISOLATE",
+          "root_cause_verified": false,
+          "recurrence_validated": true,
+          "posterior_calibrated": false,
+          "physical_measurement_verified": false,
+          "model_assumptions": [
+            "Supplied uncalibrated likelihoods and priors",
+            "Conditional independence is declared, not verified",
+            "Information-gain ranking is model-derived; no experiment executed"
+          ],
+          "unresolved": [
+            "Unmodeled mechanisms and dependent observations",
+            "Physical intervention and recurrence validation",
+            "Qualified domain Human causal approval"
+          ],
+          "counter_hypotheses": [
+            "FIXTURE: Fixture ground loop",
+            "AMPLIFIER: Amplifier internal noise"
+          ],
+          "required_revisions": [
+            "ACQUIRE_DISCRIMINATING_OBSERVATION",
+            "SEPARATE_COMPETING_MECHANISMS"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-EXPERIMENT",
+      "kind": "counter_hypothesis",
+      "question": "Will independent FACA review reject a contradictory selected_experiment_id assertion?",
+      "input_overrides": {
+        "candidate": {
+          "prior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "posterior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "ranking": [
+            "AMPLIFIER",
+            "FIXTURE"
+          ],
+          "eliminated_hypotheses": [],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "expected_information_bits": 0.5310044064107188,
+              "information_per_cost": 0.5310044064107188,
+              "eligible": true
+            }
+          ],
+          "selected_experiment_id": "CLOSE",
+          "checks": [
+            {
+              "id": "LEADING_MODEL_POSTERIOR",
+              "actual": 0.5,
+              "limit": 0.8,
+              "passed": false,
+              "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+            },
+            {
+              "id": "MODEL_SEPARATION_MARGIN",
+              "actual": 0,
+              "limit": 0.5,
+              "passed": false,
+              "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+            }
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "next_discriminating_experiment": "ISOLATE",
+          "root_cause_verified": false,
+          "recurrence_validated": false,
+          "posterior_calibrated": false,
+          "physical_measurement_verified": false,
+          "model_assumptions": [
+            "Supplied uncalibrated likelihoods and priors",
+            "Conditional independence is declared, not verified",
+            "Information-gain ranking is model-derived; no experiment executed"
+          ],
+          "unresolved": [
+            "Unmodeled mechanisms and dependent observations",
+            "Physical intervention and recurrence validation",
+            "Qualified domain Human causal approval"
+          ],
+          "counter_hypotheses": [
+            "FIXTURE: Fixture ground loop",
+            "AMPLIFIER: Amplifier internal noise"
+          ],
+          "required_revisions": [
+            "ACQUIRE_DISCRIMINATING_OBSERVATION",
+            "SEPARATE_COMPETING_MECHANISMS"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-ADVICE",
+      "kind": "counter_hypothesis",
+      "question": "Will independent FACA review reject a contradictory next_discriminating_experiment assertion?",
+      "input_overrides": {
+        "candidate": {
+          "prior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "posterior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "ranking": [
+            "AMPLIFIER",
+            "FIXTURE"
+          ],
+          "eliminated_hypotheses": [],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "expected_information_bits": 0.5310044064107188,
+              "information_per_cost": 0.5310044064107188,
+              "eligible": true
+            }
+          ],
+          "selected_experiment_id": "ISOLATE",
+          "checks": [
+            {
+              "id": "LEADING_MODEL_POSTERIOR",
+              "actual": 0.5,
+              "limit": 0.8,
+              "passed": false,
+              "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+            },
+            {
+              "id": "MODEL_SEPARATION_MARGIN",
+              "actual": 0,
+              "limit": 0.5,
+              "passed": false,
+              "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+            }
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "next_discriminating_experiment": "DEPLOY",
+          "root_cause_verified": false,
+          "recurrence_validated": false,
+          "posterior_calibrated": false,
+          "physical_measurement_verified": false,
+          "model_assumptions": [
+            "Supplied uncalibrated likelihoods and priors",
+            "Conditional independence is declared, not verified",
+            "Information-gain ranking is model-derived; no experiment executed"
+          ],
+          "unresolved": [
+            "Unmodeled mechanisms and dependent observations",
+            "Physical intervention and recurrence validation",
+            "Qualified domain Human causal approval"
+          ],
+          "counter_hypotheses": [
+            "FIXTURE: Fixture ground loop",
+            "AMPLIFIER: Amplifier internal noise"
+          ],
+          "required_revisions": [
+            "ACQUIRE_DISCRIMINATING_OBSERVATION",
+            "SEPARATE_COMPETING_MECHANISMS"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-SCOPE",
+      "kind": "counter_hypothesis",
+      "question": "Will independent FACA review reject a contradictory unresolved assertion?",
+      "input_overrides": {
+        "candidate": {
+          "prior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "posterior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "ranking": [
+            "AMPLIFIER",
+            "FIXTURE"
+          ],
+          "eliminated_hypotheses": [],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "expected_information_bits": 0.5310044064107188,
+              "information_per_cost": 0.5310044064107188,
+              "eligible": true
+            }
+          ],
+          "selected_experiment_id": "ISOLATE",
+          "checks": [
+            {
+              "id": "LEADING_MODEL_POSTERIOR",
+              "actual": 0.5,
+              "limit": 0.8,
+              "passed": false,
+              "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+            },
+            {
+              "id": "MODEL_SEPARATION_MARGIN",
+              "actual": 0,
+              "limit": 0.5,
+              "passed": false,
+              "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+            }
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "next_discriminating_experiment": "ISOLATE",
+          "root_cause_verified": false,
+          "recurrence_validated": false,
+          "posterior_calibrated": false,
+          "physical_measurement_verified": false,
+          "model_assumptions": [
+            "Supplied uncalibrated likelihoods and priors",
+            "Conditional independence is declared, not verified",
+            "Information-gain ranking is model-derived; no experiment executed"
+          ],
+          "unresolved": [],
+          "counter_hypotheses": [
+            "FIXTURE: Fixture ground loop",
+            "AMPLIFIER: Amplifier internal noise"
+          ],
+          "required_revisions": [
+            "ACQUIRE_DISCRIMINATING_OBSERVATION",
+            "SEPARATE_COMPETING_MECHANISMS"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-CALIBRATION",
+      "kind": "counter_hypothesis",
+      "question": "Will independent FACA review reject a contradictory posterior_calibrated assertion?",
+      "input_overrides": {
+        "candidate": {
+          "prior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "posterior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "ranking": [
+            "AMPLIFIER",
+            "FIXTURE"
+          ],
+          "eliminated_hypotheses": [],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "expected_information_bits": 0.5310044064107188,
+              "information_per_cost": 0.5310044064107188,
+              "eligible": true
+            }
+          ],
+          "selected_experiment_id": "ISOLATE",
+          "checks": [
+            {
+              "id": "LEADING_MODEL_POSTERIOR",
+              "actual": 0.5,
+              "limit": 0.8,
+              "passed": false,
+              "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+            },
+            {
+              "id": "MODEL_SEPARATION_MARGIN",
+              "actual": 0,
+              "limit": 0.5,
+              "passed": false,
+              "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+            }
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "next_discriminating_experiment": "ISOLATE",
+          "root_cause_verified": false,
+          "recurrence_validated": false,
+          "posterior_calibrated": true,
+          "physical_measurement_verified": false,
+          "model_assumptions": [
+            "Supplied uncalibrated likelihoods and priors",
+            "Conditional independence is declared, not verified",
+            "Information-gain ranking is model-derived; no experiment executed"
+          ],
+          "unresolved": [
+            "Unmodeled mechanisms and dependent observations",
+            "Physical intervention and recurrence validation",
+            "Qualified domain Human causal approval"
+          ],
+          "counter_hypotheses": [
+            "FIXTURE: Fixture ground loop",
+            "AMPLIFIER: Amplifier internal noise"
+          ],
+          "required_revisions": [
+            "ACQUIRE_DISCRIMINATING_OBSERVATION",
+            "SEPARATE_COMPETING_MECHANISMS"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-NO-MARGIN",
+      "kind": "boundary",
+      "question": "Does a zero-margin policy remain unresolved for a tie?",
+      "input_overrides": {
+        "parameters": {
+          "hypotheses": [
+            {
+              "id": "FIXTURE",
+              "mechanism": "Fixture ground loop",
+              "category": "TEST_SYSTEM",
+              "prior": 0.5
+            },
+            {
+              "id": "AMPLIFIER",
+              "mechanism": "Amplifier internal noise",
+              "category": "PRODUCT",
+              "prior": 0.5
+            }
+          ],
+          "observations": [
+            {
+              "id": "OBS-1",
+              "source_record_id": "SYN-1",
+              "source_kind": "SYNTHETIC",
+              "conditional_independence_assumed": true,
+              "likelihoods": {
+                "FIXTURE": 0.5,
+                "AMPLIFIER": 0.5
+              }
+            }
+          ],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "intervention": "Isolate fixture ground path",
+              "control": "Same amplifier, gain and load",
+              "cost": 1,
+              "risk": "R1",
+              "local_available": true,
+              "outcomes": [
+                {
+                  "id": "PERSISTS",
+                  "likelihoods": {
+                    "FIXTURE": 0.1,
+                    "AMPLIFIER": 0.9
+                  }
+                },
+                {
+                  "id": "CLEARS",
+                  "likelihoods": {
+                    "FIXTURE": 0.9,
+                    "AMPLIFIER": 0.1
+                  }
+                }
+              ]
+            }
+          ],
+          "minimum_leading_posterior": 0.5,
+          "minimum_leading_margin": 0
+        },
+        "candidate": {
+          "prior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "posterior": {
+            "FIXTURE": 0.5,
+            "AMPLIFIER": 0.5
+          },
+          "ranking": [
+            "AMPLIFIER",
+            "FIXTURE"
+          ],
+          "eliminated_hypotheses": [],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "expected_information_bits": 0.5310044064107188,
+              "information_per_cost": 0.5310044064107188,
+              "eligible": true
+            }
+          ],
+          "selected_experiment_id": "ISOLATE",
+          "checks": [
+            {
+              "id": "LEADING_MODEL_POSTERIOR",
+              "actual": 0.5,
+              "limit": 0.5,
+              "passed": true,
+              "on_failure": "ACQUIRE_DISCRIMINATING_OBSERVATION"
+            },
+            {
+              "id": "MODEL_SEPARATION_MARGIN",
+              "actual": 0,
+              "limit": 0,
+              "passed": false,
+              "on_failure": "SEPARATE_COMPETING_MECHANISMS"
+            }
+          ],
+          "disposition": "DESIGN_REVISION_REQUIRED",
+          "next_discriminating_experiment": "ISOLATE",
+          "root_cause_verified": false,
+          "recurrence_validated": false,
+          "posterior_calibrated": false,
+          "physical_measurement_verified": false,
+          "model_assumptions": [
+            "Supplied uncalibrated likelihoods and priors",
+            "Conditional independence is declared, not verified",
+            "Information-gain ranking is model-derived; no experiment executed"
+          ],
+          "unresolved": [
+            "Unmodeled mechanisms and dependent observations",
+            "Physical intervention and recurrence validation",
+            "Qualified domain Human causal approval"
+          ],
+          "counter_hypotheses": [
+            "FIXTURE: Fixture ground loop",
+            "AMPLIFIER: Amplifier internal noise"
+          ],
+          "required_revisions": [
+            "SEPARATE_COMPETING_MECHANISMS"
+          ]
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 1e-10
+        }
+      ]
+    },
+    {
+      "id": "FACA-REVIEW-MISSING-MECHANISM",
+      "kind": "negative",
+      "question": "Does incomplete likelihood coverage stop review?",
+      "input_overrides": {
+        "parameters": {
+          "hypotheses": [
+            {
+              "id": "FIXTURE",
+              "mechanism": "Fixture ground loop",
+              "category": "TEST_SYSTEM",
+              "prior": 0.5
+            },
+            {
+              "id": "AMPLIFIER",
+              "mechanism": "Amplifier internal noise",
+              "category": "PRODUCT",
+              "prior": 0.5
+            }
+          ],
+          "observations": [
+            {
+              "id": "OBS-1",
+              "source_record_id": "SYN-1",
+              "source_kind": "SYNTHETIC",
+              "conditional_independence_assumed": true,
+              "likelihoods": {
+                "FIXTURE": 0.5
+              }
+            }
+          ],
+          "experiments": [
+            {
+              "id": "ISOLATE",
+              "intervention": "Isolate fixture ground path",
+              "control": "Same amplifier, gain and load",
+              "cost": 1,
+              "risk": "R1",
+              "local_available": true,
+              "outcomes": [
+                {
+                  "id": "PERSISTS",
+                  "likelihoods": {
+                    "FIXTURE": 0.1,
+                    "AMPLIFIER": 0.9
+                  }
+                },
+                {
+                  "id": "CLEARS",
+                  "likelihoods": {
+                    "FIXTURE": 0.9,
+                    "AMPLIFIER": 0.1
+                  }
+                }
+              ]
+            }
+          ],
+          "minimum_leading_posterior": 0.8,
+          "minimum_leading_margin": 0.5
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FACA-REVIEW-PHYSICAL-RISK",
+      "kind": "negative",
+      "question": "Must automated review refuse risk R4 even with correct model numbers?",
+      "input_overrides": {
+        "context": {
+          "product": "Failure analysis",
+          "transducer": "Both",
+          "lifecycle": "EVT",
+          "risk": "R4",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "FACA-REVIEW-FIELD-SCOPE",
+      "kind": "negative",
+      "question": "Does a supplied-model EVT review avoid implying Field causal qualification?",
+      "input_overrides": {
+        "context": {
+          "product": "Failure analysis",
+          "transducer": "Both",
+          "lifecycle": "Field",
+          "risk": "R1",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    }
+  ],
+  "skill_id": "failure-hypothesis-domain-review"
+}

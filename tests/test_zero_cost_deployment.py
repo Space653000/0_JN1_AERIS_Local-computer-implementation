@@ -33,7 +33,7 @@ class ZeroCostNoClaudeDeploymentTests(unittest.TestCase):
         ):
             item = checks[f"external_capability:{capability}"]
             self.assertTrue(item["passed"], item)
-            self.assertEqual(item["observed"], "BLOCKED_EXTERNAL")
+            self.assertEqual(item["observed"], "EXTERNAL_LICENSE")
 
 
 if __name__ == "__main__":

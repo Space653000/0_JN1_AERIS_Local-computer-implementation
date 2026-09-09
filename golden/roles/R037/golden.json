@@ -1,0 +1,338 @@
+{
+  "suite_id": "R037-ULA-TAPER-V1",
+  "role_id": "R037",
+  "skill_id": "microphone-array-taper-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored two-element half-wavelength broadside oracle H=cos(pi*sin(theta)/2) up to phase; WNG=2 for equal uncorrelated inputs, WNG=1 for a single active element. Nonzero-steering delay examples yield unity versus sqrt(1/2). Candidate constants are analytic authored fixtures, not executor output.",
+  "scope": "Taper, steering, white-noise gain and supplied error tradeoffs only",
+  "base_input": {
+    "model": "FAR_FIELD_ULA_TRUE_TIME_DELAY",
+    "noise_model": "UNCORRELATED_EQUAL_VARIANCE_BEFORE_GAIN",
+    "weights": [
+      1,
+      1
+    ],
+    "channel_gains": [
+      1,
+      1
+    ],
+    "channel_delays_s": [
+      0,
+      0
+    ],
+    "gain_bounds": [
+      0,
+      0
+    ],
+    "delay_bounds_s": [
+      0,
+      0
+    ],
+    "position_bounds_m": [
+      0,
+      0
+    ],
+    "spacing_m": 0.085,
+    "frequencies_hz": [
+      2000
+    ],
+    "angles_deg": [
+      -90,
+      -60,
+      -30,
+      0,
+      30,
+      60,
+      90
+    ],
+    "steering_deg": 0,
+    "sound_speed_m_s": 340,
+    "source_range_m": 10,
+    "minimum_range_aperture_ratio": 5,
+    "minimum_fraunhofer_ratio": 1,
+    "main_lobe_exclusion_deg": 30,
+    "maximum_grid_gap_deg": 30,
+    "minimum_desired_amplitude": 0.8,
+    "maximum_sampled_sidelobe_amplitude": 0.8,
+    "minimum_white_noise_gain": 1.5
+  },
+  "cases": [
+    {
+      "id": "ULA-SCALE-INVARIANCE",
+      "kind": "boundary",
+      "question": "Must common tiny positive taper scaling preserve transfer and independent review without underflow?",
+      "input_overrides": {
+        "weights": [
+          1e-200,
+          1e-200
+        ]
+      },
+      "checks": [
+        {
+          "path": "bands.0.white_noise_gain",
+          "expected": 2,
+          "absolute_tolerance": 1e-12
+        }
+      ]
+    },
+    {
+      "id": "TAPER-PAIR",
+      "kind": "positive",
+      "question": "Does a broadside half-wavelength pair retain unity target gain and WNG=2?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "bands.0.desired_amplitude",
+          "expected": 1,
+          "absolute_tolerance": 1e-12
+        },
+        {
+          "path": "bands.0.white_noise_gain",
+          "expected": 2,
+          "absolute_tolerance": 1e-12
+        },
+        {
+          "path": "disposition",
+          "expected": "BOUNDED_BASELINE_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TAPER-NULL",
+      "kind": "boundary",
+      "question": "Does the half-wavelength pair cancel endfire without claiming full-angle rejection?",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "bands.0.sample_amplitudes.0",
+          "expected": 0,
+          "absolute_tolerance": 1e-12
+        },
+        {
+          "path": "continuous_angle_verified",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TAPER-SINGLE",
+      "kind": "counter_hypothesis",
+      "question": "Does switching off one element remove directionality rather than improve the beam?",
+      "input_overrides": {
+        "weights": [
+          1,
+          0
+        ]
+      },
+      "checks": [
+        {
+          "path": "bands.0.white_noise_gain",
+          "expected": 1,
+          "absolute_tolerance": 1e-12
+        },
+        {
+          "path": "bands.0.sampled_sidelobe_upper",
+          "expected": 1,
+          "absolute_tolerance": 1e-12
+        },
+        {
+          "path": "disposition",
+          "expected": "DESIGN_REVISION_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TAPER-DELAY-SIGN",
+      "kind": "positive",
+      "question": "At nonzero steering, does a positive physical delay cancel the known endfire geometric advance?",
+      "input_overrides": {
+        "spacing_m": 0.05,
+        "frequencies_hz": [
+          1700
+        ],
+        "steering_deg": 30,
+        "channel_delays_s": [
+          0,
+          0.00007352941176470589
+        ]
+      },
+      "checks": [
+        {
+          "path": "bands.0.sample_amplitudes.6",
+          "expected": 1,
+          "absolute_tolerance": 1e-12
+        }
+      ]
+    },
+    {
+      "id": "TAPER-DELAY-REVERSE",
+      "kind": "counter_hypothesis",
+      "question": "Does reversing the physical delay instead reinforce the geometric phase error?",
+      "input_overrides": {
+        "spacing_m": 0.05,
+        "frequencies_hz": [
+          1700
+        ],
+        "steering_deg": 30,
+        "channel_delays_s": [
+          0,
+          -0.00007352941176470589
+        ]
+      },
+      "checks": [
+        {
+          "path": "bands.0.sample_amplitudes.6",
+          "expected": 0.7071067811865476,
+          "absolute_tolerance": 1e-12
+        }
+      ]
+    },
+    {
+      "id": "TAPER-UNCERTAINTY",
+      "kind": "boundary",
+      "question": "Do gain intervals reduce robust WNG even though the nominal beam is unchanged?",
+      "input_overrides": {
+        "gain_bounds": [
+          0.1,
+          0.1
+        ]
+      },
+      "checks": [
+        {
+          "path": "bands.0.desired_lower",
+          "expected": 0.9,
+          "absolute_tolerance": 1e-12
+        },
+        {
+          "path": "bands.0.white_noise_gain_lower",
+          "expected": 1.3388429752066118,
+          "absolute_tolerance": 1e-12
+        },
+        {
+          "path": "checks.5.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TAPER-ALIAS",
+      "kind": "counter_hypothesis",
+      "question": "Does excessive adjacent spacing fail before claiming a hemisphere-wide beam?",
+      "input_overrides": {
+        "spacing_m": 0.1
+      },
+      "checks": [
+        {
+          "path": "checks.0.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TAPER-NEAR",
+      "kind": "counter_hypothesis",
+      "question": "Must insufficient source distance invalidate the plane-wave design baseline?",
+      "input_overrides": {
+        "source_range_m": 0.1
+      },
+      "checks": [
+        {
+          "path": "checks.1.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TAPER-GRID",
+      "kind": "boundary",
+      "question": "Can three angles prove the requested 30-degree sampling policy?",
+      "input_overrides": {
+        "angles_deg": [
+          -90,
+          0,
+          90
+        ]
+      },
+      "checks": [
+        {
+          "path": "checks.2.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TAPER-DESIRED-NULL",
+      "kind": "counter_hypothesis",
+      "question": "Does opposing channel phase at the target collapse rather than improve WNG?",
+      "input_overrides": {
+        "channel_delays_s": [
+          0,
+          0.00025
+        ]
+      },
+      "checks": [
+        {
+          "path": "bands.0.white_noise_gain",
+          "expected": 0,
+          "absolute_tolerance": 1e-20
+        },
+        {
+          "path": "checks.3.passed",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "TAPER-NEG-COVARIANCE",
+      "kind": "negative",
+      "question": "Must fully correlated sensor noise reject the sigma-squared-I WNG model?",
+      "input_overrides": {
+        "noise_model": "FULLY_CORRELATED"
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "TAPER-NEG-ZERO",
+      "kind": "negative",
+      "question": "Must all-zero taper fail instead of manufacturing a normalized response?",
+      "input_overrides": {
+        "weights": [
+          0,
+          0
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "TAPER-NEG-ORDER",
+      "kind": "negative",
+      "question": "Must angle order be validated?",
+      "input_overrides": {
+        "angles_deg": [
+          -90,
+          30,
+          0,
+          90
+        ]
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "TAPER-NEG-UNITS",
+      "kind": "negative",
+      "question": "Must unrecognized millimetre fields fail rather than silently substitute units?",
+      "input_overrides": {
+        "spacing_mm": 85
+      },
+      "expected_error": "ValueError"
+    }
+  ]
+}

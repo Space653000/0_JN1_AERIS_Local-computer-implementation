@@ -1,0 +1,33 @@
+{
+  "input": {
+    "sample_rate_hz": 48000,
+    "buffer_samples": [
+      480,
+      960
+    ],
+    "other_stage_ms": [
+      10,
+      20
+    ],
+    "clock_difference_ppm": 50
+  },
+  "expected_checks": [
+    {
+      "path": "serial_latency_ms",
+      "expected": 60,
+      "absolute_tolerance": 1e-08,
+      "unit": "ms",
+      "reduction": null
+    },
+    {
+      "path": "uncompensated_drift_ms_per_hour",
+      "expected": 180,
+      "absolute_tolerance": 1e-08,
+      "unit": "ms/hour",
+      "reduction": null
+    }
+  ],
+  "require_repeated_output_hash_match": true,
+  "method_version": "1.0.0",
+  "sha256": "1de415fa4fed3692f454a4a16bf06312773912d6decb7fd114013d4d89a2ca89"
+}

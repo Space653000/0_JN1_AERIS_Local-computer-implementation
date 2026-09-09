@@ -22,6 +22,7 @@ if command -v git >/dev/null 2>&1; then
 fi
 
 PY="$ROOT/.venv/bin/python"
+"$PY" -B "$ROOT/scripts/bootstrap-engineering.py"
 "$PY" -m unittest discover -s tests -v
 if ! "$PY" -m aeris_runtime doctor; then
   echo 'WARNING: doctor is not READY until a local AI server/model is available.' >&2

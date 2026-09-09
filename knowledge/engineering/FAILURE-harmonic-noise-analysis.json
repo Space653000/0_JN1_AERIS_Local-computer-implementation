@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-harmonic-noise-analysis",
+  "category": "Failures",
+  "title": "FAILURE-harmonic-noise-analysis",
+  "text": "{\"invalid_variant\": {\"fundamental_hz\": 8192}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/DSP/harmonic-noise-analysis/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "e0814d83539c4f6cd1657a3cecd9261de113ca4d8cd14714e0040cbd1f92142a",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

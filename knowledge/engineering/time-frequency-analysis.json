@@ -1,0 +1,11 @@
+{
+  "id": "METHOD-time-frequency-analysis",
+  "category": "Methods",
+  "title": "time-frequency-analysis",
+  "text": "Welch integration of a coherent unit sine conserves mean-square power. Input measurement uncertainty is not invented; use uncertainty-propagation and repeatability methods when data permits.",
+  "source": "methods/engineering/time-frequency-analysis.json",
+  "rights": "AERIS_AUTHORED",
+  "source_kind": "GENERATED_METHOD_NOTE",
+  "is_evidence": false,
+  "sha256": "749ed8d5f689e1be93373e23e028d61d3c93a5682d77464c30ff3f29746a1b83"
+}

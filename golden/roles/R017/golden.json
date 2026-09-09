@@ -1,0 +1,61 @@
+{
+  "suite_id": "R017-SPEAKER-POLAR-V1",
+  "role_id": "R017",
+  "skill_id": "speaker-polar-spatial-baseline",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Authored symmetric absolute horizontal polar with 30-degree grid, explicit level uncertainty and deliberate sparse-grid/normalization failures; no acquired measurement.",
+  "scope": "Supplied discrete absolute horizontal speaker polar validation only",
+  "base_input": {
+    "model": "SUPPLIED_HORIZONTAL_POLAR_ABSOLUTE",
+    "angles_deg": [-90, -60, -30, 0, 30, 60, 90],
+    "levels_db": [70, 76, 79, 80, 79, 76, 70],
+    "supplied_on_axis_reference_db": 80,
+    "level_uncertainty_db": 0.5,
+    "minimum_coverage_deg": 180,
+    "maximum_angular_gap_deg": 30,
+    "maximum_on_axis_reference_error_db": 1,
+    "minimum_edge_attenuation_db": 8,
+    "maximum_symmetry_error_db": 1,
+    "angle_alignment_bound_deg": 1,
+    "maximum_angle_alignment_bound_deg": 2,
+    "normalization_mode": "ABSOLUTE_NOT_PEAK_NORMALIZED"
+  },
+  "cases": [
+    {
+      "id": "POLAR-ABSOLUTE-REFERENCE", "kind": "positive",
+      "question": "Does the role preserve the absolute on-axis reference while evaluating supplied off-axis samples?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "on_axis_level_db", "expected": 80, "absolute_tolerance": 0},
+        {"path": "edge_attenuation_lower_db", "expected": [9, 9], "absolute_tolerance": 1e-12},
+        {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+        {"path": "continuous_angle_verified", "expected": false, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "POLAR-INCLUSIVE-GRID", "kind": "boundary",
+      "question": "Are the exact maximum gap and uncertainty-bounded symmetry limits inclusive?",
+      "input_overrides": {},
+      "checks": [
+        {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+        {"path": "checks.4.passed", "expected": true, "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "POLAR-SPARSE-LOBE-RISK", "kind": "counter_hypothesis",
+      "question": "Does a sparse polar grid force revision rather than claiming no off-axis lobe?",
+      "input_overrides": {"angles_deg": [-90, 0, 90], "levels_db": [70, 80, 70]},
+      "checks": [
+        {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+        {"path": "required_revisions.0", "expected": "ADD_ANGLE_SAMPLES_BEFORE_LOBE_DECISION", "absolute_tolerance": 0},
+        {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+      ]
+    },
+    {
+      "id": "POLAR-PEAK-NORMALIZATION-REJECTED", "kind": "negative",
+      "question": "Is peak-normalized data rejected because it can hide absolute off-axis loss?",
+      "input_overrides": {"normalization_mode": "PEAK_NORMALIZED"},
+      "expected_error": "ValueError"
+    }
+  ]
+}

@@ -1,0 +1,670 @@
+{
+  "suite_id": "R030-MICROPHONE-REVIEW-V1",
+  "role_id": "R030",
+  "skill_id": "microphone-noise-headroom-domain-review",
+  "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Independently authored sensitivity reference and RMS 6-8-10 noise triangle with 100 dB SPL=2 Pa; zero headroom and uncertainty boundaries. No executor-generated expected verdict.",
+  "scope": "Challenge microphone noise identifiability and ADC signal headroom independently of capsule overload; bounded software review, not whole profession or physical calibration.",
+  "base_input": {
+    "parameters": {
+      "calibrator_pressure_rms_pa": 1,
+      "calibrator_output_rms_v": 0.1,
+      "calibration_gain_linear": 10,
+      "analysis_gain_linear": 10,
+      "total_noise_rms_v": 0.00001,
+      "frontend_noise_rms_v": 0.000006,
+      "ambient_noise_rms_pa": 0,
+      "adc_peak_v": 1,
+      "required_spl_db": 100,
+      "signal_crest_factor": 2,
+      "minimum_sensitivity_dbv_per_pa": -42,
+      "maximum_sensitivity_dbv_per_pa": -38,
+      "maximum_self_noise_spl_db": 20,
+      "minimum_electrical_headroom_db": 3,
+      "pressure_relative_bound": 0,
+      "gain_relative_bound": 0,
+      "noise_relative_bound": 0
+    },
+    "candidate": {
+      "noise_resolved": true,
+      "self_noise_rms_pa": 0.00008,
+      "self_noise_spl_db": 12.041199826559248,
+      "self_noise_upper_spl_db": 12.041199826559248,
+      "electrical_headroom_db": 7.958800173440752,
+      "electrical_headroom_lower_db": 7.958800173440752,
+      "noise_passed": true,
+      "headroom_passed": true,
+      "next_experiment": "LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM",
+      "headroom_scope": "SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED",
+      "physical_measurement_verified": false,
+      "lifetime_verified": false,
+      "capsule_overload_verified": false,
+      "counter_hypotheses": [
+        "room noise rather than capsule self-noise",
+        "frontend noise rather than capsule noise",
+        "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+      ],
+      "noise_upper_scope": "INTRINSIC_RESIDUAL_BOUND"
+    },
+    "context": {
+      "product": "",
+      "transducer": "Microphone",
+      "lifecycle": "EVT",
+      "risk": "R1",
+      "source_kind": "SYNTHETIC"
+    }
+  },
+  "cases": [
+    {
+      "id": "R030-REFERENCE",
+      "kind": "positive",
+      "question": "Challenge microphone noise identifiability and ADC signal headroom independently of capsule overload",
+      "input_overrides": {},
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-BOUNDARY",
+      "kind": "boundary",
+      "question": "Are exact zero-uncertainty bounds inclusive in this domain?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 0.4,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 0,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        },
+        "candidate": {
+          "noise_resolved": true,
+          "self_noise_rms_pa": 0.00008,
+          "self_noise_spl_db": 12.041199826559248,
+          "self_noise_upper_spl_db": 12.041199826559248,
+          "electrical_headroom_db": 0,
+          "electrical_headroom_lower_db": 0,
+          "noise_passed": true,
+          "headroom_passed": true,
+          "next_experiment": "LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM",
+          "headroom_scope": "SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "room noise rather than capsule self-noise",
+            "frontend noise rather than capsule noise",
+            "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+          ],
+          "noise_upper_scope": "INTRINSIC_RESIDUAL_BOUND"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-WRONG-ASSERTION",
+      "kind": "positive",
+      "question": "Does the domain reviewer challenge a wrong pass or capsule-overload assertion?",
+      "input_overrides": {
+        "candidate": {
+          "noise_resolved": true,
+          "self_noise_rms_pa": 0.00008,
+          "self_noise_spl_db": 12.041199826559248,
+          "self_noise_upper_spl_db": 12.041199826559248,
+          "electrical_headroom_db": 7.958800173440752,
+          "electrical_headroom_lower_db": 7.958800173440752,
+          "noise_passed": true,
+          "headroom_passed": true,
+          "next_experiment": "LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM",
+          "headroom_scope": "SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": true,
+          "counter_hypotheses": [
+            "room noise rather than capsule self-noise",
+            "frontend noise rather than capsule noise",
+            "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+          ],
+          "noise_upper_scope": "INTRINSIC_RESIDUAL_BOUND"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-COUNTER",
+      "kind": "counter_hypothesis",
+      "question": "Must an electronics-dominated floor reject a claimed resolved capsule noise estimate?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.00001,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-FALSE-HYPOTHESIS",
+      "kind": "counter_hypothesis",
+      "question": "Can correct scalar outputs justify claiming instrument calibration?",
+      "input_overrides": {
+        "candidate": {
+          "noise_resolved": true,
+          "self_noise_rms_pa": 0.00008,
+          "self_noise_spl_db": 12.041199826559248,
+          "self_noise_upper_spl_db": 12.041199826559248,
+          "electrical_headroom_db": 7.958800173440752,
+          "electrical_headroom_lower_db": 7.958800173440752,
+          "noise_passed": true,
+          "headroom_passed": true,
+          "next_experiment": "LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM",
+          "headroom_scope": "SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "Numerical agreement proves microphone calibration"
+          ],
+          "noise_upper_scope": "INTRINSIC_RESIDUAL_BOUND"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        },
+        {
+          "path": "human_approval",
+          "expected": false,
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-WRONG-UNIT",
+      "kind": "negative",
+      "question": "Must dBFS without a full-scale reference be rejected?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0,
+          "calibrator_output_dbfs": -20
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R030-NOISE-CLIPPING",
+      "kind": "negative",
+      "question": "Must common-frame noise beyond ADC range invalidate the reference?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 2,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R030-UNAUTHORIZED",
+      "kind": "negative",
+      "question": "Can synthetic qualification authorize a production release?",
+      "input_overrides": {
+        "context": {
+          "product": "",
+          "transducer": "Microphone",
+          "lifecycle": "EVT",
+          "risk": "R4",
+          "source_kind": "SYNTHETIC"
+        }
+      },
+      "expected_error": "ValueError"
+    },
+    {
+      "id": "R030-NOISE-UNCERTAINTY-OMITTED",
+      "kind": "boundary",
+      "question": "Must nominal passing assertions be rejected when declared nonzero uncertainty changes identifiability or lower headroom?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0.3
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-NOISE-UNCERTAINTY-ACCOUNTED",
+      "kind": "boundary",
+      "question": "Can the reviewer accept the correctly revised bounds and rejected requirement from independent quarter-bound / 6.5 pressure-ratio arithmetic?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0.3
+        },
+        "candidate": {
+          "noise_resolved": false,
+          "self_noise_rms_pa": null,
+          "self_noise_spl_db": null,
+          "self_noise_upper_spl_db": 16.25826713285711,
+          "electrical_headroom_db": 7.958800173440752,
+          "electrical_headroom_lower_db": 7.958800173440752,
+          "noise_passed": false,
+          "headroom_passed": true,
+          "next_experiment": "LOWER_NOISE_FRONTEND_AT_MATCHED_GAIN",
+          "headroom_scope": "SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "room noise rather than capsule self-noise",
+            "frontend noise rather than capsule noise",
+            "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+          ],
+          "noise_upper_scope": "TOTAL_INPUT_EQUIVALENT_BOUND"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-GAIN-UNCERTAINTY-OMITTED",
+      "kind": "boundary",
+      "question": "Must nominal passing assertions be rejected when declared nonzero uncertainty changes identifiability or lower headroom?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 5,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0.25,
+          "noise_relative_bound": 0
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-GAIN-UNCERTAINTY-ACCOUNTED",
+      "kind": "boundary",
+      "question": "Can the reviewer accept the correctly revised bounds and rejected requirement from independent quarter-bound / 6.5 pressure-ratio arithmetic?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 5,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0.25,
+          "noise_relative_bound": 0
+        },
+        "candidate": {
+          "noise_resolved": true,
+          "self_noise_rms_pa": 0.00008,
+          "self_noise_spl_db": 12.041199826559248,
+          "self_noise_upper_spl_db": 16.478174818886377,
+          "electrical_headroom_db": 7.958800173440752,
+          "electrical_headroom_lower_db": 3.521825181113624,
+          "noise_passed": true,
+          "headroom_passed": false,
+          "next_experiment": "LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM",
+          "headroom_scope": "SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "room noise rather than capsule self-noise",
+            "frontend noise rather than capsule noise",
+            "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+          ],
+          "noise_upper_scope": "INTRINSIC_RESIDUAL_BOUND"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-PRESSURE-UNCERTAINTY-OMITTED",
+      "kind": "boundary",
+      "question": "Must nominal passing assertions be rejected when declared nonzero uncertainty changes identifiability or lower headroom?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 6,
+          "pressure_relative_bound": 0.25,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "CHANGES_REQUIRED",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-PRESSURE-UNCERTAINTY-ACCOUNTED",
+      "kind": "boundary",
+      "question": "Can the reviewer accept the correctly revised bounds and rejected requirement from independent quarter-bound / 6.5 pressure-ratio arithmetic?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 6,
+          "pressure_relative_bound": 0.25,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        },
+        "candidate": {
+          "noise_resolved": true,
+          "self_noise_rms_pa": 0.00008,
+          "self_noise_spl_db": 12.041199826559248,
+          "self_noise_upper_spl_db": 13.979400086720377,
+          "electrical_headroom_db": 7.958800173440752,
+          "electrical_headroom_lower_db": 5.460025441274752,
+          "noise_passed": true,
+          "headroom_passed": false,
+          "next_experiment": "LEVEL_SWEEP_WITH_DISTORTION_BEFORE_ANY_CAPSULE_OVERLOAD_CLAIM",
+          "headroom_scope": "SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "room noise rather than capsule self-noise",
+            "frontend noise rather than capsule noise",
+            "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+          ],
+          "noise_upper_scope": "INTRINSIC_RESIDUAL_BOUND"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-NUMERICAL-IDENTIFIABILITY",
+      "kind": "boundary",
+      "question": "Must near-total floor cancellation return an unresolved estimate and conservative total-noise upper bound?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000009999999999,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 3,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        },
+        "candidate": {
+          "noise_resolved": false,
+          "self_noise_rms_pa": null,
+          "self_noise_spl_db": null,
+          "self_noise_upper_spl_db": 13.979400086720377,
+          "electrical_headroom_db": 7.958800173440752,
+          "electrical_headroom_lower_db": 7.958800173440752,
+          "noise_passed": false,
+          "headroom_passed": true,
+          "next_experiment": "LOWER_NOISE_FRONTEND_AT_MATCHED_GAIN",
+          "headroom_scope": "SIGNAL_ONLY_NOISE_PEAKS_UNBOUNDED",
+          "physical_measurement_verified": false,
+          "lifetime_verified": false,
+          "capsule_overload_verified": false,
+          "counter_hypotheses": [
+            "room noise rather than capsule self-noise",
+            "frontend noise rather than capsule noise",
+            "calibrator coupling or gain-reference error rather than capsule sensitivity drift"
+          ],
+          "noise_upper_scope": "TOTAL_INPUT_EQUIVALENT_BOUND"
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    },
+    {
+      "id": "R030-HEADROOM-ULP-BOUNDARY",
+      "kind": "boundary",
+      "question": "Do independently calculated equivalent formulas share the declared 1e-12 dB inclusive boundary policy?",
+      "input_overrides": {
+        "parameters": {
+          "calibrator_pressure_rms_pa": 1,
+          "calibrator_output_rms_v": 0.1,
+          "calibration_gain_linear": 10,
+          "analysis_gain_linear": 10,
+          "total_noise_rms_v": 0.00001,
+          "frontend_noise_rms_v": 0.000006,
+          "ambient_noise_rms_pa": 0,
+          "adc_peak_v": 1,
+          "required_spl_db": 100,
+          "signal_crest_factor": 2,
+          "minimum_sensitivity_dbv_per_pa": -42,
+          "maximum_sensitivity_dbv_per_pa": -38,
+          "maximum_self_noise_spl_db": 20,
+          "minimum_electrical_headroom_db": 7.958800173440752,
+          "pressure_relative_bound": 0,
+          "gain_relative_bound": 0,
+          "noise_relative_bound": 0
+        }
+      },
+      "checks": [
+        {
+          "path": "decision",
+          "expected": "BOUNDED_REVIEW_ACCEPT",
+          "absolute_tolerance": 0
+        }
+      ]
+    }
+  ]
+}

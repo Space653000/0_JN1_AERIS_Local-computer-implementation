@@ -1,0 +1,11 @@
+{
+  "id": "FAILURE-provenance-research",
+  "category": "Failures",
+  "title": "FAILURE-provenance-research",
+  "text": "{\"invalid_variant\": {\"documents\": [{\"rights\": \"UNLICENSED_PAID_FULLTEXT\", \"source\": \"unknown\"}]}, \"expected\": \"ValueError/KeyError input contract rejection\"}",
+  "source": "golden/engineering/Product/provenance-research/negative.json",
+  "rights": "SYNTHETIC",
+  "sha256": "2c121b31233ca4aa3e6409a488495a042604dd1334901ec4cef36c99b59678d6",
+  "is_evidence": false,
+  "provenance_policy": "source text or generated synthetic derivation; no paywalled standard full text"
+}

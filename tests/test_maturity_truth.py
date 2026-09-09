@@ -17,8 +17,11 @@ class MaturityTruthTests(unittest.TestCase):
             self.assertIn(item["state"], allowed, name)
             if item["state"] in {"TESTED", "VERIFIED"}:
                 self.assertTrue(str(item.get("evidence", "")).strip(), f"{name} lacks evidence reference")
-            if item["state"] in {"NOT_IMPLEMENTED", "BLOCKED_EXTERNAL"}:
+            if item["state"] in {"NOT_IMPLEMENTED", "BLOCKED_EXTERNAL", "HUMAN_GATE", "EXTERNAL_LICENSE", "PHYSICAL_HARDWARE", "REBOOT_LOGOFF_REQUIRED"}:
                 self.assertNotEqual(item["state"], "VERIFIED", name)
+        # This bounded Gate must not force unrelated voice/commercial capability
+        # gaps to disappear merely to preserve a historical zero-gap assertion.
+        self.assertIn('NOT_IMPLEMENTED', allowed)
 
     def test_reviewer_allocator_truth_matches_tested_implementation(self):
         maturity = load_json("config/maturity.json")

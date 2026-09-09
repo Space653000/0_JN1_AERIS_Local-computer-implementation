@@ -1,0 +1,36 @@
+{
+  "id": "psychoacoustic-descriptors-analytic-v1",
+  "skill_id": "psychoacoustic-descriptors",
+  "suite": "Speaker",
+  "input": {
+    "frequency_hz": [
+      1000,
+      3000
+    ],
+    "power": [
+      1,
+      1
+    ]
+  },
+  "checks": [
+    {
+      "path": "spectral_centroid_hz",
+      "expected": 2000,
+      "absolute_tolerance": 1e-08,
+      "unit": "Hz",
+      "reduction": null
+    }
+  ],
+  "negative_patch": {
+    "power": [
+      -1,
+      1
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "method_version": "1.0.0",
+  "reason": "Equal energy at 1 and 3 kHz has a 2 kHz centroid; no MOS inference.",
+  "source_kind": "SYNTHETIC_ANALYTICAL",
+  "regression_policy": "bit-identical canonical numerical output on repeat execution; special historical-edge fixtures where declared",
+  "sha256": "a1c28adcd0baffb90f06819f75054274309275dd934f431a873dfa41a2519ebc"
+}

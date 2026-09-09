@@ -1,0 +1,16 @@
+{
+  "input": {
+    "sample_rate_hz": 48000,
+    "buffer_samples": [
+      -480,
+      960
+    ],
+    "other_stage_ms": [
+      10,
+      20
+    ],
+    "clock_difference_ppm": 50
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "aa162757de5e4bf71791b7ca37420626e6027a279cd0d546d7dcd840b85f5b6f"
+}

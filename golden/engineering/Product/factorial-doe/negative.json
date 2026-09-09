@@ -1,0 +1,16 @@
+{
+  "input": {
+    "factors": {
+      "gain": [
+        2,
+        0
+      ]
+    },
+    "responses": [
+      0,
+      4
+    ]
+  },
+  "failure_expectation": "ValueError/KeyError input contract rejection",
+  "sha256": "99d7ca4fb282b4a9018843646efe530c986290923468bc6ecaaa97d135e60581"
+}
