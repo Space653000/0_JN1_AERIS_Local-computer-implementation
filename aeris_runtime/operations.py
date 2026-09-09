@@ -14,11 +14,12 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from .audit import append_event, verify_ledger
 from .company import validate_company_manifest
 from .config import ROOT, load_config
-from .controlplane import handle_get as controlplane_get, handle_post as controlplane_post
+from .controlplane import _reject_capability_request, handle_get as controlplane_get, handle_post as controlplane_post
 from .corecache import verify_core_cache
 from .expected_runs import ensure_defaults as ensure_expected_runs, mark as mark_expected_run
 from .machine import detect as machine_detect
@@ -190,6 +191,32 @@ def _control_plane_mode(opening: dict[str, Any]) -> str:
     return "READ_ONLY_BLOCKED" if opening.get("operational_state") == "BLOCKED" else "ACTIVE_SCOPED"
 
 
+def _server_control_plane_mode(server: Any, opening: dict[str, Any]) -> str:
+    """Production supervisor follows live opening state; isolated test harnesses stay explicit."""
+    if bool(getattr(server, "enforce_opening_state", False)):
+        return _control_plane_mode(opening)
+    return "ACTIVE_SCOPED"
+
+
+def _reject_invalid_capability_transport(handler: Any) -> bool:
+    """Preserve transport/authz denial semantics before any BLOCKED-state response."""
+    path = urlsplit(handler.path).path
+    if not path.startswith("/api/v1/capabilities/"):
+        return False
+    host = handler.headers.get("Host", "")
+    origin = handler.headers.get("Origin")
+    content_type = handler.headers.get("Content-Type", "").lower()
+    invalid = (
+        urlsplit("http://" + host).hostname not in {"localhost", "127.0.0.1", "::1"}
+        or bool(origin and origin != "http://" + host)
+        or not content_type.startswith("application/json")
+    )
+    if invalid:
+        _reject_capability_request(handler)
+        return True
+    return False
+
+
 class _Handler(BaseHTTPRequestHandler):
     server_version = "AERISLocalSupervisor/2"
 
@@ -208,6 +235,7 @@ class _Handler(BaseHTTPRequestHandler):
         if controlplane_get(self, opening):
             return
         if self.path == "/health":
+            mode = _server_control_plane_mode(self.server, opening)
             self._json(200, {
                 "service": "AERIS_LOCAL_SUPERVISOR",
                 "service_state": "SERVING",
@@ -217,8 +245,8 @@ class _Handler(BaseHTTPRequestHandler):
                 "four_way_aligned": False,
                 "pid": os.getpid(),
                 "company_opening_state": opening.get("operational_state"),
-                "control_plane_mode": _control_plane_mode(opening),
-                "engineering_mutations_allowed": _control_plane_mode(opening) != "READ_ONLY_BLOCKED",
+                "control_plane_mode": mode,
+                "engineering_mutations_allowed": mode != "READ_ONLY_BLOCKED",
                 "company_complete": False,
                 "scope": "loopback local supervisor heartbeat, not whole-company health proof",
             })
@@ -239,8 +267,11 @@ class _Handler(BaseHTTPRequestHandler):
             threading.Thread(target=self.server.shutdown, daemon=True).start()
             return
 
+        if _reject_invalid_capability_transport(self):
+            return
+
         opening = _read_json(OPENING_FILE) or assess_opening()
-        if _control_plane_mode(opening) == "READ_ONLY_BLOCKED":
+        if _server_control_plane_mode(self.server, opening) == "READ_ONLY_BLOCKED":
             self._json(503, {
                 "error": "company_blocked",
                 "detail": "AERIS control plane is available for observation, but engineering mutations are disabled until blockers are cleared.",
@@ -270,6 +301,7 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
     # Drain accepted requests during controlled capability-runtime replacement.
     server.daemon_threads = False
     server.shutdown_token = token  # type: ignore[attr-defined]
+    server.enforce_opening_state = True  # type: ignore[attr-defined]
     supervisor_state = {
         "schema_version": 2,
         "pid": os.getpid(),
