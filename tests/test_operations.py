@@ -101,6 +101,23 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual(operations._server_control_plane_mode(SimpleNamespace(), {"operational_state": "BLOCKED"}), "ACTIVE_SCOPED")
         self.assertEqual(operations._server_control_plane_mode(SimpleNamespace(enforce_opening_state=True), {"operational_state": "BLOCKED"}), "READ_ONLY_BLOCKED")
 
+    def test_invalid_capability_transport_is_denied_before_blocked_gate(self):
+        handler = SimpleNamespace(
+            path="/api/v1/capabilities/execute",
+            headers={"Host": "evil.invalid", "Origin": "https://evil.invalid", "Content-Type": "application/json"},
+        )
+        with patch.object(operations, "_reject_capability_request") as reject:
+            self.assertTrue(operations._reject_invalid_capability_transport(handler))
+        reject.assert_called_once_with(handler)
+
+        valid = SimpleNamespace(
+            path="/api/v1/capabilities/execute",
+            headers={"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765", "Content-Type": "application/json"},
+        )
+        with patch.object(operations, "_reject_capability_request") as reject:
+            self.assertFalse(operations._reject_invalid_capability_transport(valid))
+        reject.assert_not_called()
+
     def test_blocked_state_rejects_engineering_post_before_controlplane(self):
         handler = operations._Handler.__new__(operations._Handler)
         handler.path = "/api/v1/tasks"
