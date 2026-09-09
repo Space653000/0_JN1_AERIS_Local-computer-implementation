@@ -4,6 +4,7 @@
   "purpose": "Allow any supported machine to resume AERIS construction from durable repository specs and real evidence instead of depending on chat history.",
   "canonical_core": "https://github.com/Space653000/0_JN1_AERIS",
   "implementation": "https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation",
+  "supervision_handoff_contract": "config/construction_handoff.v1.json",
   "default_local_target_example": "C:\\0_JN1_AERIS",
   "resume_policy": {
     "read_phase_catalog_on_two_url_trigger": true,
