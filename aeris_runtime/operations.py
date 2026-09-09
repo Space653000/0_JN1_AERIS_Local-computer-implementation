@@ -185,6 +185,11 @@ def _write_heartbeat(port: int, opening: dict[str, Any]) -> None:
         mark_expected_run("supervisor-heartbeat", True, actor="AERIS Supervisor", audit_event=False)
 
 
+def _control_plane_mode(opening: dict[str, Any]) -> str:
+    """Keep observability available while engineering mutations remain fail-closed."""
+    return "READ_ONLY_BLOCKED" if opening.get("operational_state") == "BLOCKED" else "ACTIVE_SCOPED"
+
+
 class _Handler(BaseHTTPRequestHandler):
     server_version = "AERISLocalSupervisor/2"
 
@@ -207,11 +212,13 @@ class _Handler(BaseHTTPRequestHandler):
                 "service": "AERIS_LOCAL_SUPERVISOR",
                 "service_state": "SERVING",
                 "implementation_sha": LOADED_IMPLEMENTATION_SHA,
-                "core_sha": LOADED_CORE_IDENTITY.get('core_sha', 'UNKNOWN'),
-                "core_blueprint_alignment": LOADED_CORE_IDENTITY.get('blueprint_alignment', 'UNKNOWN'),
+                "core_sha": LOADED_CORE_IDENTITY.get("core_sha", "UNKNOWN"),
+                "core_blueprint_alignment": LOADED_CORE_IDENTITY.get("blueprint_alignment", "UNKNOWN"),
                 "four_way_aligned": False,
                 "pid": os.getpid(),
                 "company_opening_state": opening.get("operational_state"),
+                "control_plane_mode": _control_plane_mode(opening),
+                "engineering_mutations_allowed": _control_plane_mode(opening) != "READ_ONLY_BLOCKED",
                 "company_complete": False,
                 "scope": "loopback local supervisor heartbeat, not whole-company health proof",
             })
@@ -222,18 +229,27 @@ class _Handler(BaseHTTPRequestHandler):
         self._json(404, {"error": "not_found"})
 
     def do_POST(self) -> None:  # noqa: N802
+        if self.path == "/shutdown":
+            expected = getattr(self.server, "shutdown_token", "")  # type: ignore[attr-defined]
+            supplied = self.headers.get("X-AERIS-Supervisor-Token", "")
+            if not expected or not secrets.compare_digest(expected, supplied):
+                self._json(403, {"error": "forbidden"})
+                return
+            self._json(200, {"service": "AERIS_LOCAL_SUPERVISOR", "shutdown": "accepted"})
+            threading.Thread(target=self.server.shutdown, daemon=True).start()
+            return
+
+        opening = _read_json(OPENING_FILE) or assess_opening()
+        if _control_plane_mode(opening) == "READ_ONLY_BLOCKED":
+            self._json(503, {
+                "error": "company_blocked",
+                "detail": "AERIS control plane is available for observation, but engineering mutations are disabled until blockers are cleared.",
+                "blockers": opening.get("blockers", []),
+            })
+            return
         if controlplane_post(self):
             return
-        if self.path != "/shutdown":
-            self._json(404, {"error": "not_found"})
-            return
-        expected = getattr(self.server, "shutdown_token", "")  # type: ignore[attr-defined]
-        supplied = self.headers.get("X-AERIS-Supervisor-Token", "")
-        if not expected or not secrets.compare_digest(expected, supplied):
-            self._json(403, {"error": "forbidden"})
-            return
-        self._json(200, {"service": "AERIS_LOCAL_SUPERVISOR", "shutdown": "accepted"})
-        threading.Thread(target=self.server.shutdown, daemon=True).start()
+        self._json(404, {"error": "not_found"})
 
     def log_message(self, format: str, *args: object) -> None:
         return
@@ -243,9 +259,6 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
     if not (1 <= int(port) <= 65535):
         raise ValueError("invalid supervisor port")
     opening = open_company(actor="AERIS Supervisor")
-    if opening.get("operational_state") == "BLOCKED":
-        print(json.dumps(opening, ensure_ascii=False, indent=2))
-        return 9
     token = secrets.token_urlsafe(32)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     SUPERVISOR_TOKEN_FILE.write_text(token, encoding="utf-8")
@@ -265,6 +278,8 @@ def serve_supervisor(port: int = DEFAULT_PORT, heartbeat_interval_sec: int = 30)
         "port": int(port),
         "started_at_utc": _now(),
         "company_opening_state": opening.get("operational_state"),
+        "control_plane_mode": _control_plane_mode(opening),
+        "engineering_mutations_allowed": _control_plane_mode(opening) != "READ_ONLY_BLOCKED",
         "public_bind_forbidden": True,
         "web_ui": f"http://{DEFAULT_HOST}:{int(port)}/",
         "api_base": f"http://{DEFAULT_HOST}:{int(port)}/api/v1/",
