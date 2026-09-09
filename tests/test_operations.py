@@ -98,10 +98,13 @@ class OperationsTests(unittest.TestCase):
     def test_blocked_state_uses_read_only_control_plane_mode(self):
         self.assertEqual(operations._control_plane_mode({"operational_state": "BLOCKED"}), "READ_ONLY_BLOCKED")
         self.assertEqual(operations._control_plane_mode({"operational_state": "OPEN_WITH_LIMITS"}), "ACTIVE_SCOPED")
+        self.assertEqual(operations._server_control_plane_mode(SimpleNamespace(), {"operational_state": "BLOCKED"}), "ACTIVE_SCOPED")
+        self.assertEqual(operations._server_control_plane_mode(SimpleNamespace(enforce_opening_state=True), {"operational_state": "BLOCKED"}), "READ_ONLY_BLOCKED")
 
     def test_blocked_state_rejects_engineering_post_before_controlplane(self):
         handler = operations._Handler.__new__(operations._Handler)
         handler.path = "/api/v1/tasks"
+        handler.server = SimpleNamespace(enforce_opening_state=True)
         handler._json = MagicMock()
         opening = {"operational_state": "BLOCKED", "blockers": ["AUDIT_LEDGER_INVALID"]}
         with patch.object(operations, "_read_json", return_value=opening), patch.object(operations, "controlplane_post") as post:
@@ -112,6 +115,17 @@ class OperationsTests(unittest.TestCase):
         self.assertEqual(code, 503)
         self.assertEqual(payload["error"], "company_blocked")
         self.assertEqual(payload["blockers"], ["AUDIT_LEDGER_INVALID"])
+
+    def test_generic_handler_harness_does_not_inherit_repository_blocked_state(self):
+        handler = operations._Handler.__new__(operations._Handler)
+        handler.path = "/api/v1/tasks"
+        handler.server = SimpleNamespace()
+        handler._json = MagicMock()
+        opening = {"operational_state": "BLOCKED", "blockers": ["AUDIT_LEDGER_INVALID"]}
+        with patch.object(operations, "_read_json", return_value=opening), patch.object(operations, "controlplane_post", return_value=True) as post:
+            handler.do_POST()
+        post.assert_called_once_with(handler)
+        handler._json.assert_not_called()
 
     def test_blocked_state_still_attempts_loopback_supervisor_bind(self):
         opening = {"operational_state": "BLOCKED", "blockers": ["AUDIT_LEDGER_INVALID"], "audit_ledger": {"valid": False}}
