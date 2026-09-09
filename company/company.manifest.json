@@ -207,10 +207,10 @@
     "ci_smoke_is_not_real_company_opening",
     "supervisor_heartbeat_is_not_company_health",
     "open_verified_scope_is_named_scope_only",
-    "safe_software_not_implemented_is_a_gap_to_close_not_a_reason_to_stop_full_build",
+    "safe_software_gap_closure_is_limited_to_current_human_authorized_batch",
     "audit_hash_chain_is_not_worm",
     "evidence_hash_manifest_is_not_external_attestation",
     "commercial_release_requires_current_license_and_external_dependency_review"
   ],
-  "review_hold": "HOLD_FOR_SOL_RED_TEAM; config/review_gate.v1.json; no runtime compliance or Local acceptance implied."
+  "review_hold": "GATE06_RETRY_R1_IN_PROGRESS; canonical Blueprint REVIEW_PENDING; config/review_gate.v1.json; no runtime compliance or Local acceptance implied."
 }

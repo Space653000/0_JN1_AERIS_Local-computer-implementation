@@ -154,14 +154,20 @@
     "OPEN_WITH_LIMITS",
     "OPEN_VERIFIED_SCOPE"
   ],
-  "truth_rule": "Two canonical URLs plus a safe selected workspace are the full command. Codex must close every safely implementable zero-cost software-only gap before final opening. Paid/licensed professional tools, external credentials, hardware/calibration and Human-authority blockers remain explicit and never fabricated; Claude is optional and never required by the default path.",
-  "review_revision": "2026-09-07.1",
+  "truth_rule": "NO EVIDENCE = NOT DONE; admission before trigger; one bounded gate at a time",
+  "review_revision": "0.7.0-governance.4",
   "admission_precondition": {
-    "state": "HOLD_FOR_SOL_RED_TEAM",
-    "contract": "config/review_gate.v1.json",
+    "state": "GATE06_RETRY_R1_IN_PROGRESS",
+    "blueprint_state": "REVIEW_PENDING",
+    "contract": "config/blueprint/aeris.review.json",
+    "traceability_contract": "config/blueprint/aeris.traceability.json",
+    "gate_adapter": "config/review_gate.v1.json",
+    "E_full_local_acceptance": "NOT_STARTED",
     "evaluate_before_trigger": true,
     "explicit_review_or_no_build_suppresses_trigger": true,
     "requires_completed_review_and_human_scoped_authorization": true,
+    "requires_scoped_authorization": true,
+    "drift_stops_construction": true,
     "runtime_enforcement_implemented": false
   },
   "admission_contract": "config/blueprint_compatibility.json"

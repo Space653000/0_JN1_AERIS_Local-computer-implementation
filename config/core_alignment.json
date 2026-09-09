@@ -60,7 +60,7 @@
   ],
   "change_policy": "If canonical Core SHA changes, remote drift gate must fail. Human reviews semantic changes before deliberately updating lock, alignment, Autopilot, company manifest and maturity evidence together; never auto-accept Core drift.",
   "review_alignment": {
-    "architecture_version": "0.6.0-review.1",
+    "architecture_version": "0.7.0-governance.4",
     "implementation_plan_version": "0.3.0-review.1",
     "document_alignment": "REVIEWED",
     "runtime_alignment": "OPEN_FINDINGS",
