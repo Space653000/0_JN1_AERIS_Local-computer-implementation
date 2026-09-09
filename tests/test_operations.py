@@ -95,6 +95,63 @@ class OperationsTests(unittest.TestCase):
     def test_supervisor_is_hard_bound_to_loopback(self):
         self.assertEqual(operations.DEFAULT_HOST, "127.0.0.1")
 
+    def test_blocked_state_uses_read_only_control_plane_mode(self):
+        self.assertEqual(operations._control_plane_mode({"operational_state": "BLOCKED"}), "READ_ONLY_BLOCKED")
+        self.assertEqual(operations._control_plane_mode({"operational_state": "OPEN_WITH_LIMITS"}), "ACTIVE_SCOPED")
+        self.assertEqual(operations._server_control_plane_mode(SimpleNamespace(), {"operational_state": "BLOCKED"}), "ACTIVE_SCOPED")
+        self.assertEqual(operations._server_control_plane_mode(SimpleNamespace(enforce_opening_state=True), {"operational_state": "BLOCKED"}), "READ_ONLY_BLOCKED")
+
+    def test_invalid_capability_transport_is_denied_before_blocked_gate(self):
+        handler = SimpleNamespace(
+            path="/api/v1/capabilities/execute",
+            headers={"Host": "evil.invalid", "Origin": "https://evil.invalid", "Content-Type": "application/json"},
+        )
+        with patch.object(operations, "_reject_capability_request") as reject:
+            self.assertTrue(operations._reject_invalid_capability_transport(handler))
+        reject.assert_called_once_with(handler)
+
+        valid = SimpleNamespace(
+            path="/api/v1/capabilities/execute",
+            headers={"Host": "127.0.0.1:8765", "Origin": "http://127.0.0.1:8765", "Content-Type": "application/json"},
+        )
+        with patch.object(operations, "_reject_capability_request") as reject:
+            self.assertFalse(operations._reject_invalid_capability_transport(valid))
+        reject.assert_not_called()
+
+    def test_blocked_state_rejects_engineering_post_before_controlplane(self):
+        handler = operations._Handler.__new__(operations._Handler)
+        handler.path = "/api/v1/tasks"
+        handler.server = SimpleNamespace(enforce_opening_state=True)
+        handler._json = MagicMock()
+        opening = {"operational_state": "BLOCKED", "blockers": ["AUDIT_LEDGER_INVALID"]}
+        with patch.object(operations, "_read_json", return_value=opening), patch.object(operations, "controlplane_post") as post:
+            handler.do_POST()
+        post.assert_not_called()
+        handler._json.assert_called_once()
+        code, payload = handler._json.call_args.args
+        self.assertEqual(code, 503)
+        self.assertEqual(payload["error"], "company_blocked")
+        self.assertEqual(payload["blockers"], ["AUDIT_LEDGER_INVALID"])
+
+    def test_generic_handler_harness_does_not_inherit_repository_blocked_state(self):
+        handler = operations._Handler.__new__(operations._Handler)
+        handler.path = "/api/v1/tasks"
+        handler.server = SimpleNamespace()
+        handler._json = MagicMock()
+        opening = {"operational_state": "BLOCKED", "blockers": ["AUDIT_LEDGER_INVALID"]}
+        with patch.object(operations, "_read_json", return_value=opening), patch.object(operations, "controlplane_post", return_value=True) as post:
+            handler.do_POST()
+        post.assert_called_once_with(handler)
+        handler._json.assert_not_called()
+
+    def test_blocked_state_still_attempts_loopback_supervisor_bind(self):
+        opening = {"operational_state": "BLOCKED", "blockers": ["AUDIT_LEDGER_INVALID"], "audit_ledger": {"valid": False}}
+        with tempfile.TemporaryDirectory() as td:
+            state = Path(td)
+            with patch.object(operations, "STATE_DIR", state), patch.object(operations, "SUPERVISOR_TOKEN_FILE", state / ".supervisor-token"), patch.object(operations, "open_company", return_value=opening), patch.object(operations, "ThreadingHTTPServer", side_effect=RuntimeError("BOUND_ATTEMPT")):
+                with self.assertRaisesRegex(RuntimeError, "BOUND_ATTEMPT"):
+                    operations.serve_supervisor(8765)
+
 
 if __name__ == "__main__":
     unittest.main()
