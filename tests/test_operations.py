@@ -95,6 +95,32 @@ class OperationsTests(unittest.TestCase):
     def test_supervisor_is_hard_bound_to_loopback(self):
         self.assertEqual(operations.DEFAULT_HOST, "127.0.0.1")
 
+    def test_blocked_state_uses_read_only_control_plane_mode(self):
+        self.assertEqual(operations._control_plane_mode({"operational_state": "BLOCKED"}), "READ_ONLY_BLOCKED")
+        self.assertEqual(operations._control_plane_mode({"operational_state": "OPEN_WITH_LIMITS"}), "ACTIVE_SCOPED")
+
+    def test_blocked_state_rejects_engineering_post_before_controlplane(self):
+        handler = operations._Handler.__new__(operations._Handler)
+        handler.path = "/api/v1/tasks"
+        handler._json = MagicMock()
+        opening = {"operational_state": "BLOCKED", "blockers": ["AUDIT_LEDGER_INVALID"]}
+        with patch.object(operations, "_read_json", return_value=opening), patch.object(operations, "controlplane_post") as post:
+            handler.do_POST()
+        post.assert_not_called()
+        handler._json.assert_called_once()
+        code, payload = handler._json.call_args.args
+        self.assertEqual(code, 503)
+        self.assertEqual(payload["error"], "company_blocked")
+        self.assertEqual(payload["blockers"], ["AUDIT_LEDGER_INVALID"])
+
+    def test_blocked_state_still_attempts_loopback_supervisor_bind(self):
+        opening = {"operational_state": "BLOCKED", "blockers": ["AUDIT_LEDGER_INVALID"], "audit_ledger": {"valid": False}}
+        with tempfile.TemporaryDirectory() as td:
+            state = Path(td)
+            with patch.object(operations, "STATE_DIR", state), patch.object(operations, "SUPERVISOR_TOKEN_FILE", state / ".supervisor-token"), patch.object(operations, "open_company", return_value=opening), patch.object(operations, "ThreadingHTTPServer", side_effect=RuntimeError("BOUND_ATTEMPT")):
+                with self.assertRaisesRegex(RuntimeError, "BOUND_ATTEMPT"):
+                    operations.serve_supervisor(8765)
+
 
 if __name__ == "__main__":
     unittest.main()
