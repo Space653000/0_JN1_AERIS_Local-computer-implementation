@@ -196,8 +196,8 @@ def _verify_git_cache(base: Path, state_path: Path) -> dict:
             errors.append(f"Core cache HEAD must be detached, found symbolic ref: {symbolic}")
         if sha and head != sha:
             errors.append(f"Core cache HEAD {head} does not match recorded Core SHA {sha}")
-        if sha and origin_main != sha:
-            errors.append(f"origin/main {origin_main} does not match recorded Core SHA {sha}")
+        # A moving tracking branch is not the frozen Blueprint identity. Cache
+        # integrity and target compatibility are reported separately below.
         if dirty:
             errors.append("Core cache working tree is modified or contains untracked files")
     except Exception as exc:
@@ -211,5 +211,11 @@ def verify_core_cache(base: Path | None = None, state_path: Path | None = None) 
     if not base.exists():
         return {"valid": False, "mode": "missing", "errors": ["Core cache missing"]}
     if (base / ".git").is_dir():
-        return _verify_git_cache(base, state_path or CORE_STATE)
-    return verify_snapshot_dir(base)
+        result = _verify_git_cache(base, state_path or CORE_STATE)
+    else:
+        result = verify_snapshot_dir(base)
+    from .blueprint_compatibility import TARGET
+    result['target_core_sha'] = TARGET
+    result['blueprint_alignment'] = ('ALIGNED' if result.get('valid') and result.get('core_sha') == TARGET
+                                     else 'DRIFT' if result.get('core_sha') else 'UNKNOWN')
+    return result

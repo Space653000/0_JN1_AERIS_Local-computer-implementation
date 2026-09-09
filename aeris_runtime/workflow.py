@@ -254,10 +254,10 @@ def execute_workflow(workflow_id: str, actor: str) -> dict[str, Any]:
 
     evidence_ref = str(root)
     transition_task(task_id, "EVIDENCED", actor, evidence_refs=[evidence_ref])
-    record_gate(task_id, "G0_CONTRACT", "PASS", actor, evidence_refs=[evidence_ref], note="Workflow/Skill contract and immutable input snapshot baseline present")
+    record_gate(task_id, "G0_CONTRACT", "BASELINE_PASS", actor, evidence_refs=[evidence_ref], note="Local execution baseline only; not authenticated formal gate acceptance")
     numerical = str(result.get("evidence_class", "")).startswith("DETERMINISTIC_")
     if numerical and result.get("result") in {"PASS", "FAIL"}:
-        outcome = "PASS" if result.get("result") == "PASS" else "FAIL"
+        outcome = "BASELINE_PASS" if result.get("result") == "PASS" else "FAIL"
         record_gate(task_id, "G1_NUMERICAL", outcome, actor, evidence_refs=[evidence_ref], note="Deterministic Skill numerical/validation result")
 
     wf["state"] = "EVIDENCED"

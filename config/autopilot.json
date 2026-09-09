@@ -1,24 +1,23 @@
 {
   "schema_version": 5,
   "contract_id": "AERIS-LOCAL-FULL-BUILD-AUTOPILOT-V5",
-  "canonical_core_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
+  "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "deployment_profile": "AERIS-ZERO-COST-NO-CLAUDE-V1",
   "trigger": {
     "required_urls": [
       "https://github.com/Space653000/0_JN1_AERIS",
       "https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation"
     ],
-    "interpretation": "AERIS_FULL_BUILD_AUTOPILOT_REQUEST",
-    "two_urls_are_sufficient_when_target_path_is_unambiguous_in_codex": true,
+    "interpretation": "PROJECT_IDENTIFICATION_ONLY",
+    "two_urls_are_sufficient_when_target_path_is_unambiguous_in_codex": false,
     "explicit_target_path_overrides_active_workspace": true,
     "target_path_resolution_order": [
-      "explicit_local_target_path_if_supplied",
-      "human_selected_or_opened_codex_path",
-      "single_unambiguous_active_writable_workspace_root"
+      "explicit_canonical_product_root_only"
     ],
     "requires_additional_prompt": false,
     "requires_plan_confirmation": false,
-    "ask_for_target_path_only_if_unresolved_or_ambiguous": true
+    "ask_for_target_path_only_if_unresolved_or_ambiguous": true,
+    "requires_scoped_authorization": true
   },
   "default_mode": "auto",
   "default_local_model": "qwen3:4b-instruct",
@@ -40,7 +39,7 @@
     "ask_human_only_at_human_gate": true,
     "stop_for_plan_confirmation": false,
     "close_software_only_gaps_before_final_opening": true,
-    "continue_until_no_safe_software_gap_remains": true,
+    "continue_until_no_safe_software_gap_remains": false,
     "prefer_github_ci_before_local_debugging": true,
     "local_acceptance_cycles": 1
   },
@@ -164,5 +163,6 @@
     "explicit_review_or_no_build_suppresses_trigger": true,
     "requires_completed_review_and_human_scoped_authorization": true,
     "runtime_enforcement_implemented": false
-  }
+  },
+  "admission_contract": "config/blueprint_compatibility.json"
 }

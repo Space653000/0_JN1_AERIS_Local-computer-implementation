@@ -1,0 +1,111 @@
+{
+  "schema_version": 3,
+  "contract_id": "AERIS-BOUNDED-GATE-V3",
+  "canonical_core": {
+    "repository": "Space653000/0_JN1_AERIS",
+    "branch": "main",
+    "authority": "read_only_design_ssot"
+  },
+  "implementation": {
+    "repository": "Space653000/0_JN1_AERIS_Local-computer-implementation",
+    "branch": "main",
+    "authority": "local_executable_company_image"
+  },
+  "human_ai_roles": {
+    "human_chief_engineer": "final_authority_and_irreversible_release_approval",
+    "codex": "primary_local_executor_installer_implementer",
+    "claude_code": "optional_independent_reviewer_only_when_human_explicitly_requests",
+    "models": "replaceable_compute_not_identity",
+    "evidence": "decision_basis_not_agent_consensus"
+  },
+  "trigger": {
+    "canonical_urls": [
+      "https://github.com/Space653000/0_JN1_AERIS",
+      "https://github.com/Space653000/0_JN1_AERIS_Local-computer-implementation"
+    ],
+    "interpretation": "PROJECT_IDENTIFICATION_ONLY",
+    "active_workspace_counts_as_target_path": false,
+    "target_root": "C:\\0_JN1_AERIS",
+    "requires_scoped_authorization": true
+  },
+  "default_execution_policy": {
+    "primary_executor": "codex",
+    "launch_claude_code": false,
+    "launch_second_model_reviewer": false,
+    "use_codex_tasks_or_scheduler": false,
+    "ask_human_only_at_human_gate": true,
+    "close_software_only_gaps_before_final_opening": true,
+    "continue_until_no_safe_software_gap_remains": false,
+    "prefer_github_ci_before_local_debugging": true,
+    "normal_real_machine_acceptance_cycles": "evidence_required_not_fixed_count"
+  },
+  "full_build_phases": [
+    "ADMISSION_DRIFT",
+    "PLAN",
+    "IMPLEMENT",
+    "EXECUTE",
+    "EVIDENCE",
+    "VERIFY",
+    "PASS",
+    "NEXT"
+  ],
+  "software_gap_closure": {
+    "scope": "one_authorized_batch",
+    "add_or_update_tests": true,
+    "stop_when": [
+      "drift",
+      "failed_gate",
+      "human_or_external_gate",
+      "batch_complete"
+    ]
+  },
+  "core_remote_policy": {
+    "codex_write": "FORBIDDEN_DURING_NORMAL_BUILD_DEPLOYMENT",
+    "normal_direction": "core_main_to_local_implementation",
+    "publication": "separate_human_controlled_process"
+  },
+  "continuity": {
+    "codex_scheduler": "NOT_USED",
+    "windows": "Scheduled Task with restart policy; Startup fallback when required",
+    "linux_jetson": "systemd user service with Restart=always; cron fallback when required",
+    "watchdog": true
+  },
+  "human_gates": [
+    "AMBIGUOUS_OR_UNSAFE_TARGET_PATH",
+    "ADMIN_OR_OS_POLICY_DENIAL",
+    "LICENSE_OR_EULA_REQUIRED",
+    "SECRET_OR_HARDWARE_TOKEN_REQUIRED",
+    "PHYSICAL_FIXTURE_OR_CALIBRATION_REQUIRED",
+    "UNRELATED_DESTRUCTIVE_NETWORK_STORAGE_CHANGE",
+    "CORE_POLICY_CHANGE_REQUIRED",
+    "ONE_TIME_REBOOT_OR_LOGOFF_FOR_PERSISTENCE_ACCEPTANCE",
+    "R3_R4_PRODUCTION_CUSTOMER_FORMAL_RELEASE"
+  ],
+  "truth_states": [
+    "NOT_IMPLEMENTED",
+    "IMPLEMENTED",
+    "TESTED",
+    "VERIFIED",
+    "BLOCKED_EXTERNAL"
+  ],
+  "operational_states": [
+    "CLOSED",
+    "BOOTSTRAPPING",
+    "BLOCKED",
+    "OPEN_WITH_LIMITS",
+    "OPEN_VERIFIED_SCOPE"
+  ],
+  "truth_rule": "NO EVIDENCE = NOT DONE; admission before trigger; one bounded gate at a time",
+  "review_revision": "0.7.0-governance.4",
+  "admission_precondition": {
+    "state": "REVIEW_PENDING",
+    "contract": "aeris.review.json",
+    "traceability_contract": "aeris.traceability.json",
+    "gate": "docs/governance/ASTRA_EXECUTION_GATE_V3.md",
+    "E_full_local_acceptance": "NOT_STARTED",
+    "evaluate_before_trigger": true,
+    "requires_scoped_authorization": true,
+    "drift_stops_construction": true,
+    "runtime_enforcement_implemented": false
+  }
+}

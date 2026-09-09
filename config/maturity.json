@@ -3,7 +3,7 @@
   "product_stage": "PRE_ALPHA",
   "truth_rule": "Nothing is COMPLETE merely because code exists or CI is green. TESTED means the stated automated scope passed; VERIFIED additionally requires the specified real-machine, real-tool, physical, license, calibration or release evidence where applicable.",
   "evidence_snapshot": {
-    "canonical_core_reviewed_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
+    "canonical_core_reviewed_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
     "truth_alignment_contract": "canonical_core_reviewed_sha must equal core.lock baseline, core_alignment reviewed_sha, autopilot canonical_core_sha and company manifest reviewed_sha; CI fails on any mismatch",
     "control_plane_main_commit": "54db59e40cc24e0e7b915966daf77a687a026947",
     "acoustic_skills_main_commit": "86dec79f9f97e0e1bdfdf42b10ee97f94a62a71c",
@@ -15,27 +15,94 @@
     "full_entrypoint_pr_ci_scope": "Ubuntu 24.04 + Windows 2025; syntax, unit/security/acoustic/reproduction, Core drift, installer, unattended smoke, full Autopilot CI smoke, optional Claude-wrapper CI smoke without Claude/token invocation, packaging/SBOM",
     "truth": "No GitHub CI run substitutes for the final local-machine reboot/inference/persistence/license/hardware evidence cycle."
   },
-  "states": ["NOT_IMPLEMENTED", "IMPLEMENTED", "TESTED", "VERIFIED", "BLOCKED_EXTERNAL", "HUMAN_GATE", "EXTERNAL_LICENSE", "PHYSICAL_HARDWARE", "REBOOT_LOGOFF_REQUIRED"],
+  "states": [
+    "NOT_IMPLEMENTED",
+    "IMPLEMENTED",
+    "TESTED",
+    "VERIFIED",
+    "BLOCKED_EXTERNAL",
+    "HUMAN_GATE",
+    "EXTERNAL_LICENSE",
+    "PHYSICAL_HARDWARE",
+    "REBOOT_LOGOFF_REQUIRED"
+  ],
   "gate_software_baselines": {
-    "100_role_executable_domain_contracts": {"state": "TESTED", "evidence": "config/role_contracts.v1.json + Role Router + tests/test_role_contracts.py + tests/test_reviewer_allocation.py"},
-    "prelogin_system_service_operation": {"state": "TESTED", "evidence": "current-user Scheduled Task REGISTERED_RUNNING + watchdog recovery tests; pre-login/reboot remains separate"},
-    "golden_acoustic_dataset_suite": {"state": "TESTED", "evidence": "golden/acoustics/v1 + positive, negative, tamper and regression tests; physical DUT data remains separate"},
-    "full_skills_library": {"state": "TESTED", "evidence": "local registry validation/FR/requirements/free acoustic/PPTX provenance implementations and tests"},
-    "full_methods_library": {"state": "TESTED", "evidence": "versioned deterministic local methods and free acoustic adapter tests; expert applicability remains separate"},
-    "full_live_standards_corpus": {"state": "TESTED", "evidence": "standards metadata/search registry and unverified-use fail-closed tests; licensed full text remains separate"},
-    "professional_acoustic_corpus": {"state": "TESTED", "evidence": "local provenance-aware knowledge index build/search/delete tests; rights-cleared professional corpus remains separate"},
-    "os_network_egress_enforcement": {"state": "TESTED", "evidence": "privacy, endpoint, SSRF and offline application-routing negative tests; administrator firewall remains separate"},
-    "machine_resource_qualification": {"state": "TESTED", "evidence": "native RAM/GPU/VRAM/disk/tool qualification and real local acceptance; reboot/thermal duration remains separate"},
-    "linux_self_contained_offline_ollama_runtime_package": {"state": "TESTED", "evidence": "portable package/SBOM/hash and Linux CI smoke; redistribution approval and target E2E remain separate"},
-    "release_signing_and_attestation": {"state": "TESTED", "evidence": "SHA-256 provenance/SBOM and explicit NOT_SIGNED checks; trusted certificate remains separate"},
-    "full_company_relocation": {"state": "TESTED", "evidence": "portable image and private-state backup/restore mechanisms tested; second physical target remains separate"},
-    "comsol_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE signal analysis/report adapter; COMSOL CAE equivalence is not claimed"},
-    "matlab_adapter": {"state": "TESTED", "evidence": "dependency-free FREE_LOCAL_BASELINE numerical acoustics adapter; MATLAB Engine equivalence is not claimed"},
-    "apx_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE FFT/FR/THD/SNR/SPL model; calibrated APx measurement equivalence is not claimed"},
-    "klippel_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE speaker/microphone analysis; KLIPPEL nonlinear hardware equivalence is not claimed"},
-    "soundcheck_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE deterministic workflow/evidence/report; SoundCheck integration equivalence is not claimed"},
-    "acqua_adapter": {"state": "TESTED", "evidence": "FREE_LOCAL_BASELINE deterministic analysis; ACQUA telecom hardware equivalence is not claimed"},
-    "commercial_release_readiness": {"state": "TESTED", "evidence": "local PRE_ALPHA fail-closed authority/Claim Guard/release tests; Human R4/legal/physical acceptance remains separate"}
+    "100_role_executable_domain_contracts": {
+      "state": "TESTED",
+      "evidence": "config/role_contracts.v1.json + Role Router + tests/test_role_contracts.py + tests/test_reviewer_allocation.py"
+    },
+    "prelogin_system_service_operation": {
+      "state": "TESTED",
+      "evidence": "current-user Scheduled Task REGISTERED_RUNNING + watchdog recovery tests; pre-login/reboot remains separate"
+    },
+    "golden_acoustic_dataset_suite": {
+      "state": "TESTED",
+      "evidence": "golden/acoustics/v1 + positive, negative, tamper and regression tests; physical DUT data remains separate"
+    },
+    "full_skills_library": {
+      "state": "TESTED",
+      "evidence": "local registry validation/FR/requirements/free acoustic/PPTX provenance implementations and tests"
+    },
+    "full_methods_library": {
+      "state": "TESTED",
+      "evidence": "versioned deterministic local methods and free acoustic adapter tests; expert applicability remains separate"
+    },
+    "full_live_standards_corpus": {
+      "state": "TESTED",
+      "evidence": "standards metadata/search registry and unverified-use fail-closed tests; licensed full text remains separate"
+    },
+    "professional_acoustic_corpus": {
+      "state": "TESTED",
+      "evidence": "local provenance-aware knowledge index build/search/delete tests; rights-cleared professional corpus remains separate"
+    },
+    "os_network_egress_enforcement": {
+      "state": "TESTED",
+      "evidence": "privacy, endpoint, SSRF and offline application-routing negative tests; administrator firewall remains separate"
+    },
+    "machine_resource_qualification": {
+      "state": "TESTED",
+      "evidence": "native RAM/GPU/VRAM/disk/tool qualification and real local acceptance; reboot/thermal duration remains separate"
+    },
+    "linux_self_contained_offline_ollama_runtime_package": {
+      "state": "TESTED",
+      "evidence": "portable package/SBOM/hash and Linux CI smoke; redistribution approval and target E2E remain separate"
+    },
+    "release_signing_and_attestation": {
+      "state": "TESTED",
+      "evidence": "SHA-256 provenance/SBOM and explicit NOT_SIGNED checks; trusted certificate remains separate"
+    },
+    "full_company_relocation": {
+      "state": "TESTED",
+      "evidence": "portable image and private-state backup/restore mechanisms tested; second physical target remains separate"
+    },
+    "comsol_adapter": {
+      "state": "TESTED",
+      "evidence": "FREE_LOCAL_BASELINE signal analysis/report adapter; COMSOL CAE equivalence is not claimed"
+    },
+    "matlab_adapter": {
+      "state": "TESTED",
+      "evidence": "dependency-free FREE_LOCAL_BASELINE numerical acoustics adapter; MATLAB Engine equivalence is not claimed"
+    },
+    "apx_adapter": {
+      "state": "TESTED",
+      "evidence": "FREE_LOCAL_BASELINE FFT/FR/THD/SNR/SPL model; calibrated APx measurement equivalence is not claimed"
+    },
+    "klippel_adapter": {
+      "state": "TESTED",
+      "evidence": "FREE_LOCAL_BASELINE speaker/microphone analysis; KLIPPEL nonlinear hardware equivalence is not claimed"
+    },
+    "soundcheck_adapter": {
+      "state": "TESTED",
+      "evidence": "FREE_LOCAL_BASELINE deterministic workflow/evidence/report; SoundCheck integration equivalence is not claimed"
+    },
+    "acqua_adapter": {
+      "state": "TESTED",
+      "evidence": "FREE_LOCAL_BASELINE deterministic analysis; ACQUA telecom hardware equivalence is not claimed"
+    },
+    "commercial_release_readiness": {
+      "state": "TESTED",
+      "evidence": "local PRE_ALPHA fail-closed authority/Claim Guard/release tests; Human R4/legal/physical acceptance remains separate"
+    }
   },
   "capabilities": {
     "professional_100_seat_capability_factory": {
@@ -422,8 +489,9 @@
       "required": "release-critical acoustic capabilities/production Golden cases VERIFIED + legal model/tool/data licenses + supported configuration frozen + signing/attestation + Human R4 approval"
     },
     "integrated_authenticated_release_gate": {
-      "state": "NOT_IMPLEMENTED",
-      "required": "F01/F02: real task-bound sealed evidence, complete gate integration, authenticated reviewer/Human approval and invalidation/replay checks."
+      "state": "IMPLEMENTED",
+      "evidence": "aeris_runtime/release_evidence.py; tests/test_release_evidence_authority.py; tests/test_claim_guard.py; full regression/exact candidate CI pending",
+      "required": "Operator-provisioned local trust store and real Human approval receipts remain required for production. Candidate repair does not upgrade running service."
     },
     "voice_publishing": {
       "state": "NOT_IMPLEMENTED",

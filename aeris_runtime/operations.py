@@ -44,6 +44,7 @@ def _loaded_revision() -> str:
 
 # Capture once at module load; a later git commit must not relabel old code.
 LOADED_IMPLEMENTATION_SHA = _loaded_revision()
+LOADED_CORE_IDENTITY = verify_core_cache()
 
 
 def _now() -> str:
@@ -206,6 +207,9 @@ class _Handler(BaseHTTPRequestHandler):
                 "service": "AERIS_LOCAL_SUPERVISOR",
                 "service_state": "SERVING",
                 "implementation_sha": LOADED_IMPLEMENTATION_SHA,
+                "core_sha": LOADED_CORE_IDENTITY.get('core_sha', 'UNKNOWN'),
+                "core_blueprint_alignment": LOADED_CORE_IDENTITY.get('blueprint_alignment', 'UNKNOWN'),
+                "four_way_aligned": False,
                 "pid": os.getpid(),
                 "company_opening_state": opening.get("operational_state"),
                 "company_complete": False,

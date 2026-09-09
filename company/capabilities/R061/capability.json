@@ -190,7 +190,8 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [],
-  "canonical_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
+  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "open-ear temples or directional speakers",
     "microphone_topology_considerations": "small distributed temple array",

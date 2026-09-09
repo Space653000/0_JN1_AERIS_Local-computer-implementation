@@ -14,9 +14,10 @@ def load_json(relative: str) -> dict:
 
 
 class TruthDocumentationTests(unittest.TestCase):
-    def test_readme_exposes_two_url_default_without_claude_dependency(self):
+    def test_readme_exposes_bounded_authorization_without_claude_dependency(self):
         readme = read("README.md")
-        self.assertIn("two URLs are the complete Full-Build trigger", readme)
+        self.assertIn("two URLs do not authorize construction", readme)
+        self.assertIn("PROJECT_IDENTIFICATION_ONLY", readme)
         self.assertIn("Claude Code is optional", readme)
         self.assertIn("No Claude token is required", readme)
         self.assertNotIn("交給 Claude Code 獨立驗收", readme)

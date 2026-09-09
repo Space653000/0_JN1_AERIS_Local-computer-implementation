@@ -1,0 +1,19 @@
+{
+  "gate": "GATE-06-RETRY-R1",
+  "blueprint_tag": "v0.7.0-blueprint.1",
+  "blueprint_commit": "64576bdbe680170fc1ea27306d1a2ab494cac733",
+  "governance_revision": "0.7.0-governance.4",
+  "construction_before": "c1f50b1bc9e990684377a6e0c794e2dd728e1923",
+  "main_before": "5f591f2dbde75e30fe7f61d7f8fbfb56a2c0e433",
+  "reconciliation_commit": "20edb9a32d368fb254a3ed62cff450970a6ed743",
+  "rollback_sha": "c1f50b1bc9e990684377a6e0c794e2dd728e1923",
+  "rollback_ref": "codex/checkpoint/gate06-r1-c1f50b1",
+  "strategy": "Non-fast-forward merge preserves both parent histories; no reset, rebase, force push or main mutation.",
+  "conflicts": [
+    {"path": "core.lock.json", "resolution": "Retain construction role hash contract, adopt main reviewed baseline for reconciliation. aeris-data.js is byte-identical between both Core versions. Finalized Blueprint migration is a separate validated change."},
+    {"path": "config/maturity.json", "resolution": "Preserve construction capability records and extended truth states. Retain main release NOT_IMPLEMENTED and F01/F02/admission/voice gaps, plus review findings. No capability evidence discarded."}
+  ],
+  "runtime_cutover": false,
+  "E_acceptance": "NOT_STARTED",
+  "gate_complete": false
+}

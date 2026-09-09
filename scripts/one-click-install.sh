@@ -4,6 +4,13 @@ MODE="${1:-auto}"
 MODEL="${AERIS_LOCAL_MODEL:-qwen3:4b-instruct}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+ADMISSION_PYTHON="$ROOT/.venv/bin/python"
+if [ ! -x "$ADMISSION_PYTHON" ]; then ADMISSION_PYTHON=python3; fi
+if [ "${AERIS_SKIP_CORE_SYNC:-0}" = 1 ] && [ "${AERIS_SKIP_LOCAL_RUNTIME_INSTALL:-0}" = 1 ]; then
+  "$ADMISSION_PYTHON" -B -m aeris_runtime.deployment_admission --ci-smoke
+else
+  "$ADMISSION_PYTHON" -B -m aeris_runtime.deployment_admission
+fi
 echo '=== AERIS One-Click Company Installer ==='
 echo 'Privacy: AERIS private engineering is application-routed to loopback or explicit trusted-LAN AI; OS/network isolation still requires local verification.'
 

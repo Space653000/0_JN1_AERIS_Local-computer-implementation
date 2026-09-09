@@ -132,7 +132,9 @@ def optimize(p: dict) -> dict:
 
 def review(p: dict) -> dict:
     findings=[]
-    allowed=set(p["approved_evidence_refs"])
+    # Caller-provided reference lists cannot grant review authority. This legacy
+    # numerical helper has no authenticated task/context and must fail closed.
+    allowed=set()
     if p["executor_role"]==p["reviewer_role"]: raise ValueError("executor cannot review its own run")
     for i,claim in enumerate(p["claims"]):
         classification=claim["classification"]

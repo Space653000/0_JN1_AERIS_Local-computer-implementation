@@ -1,0 +1,352 @@
+{
+  "schema_version": 1,
+  "traceability_id": "AERIS-A-D-TRACEABILITY-20260907",
+  "architecture_version": "0.7.0-governance.4",
+  "scope": "Current batch governance only; original user A-D delivery pending; E later full local acceptance",
+  "source_baseline": {
+    "core_repository": "Space653000/0_JN1_AERIS",
+    "core_branch": "main",
+    "core_base_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
+    "implementation_repository": "Space653000/0_JN1_AERIS_Local-computer-implementation",
+    "implementation_remote_main_observed_sha": "5f591f2dbde75e30fe7f61d7f8fbfb56a2c0e433",
+    "observed_date": "2026-09-07"
+  },
+  "workstreams": {
+    "A": {
+      "name": "blueprint_repository",
+      "status": "REVIEW_PENDING"
+    },
+    "B": {
+      "name": "implementation_repository",
+      "status": "NOT VERIFIED"
+    },
+    "C": {
+      "name": "migration_and_unique_local_root",
+      "status": "NOT VERIFIED"
+    },
+    "D": {
+      "name": "four_questions_UI_progress_versions_safe_sync",
+      "status": "NOT VERIFIED"
+    },
+    "E": {
+      "name": "full_local_acceptance",
+      "status": "NOT_STARTED"
+    }
+  },
+  "ownership_contract": {
+    "core_owns": [
+      "product_requirements",
+      "governance",
+      "acceptance_criteria",
+      "research_provenance"
+    ],
+    "implementation_owns": [
+      "runtime",
+      "scripts",
+      "prompts",
+      "deployment"
+    ],
+    "legacy_core_how": "migration_debt_not_precedent",
+    "private_absolute_paths_allowed_in_core": false,
+    "core_narrow_exception": [
+      "read_only_governance_validator",
+      "governance_negative_tests",
+      "CI"
+    ],
+    "authorized_public_product_root": "C:\\0_JN1_AERIS"
+  },
+  "four_way_version_tuple": {
+    "required_records": [
+      "core_blueprint",
+      "implementation",
+      "local_checkout",
+      "running_service"
+    ],
+    "evidence_binding": "all_four_records_and_artifact_hashes",
+    "current_end_to_end_alignment_claim": "NOT_CLAIMED",
+    "reason": "No current runtime verification in this governance batch"
+  },
+  "requirements": [
+    {
+      "id": "AERIS-AD-A-001",
+      "workstream": "A",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Provide one plain-language Traditional Chinese AERIS blueprint.",
+      "acceptance": "The canonical document exists and is linked from README and AI read order.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md",
+        "README.md",
+        "docs/governance/AI_READ_ORDER.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-A-002",
+      "workstream": "A",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Define 100 seats as capability and authority boundaries rather than 100 resident agents.",
+      "acceptance": "The blueprint states the distinction and rejects headcount as capability evidence.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md",
+        "docs/governance/AERIS_DECISION_LOG.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-A-003",
+      "workstream": "A",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Define the five-step workflow and the role, skill, Evidence, review, and Human authority relationships.",
+      "acceptance": "The blueprint has a numbered five-step workflow and an explicit responsibility table.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-B-001",
+      "workstream": "A",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Make progress provable by requirement, acceptance, Evidence, and a four-way version tuple.",
+      "acceptance": "Both human-readable and machine-readable traceability define the same four records.",
+      "evidence": [
+        "docs/governance/AERIS_TRACEABILITY_MATRIX.md",
+        "aeris.traceability.json"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-B-002",
+      "workstream": "A",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Record research provenance and the Agent Zero reference without claiming adoption.",
+      "acceptance": "The official Agent Zero URL and an explicit reference-only limitation appear in the blueprint.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-C-001",
+      "workstream": "A",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Limit new Core ownership to product requirements, governance, acceptance criteria, and research provenance.",
+      "acceptance": "The ownership contract contains exactly those four Core categories.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md",
+        "docs/governance/AERIS_DECISION_LOG.md",
+        "aeris.traceability.json"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-C-002",
+      "workstream": "A",
+      "owner": "IMPLEMENTATION",
+      "status": "REVIEW_PENDING",
+      "requirement": "Enforce public authorized product root while keeping private paths and data local.",
+      "acceptance": "Canonical root is explicit, other local writes forbidden, private user paths absent.",
+      "evidence": [
+        "constitution.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-D-001",
+      "workstream": "A",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Use current replaceable Astra Low routing with independent verification.",
+      "acceptance": "Constitution and current review contract agree without binding acoustic domain to model.",
+      "evidence": [
+        "constitution.md",
+        "aeris.review.json"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-D-002",
+      "workstream": "A",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Preserve Human final authority, retain legacy review history, and forbid unauthorized automatic checkout, merge, and push.",
+      "acceptance": "The review contract makes all three automatic Git actions false and retains the legacy review ID as superseded history.",
+      "evidence": [
+        "docs/governance/SOL_INDEPENDENT_REVIEW_GATE_V2.md",
+        "docs/governance/ASTRA_SOL_REVIEW_GATE_V1.md",
+        "aeris.review.json"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-E-001",
+      "workstream": "E",
+      "owner": "IMPLEMENTATION",
+      "status": "NOT_STARTED",
+      "requirement": "Perform later comprehensive local feasibility and real operation acceptance after A-D.",
+      "acceptance": "E is NOT_STARTED; no full acceptance claim from governance work.",
+      "evidence": [],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-UI-001",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Traditional Chinese navigation, fields, errors and five-step workflow.",
+      "acceptance": "UI acceptance covers all primary flows; jargon explained.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-PROGRESS-001",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Evidence-based maturity and missing-evidence states.",
+      "acceptance": "No counts or ungrounded percentages imply company completion.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-SYNC-001",
+      "workstream": "B",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Safe synchronization with dirty guard, checkpoint, secret checks and controlled PR.",
+      "acceptance": "No automatic overwrite or publication; private data excluded.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-ROOT-001",
+      "workstream": "C",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Only authorized root can contain local construction and evidence.",
+      "acceptance": "Historical migration verified by manifest; no writes elsewhere.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-VERSIONS-001",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Show four real versions including running service.",
+      "acceptance": "Missing or stale versions explicitly unknown/outdated.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-AD-SYNC-002",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "REVIEW_PENDING",
+      "requirement": "Fresh remote query, origin identity, content dirty digest, timestamped service identity and unknown on offline.",
+      "acceptance": "Reject wrong origin; never label stale cached origin/main latest; offline cannot stale=false; changing same-path bytes changes dirty digest; missing service evidence UNKNOWN.",
+      "evidence": [
+        "docs/AERIS_BLUEPRINT_ZH_TW.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-UX-01",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "NOT_STARTED",
+      "requirement": "採用 Kairos 的窄導覽、留白、青綠重點、卡片與繁中可存取介面。",
+      "acceptance": "桌面/手機、亮暗主題及鍵盤主要路徑可用；圖示有繁中名稱；數量不代表驗證。",
+      "evidence": [
+        "docs/architecture/AERIS_UX_SKILL_EXAMPLES_V1.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-UX-02",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "NOT_STARTED",
+      "requirement": "參考 Agent Zero 呈現角色、工具、記憶及五步工作流程。",
+      "acceptance": "成功/失敗/離線/缺Evidence/人類Gate均可追溯；記憶不當量測；不新增框架依賴。",
+      "evidence": [
+        "docs/architecture/AERIS_UX_SKILL_EXAMPLES_V1.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-EX-01",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "NOT_STARTED",
+      "requirement": "所有登錄技能必有繁中情境、輸入、步驟、預期輸出、解說及失敗範例。",
+      "acceptance": "逐skill ID覆蓋；可執行例有Expected/Actual/tolerance/versions/artifact hash/Requirement。",
+      "evidence": [
+        "docs/architecture/AERIS_UX_SKILL_EXAMPLES_V1.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-EX-02",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "NOT_STARTED",
+      "requirement": "區分展示、合成練習及真實量測；範例結果不升級專業驗證。",
+      "acceptance": "缺範例/缺證據/舊版本/合成冒充量測/硬體缺席均不可已驗證；歷史證據保留。",
+      "evidence": [
+        "docs/architecture/AERIS_UX_SKILL_EXAMPLES_V1.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    },
+    {
+      "id": "AERIS-EX-03",
+      "workstream": "D",
+      "owner": "CORE",
+      "status": "NOT_STARTED",
+      "requirement": "頻譜教學採固定參數的1 kHz合成音示例與可重現oracle。",
+      "acceptance": "先定sample rate/時長/振幅/window/FFT/tolerance；拒絕無效輸入；峰值不代表噪音根因。",
+      "evidence": [
+        "docs/architecture/AERIS_UX_SKILL_EXAMPLES_V1.md"
+      ],
+      "evidence_kind": "specification_reference_only_not_execution_proof"
+    }
+  ],
+  "source_provenance": [
+    {
+      "url": "https://www.agent-zero.ai/",
+      "role": "reference_only",
+      "adoption_claim": false,
+      "checked_date": "2026-09-07"
+    },
+    {
+      "path": "docs/research/AERIS_MASTER_RESEARCH_ARCHITECTURE_BASELINE_20260831.md",
+      "role": "existing_core_research_baseline"
+    },
+    {
+      "url": "https://os.lifehacker.tw/",
+      "role": "public_UI_reference_only",
+      "protected_pages_verified": false
+    },
+    {
+      "url": "https://academy.vibetech.tw/home",
+      "role": "user_requested_pedagogical_reference",
+      "course_internals_verified": false
+    }
+  ]
+}

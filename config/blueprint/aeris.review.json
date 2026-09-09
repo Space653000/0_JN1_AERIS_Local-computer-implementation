@@ -1,0 +1,176 @@
+{
+  "schema_version": 3,
+  "review_id": "AERIS-ASTRA-GOVERNANCE-V3",
+  "architecture_version": "0.7.0-governance.4",
+  "scope": {
+    "current_batch": "governance_only",
+    "A_D_delivery": "NOT VERIFIED",
+    "E_full_local_acceptance": "NOT_STARTED"
+  },
+  "state": "REVIEW_PENDING",
+  "review_routing": {
+    "default_model": "gpt-6-astra",
+    "reasoning_effort": "low",
+    "domain_contract_model_binding": false,
+    "independent_verification": "isolated_reviewer_or_independent_rerun",
+    "same_context_repair_approval": false,
+    "actual_model_evidence_required": true
+  },
+  "human_authority": {
+    "role": "Human Chief Engineer",
+    "final_authority": true,
+    "reviewer_pass_is_release_authority": false
+  },
+  "automatic_git_actions": {
+    "checkout": false,
+    "merge": false,
+    "push": false,
+    "rule": "Git publication requires current, explicit, bounded Human authorization and satisfied gates."
+  },
+  "admission": {
+    "requirement_contract": "aeris.traceability.json",
+    "gate_document": "docs/governance/ASTRA_EXECUTION_GATE_V3.md",
+    "required_before_human_decision": [
+      "governance_evidence",
+      "independent_verification",
+      "validator_negative_tests_CI",
+      "E_NOT_STARTED"
+    ],
+    "runtime_or_real_machine_acceptance_claimed": false
+  },
+  "review_result": {
+    "status": "PENDING",
+    "reviewed_commit": null,
+    "findings": [],
+    "evidence": null
+  },
+  "history": [
+    {
+      "review_id": "AERIS-ASTRA-SOL-REVIEW-20260907",
+      "status": "SUPERSEDED_HISTORICAL",
+      "contract": "docs/governance/ASTRA_SOL_REVIEW_GATE_V1.md",
+      "source_blueprint_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+      "source_implementation_sha": "32ca69baa778959d01c10a72bba1a8f0c0ac7eb5",
+      "superseded_rule": "The mandatory return to Astra and old active hold no longer govern A-D."
+    }
+  ],
+  "evidence_contract": {
+    "required_fields": [
+      "requirement_id",
+      "reproduce_command",
+      "expected_result",
+      "actual_result",
+      "result",
+      "artifact",
+      "artifact_sha256",
+      "versions",
+      "timestamp"
+    ],
+    "missing_evidence_state": "NOT VERIFIED",
+    "document_presence_is_runtime_evidence": false,
+    "required_ci": [
+      "Blueprint governance PR and merged-main CI",
+      "Implementation Windows and Ubuntu PR and merged-main CI for implementation changes"
+    ]
+  },
+  "completed_reviews": [
+    {
+      "scope": "Blueprint governance only; runtime NOT VERIFIED",
+      "reviewed_commit": "3f6b9ef8ced7192a2cd0b523850d8f0434837b77",
+      "merged_commit": "7aae217b0c8da44aa9baad348a0c71f8bcdf0d01",
+      "status": "PASS",
+      "claim_boundary": "DOCUMENT_VERIFICATION_ONLY",
+      "timestamp": "2026-09-07T19:45:36.8228506Z",
+      "requirement_ids": [
+        "GATE-01",
+        "GATE-02",
+        "GATE-03",
+        "GATE-04",
+        "GATE-05",
+        "GATE-06",
+        "GATE-07",
+        "GATE-08"
+      ],
+      "expected_result": "governance validator exit 0; 23 tests OK; whole PR diff check exit 0",
+      "actual_result": "PASS; 23 tests OK; diff check exit 0",
+      "reproduce_commands": [
+        "py -3.11 -B tools/validate-core-governance.py",
+        "py -3.11 -B tools/test_core_governance.py"
+      ],
+      "evidence": {
+        "review_url": "https://github.com/Space653000/0_JN1_AERIS/pull/5#issuecomment-5575030948",
+        "pr_ci": "https://github.com/Space653000/0_JN1_AERIS/actions/runs/34156782934",
+        "merged_main_ci": "https://github.com/Space653000/0_JN1_AERIS/actions/runs/34156833570",
+        "local_report": "C:/0_JN1_AERIS/outputs/governance-astra/INDEPENDENT_REVIEW.json",
+        "artifacts": [
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\governance-astra\\independent-validator.log",
+            "Hash": "D490EDB347B11E542F9AB8EF8E5D8BF25ED9B4C934C2E9FBA14BBD0FC12A0243"
+          },
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\governance-astra\\independent-tests.log",
+            "Hash": "0D54279056E666AEC5A646C4A7B620682CFBF429400407E3A2806430C6FA2CE4"
+          },
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\governance-astra\\independent-diff-check.log",
+            "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          },
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\governance-astra\\blueprint-final.diff",
+            "Hash": "4E4D92C19833E6477585941D18A8A1137DF992EE08956A0D34F562AD7E5AC753"
+          }
+        ]
+      }
+    },
+    {
+      "scope": "Blueprint UX and skill-example requirements only",
+      "reviewed_commit": "a720c963df9ef416b3d21888eccd0a9cdb1b3094",
+      "merged_commit": "c1a596f8c4b6fddebc8664e5e57c57d33cfbc3ce",
+      "status": "PASS",
+      "claim_boundary": "DOCUMENT_VERIFICATION_ONLY",
+      "timestamp": "2026-09-07T20:26:07.0413101Z",
+      "requirement_ids": [
+        "AERIS-UX-01",
+        "AERIS-UX-02",
+        "AERIS-EX-01",
+        "AERIS-EX-02",
+        "AERIS-EX-03"
+      ],
+      "expected_result": "validator exit0; 24 tests OK; whole PR diff no whitespace errors; independent review no P0/P1",
+      "actual_result": "validator PASS; 24 tests OK; diff exit0; isolated ux_spec_review PASS",
+      "reproduce_commands": [
+        "py -3.11 -B tools/validate-core-governance.py",
+        "py -3.11 -B tools/test_core_governance.py"
+      ],
+      "evidence": {
+        "review_url": "https://github.com/Space653000/0_JN1_AERIS/pull/6#issuecomment-5575336565",
+        "pr_ci": "https://github.com/Space653000/0_JN1_AERIS/actions/runs/34159312332",
+        "merged_main_ci": "https://github.com/Space653000/0_JN1_AERIS/actions/runs/34159373121",
+        "local_report": "C:/0_JN1_AERIS/outputs/ux-skill-blueprint/EVIDENCE.json",
+        "artifacts": [
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\ux-skill-blueprint\\validator.log",
+            "Hash": "D490EDB347B11E542F9AB8EF8E5D8BF25ED9B4C934C2E9FBA14BBD0FC12A0243"
+          },
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\ux-skill-blueprint\\tests.log",
+            "Hash": "2829AD74873FA885181E2D831D26A339C3F04E78383F0905EC2A9B0A44D6093E"
+          },
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\ux-skill-blueprint\\diff-check.log",
+            "Hash": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+          },
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\ux-skill-blueprint\\blueprint.diff",
+            "Hash": "EB5E7DCACF5AE2D49C6EB7C64FF6F3481AF13097149B7A017B50959A64F3A9CA"
+          },
+          {
+            "Path": "C:\\0_JN1_AERIS\\outputs\\ux-skill-blueprint\\changed-files.txt",
+            "Hash": "C67DD9C1D2A4F98E860737ACE8E160FD83746AEDB8E3216DD8FFFC0620E3BEA2"
+          }
+        ]
+      }
+    }
+  ],
+  "status_semantics": "Top-level PENDING applies to the current unverified batch; completed_reviews applies only to pinned historical document revisions, never runtime or future commits."
+}

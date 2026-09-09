@@ -182,6 +182,7 @@ def invoke_role(
     prompt: str,
     *,
     evidence_refs: list[str] | None = None,
+    task_id: str | None = None,
 ) -> dict[str, Any]:
     prompt = prompt.strip()
     if not prompt:
@@ -198,7 +199,7 @@ def invoke_role(
         )
     router = ModelRouter(load_config())
     result = router.chat(prompt + context_text, system_prompt(role, approved_refs))
-    guarded = validate_role_output(result.text, approved_evidence_refs=approved_refs)
+    guarded = validate_role_output(result.text, approved_evidence_refs=approved_refs, task_id=task_id)
     return {
         "role": role,
         "provider": result.provider,
@@ -206,7 +207,7 @@ def invoke_role(
         "text": render_guarded_output(guarded),
         "claim_guard": guarded,
         "knowledge_context": context,
-        "authoritative_evidence_refs": approved_refs,
+        "authoritative_evidence_refs": guarded['approved_evidence_refs'],
         "private_engineering": True,
         "cloud_context_attached": False,
         "raw_model_text_exposed": False,

@@ -7,9 +7,10 @@
   "core_target": {
     "repository": "Space653000/0_JN1_AERIS",
     "branch": "main",
-    "reviewed_sha": "fa65e86a8612b227ef4c9e6976ef0060ca2221ac",
+    "reviewed_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
     "authority": "read_only_highest_design_target",
-    "implementation_rule": "implementation_must_adapt_to_core; implementation_must_not_write_core"
+    "implementation_rule": "implementation_must_adapt_to_core; implementation_must_not_write_core",
+    "tag": "v0.7.0-blueprint.1"
   },
   "human_ai_operating_model": {
     "human_chief_engineer": "final_authority",
@@ -48,8 +49,9 @@
   },
   "autopilot": {
     "contract": "config/autopilot.json",
-    "trigger": "two_canonical_urls_plus_selected_or_explicit_safe_target_path",
-    "interpretation": "AERIS_FULL_BUILD_AUTOPILOT_REQUEST",
+    "trigger": "explicit_scoped_authorization_at_canonical_product_root",
+    "interpretation": "PROJECT_IDENTIFICATION_ONLY",
+    "requires_scoped_authorization": true,
     "requires_additional_prompt": false,
     "requires_plan_confirmation": false,
     "software_gap_closure_before_final_opening": true,

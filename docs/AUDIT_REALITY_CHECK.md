@@ -1,5 +1,12 @@
 # AERIS Reality Check / Anti-Fantasy Audit
 
+## GATE-06 R1 current candidate boundary
+
+Frozen target: `v0.7.0-blueprint.1` / `64576bdbe680170fc1ea27306d1a2ab494cac733`.
+The following 2026-09-01/07 audit is historical. Current source repairs are in
+`handoff/construction/GATE06-R1/`; focused tests are not full regression or exact
+candidate CI. Running service remains old and DRIFT; no runtime acceptance here.
+
 > **2026-09-07: HOLD_FOR_SOL_RED_TEAM.** Current design source is Core PR #4 / architecture v0.6.0-review.1. Read [new findings](reviews/ASTRA_REVIEW_20260907.md) and [review gate](ASTRA_SOL_REVIEW_GATE_V1.md) first. Integrated release/evidence enforcement has open P0 findings; TESTED below refers to existing unit scopes only. No Local acceptance or runtime repair was performed.
 
 **Status date:** 2026-09-01 (Asia/Taipei)  

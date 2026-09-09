@@ -7,6 +7,13 @@ param(
 )
 $ErrorActionPreference='Stop'
 $Root=Split-Path -Parent $PSScriptRoot
+$AdmissionPython=Join-Path $Root '.venv\Scripts\python.exe'
+if(-not (Test-Path -LiteralPath $AdmissionPython)){ $AdmissionPython='python' }
+$AdmissionArgs=@('-B','-m','aeris_runtime.deployment_admission')
+if($CISmoke){ $AdmissionArgs+='--ci-smoke' }
+Push-Location -LiteralPath $Root
+try { & $AdmissionPython @AdmissionArgs; if($LASTEXITCODE -ne 0){ throw 'Deployment admission BLOCKED before mutation.' } }
+finally { Pop-Location }
 $State=Join-Path $Root '.aeris\state'
 $Preflight=Join-Path $State 'AUTOPILOT_PREFLIGHT.json'
 $Result=Join-Path $State 'AUTOPILOT_RESULT.json'

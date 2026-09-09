@@ -58,7 +58,7 @@ class ClaimGuardTests(unittest.TestCase):
         self.assertTrue(guarded["accepted"])
         self.assertEqual(guarded["claim_authority"], "SCHEMA_VALIDATED_INFERENCE_ONLY")
 
-    def test_evidence_claim_with_explicit_approved_ref_is_allowed(self):
+    def test_caller_approved_ref_is_not_authority(self):
         ref = ".aeris/evidence/RUN-123/manifest.json"
         raw = json.dumps({
             "claims": [{
@@ -71,8 +71,8 @@ class ClaimGuardTests(unittest.TestCase):
             "recommended_tests": [],
         }, ensure_ascii=False)
         guarded = validate_role_output(raw, approved_evidence_refs=[ref])
-        self.assertTrue(guarded["accepted"])
-        self.assertEqual(guarded["claim_authority"], "SCHEMA_VALIDATED_WITH_EXPLICIT_EVIDENCE_REFS")
+        self.assertFalse(guarded["accepted"])
+        self.assertEqual(guarded['approved_evidence_refs'], [])
 
     def test_role_prompt_forbids_evidence_when_none_supplied(self):
         prompt = system_prompt(get_role("R001"), [])

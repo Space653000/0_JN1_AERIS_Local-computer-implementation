@@ -453,7 +453,7 @@ def handle_post(handler: Any) -> bool:
             refs = payload.get("evidence_refs", [])
             if not isinstance(refs, list) or any(not isinstance(x, str) for x in refs):
                 raise ValueError("evidence_refs must be a list of strings")
-            _write_json(handler, 200, invoke_role(path.split("/")[-2], str(payload.get("prompt", "")), evidence_refs=refs))
+            _write_json(handler, 200, invoke_role(path.split("/")[-2], str(payload.get("prompt", "")), evidence_refs=refs, task_id=payload.get('task_id')))
         elif path == "/api/v1/imports":
             _write_json(handler, 201, _save_import(payload))
         elif path == "/api/v1/skills/run":

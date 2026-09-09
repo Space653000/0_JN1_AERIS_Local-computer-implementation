@@ -1,5 +1,24 @@
 # AGENTS.md — AERIS Local FULL BUILD Autopilot Contract
 
+## Current authority: GATE-06 RETRY R1
+
+For this candidate, follow `config/blueprint_compatibility.json` and
+`handoff/construction/GATE06-R1/`. Fixed WHAT is Core tag
+`v0.7.0-blueprint.1` at `64576bdbe680170fc1ea27306d1a2ab494cac733`.
+Two URLs identify the project only. Work is limited to the explicit Human batch.
+Local product/source/state/Evidence root is `C:\0_JN1_AERIS`; hosted CI checkout
+is disposable test-only, never a second product root.
+
+Preserve merge `20edb9a` and checkpoint `c1f50b1`. Finish compatibility, authority
+resolution and full regression; push only the existing supervision branch/PR #33
+as Draft. Both platforms must pass at exact candidate SHA before the existing
+Publisher creates the next immutable snapshot linked to S0003. Then stop.
+
+No Core writes, main push/merge, force push, runtime cutover, E acceptance,
+Claude invocation or acoustic expansion. Test PASS is not product acceptance.
+Below this section, prior zero-prompt/full-build and merge requirements are
+historical context only and cannot enlarge current authorization.
+
 > **2026-09-07 審查優先：HOLD_FOR_SOL_RED_TEAM。** 先讀 [Astra → Sol → Astra 閘門](docs/ASTRA_SOL_REVIEW_GATE_V1.md)。下文 Full-Build／兩個 URL／缺口清零／續建命令只適用於閘門解除後的已授權有限批次。本次只修訂與發布文件；第 4 項等待使用者切換 GPT-5.6 Sol High，尚未執行本機總驗收。
 
 Canonical Core: `Space653000/0_JN1_AERIS@main` — READ ONLY.  

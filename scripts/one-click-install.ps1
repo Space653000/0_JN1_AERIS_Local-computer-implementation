@@ -6,6 +6,13 @@ param(
 )
 $ErrorActionPreference='Stop'
 $Root=Split-Path -Parent $PSScriptRoot
+$AdmissionPython=Join-Path $Root '.venv\Scripts\python.exe'
+if(-not (Test-Path -LiteralPath $AdmissionPython)){ $AdmissionPython='python' }
+$AdmissionArgs=@('-B','-m','aeris_runtime.deployment_admission')
+if($SkipLocalModelInstall -and $SkipCoreSync){ $AdmissionArgs+='--ci-smoke' }
+Push-Location -LiteralPath $Root
+try { & $AdmissionPython @AdmissionArgs; if($LASTEXITCODE -ne 0){ throw 'Deployment admission BLOCKED before mutation.' } }
+finally { Pop-Location }
 . (Join-Path $PSScriptRoot 'windows-python-resolution.ps1')
 . (Join-Path $PSScriptRoot 'windows-zero-cost-bootstrap.ps1')
 . (Join-Path $PSScriptRoot 'windows-ollama-api.ps1')

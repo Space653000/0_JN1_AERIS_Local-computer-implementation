@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "target_tag": "v0.7.0-blueprint.1",
+  "target_commit": "64576bdbe680170fc1ea27306d1a2ab494cac733",
+  "governance_revision": "0.7.0-governance.4",
+  "source_mirror": "config/blueprint",
+  "source_policy": "Byte-pinned public contract mirrors only. Core remains WHAT and read-only. Never update these mirrors to make a test pass.",
+  "migration_unit": "One Git candidate commit containing all pointers and consumers; reject mixed checkout before deployment",
+  "rollback_commit": "20edb9a32d368fb254a3ed62cff450970a6ed743",
+  "rollback_policy": "Revert candidate changes in a new commit; preserve both merge parents and all construction history. No hard reset or force push.",
+  "runtime_cutover_allowed": false,
+  "E_acceptance_allowed": false,
+  "candidate_status": "IN_PROGRESS_NOT_ACCEPTED",
+  "runtime_alignment": "DRIFT_EXPECTED_NO_CUTOVER"
+}

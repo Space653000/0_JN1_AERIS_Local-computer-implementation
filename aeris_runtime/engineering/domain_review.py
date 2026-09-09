@@ -671,6 +671,14 @@ def _checks_coherent(skill,params,values):
         return [c.get('id') for c in values['checks']]==['CROSSOVER_SUM','SUBWOOFER_DELAY','WALL_BOUNDARY_GAIN','DIALOGUE_HEADROOM','LIP_SYNC','SEAT_RESPONSE_SPREAD']
     if skill=='home-theater-level-polarity-delay-baseline':
         return [c.get('id') for c in values['checks']]==['CHANNEL_LEVEL_MATCH','CHANNEL_POLARITY','CHANNEL_DELAY','SEAT_REGION_SPREAD','SUBWOOFER_CROSSOVER','CALIBRATION_POSITION_COVERAGE']
+    if skill=='thin-tv-panel-wall-dialogue-baseline':
+        return [c.get('id') for c in values['checks']]==['PANEL_RESONANCE_MARGIN','DIALOGUE_HEADROOM','WALL_CLEARANCE','WOOFER_EXCURSION','MOUNT_BUZZ_LEVEL','PLACEMENT_COVERAGE']
+    if skill=='doorbell-weather-intercom-baseline':
+        return [c.get('id') for c in values['checks']]==['WET_MESH_LOSS','WIND_NOISE_LEVEL','INTERCOM_FEEDBACK_MARGIN','ECHO_COUPLING','MOUNT_RESONANCE_LEVEL','WEATHER_STATE_COVERAGE']
+    if skill=='appliance-motor-notification-voice-baseline':
+        return [c.get('id') for c in values['checks']]==['MOTOR_HARMONIC_CAPTURE','OPERATING_STATE_COVERAGE','NOTIFICATION_HEADROOM','DRIVER_DUTY','ENCLOSURE_LEAK_LOSS','COMMAND_SNR']
+    if skill=='ar-open-ear-leakage-tracking-wind-baseline':
+        return [c.get('id') for c in values['checks']]==['AUDIBILITY_MARGIN','PRIVACY_LEAKAGE','HEAD_POSE_COVERAGE','TRACKING_LATENCY','WIND_CAPTURE_SNR','FIT_RESPONSE_SPREAD']
     if skill=='speaker-fr-reference-baseline':
         # Every check/value is independently recomputed by the dedicated reviewer.
         return [c.get('id') for c in values['checks']]==['WINDOW_VALIDITY','SAMPLED_INTERVAL_MASK']

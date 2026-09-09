@@ -30,14 +30,12 @@ class PreCodexCloudGateTests(unittest.TestCase):
         self.assertFalse(defaults["install_paid_software"])
         self.assertFalse(defaults["auto_accept_license_or_eula"])
 
-    def test_explicit_target_path_precedes_active_workspace(self):
+    def test_only_explicit_canonical_product_root_is_eligible(self):
         trigger = load("config/autopilot.json")["trigger"]
         self.assertTrue(trigger["explicit_target_path_overrides_active_workspace"])
         order = trigger["target_path_resolution_order"]
-        self.assertLess(
-            order.index("explicit_local_target_path_if_supplied"),
-            order.index("single_unambiguous_active_writable_workspace_root"),
-        )
+        self.assertEqual(order, ["explicit_canonical_product_root_only"])
+        self.assertTrue(trigger['requires_scoped_authorization'])
 
     def test_core_truth_is_atomic(self):
         expected = load("core.lock.json")["baseline_sha"]

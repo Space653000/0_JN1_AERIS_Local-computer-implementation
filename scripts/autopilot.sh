@@ -24,6 +24,14 @@ while [ "$#" -gt 0 ]; do
 done
 case "$MODE" in auto|offline|local|cloud) ;; *) echo "Unsupported mode: $MODE" >&2; exit 2;; esac
 
+ADMISSION_PYTHON="$ROOT/.venv/bin/python"
+if [ ! -x "$ADMISSION_PYTHON" ]; then ADMISSION_PYTHON=python3; fi
+if [ "$CI_SMOKE" = 1 ]; then
+  "$ADMISSION_PYTHON" -B -m aeris_runtime.deployment_admission --ci-smoke
+else
+  "$ADMISSION_PYTHON" -B -m aeris_runtime.deployment_admission
+fi
+
 STATE="$ROOT/.aeris/state"
 PREFLIGHT="$STATE/AUTOPILOT_PREFLIGHT.json"
 RESULT="$STATE/AUTOPILOT_RESULT.json"

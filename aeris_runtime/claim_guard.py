@@ -55,9 +55,20 @@ def _uses_measured_fact_wording(statement: str) -> bool:
     return any(pattern.search(statement) for pattern in _MEASURED_FACT_PATTERNS)
 
 
-def validate_role_output(text: str, *, approved_evidence_refs: list[str] | None = None) -> dict[str, Any]:
-    approved = {str(x).strip() for x in (approved_evidence_refs or []) if str(x).strip()}
+def validate_role_output(text: str, *, approved_evidence_refs: list[str] | None = None, task_id: str | None = None) -> dict[str, Any]:
+    approved = set()
     errors: list[str] = []
+    requested = {str(x).strip() for x in (approved_evidence_refs or []) if str(x).strip()}
+    if requested:
+        try:
+            from .taskstate import load_task
+            from .release_evidence import require_refs
+            if not task_id:
+                raise ValueError('task-bound authority required; caller ref list is not approval')
+            require_refs(sorted(requested), load_task(task_id), 'G4_INDEPENDENT_REVIEW')
+            approved = requested
+        except (ValueError, OSError, KeyError, TypeError):
+            errors.append('authoritative task/scope/independent review Evidence resolution failed')
     try:
         payload = _extract_json(text)
     except ValueError as exc:
