@@ -171,11 +171,16 @@ def run() -> int:
             with tempfile.TemporaryDirectory(prefix="aeris-browser-visual-", dir=test_temp) as temp:
                 temp_path = Path(temp)
                 for index, route in enumerate(ROUTES):
-                    profile = temp_path / f"profile-{index}"
-                    profile.mkdir(parents=True, exist_ok=True)
                     url = f"http://127.0.0.1:{server.server_port}{route}"
-                    first = _capture(browser, str(profile), url, temp_path / f"route-{index}-a.png")
-                    second = _capture(browser, str(profile), url, temp_path / f"route-{index}-b.png")
+                    # Each capture gets a fresh browser profile. Reusing one profile
+                    # lets Chromium persist caches/state between A and B, which makes
+                    # the test measure profile mutation rather than route determinism.
+                    first_profile = temp_path / f"profile-{index}-a"
+                    second_profile = temp_path / f"profile-{index}-b"
+                    first_profile.mkdir(parents=True, exist_ok=True)
+                    second_profile.mkdir(parents=True, exist_ok=True)
+                    first = _capture(browser, str(first_profile), url, temp_path / f"route-{index}-a.png")
+                    second = _capture(browser, str(second_profile), url, temp_path / f"route-{index}-b.png")
                     if first["sha256"] != second["sha256"]:
                         # Preserve the actual failures locally. Never replace the
                         # failed capture with a later passing image or relax equality.
@@ -202,7 +207,7 @@ def run() -> int:
                 "routes": route_results,
                 "accessibility_markers_checked": len(accessibility),
                 "api_snapshot_sha256": hashlib.sha256(json.dumps(snapshots, sort_keys=True).encode()).hexdigest(),
-                "scope": "fixed-viewport screenshot creation + same-environment bit-exact repeatability using one frozen actual API snapshot + basic accessibility semantics; NOT cross-version pixel-golden regression or live-state acceptance",
+                "scope": "fixed-viewport screenshot creation + same-environment bit-exact repeatability using one frozen actual API snapshot + isolated browser profiles per capture + basic accessibility semantics; NOT cross-version pixel-golden regression or live-state acceptance",
             }
             (ARTIFACT_ROOT/"report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
             print(json.dumps(report, ensure_ascii=False, indent=2))
