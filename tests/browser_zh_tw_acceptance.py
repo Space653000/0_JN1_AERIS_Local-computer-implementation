@@ -38,5 +38,11 @@ def crawl() -> dict:
             rows.append({"route":route,"exit_code":p.returncode,"visible_strings":len(texts),"violations":violations(texts)})
     return {"routes":rows,"routes_checked":len(rows),"visible_strings_checked":sum(x["visible_strings"] for x in rows),"english_violations":sum(len(x["violations"]) for x in rows),"passed":all(not x["violations"] and x["exit_code"]==0 for x in rows)}
 
+def main() -> int:
+    report = crawl()
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if report["passed"] else 1
+
+
 if __name__ == "__main__":
-    print(json.dumps(crawl(), ensure_ascii=False, indent=2))
+    raise SystemExit(main())
