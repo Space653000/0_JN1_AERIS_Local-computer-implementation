@@ -226,6 +226,8 @@ def _serve_ui(handler: Any, path: str) -> bool:
         target = UI_ROOT / "dashboard.html"
     elif path in {"/workspace", "/services"}:
         target = UI_ROOT / (path.lstrip("/") + ".html")
+    elif path in {"/progress", "/progress-center"}:
+        target = UI_ROOT / "progress.html"
     elif path.startswith("/assets/"):
         rel = path[len("/assets/"):]
         if not rel or "/" in rel or "\\" in rel or ".." in rel:
@@ -368,6 +370,9 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
             _write_json(handler, 200, machine_detect())
         elif path == "/api/v1/audit":
             _write_json(handler, 200, {"records": _audit_recent(int((qs.get("limit") or ["50"])[0]))})
+        elif path == "/api/v1/progress":
+            from .progress import current
+            _write_json(handler, 200, current())
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True

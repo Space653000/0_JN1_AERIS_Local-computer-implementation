@@ -2,6 +2,19 @@
 
 ## Current authority: GATE-06 RETRY R1
 
+## Remembered P0-P6 tracker definition (2026-09-11)
+
+P0 is **Stable local control plane + truthful Progress Center**, not merely
+Core/Ollama/audit repair. P0.1–P0.5 cover observable blocked UI, exact candidate
+promotion, canonical-root sync, the Traditional-Chinese Dashboard/Workspace/
+Services pages at `127.0.0.1:8765`, and persistence. P0.6 covers progress data,
+provenance, gate/four-way version/blocker/next-action/Evidence references; P0.7
+covers the Dashboard Progress Center and missing-Evidence negative tests. The
+remaining phases are P1 Kairos UX, P2 Progress Engine, P3 Golden Engineer, P4
+Skill teaching, P5 Engineer Factory, and P6 final comprehensive local acceptance.
+Never treat the tracker percentage as completion, and do not enter P1 until all
+P0 acceptance evidence is authoritative and PASS.
+
 For this candidate, follow `config/blueprint_compatibility.json` and
 `handoff/construction/GATE06-R1/`. Fixed WHAT is Core tag
 `v0.7.0-blueprint.1` at `64576bdbe680170fc1ea27306d1a2ab494cac733`.
