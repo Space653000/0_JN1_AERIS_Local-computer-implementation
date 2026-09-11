@@ -1,42 +1,70 @@
 """Evidence-derived P0-P6 progress projection for the local Progress Center."""
 from __future__ import annotations
+import subprocess
 from datetime import datetime, timezone
 from .config import ROOT
 from .operations import supervisor_status
+from .progress_truth import CANONICAL_AUTHORITY_SHA, evaluate_progress, load_contract, load_observations
 
 PHASES = ("P0", "P1", "P2", "P3", "P4", "P5", "P6")
 
+def _head_sha() -> str | None:
+    try:
+        return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=3).strip()
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
 def current() -> dict:
+    """Project only durable Evidence that matches the currently loaded runtime."""
     status = supervisor_status()
-    blocked = bool(status.get("company_opening_state") == "BLOCKED")
-    # The tracker is deliberately conservative: only runtime-observable P0
-    # infrastructure checks receive PASS; product phases remain UNKNOWN until
-    # their own Evidence contracts exist.
+    runtime_sha = status.get("implementation_sha") if status.get("reachable") else None
+    candidate_sha = _head_sha()
+    runtime_aligned = bool(runtime_sha and candidate_sha and runtime_sha == candidate_sha)
+    contract = load_contract(ROOT)
+    observations = load_observations(ROOT)
+    evaluation = evaluate_progress(
+        contract,
+        observations,
+        runtime_sha=runtime_sha if runtime_aligned else None,
+        evidence_root=ROOT,
+    )
+    if not runtime_aligned:
+        evaluation = evaluation.__class__("FAIL_CLOSED", None, {}, {}, tuple((*evaluation.errors, "runtime_candidate_mismatch")))
+
     items = []
-    counts = {"P0": 7, "P1": 8, "P2": 7, "P3": 8, "P4": 7, "P5": 9, "P6": 8}
+    required = contract["required_items"]
+    raw_items = observations.get("items") if isinstance(observations.get("items"), dict) else {}
     for phase in PHASES:
-        count = counts[phase]
-        for index in range(1, count + 1):
-            ident = f"{phase}.{index}"
-            # P0.4 is the all-route zh-TW browser acceptance.  It cannot be
-            # inferred from a healthy supervisor; only its own acceptance
-            # evidence may mark it PASS.
-            if phase == "P0" and index <= 5 and index != 4:
-                state, percent = ("PASS", 100) if not blocked else ("BLOCKED", 60)
-            elif phase == "P0" and index == 4:
-                state, percent = "UNKNOWN", 0
-            else:
-                state, percent = "UNKNOWN", 0
-            items.append({"id": ident, "percent": percent, "state": state,
-                          "evidence": "runtime:/health,/status" if state != "UNKNOWN" else None,
-                          "sha": status.get("implementation_sha"),
-                          "blocker": "company control plane blocked" if state == "BLOCKED" else None,
-                          "next_action": "完成全站 zh-TW 瀏覽器驗收並建立 authoritative Evidence" if ident == "P0.4" and state == "UNKNOWN" else ("建立本項 authoritative Evidence" if state == "UNKNOWN" else None)})
-    phase_percent = {p: round(sum(x["percent"] for x in items if x["id"].startswith(p+".")) /
-                              sum(1 for x in items if x["id"].startswith(p+"."))) for p in PHASES}
-    return {"schema_version": 1, "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-            "implementation_sha": status.get("implementation_sha"), "overall_percent": round(sum(x["percent"] for x in items)/len(items)),
-            "phase_percent": phase_percent, "items": items,
-            "blockers": status.get("blockers") or [],
-            "next_action": "完成 P0.6/P0.7 Progress Truth 與 Evidence" if phase_percent["P0"] < 100 else "等待 Human 批准進入 P1",
-            "truth": "UI projection only; percentages require runtime/Evidence and UNKNOWN is preserved."}
+        for ident in required[phase]:
+            record = raw_items.get(ident) if isinstance(raw_items.get(ident), dict) else {}
+            score = evaluation.item_scores.get(ident)
+            state = record.get("result", "UNKNOWN") if score is not None and evaluation.state != "FAIL_CLOSED" else "UNKNOWN"
+            items.append({
+                "id": ident,
+                "percent": score or 0,
+                "state": state,
+                "evidence": record.get("evidence_pointer") if score is not None else None,
+                "sha": record.get("source_sha") if score is not None else runtime_sha,
+                "blocker": record.get("blocker") if score is not None else None,
+                "next_action": record.get("next_action") if score is not None else "建立本項 authoritative Evidence",
+                "acceptance_gate": record.get("acceptance_gate") if score is not None else None,
+            })
+
+    phase_percent = evaluation.phase_percent if evaluation.state != "FAIL_CLOSED" else {phase: None for phase in PHASES}
+    return {
+        "schema_version": 2,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "implementation_sha": runtime_sha,
+        "candidate_sha": candidate_sha,
+        "runtime_candidate_aligned": runtime_aligned,
+        "canonical_authority_sha": CANONICAL_AUTHORITY_SHA,
+        "overall_percent": evaluation.overall_percent,
+        "phase_percent": phase_percent,
+        "items": items,
+        "blockers": status.get("blockers") or [],
+        "next_action": "完成 P0.6/P0.7 Progress Truth 與 Evidence" if phase_percent.get("P0") != 100 else "等待 Human 批准進入 P1",
+        "truth_state": evaluation.state,
+        "truth_errors": list(evaluation.errors),
+        "truth": "Evidence-only projection. Missing Evidence is UNKNOWN; mismatched runtime/candidate or invalid Evidence fails closed.",
+    }
