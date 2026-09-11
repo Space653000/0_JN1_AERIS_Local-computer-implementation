@@ -130,6 +130,31 @@ class ProgressTruthTests(unittest.TestCase):
             self.assertEqual(item["state"], "PASS")
             self.assertEqual(item["evidence"], observation["evidence_pointer"])
 
+    def test_p07_progress_center_keeps_missing_evidence_unknown(self):
+        """P0.7 must expose absence as UNKNOWN rather than inflate the UI projection."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "config").mkdir()
+            (root / "config" / "progress_truth.v1.json").write_text(json.dumps(self.contract), encoding="utf-8")
+            old_root = progress.ROOT
+            old_status = progress.supervisor_status
+            old_head = progress._head_sha
+            try:
+                progress.ROOT = root
+                progress.supervisor_status = lambda: {"reachable": True, "implementation_sha": "candidate-sha"}
+                progress._head_sha = lambda: "candidate-sha"
+                payload = progress.current()
+            finally:
+                progress.ROOT = old_root
+                progress.supervisor_status = old_status
+                progress._head_sha = old_head
+            item = next(item for item in payload["items"] if item["id"] == "P0.7")
+            self.assertEqual(payload["truth_state"], "UNKNOWN")
+            self.assertEqual(payload["overall_percent"], 0)
+            self.assertEqual(item["state"], "UNKNOWN")
+            self.assertEqual(item["percent"], 0)
+            self.assertIsNone(item["evidence"])
+
 
 if __name__ == "__main__":
     unittest.main()
