@@ -5,6 +5,7 @@ param(
   [ValidateRange(1, 1440)]
   [int]$QuotaRetryMinutes = 15,
   [switch]$DryRun,
+  [switch]$ValidateOnly,
   [switch]$ResetState
 )
 
@@ -125,6 +126,21 @@ function Ensure-AutopilotBranch {
   return $name
 }
 
+function Test-RunningProcess([int]$ProcessId) {
+  if ($ProcessId -le 0) { return $false }
+  return $null -ne (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue)
+}
+
+function Recover-StaleLock {
+  if (-not (Test-Path -LiteralPath $LockPath)) { return }
+  $owner = $null
+  try { $owner = Get-Content -LiteralPath $LockPath -Raw | ConvertFrom-Json } catch { }
+  if ($owner -and (Test-RunningProcess ([int]$owner.process_id))) {
+    throw "Autopilot already running (PID $($owner.process_id)); refusing a concurrent turn."
+  }
+  Remove-Item -LiteralPath $LockPath -Force
+}
+
 foreach ($path in $Root, $AutoRoot, $MasterTask, $StatePath) {
   if (-not (Test-Path -LiteralPath $path)) { throw "Required autopilot asset missing: $path" }
 }
@@ -135,13 +151,14 @@ if ($ResetState) {
   exit 0
 }
 
-if (Test-Path -LiteralPath $LockPath) {
-  throw "Autopilot lock exists; inspect it before retrying: $LockPath"
-}
+Recover-StaleLock
+
+if ($ValidateOnly) { exit 0 }
 
 if (-not $DryRun) { [void](Ensure-AutopilotBranch) }
 
-New-Item -ItemType File -Path $LockPath -ErrorAction Stop | Out-Null
+[ordered]@{ process_id = $PID; started_at_utc = [DateTime]::UtcNow.ToString('o'); root = $Root } |
+  ConvertTo-Json | Set-Content -LiteralPath $LockPath -Encoding utf8
 try {
   Set-Location $Root
   $turnsRun = 0
@@ -187,7 +204,7 @@ try {
 
     if (Test-HumanGateResult $result) {
       $state.status = 'HUMAN_GATE_REQUIRED'; $state.stop_reason = 'HUMAN_GATE_REQUIRED'
-    } elseif (Test-QuotaResult ($result + "`n" + $cliOutput)) {
+    } elseif ($exitCode -ne 0 -and (Test-QuotaResult ($result + "`n" + $cliOutput))) {
       $state.status = 'WAITING_QUOTA'; $state.stop_reason = 'WAITING_QUOTA'
       $state.quota_retry_at_utc = [DateTime]::UtcNow.AddMinutes($QuotaRetryMinutes).ToString('o')
     } elseif ($exitCode -ne 0) {
