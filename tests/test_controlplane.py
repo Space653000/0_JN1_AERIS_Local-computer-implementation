@@ -54,9 +54,10 @@ class ControlPlaneTests(unittest.TestCase):
         with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}/", timeout=3) as response:
             body = response.read().decode("utf-8")
             self.assertEqual(response.status, 200)
+            self.assertEqual(response.headers.get_content_charset(), "utf-8")
             self.assertIn("本機聲學工程公司", body)
-            self.assertIn("Deterministic Skills", body)
-            self.assertIn("Standards Registry", body)
+            self.assertIn("確定性 技能", body)
+            self.assertIn("標準 登錄庫", body)
             self.assertIn("/assets/app.js", body)
 
     def test_roles_api_returns_100(self):
