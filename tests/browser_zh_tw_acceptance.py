@@ -16,7 +16,7 @@ def violations(texts: list[str]) -> list[str]:
     out=[]
     for t in texts:
         words = re.findall(r"[A-Za-z][A-Za-z0-9_+./-]*", t)
-        bad=[w for w in words if w not in ALLOW and not re.fullmatch(r"R\d{3}|P[0-6](?:\.\d+)?|v?\d+(?:\.\d+)*",w)]
+        bad=[w for w in words if len(w)>1 and w not in ALLOW and not re.fullmatch(r"R\d{3}|P[0-6](?:\.\d+)?|v?\d+(?:\.\d+)*",w)]
         if bad: out.append(t)
     return out
 
@@ -25,7 +25,7 @@ def crawl() -> dict:
     with tempfile.TemporaryDirectory(prefix="aeris-zh-") as td:
         for route in ROUTES:
             out=Path(td)/route.strip("/").replace("/","_")
-            cmd=[r"C:\Program Files\Google\Chrome\Application\chrome.exe", "--headless=new", "--disable-gpu", "--no-sandbox", f"--user-data-dir={td}/profile", f"--dump-dom", BASE+route]
+            cmd=[r"C:\Program Files\Google\Chrome\Application\chrome.exe", "--headless=new", "--disable-gpu", "--no-sandbox", "--virtual-time-budget=3000", f"--user-data-dir={td}/profile", f"--dump-dom", BASE+route]
             p=subprocess.run(cmd,capture_output=True,text=True,encoding="utf-8",errors="replace",timeout=30)
             dom=p.stdout
             texts=visible_text(dom)

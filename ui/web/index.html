@@ -4,22 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>AERIS — Local Acoustic Engineering Company</title>
-  <script>const requestedTheme=new URLSearchParams(location.search).get('theme');document.documentElement.dataset.theme=requestedTheme==='light'?'light':'dark';</script>
+  <script>const requestedTheme=new URL搜尋Params(location.search).get('theme');document.documentElement.dataset.theme=requestedTheme==='light'?'light':'dark';</script>
   <link rel="stylesheet" href="/assets/styles.css">
   <link rel="stylesheet" href="/assets/themes.css">
 </head>
 <body>
   <aside class="rail" aria-label="AERIS 主要導覽">
     <div class="brand">A</div>
-    <button type="button" class="nav active" data-view="dashboard" title="Dashboard" aria-label="儀表板">◫</button>
-    <button type="button" class="nav" data-view="workspace" title="Workspace" aria-label="工作區">⌁</button>
-    <button type="button" class="nav" data-view="services" title="Services" aria-label="服務">⚙</button>
+    <button type="button" class="nav active" data-view="dashboard" title="儀表板" aria-label="儀表板">◫</button>
+    <button type="button" class="nav" data-view="workspace" title="工作區" aria-label="工作區">⌁</button>
+    <button type="button" class="nav" data-view="services" title="服務" aria-label="服務">⚙</button>
     <button type="button" class="nav theme-toggle" id="themeToggle" title="切換深淺色" aria-label="切換深淺色">☀</button>
   </aside>
   <main id="mainContent">
     <header>
       <div>
-        <div class="eyebrow">AERIS · Acoustic Engineering & Research Intelligence System</div>
+        <div class="eyebrow">AERIS · 聲學工程與研究智慧系統</div>
         <h1>本機聲學工程公司</h1>
       </div>
       <div class="status" role="status" aria-live="polite"><span class="dot"></span><span id="opening">連線中</span></div>
@@ -30,13 +30,13 @@
         <div>
           <div class="eyebrow">COMPANY CONTROL PLANE</div>
           <h2>AERIS 在線_</h2>
-          <p>100 席聲學工程能力組織、本機 AI、Knowledge、Skills、Evidence、Standards 與工程控制面，由這台電腦執行。</p>
+          <p>100 席聲學工程能力組織、本機 AI、知識、技能、Evidence、標準 與工程控制面，由這台電腦執行。</p>
         </div>
         <div class="hero-badge">LOCAL</div>
       </div>
       <div class="metrics">
         <div class="card metric"><span>角色席位</span><strong id="roleCount">—</strong><small>可呼叫 baseline</small></div>
-        <div class="card metric"><span>Skills</span><strong id="skillCount">—</strong><small>deterministic</small></div>
+        <div class="card metric"><span>技能</span><strong id="skillCount">—</strong><small>deterministic</small></div>
         <div class="card metric"><span>進行中任務</span><strong id="taskCount">—</strong><small>SQLite 工作台</small></div>
         <div class="card metric"><span>Local AI</span><strong id="modelState">—</strong><small id="modelName">—</small></div>
       </div>
@@ -54,8 +54,8 @@
           <div id="expectedRuns" class="task-list"></div>
         </div>
         <div class="card">
-          <div class="section-title"><h3>Knowledge</h3></div>
-          <div class="metric"><strong id="knowledgeCount">—</strong><small>本機索引文件；Memory/Knowledge 不等於 Evidence</small></div>
+          <div class="section-title"><h3>知識</h3></div>
+          <div class="metric"><strong id="knowledgeCount">—</strong><small>本機索引文件；記憶/知識 不等於 Evidence</small></div>
         </div>
       </div>
     </section>
@@ -64,7 +64,7 @@
       <div class="grid2 workspace-grid">
         <div class="card">
           <div class="section-title"><h3>建立工程任務</h3></div>
-          <label for="projectSelect">Project</label>
+          <label for="projectSelect">專案</label>
           <select id="projectSelect"></select>
           <label for="taskTitle">任務標題</label>
           <input id="taskTitle" placeholder="例如：麥克風遠場收音 SNR 與 Beamforming 問題">
@@ -79,12 +79,12 @@
         </div>
         <div class="card">
           <div class="section-title"><h3>Dynamic Pod</h3><span id="podMeta" class="chip">尚未規劃</span></div>
-          <div id="podRoles" class="role-list empty">輸入工程問題後按「規劃 Dynamic Pod」</div>
+          <div id="pod角色席位" class="role-list empty">輸入工程問題後按「規劃 Dynamic Pod」</div>
           <div class="invoke-box">
             <label for="invokePrompt">向 Pod Lead 詢問</label>
-            <textarea id="invokePrompt" rows="4" placeholder="工程問題只送本機 AI；Knowledge 僅作 supporting context"></textarea>
+            <textarea id="invokePrompt" rows="4" placeholder="工程問題只送本機 AI；知識 僅作 supporting context"></textarea>
             <button id="invokeLead">執行本機角色</button>
-            <pre id="invokeResult" class="pre response"></pre>
+            <pre id="invoke結果" class="pre response"></pre>
           </div>
         </div>
       </div>
@@ -98,26 +98,26 @@
       <div class="grid2">
         <div class="card">
           <div class="section-title"><h3>100 席角色</h3><input id="roleFilter" class="compact" placeholder="搜尋角色" aria-label="搜尋角色"></div>
-          <div id="allRoles" class="role-browser"></div>
+          <div id="all角色席位" class="role-browser"></div>
         </div>
         <div class="stack">
           <div class="card">
-            <div class="section-title"><h3>Deterministic Skills</h3></div>
+            <div class="section-title"><h3>確定性 技能</h3></div>
             <div id="skillList" class="task-list"></div>
           </div>
           <div class="card">
-            <div class="section-title"><h3>Engineering Workflows</h3></div>
+            <div class="section-title"><h3>工程工作流程</h3></div>
             <div id="workflowList" class="task-list"></div>
           </div>
           <div class="card">
-            <div class="section-title"><h3>Standards Registry</h3></div>
-            <div class="row"><input id="standardQuery" placeholder="IEC / AES / CTA / ITU" aria-label="搜尋標準"><button id="standardSearch">搜尋</button></div>
-            <div id="standardResults" class="search-results"></div>
+            <div class="section-title"><h3>標準 登錄庫</h3></div>
+            <div class="row"><input id="standardQuery" placeholder="IEC / AES / CTA / ITU" aria-label="搜尋標準"><button id="standard搜尋">搜尋</button></div>
+            <div id="standard結果s" class="search-results"></div>
           </div>
           <div class="card">
-            <div class="section-title"><h3>Knowledge 搜尋</h3></div>
-            <div class="row"><input id="knowledgeQuery" placeholder="搜尋本機知識" aria-label="搜尋本機知識"><button id="knowledgeSearch">搜尋</button></div>
-            <div id="knowledgeResults" class="search-results"></div>
+            <div class="section-title"><h3>知識 搜尋</h3></div>
+            <div class="row"><input id="knowledgeQuery" placeholder="搜尋本機知識" aria-label="搜尋本機知識"><button id="knowledge搜尋">搜尋</button></div>
+            <div id="knowledge結果s" class="search-results"></div>
           </div>
           <div class="card">
             <div class="section-title"><h3>Audit 最近事件</h3></div>
