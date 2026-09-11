@@ -48,7 +48,7 @@
     const counts={};Object.values(maturity.capabilities||{}).forEach(x=>counts[x.state]=(counts[x.state]||0)+1);
     $('maturityList').innerHTML=Object.entries(counts).sort().map(([k,v])=>row(k,`${v} capabilities`,k)).join('');
     const groups=[...new Set(roles.roles.map(r=>r.group))];$('roleGroup').innerHTML='<option value="">全部群組</option>'+groups.map(g=>`<option>${esc(g)}</option>`).join('');
-    const renderRoles=()=>{const q=$('roleQuery').value.toLowerCase(),g=$('roleGroup').value;const items=roles.roles.filter(r=>(!q||`${r.id} ${r.name} ${r.group} ${r.domain}`.toLowerCase().includes(q))&&(!g||r.group===g));$('roleVisibleCount').textContent=`${items.length} roles`;$('roleGrid').innerHTML=items.map(r=>`<div class="role"><div class="role-id">${esc(r.id)}</div><b>${esc(r.name)}</b><div class="role-group">${esc(r.group)} · ${esc(r.execution_state)}</div></div>`).join('')};
+    const renderRoles=()=>{const q=$('roleQuery').value.toLowerCase(),g=$('roleGroup').value;const items=roles.roles.filter(r=>(!q||`${r.id} ${r.name} ${r.group} ${r.display_name||''} ${r.display_group||''} ${r.domain}`.toLowerCase().includes(q))&&(!g||r.group===g));$('roleVisibleCount').textContent=`${items.length} 席角色`;$('roleGrid').innerHTML=items.map(r=>`<div class="role"><div class="role-id">${esc(r.id)}</div><b>${esc(r.display_name||r.name)}</b><div class="role-group">${esc(r.display_group||r.group)} · ${esc(r.execution_state)}</div><small>${esc(r.display_description||'')}</small></div>`).join('')};
     $('roleQuery').oninput=renderRoles;$('roleGroup').onchange=renderRoles;renderRoles();
   }
 

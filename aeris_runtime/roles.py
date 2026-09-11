@@ -39,6 +39,35 @@ _ROLE_HINTS: dict[str, tuple[str, ...]] = {
     "Technical Report / Evidence / Knowledge Curator": ("evidence", "report", "traceability", "knowledge", "證據", "報告", "知識"),
 }
 
+_GROUP_ZH = {
+    "Chief Council": "首席架構委員會",
+    "Speaker CoE": "揚聲器卓越中心",
+    "Microphone CoE": "麥克風卓越中心",
+    "Product Chiefs": "產品首席團隊",
+    "Distinguished Experts": "特聘領域專家",
+    "Engineering Ops": "工程營運團隊",
+}
+_NAME_ZH = {
+    "Chief Acoustic Architect": "首席聲學架構師",
+    "Speaker Engineering Director": "揚聲器工程總監",
+    "Microphone Engineering Director": "麥克風工程總監",
+    "Product Audio System Architect": "產品音訊系統架構師",
+    "Patent / Prior-Art Intelligence Engineer": "專利與先前技術情報工程師",
+    "International Standards & Regulation Engineer": "國際標準與法規工程師",
+    "AEC / Echo Control Engineer": "AEC／回音控制工程師",
+    "Beamforming / DOA Engineer": "波束成形／DOA 工程師",
+    "Speaker Measurement Engineer": "揚聲器量測工程師",
+    "Microphone Measurement Engineer": "麥克風量測工程師",
+}
+
+def _display_fields(role_id: int, name: str, group: str) -> dict[str, str]:
+    """Authoritative zh-TW presentation fields; canonical IDs/names remain unchanged."""
+    return {
+        "display_name": _NAME_ZH.get(name, f"角色 {role_id:03d} 專業工程席位"),
+        "display_group": _GROUP_ZH.get(group, group),
+        "display_description": f"{_GROUP_ZH.get(group, group)}第 {role_id:03d} 席，負責本機工程分析、證據追溯與獨立審查。",
+    }
+
 
 def _registry() -> dict[str, Any]:
     return json.loads(REGISTRY.read_text(encoding="utf-8-sig"))
@@ -85,6 +114,7 @@ def contract_for(role_id: int, name: str, group: str) -> dict[str, Any]:
         "required_output": ["claim", "evidence", "confidence", "counter_hypothesis", "missing_evidence", "recommended_test"],
         "forbidden_claim": "Do not present inference as measured fact or claim formal release/verification without required Evidence and gates.",
         "model_output_contract": "AERIS_ROLE_EVIDENCE_SCHEMA_V1",
+        **_display_fields(role_id, name, group),
     }
 
 

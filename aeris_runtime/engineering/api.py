@@ -19,6 +19,18 @@ def live_matrix():
     with _matrix_lock:
         if _matrix_cache is None or time.monotonic()-_matrix_at>2:
             _matrix_cache=factory.matrix(); _matrix_cache["cache_max_age_s"]=2
+            # Source-of-truth presentation fields keep canonical skill IDs stable.
+            labels={
+                "engineering-requirements":"工程需求分析","lumped-speaker":"集中參數揚聲器分析",
+                "microphone-sensitivity":"麥克風靈敏度分析","free-local-acoustic-baseline":"免費本機聲學基準",
+            }
+            capability_items = _matrix_cache.get("capabilities",[])
+            if isinstance(capability_items, dict):
+                capability_items = list(capability_items.values())
+            for item in capability_items:
+                sid=item.get("skill_id") or item.get("id") or item.get("capability")
+                item["display_name"] = labels.get(sid, "本機能力：" + str(sid))
+                item["display_description"] = "可重現的本機分析能力；結果仍須依證據與人工關卡判定。"
             _matrix_at=time.monotonic()
         return _matrix_cache
 
