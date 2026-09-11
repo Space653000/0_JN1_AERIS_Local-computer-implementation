@@ -11,6 +11,7 @@ $AutoRoot = Join-Path $Root '.aeris\autopilot'
 $MasterTask = Join-Path $AutoRoot 'MASTER_TASK.md'
 $StatePath = Join-Path $AutoRoot 'STATE.json'
 $LastResult = Join-Path $AutoRoot 'LAST_RESULT.txt'
+$LockPath = Join-Path $AutoRoot 'RUNNING.lock'
 $ProgressUrl = 'http://127.0.0.1:8765/api/v1/progress'
 
 function Get-ProgressSnapshot {
@@ -64,6 +65,12 @@ if ($ResetState) {
   exit 0
 }
 
+try {
+  New-Item -ItemType File -Path $LockPath -ErrorAction Stop | Out-Null
+} catch {
+  throw "Autopilot already running or requires safe stale-lock review: $LockPath"
+}
+
 Set-Location $Root
 $turnsRun = 0
 while ($true) {
@@ -101,3 +108,5 @@ while ($true) {
   $turnsRun++
   if ($state.stop_reason) { break }
 }
+
+Remove-Item -LiteralPath $LockPath -Force -ErrorAction SilentlyContinue
