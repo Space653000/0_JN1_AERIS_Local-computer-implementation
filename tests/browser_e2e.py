@@ -166,12 +166,12 @@ def run() -> int:
         try:
             browser = find_browser()
             routes = {
-                "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "Dashboard is a projection, not truth."),
-                "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "Suggested Temporary Engineering Pod"),
-                "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "Five-Plane Architecture"),
-                "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', "Dashboard is a projection, not truth."),
-                "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "Suggested Temporary Engineering Pod"),
-                "/services?theme=light": ('data-page="services"', 'data-theme="light"', "Five-Plane Architecture"),
+                "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "儀表板是投影，不是真值。"),
+                "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "建議的臨時工程 Pod"),
+                "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "五平面架構"),
+                "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', "儀表板是投影，不是真值。"),
+                "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "建議的臨時工程 Pod"),
+                "/services?theme=light": ('data-page="services"', 'data-theme="light"', "五平面架構"),
             }
             results = []
             for route, required in routes.items():

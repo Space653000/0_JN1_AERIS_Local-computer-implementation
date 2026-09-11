@@ -2,7 +2,7 @@
   'use strict';
   const capabilityScript=document.createElement('script');capabilityScript.src='/assets/capabilities.js';document.head.appendChild(capabilityScript);
   const page=document.body.dataset.page;
-  const params=new URL搜尋Params(location.search);
+  const params=new URLSearchParams(location.search);
   const requested=params.get('theme');
   const visualBaseline=params.get('visual_baseline')==='1';
   if(requested==='dark'||requested==='light'){
