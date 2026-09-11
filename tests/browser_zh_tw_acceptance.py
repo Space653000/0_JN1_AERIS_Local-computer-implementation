@@ -4,7 +4,13 @@ import html, json, re, subprocess, tempfile, urllib.request
 from pathlib import Path
 
 BASE = "http://127.0.0.1:8765"
-ROUTES = ["/", "/dashboard", "/workspace", "/services", "/progress", "/progress-center"]
+ROUTES = [
+    "/", "/dashboard", "/workspace", "/services", "/progress", "/progress-center",
+    "/dashboard#activity", "/dashboard#roles", "/dashboard#assets", "/dashboard#trust",
+    "/workspace#task", "/workspace#pod", "/workspace#contract",
+    "/services#verification", "/services#risk", "/services#evidence", "/services#health",
+    "/dashboard?theme=light", "/workspace?theme=light", "/services?theme=light",
+]
 ALLOW = {"API","SHA","HTTP","JSON","Runtime","Evidence","PASS","BLOCKED","UNKNOWN","Ollama","Git","Python","PowerShell","AERIS","SQLite","Pod","AEC","DOA","FFT","DSP","PDM","ADC","TWS","FR","THD","SNR","STFT","G0","G1","G2","G3","G4","G5"}
 
 def visible_text(dom: str) -> list[str]:
