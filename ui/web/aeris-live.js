@@ -54,9 +54,9 @@
   }
 
   function workspacePayload(){
-    const title=$('title').value.trim(),requirement=$('requirement').value.trim();
+    const title=$('title').value.trim(),requirement=$('需求').value.trim();
     if(!title||!requirement)throw new Error('工程目標 與 requirement 為必填');
-    const metadata={product:$('product').value,transducer:$('transducer').value,lifecycle:$('lifecycle').value,evidence_tier:$('evidenceTier').value,standards_strategy:$('standardsStrategy').value,requirement,hypothesis:$('hypothesis').value.trim(),evidence_needed:$('evidenceNeeded').value.trim()};
+    const metadata={product:$('product').value,transducer:$('transducer').value,lifecycle:$('lifecycle').value,evidence_tier:$('證據Tier').value,standards_strategy:$('standardsStrategy').value,requirement,hypothesis:$('假設').value.trim(),evidence_needed:$('證據Needed').value.trim()};
     const description=[`Product: ${metadata.product}`,`換能器: ${metadata.transducer}`,`生命週期: ${metadata.lifecycle}`,`requirement: ${requirement}`,`假設: ${metadata.hypothesis}`,`所需證據: ${metadata.evidence_needed}`].join('\n');
     return {project_id:$('project').value,title,description,risk_level:$('risk').value,auto_pod:true,max_roles:15,metadata,create_workflow:true,actor:'AERIS Local 工作區'};
   }
@@ -75,9 +75,9 @@
     $('podSize').textContent=`${lastPod.pod_size} 專家`;
     $('podDesc').textContent=`${p.metadata.product} · ${transducer} · ${p.metadata.lifecycle} · ${p.risk_level} · ${lastPod.planner}`;
     $('podGrid').innerHTML=lastPod.roles.map((r,i)=>`<div class="person"><b>${i===0?'LEAD · ':''}${esc(r.id)} ${esc(r.name)}</b>${esc(r.group)} · ${esc(r.selection_reason)}</div>`).join('');
-    $('requirementBoard').textContent=p.metadata.requirement;$('hypothesisBoard').textContent=p.metadata.hypothesis||'尚未提供';$('evidenceBoard').textContent=p.metadata.evidence_needed||'尚未提供';
+    $('需求看板').textContent=p.metadata.requirement;$('假設看板').textContent=p.metadata.hypothesis||'尚未提供';$('證據看板').textContent=p.metadata.evidence_needed||'尚未提供';
   }
-  async function createWorkspaceTask(){const p=workspacePayload();const result=await api('/api/v1/tasks',{method:'POST',body:JSON.stringify(p)});$('taskResult').textContent=`已建立 SQLite ${result.task.id} 與 Workflow ${result.workflow.workflow_id}；狀態 ${result.workflow.state}，尚未執行或驗證。`;await loadWorkspace()}
+  async function createWorkspaceTask(){const p=workspacePayload();const result=await api('/api/v1/tasks',{method:'POST',body:JSON.stringify(p)});$('task結果').textContent=`已建立 SQLite ${result.task.id} 與工作流程 ${result.workflow.workflow_id}；狀態 ${result.workflow.state}，尚未執行或驗證。`;await loadWorkspace()}
 
   async function services(){const [status,data]=await Promise.all([api('/api/v1/status'),api('/api/v1/services')]);$('openingState').textContent=t(status.company_opening_state);$('sidebarState').textContent=t(status.company_opening_state);$('generatedAt').textContent=visualBaseline?'即時 API 評估／可變動':`最近 API 評估 ${data.generated_at_utc}`;$('serviceCount').textContent=`${data.services.length} 項觀測服務`;
     $('planeCards').innerHTML=data.planes.map(p=>`<div class="layer"><h3>${esc(t(p))}</h3>${data.services.filter(x=>x.plane===p).map(x=>`<div class="svc"><b>${esc(t(x.service))}</b><small>${esc(t(x.state))} · ${esc(t(x.reason))}</small></div>`).join('')}</div>`).join('');
@@ -88,6 +88,6 @@
   async function refresh(){if(refreshing)return;refreshing=true;try{if(page==='dashboard')await dashboard();else if(page==='workspace')await loadWorkspace();else if(page==='services')await services()}catch(e){const target=$('openingState');if(target)target.textContent=`API ERROR · ${e.message}`}finally{refreshing=false}}
   async function assetCheck(){try{const paths=[location.pathname,'/assets/aeris.css','/assets/aeris-theme.js','/assets/aeris-live.js','/assets/capabilities.js'];const text=await Promise.all(paths.map(async p=>{const r=await fetch(p,{cache:'no-store'});return `${r.status}:${await r.text()}`}));const snap=text.join('\n--AERIS--\n');if(assetBaseline!==null&&assetBaseline!==snap)location.reload();assetBaseline=snap}catch(_){}}
   document.querySelectorAll('[data-refresh]').forEach(b=>b.addEventListener('click',refresh));
-  if(page==='workspace'){$('routeBtn').addEventListener('click',()=>routePod().catch(e=>$('taskResult').textContent=e.message));$('createBtn').addEventListener('click',()=>createWorkspaceTask().catch(e=>$('taskResult').textContent=e.message));$('resetBtn').addEventListener('click',()=>location.reload())}
+  if(page==='workspace'){$('routeBtn').addEventListener('click',()=>routePod().catch(e=>$('task結果').textContent=e.message));$('createBtn').addEventListener('click',()=>createWorkspaceTask().catch(e=>$('task結果').textContent=e.message));$('resetBtn').addEventListener('click',()=>location.reload())}
   addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});if(!visualBaseline)setInterval(refresh,10000);setInterval(assetCheck,15000);refresh();assetCheck();
 })();
