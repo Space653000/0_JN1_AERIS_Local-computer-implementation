@@ -18,15 +18,20 @@ def current() -> dict:
         count = counts[phase]
         for index in range(1, count + 1):
             ident = f"{phase}.{index}"
-            if phase == "P0" and index <= 5:
+            # P0.4 is the all-route zh-TW browser acceptance.  It cannot be
+            # inferred from a healthy supervisor; only its own acceptance
+            # evidence may mark it PASS.
+            if phase == "P0" and index <= 5 and index != 4:
                 state, percent = ("PASS", 100) if not blocked else ("BLOCKED", 60)
+            elif phase == "P0" and index == 4:
+                state, percent = "UNKNOWN", 0
             else:
                 state, percent = "UNKNOWN", 0
             items.append({"id": ident, "percent": percent, "state": state,
                           "evidence": "runtime:/health,/status" if state != "UNKNOWN" else None,
                           "sha": status.get("implementation_sha"),
                           "blocker": "company control plane blocked" if state == "BLOCKED" else None,
-                          "next_action": "建立本項 authoritative Evidence" if state == "UNKNOWN" else None})
+                          "next_action": "完成全站 zh-TW 瀏覽器驗收並建立 authoritative Evidence" if ident == "P0.4" and state == "UNKNOWN" else ("建立本項 authoritative Evidence" if state == "UNKNOWN" else None)})
     phase_percent = {p: round(sum(x["percent"] for x in items if x["id"].startswith(p+".")) /
                               sum(1 for x in items if x["id"].startswith(p+"."))) for p in PHASES}
     return {"schema_version": 1, "generated_at_utc": datetime.now(timezone.utc).isoformat(),
