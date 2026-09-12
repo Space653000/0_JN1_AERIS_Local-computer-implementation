@@ -82,21 +82,23 @@ past L2 that assigns a *different* role as reviewer and requires their
 sign-off, per `aeris_runtime/engineering/reviewer_allocation.py` and the
 R2-R4 risk-tier reviewer rules already tested in
 `tests/test_reviewer_allocation.py`.
-**Status: investigated, correctly not attempted this tick.** Unlike L2 (which
-just needed someone to actually call already-built, already-tested functions
-against already-present golden fixtures), `role_l3_accepted` is hardcoded
-`False` everywhere it appears in `aeris_runtime/engineering/role_acceptance.py`
--- there is currently no code path anywhere in the repo that ever sets it
-True. This is not a "press run" gap like P3.1-P3.4 were; it means the actual
-L3 acceptance mechanism (what a qualified independent reviewer's sign-off
-concretely is, how it gets sealed as Evidence, what makes a decision
-"qualified") has not been designed yet, only named in the maturity rubric.
-Building that now, under autonomous time pressure, risks inventing a
-shortcut that *looks* like independent review without being one -- exactly
-the "fake PASS" failure mode this whole Evidence system exists to prevent.
-This needs a deliberate design pass (ideally with Human input on what
-"qualified" review should require) before implementation, not a rushed
-autonomous-loop tick.
+**Status: done, per the Human's explicit decision.** This item was correctly
+held rather than rushed until the Human answered the one real design
+question it raised: what makes a review "qualified," and who gets to grant
+L3. The Human's answer -- "L3: AI 做審查整理，真人做最終核准" (AI prepares/
+organizes the review, a real Human makes the final approval) -- is exactly
+what `aeris_runtime/engineering/l3_award.py` implements:
+`prepare_review()` packages an already-sealed `challenges.run()` receipt
+(itself the full requirement -> method -> Evidence -> independent-reviewer-
+challenge -> reproduction loop) into a review packet; `human_decide()` is
+the *only* code path anywhere that can ever grant L3, and it requires a
+named Human approver plus re-verifies the backing evidence on every status
+check (fail-closed). Every pre-existing `role_l3_awarded: False`/
+`role_l3_accepted` self-report in `role_acceptance.py`/`domain_review.py`/
+`challenges.py` is left untouched -- this ledger sits beside them as an
+independent Human-decision record, never a code path that lets the AI
+self-certify L3. CLI: `aeris l3 pending|prepare|status|award|revoke|verify`.
+Tests: `tests/test_l3_award.py`.
 
 ## P3.7 — L4 remains explicitly out of reach by design
 **Requires:** nothing to build. `verification_rubric["L4"]` in

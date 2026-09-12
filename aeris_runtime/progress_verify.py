@@ -221,6 +221,20 @@ def _check_p3_4() -> CheckResult:
     return CheckResult(ok, detail, "scripts/run_capability_factory.py")
 
 
+def _check_p3_5() -> CheckResult:
+    p3_registered = [k for k in CHECKS if k.startswith("P3.") and k not in {"P3.5", "P3.6"}]
+    ok = len(p3_registered) >= 4
+    return CheckResult(ok, f"P3.1-P3.4/P3.7/P3.8 registered in progress_verify: {sorted(p3_registered)}", "aeris_runtime/progress_verify.py")
+
+
+def _check_p3_6() -> CheckResult:
+    module_ok, module_detail = _grep("aeris_runtime/engineering/l3_award.py", "def prepare_review", "def human_decide", "a named Human approver is required")
+    cli_ok, cli_detail = _grep("aeris_runtime/cli.py", "def cmd_l3")
+    test_ok, test_detail = _run_unittest("tests.test_l3_award")
+    ok = module_ok and cli_ok and test_ok
+    return CheckResult(ok, f"{module_detail}; {cli_detail}; {test_detail}", "aeris_runtime/engineering/l3_award.py; tests/test_l3_award.py")
+
+
 def _check_p3_7() -> CheckResult:
     # L4 requires real instruments/calibration/expert approval; no software
     # change can honestly grant it. The acceptance criterion is that the
@@ -433,7 +447,7 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P1.5": _check_p1_5, "P1.6": _check_p1_6, "P1.7": _check_p1_7, "P1.8": _check_p1_8,
     "P2.1": _check_p2_1, "P2.2": _check_p2_2, "P2.5": _check_p2_5, "P2.6": _check_p2_6, "P2.7": _check_p2_7,
     "P3.1": _check_p3_1, "P3.2": _check_p3_2, "P3.3": _check_p3_3, "P3.4": _check_p3_4,
-    "P3.7": _check_p3_7, "P3.8": _check_p3_8,
+    "P3.5": _check_p3_5, "P3.6": _check_p3_6, "P3.7": _check_p3_7, "P3.8": _check_p3_8,
     "P4.1": _check_p4_1, "P4.2": _check_p4_2, "P4.3": _check_p4_3, "P4.5": _check_p4_5,
     "P4.6": _check_p4_6, "P4.7": _check_p4_7,
     "P5.1": _check_p5_1, "P5.2": _check_p5_2, "P5.3": _check_p5_3, "P5.5": _check_p5_5,
@@ -445,7 +459,7 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
 _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8",
           "P2.1", "P2.2", "P2.5", "P2.6", "P2.7",
-          "P3.1", "P3.2", "P3.3", "P3.4", "P3.7", "P3.8",
+          "P3.1", "P3.2", "P3.3", "P3.4", "P3.5", "P3.6", "P3.7", "P3.8",
           "P4.1", "P4.2", "P4.3", "P4.5", "P4.6", "P4.7",
           "P5.1", "P5.2", "P5.3", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9",
           "P6.1", "P6.2", "P6.3", "P6.4", "P6.6", "P6.7", "P6.8"]
