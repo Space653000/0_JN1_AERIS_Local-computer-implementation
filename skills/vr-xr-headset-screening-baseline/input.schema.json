@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "motion_to_sound_latency_ms", "max_acceptable_motion_to_sound_latency_ms", "strap_rubbing_noise_rms_pa", "speech_reference_rms_pa", "min_acceptable_strap_rubbing_margin_db"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_VR_XR_HEADSET_SCREEN"},
+    "motion_to_sound_latency_ms": {"type": "number"}, "max_acceptable_motion_to_sound_latency_ms": {"type": "number"},
+    "strap_rubbing_noise_rms_pa": {"type": "number"}, "speech_reference_rms_pa": {"type": "number"},
+    "min_acceptable_strap_rubbing_margin_db": {"type": "number"}
+  }
+}

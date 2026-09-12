@@ -34,13 +34,15 @@
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "vr-xr-headset-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/vr-xr-headset-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -247,13 +249,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/vr-xr-headset-screening-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "vr-xr-headset-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -269,7 +273,14 @@
       "neighbor_owns": "Fuse head/IMU timing with acoustic direction while preserving coordinate-frame uncertainty"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "vr-xr-headset-screening-baseline",
+      "method": "methods/roles/vr-xr-headset-screening-baseline.json",
+      "suite": "golden/roles/R062/golden.json",
+      "scope": "Declared motion-to-sound latency and strap-rubbing noise margin against declared bounds, from supplied scalars; no physical wear-test or Human production sign-off."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Bound VR/XR audio motion latency and capture under headset rubbing and occlusion",

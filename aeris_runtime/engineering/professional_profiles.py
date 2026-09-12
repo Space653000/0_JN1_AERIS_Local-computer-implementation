@@ -397,6 +397,11 @@ ROLE_DOMAIN_CONTRACTS['R078']=[{
     'method':'methods/roles/doe-monte-carlo-design-screening-baseline.json',
     'suite':'golden/roles/R078/golden.json',
     'scope':'Declared design resolution and causal/model-validity claim flags against confounded-design and Monte-Carlo-precision-as-validity antipatterns; no design-matrix alias verification or physical decision authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R062']=[{
+    'skill_id':'vr-xr-headset-screening-baseline',
+    'method':'methods/roles/vr-xr-headset-screening-baseline.json',
+    'suite':'golden/roles/R062/golden.json',
+    'scope':'Declared motion-to-sound latency and strap-rubbing noise margin against declared bounds, from supplied scalars; no physical wear-test or Human production sign-off.'}]
 
 
 def standards_families(value):
