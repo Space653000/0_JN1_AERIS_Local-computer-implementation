@@ -392,6 +392,11 @@ ROLE_DOMAIN_CONTRACTS['R091']=[{
     'method':'methods/roles/test-automation-result-screening-baseline.json',
     'suite':'golden/roles/R091/golden.json',
     'scope':'Declared attempt count, retry disclosure and explicit pass-signal flags against retry-hiding and process-alive-as-pass antipatterns; no full automation-run resource/timeout budget or physical release authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R078']=[{
+    'skill_id':'doe-monte-carlo-design-screening-baseline',
+    'method':'methods/roles/doe-monte-carlo-design-screening-baseline.json',
+    'suite':'golden/roles/R078/golden.json',
+    'scope':'Declared design resolution and causal/model-validity claim flags against confounded-design and Monte-Carlo-precision-as-validity antipatterns; no design-matrix alias verification or physical decision authorization.'}]
 
 
 def standards_families(value):
