@@ -33,16 +33,22 @@ real investigation of the codebase — not invented from the phase label alone.
 7. **Run the regression suite** for whatever you touched, plus `aeris_runtime core verify` (must stay `valid: true` — never edit files under `.aeris/core-reference/`, that is a read-only mirror of the canonical Core repo; put new CSS/JS in `ui/web/` instead).
 8. **Commit** with a message that states what was found, what was built, and what was verified (not just what changed).
 9. **Push** to the current branch (`git push origin <branch>`) — this project keeps the remote branch in sync every commit, not batched.
-10. **Restart the local supervisor** so its `implementation_sha` matches the new HEAD: kill the process on port 8765, then `company open --start-supervisor` again.
-11. **Re-run `python -m aeris_runtime.progress_verify`** (full run, not `--dry-run`) *after* the restart, not before it — Evidence written before a restart is pinned to the old commit and `/api/v1/progress` will fail-closed with `source_runtime_mismatch` until you redo this step. This is the single most common mistake in this workflow; it has happened at least once even while writing this doc.
-12. **Confirm via `GET /api/v1/progress`** that `truth_state` is not `FAIL_CLOSED` and the phase percentages reflect what you expect before reporting anything as done.
+10. **Run `scripts\aeris-gate-cycle.ps1`** — this replaces the old manual steps 10-12 (restart the supervisor, wait for it to come up, re-run `progress_verify`, read `/api/v1/progress`, fail loudly if `truth_state` is `FAIL_CLOSED`) with one command. It exits non-zero on failure, so it's safe to chain. Pass `-SkipRestart` only if the running server is already known-aligned (rare — a fresh commit almost always needs the restart).
+   - Do not hand-roll the restart again: an early draft of this exact script used `Start-Process ... -ArgumentList 'company','open',...` without `'-m','aeris_runtime'` first, which silently started no server at all. If editing this script, re-verify end to end (`GET /health` shows the new `implementation_sha`) before trusting it.
+11. **Confirm the script's final line** says "Gate cycle complete" before reporting anything as done. If it warns `FAIL_CLOSED`, something was committed without matching Evidence — go back to step 8 territory and figure out what's missing before continuing.
 
 ## Known standing gaps (do not silently "fix" without asking)
 
-- **P3.6** (push role L2 -> L3): `role_l3_accepted` is hardcoded `False`
-  everywhere in `aeris_runtime/engineering/role_acceptance.py`. No code path
-  ever sets it True. Building the actual "qualified independent review"
-  mechanism needs the Human's definition of what "qualified" means first.
+- **P3.6** (push role L2 -> L3): `role_l3_awarded`/`role_l3_accepted` is
+  hardcoded `False` in over 30 independent review modules across
+  `aeris_runtime/engineering/*_review.py`, not just one place — and it is
+  paired with `human_approval: False` in nearly every one of them. That is
+  too consistent to be an oversight; it reads as a deliberate project-wide
+  stance that no automated review, however sophisticated, self-certifies
+  L3 — the final award is meant to be a Human action. Do not build an
+  AI-reviews-AI path that flips this to True automatically without asking
+  the Human first, even though the reviewer-allocation/domain-review
+  machinery to *support* a review is real and already tested.
 - **P4.4**: full zh-TW translation of all 132 skills' descriptions is large
   content work, intentionally not done in one pass.
 - **P2.4**: triggering re-verification from the Progress Center UI is
