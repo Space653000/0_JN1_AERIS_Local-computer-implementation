@@ -13,12 +13,13 @@
 .phase-bars{display:flex;flex-direction:column;gap:10px}
 .phase-bar-row{display:grid;grid-template-columns:56px 1fr 48px;align-items:center;gap:12px}
 .phase-bar-id{font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text-2)}
-.phase-bar-track{height:14px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
-.phase-bar-fill{height:100%;border-radius:999px;transition:width .5s ease,background .3s ease;background:var(--accent)}
+.phase-bar-track{position:relative;height:14px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border-strong);overflow:hidden}
+.phase-bar-fill{position:absolute;inset:0 auto 0 0;min-width:4px;height:100%;border-radius:999px;transition:width .5s ease,background .3s ease;background:var(--accent)}
 .phase-bar-fill.tier-done{background:var(--green)}
 .phase-bar-fill.tier-mid{background:var(--accent)}
 .phase-bar-fill.tier-low{background:var(--amber)}
 .phase-bar-fill.tier-none{background:var(--rose)}
+.phase-bar-fill.tier-unknown{width:100%!important;background:repeating-linear-gradient(135deg,var(--surface-3) 0 6px,var(--border-strong) 6px 12px);opacity:.7}
 .phase-bar-pct{font-size:10px;font-weight:650;text-align:right;font-variant-numeric:tabular-nums}
 .progress-items{display:flex;flex-direction:column}
 .progress-item{display:grid;grid-template-columns:56px 90px 1fr;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:9.5px}

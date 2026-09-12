@@ -19,7 +19,7 @@ function renderNextAction(nextAction) {
 }
 
 function tierClass(percent) {
-  if (percent === null || percent === undefined) return 'tier-none';
+  if (percent === null || percent === undefined) return 'tier-unknown';
   if (percent >= 90) return 'tier-done';
   if (percent >= 40) return 'tier-mid';
   if (percent > 0) return 'tier-low';
@@ -28,25 +28,27 @@ function tierClass(percent) {
 
 function renderRing(percent) {
   const fill = document.getElementById('ringFill');
-  const safe = Math.max(0, Math.min(100, percent || 0));
-  fill.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - safe / 100));
-  fill.classList.remove('tier-done', 'tier-mid', 'tier-low', 'tier-none');
-  const tier = tierClass(safe);
-  fill.style.stroke = {
+  const known = percent !== null && percent !== undefined;
+  const safe = Math.max(0, Math.min(100, known ? percent : 0));
+  fill.style.strokeDashoffset = String(RING_CIRCUMFERENCE * (1 - (known ? safe : 100) / 100));
+  fill.classList.remove('tier-done', 'tier-mid', 'tier-low', 'tier-none', 'tier-unknown');
+  const tier = tierClass(percent);
+  fill.classList.add(tier);
+  fill.style.stroke = known ? {
     'tier-done': 'var(--green)', 'tier-mid': 'var(--accent)',
     'tier-low': 'var(--amber)', 'tier-none': 'var(--rose)',
-  }[tier];
+  }[tier] : 'var(--border-strong)';
 }
 
 function renderPhaseBars(phasePercent) {
   const rows = Object.entries(phasePercent).map(([phase, percent]) => {
-    const safe = percent === null || percent === undefined ? 0 : percent;
+    const known = percent !== null && percent !== undefined;
     const pair = PHASE_LABELS[phase] || [phase, phase];
     const label = L(pair[0], pair[1]);
     return `<div class="phase-bar-row">
       <span class="phase-bar-id">${phase}</span>
-      <span class="phase-bar-track" title="${label}"><span class="phase-bar-fill ${tierClass(percent)}" style="width:${safe}%"></span></span>
-      <span class="phase-bar-pct">${percent === null || percent === undefined ? 'UNKNOWN' : safe + '%'}</span>
+      <span class="phase-bar-track" title="${label}"><span class="phase-bar-fill ${tierClass(percent)}" style="width:${known ? percent : 100}%"></span></span>
+      <span class="phase-bar-pct">${known ? percent + '%' : 'UNKNOWN'}</span>
     </div>`;
   });
   document.getElementById('phaseBars').innerHTML = rows.join('');
