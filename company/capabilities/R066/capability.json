@@ -34,13 +34,15 @@
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "humanoid-interaction-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/humanoid-interaction-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -247,13 +249,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/humanoid-interaction-screening-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "humanoid-interaction-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -269,7 +273,14 @@
       "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "humanoid-interaction-screening-baseline",
+      "method": "methods/roles/humanoid-interaction-screening-baseline.json",
+      "suite": "golden/roles/R066/golden.json",
+      "scope": "Declared user-interruption-to-residual-echo margin and joint-noise-to-speech margin against declared bounds, from supplied scalars; no full conversational/motion coverage matrix or physical instrument measurement."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Coordinate humanoid self-speech echo, moving joints and conversational directionality",

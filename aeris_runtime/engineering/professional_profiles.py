@@ -417,6 +417,11 @@ ROLE_DOMAIN_CONTRACTS['R065']=[{
     'method':'methods/roles/quadruped-capture-screening-baseline.json',
     'suite':'golden/roles/R065/golden.json',
     'scope':'Declared footfall headroom margin and body-orientation deviation against declared bounds, from supplied scalars; no full gait/orientation coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R066']=[{
+    'skill_id':'humanoid-interaction-screening-baseline',
+    'method':'methods/roles/humanoid-interaction-screening-baseline.json',
+    'suite':'golden/roles/R066/golden.json',
+    'scope':'Declared user-interruption-to-residual-echo margin and joint-noise-to-speech margin against declared bounds, from supplied scalars; no full conversational/motion coverage matrix or physical instrument measurement.'}]
 
 
 def standards_families(value):

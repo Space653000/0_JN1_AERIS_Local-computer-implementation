@@ -173,6 +173,7 @@ from .vr_xr_headset_screening import analyze as vr_xr_headset_screening_model
 from .automotive_cabin_tuning_screening import analyze as automotive_cabin_tuning_screening_model
 from .amr_warning_doa_screening import analyze as amr_warning_doa_screening_model
 from .quadruped_capture_screening import analyze as quadruped_capture_screening_model
+from .humanoid_interaction_screening import analyze as humanoid_interaction_screening_model
 from .speaker_filter_realization import analyze as speaker_filter_realization_model
 from .microphone_architecture import analyze as microphone_architecture_model
 from .far_field_scenarios import analyze as far_field_scenarios_model
@@ -216,6 +217,7 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'automotive-cabin-tuning-screening-baseline':automotive_cabin_tuning_screening_model,
           'amr-warning-doa-screening-baseline':amr_warning_doa_screening_model,
           'quadruped-capture-screening-baseline':quadruped_capture_screening_model,
+          'humanoid-interaction-screening-baseline':humanoid_interaction_screening_model,
           'speaker-filter-realization-baseline':speaker_filter_realization_model,
           'microphone-architecture-baseline':microphone_architecture_model,
           'microphone-far-field-scenarios-baseline':far_field_scenarios_model,

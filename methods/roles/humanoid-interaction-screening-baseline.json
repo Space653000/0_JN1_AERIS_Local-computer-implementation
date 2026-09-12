@@ -1,0 +1,7 @@
+{
+  "method_id": "humanoid-interaction-screening-baseline", "version": "1.0.0", "role": "R066", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:humanoid_interaction_screening_model", "applicability": "Supplied residual self-echo, user interruption, joint noise, speech reference levels and declared acceptance thresholds",
+  "equations": {"interruption_margin_db": "20*log10(user_interruption_rms_pa/residual_self_echo_rms_pa)", "joint_noise_margin_db": "20*log10(user_speech_reference_rms_pa/joint_noise_during_tracking_rms_pa)"},
+  "assumptions": ["Declared echo/interruption and joint-noise/speech levels are directly comparable RMS quantities at the same measurement point", "Residual self-echo is measured after AEC, not the raw playback level", "This screen evaluates one declared operating condition, not a full conversational/motion coverage matrix"],
+  "excluded": ["Full conversational-turn and head-tracking-motion coverage matrix", "physical/calibrated instrument measurement", "Human production sign-off"], "golden_tests": "golden/roles/R066/golden.json"
+}
