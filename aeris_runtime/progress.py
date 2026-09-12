@@ -15,23 +15,28 @@ def _head_sha() -> str | None:
         return None
 
 
-def _next_action(truth_state: str, phase_percent: dict, items: list[dict]) -> str:
+def _next_action(truth_state: str, phase_percent: dict, items: list[dict]) -> dict:
     """Name the actual next unfinished item, instead of a stale fixed string.
 
     A prior version of this function only ever distinguished "P0 incomplete"
     from "everything after P0", so it kept reporting a leftover P0-era
     message ("等待 Human 批准進入 P1") long after P1-P6 had real, unrelated
     progress. Compute it live from the same per-item states the page renders.
+
+    Returned as a structured {"kind", ...} object rather than a pre-rendered
+    Chinese sentence, so the bilingual UI can render it in whichever
+    language the viewer picked (see ui/web/progress.js's L() usage) instead
+    of an API response baking in one fixed UI language.
     """
     if truth_state == "FAIL_CLOSED":
-        return "修復 runtime/candidate 對齊或無效 Evidence 後重新驗證（見 truth_errors）"
+        return {"kind": "fail_closed"}
     for phase in PHASES:
         if phase_percent.get(phase) == 100:
             continue
         pending = [item["id"] for item in items if item["id"].startswith(phase + ".") and item["state"] != "PASS"]
         if pending:
-            return f"完成 {phase} 未通過項目：{'、'.join(pending)}"
-    return "P0-P6 全部項目已通過"
+            return {"kind": "phase_pending", "phase": phase, "pending_ids": pending}
+    return {"kind": "complete"}
 
 
 def current() -> dict:
