@@ -1,0 +1,7 @@
+{
+  "method_id": "codec-transport-screening-baseline", "version": "1.0.0", "role": "R083", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:codec_transport_screening_model", "applicability": "Supplied jitter-buffer size, network jitter, consecutive loss-burst length and declared acceptance thresholds",
+  "equations": {"buffer_margin_ms": "jitter_buffer_ms - network_jitter_ms"},
+  "assumptions": ["Declared jitter-buffer and network-jitter values are directly comparable time quantities", "Declared consecutive-loss-burst length is the actual worst observed burst, not an average loss rate", "This screen evaluates one declared operating condition, not a full network-condition coverage matrix"],
+  "excluded": ["Full network-condition coverage matrix", "physical/production instrument measurement", "Human production sign-off"], "golden_tests": "golden/roles/R083/golden.json"
+}

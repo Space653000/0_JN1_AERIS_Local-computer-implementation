@@ -432,6 +432,11 @@ ROLE_DOMAIN_CONTRACTS['R068']=[{
     'method':'methods/roles/directional-mic-array-screening-baseline.json',
     'suite':'golden/roles/R068/golden.json',
     'scope':'Declared sidelobe suppression and unique-DOA-claim/symmetric-geometry flags against alias/ambiguity antipatterns; no full steering-angle coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R083']=[{
+    'skill_id':'codec-transport-screening-baseline',
+    'method':'methods/roles/codec-transport-screening-baseline.json',
+    'suite':'golden/roles/R083/golden.json',
+    'scope':'Declared jitter-buffer margin and consecutive-loss-burst length against declared bounds, from supplied scalars; no full network-condition coverage matrix or physical instrument measurement.'}]
 
 
 def standards_families(value):
