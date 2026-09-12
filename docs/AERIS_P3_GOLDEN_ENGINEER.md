@@ -52,8 +52,28 @@ idempotent entrypoint.
 **Requires:** the P2 Progress Engine can check "how many roles are L2+" the
 same reproducible way it checks P0/P1 items, instead of this being a manual
 one-off script run.
-**Status: gap, next increment.** Natural follow-up once P3.1-P3.4 are proven;
-not done this tick to keep this session's change reviewable.
+**Status: done.** `_check_p3_1`-`_check_p3_4` added to
+`aeris_runtime/progress_verify.py`. Deliberately read existing state (the
+`.aeris/capability-factory/evaluations/` index, the live
+`/api/v1/capabilities` snapshot) instead of re-running
+`evaluate_role`/`RoleAcceptanceFactory` for all 100 roles on every check --
+each of those calls seals a brand-new Evidence bundle, so re-running the full
+pipeline on every `progress_verify` invocation would keep growing the
+evidence store and re-trigger the exact telemetry slowdown found and fixed
+earlier this session.
+
+**New finding while wiring this up:** `/api/v1/capabilities` itself computes
+its response synchronously over all 100 roles' evidence (unlike
+`/api/v1/services`, which has the cached/async `TelemetryProjection`) and now
+takes ~7s at the current evidence volume, up from whatever it was before this
+session's 1000+ new sealed bundles. Not fixed this tick (would mean adding a
+caching layer analogous to `TelemetryProjection`, a separate scoped change);
+`progress_verify`'s HTTP timeout was raised from 5s to 30s to stop
+misreporting a slow-but-working server as unreachable. The live
+`capabilities.js` UI panel polls this endpoint every 10s, so at 7s it still
+recovers each cycle rather than being permanently stuck like the telemetry
+issue was -- but it is visibly laggier than before, and worth a dedicated
+caching pass if the evidence store keeps growing (P5 territory).
 
 ## P3.6 — Push roles from L2 toward L3 (independent review)
 **Requires:** L3 needs "independent role-specific domain acceptance with

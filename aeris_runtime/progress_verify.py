@@ -56,8 +56,12 @@ def _grep(path: str, *needles: str) -> tuple[bool, str]:
     return (not missing), (f"all present in {path}" if not missing else f"missing in {path}: {missing}")
 
 
-def _http_get_json(path: str) -> dict:
-    with urllib.request.urlopen(LOCAL_BASE_URL + path, timeout=5) as response:
+def _http_get_json(path: str, timeout: float = 30.0) -> dict:
+    # Some endpoints (notably /api/v1/capabilities) compute their response
+    # synchronously over all 100 roles' evidence, unlike the cached/async
+    # telemetry endpoints; a short timeout here would misreport a slow-but-
+    # working server as unreachable.
+    with urllib.request.urlopen(LOCAL_BASE_URL + path, timeout=timeout) as response:
         return json.loads(response.read().decode("utf-8"))
 
 
@@ -160,15 +164,62 @@ def _check_p1_8() -> CheckResult:
     return CheckResult(ok, detail, "ui/web/dashboard.html; ui/web/workspace.html; ui/web/services.html")
 
 
+# P3.1-P3.4 deliberately read existing state (the local evaluation-index
+# directory, the live /api/v1/capabilities snapshot) rather than re-running
+# aeris_runtime.engineering.factory.evaluate_role / RoleAcceptanceFactory for
+# all 100 roles: each of those calls seals a brand-new Evidence bundle, so
+# re-running the full pipeline on every progress_verify invocation would keep
+# growing the evidence store and re-trigger the exact telemetry slowdown this
+# session already found and fixed (see aeris_runtime/telemetry.py). Checking
+# "was this already run and does the live matrix reflect it" is a different,
+# much cheaper question than "run it now."
+
+
+def _check_p3_1() -> CheckResult:
+    eval_dir = ROOT / ".aeris" / "capability-factory" / "evaluations"
+    count = len(list(eval_dir.glob("R*.json"))) if eval_dir.is_dir() else 0
+    ok = count >= 90
+    return CheckResult(ok, f"shared-skill evaluation index has {count}/100 role records", "aeris_runtime/engineering/factory.py:evaluate_role; scripts/run_capability_factory.py")
+
+
+def _check_p3_2() -> CheckResult:
+    try:
+        matrix = _http_get_json("/api/v1/capabilities")
+        l2 = int(matrix.get("100_role_L2", 0))
+        ok = l2 >= 70
+        return CheckResult(ok, f"100_role_L2={l2}/100 (threshold 70)", "aeris_runtime/engineering/role_acceptance.py; scripts/run_capability_factory.py")
+    except Exception as exc:
+        return CheckResult(False, f"local server unreachable at {LOCAL_BASE_URL}: {exc}", "aeris_runtime/engineering/role_acceptance.py")
+
+
+def _check_p3_3() -> CheckResult:
+    try:
+        matrix = _http_get_json("/api/v1/capabilities")
+        gaps = matrix.get("unresolved_capability_gaps") or []
+        l2 = int(matrix.get("100_role_L2", 0))
+        total = int(matrix.get("total_roles", 0))
+        ok = bool(gaps) and (l2 + len(gaps) == total)
+        return CheckResult(ok, f"unresolved_capability_gaps={len(gaps)} disclosed; l2({l2})+gaps({len(gaps)})=={total}", "aeris_runtime/engineering/factory.py (unresolved_capability_gaps field)")
+    except Exception as exc:
+        return CheckResult(False, f"local server unreachable at {LOCAL_BASE_URL}: {exc}", "aeris_runtime/engineering/factory.py")
+
+
+def _check_p3_4() -> CheckResult:
+    ok, detail = _grep("scripts/run_capability_factory.py", "evaluate_role", "RoleAcceptanceFactory", "def main")
+    return CheckResult(ok, detail, "scripts/run_capability_factory.py")
+
+
 CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P0.1": _check_p0_1, "P0.2": _check_p0_2, "P0.3": _check_p0_3, "P0.4": _check_p0_4,
     "P0.5": _check_p0_5, "P0.6": _check_p0_6, "P0.7": _check_p0_7,
     "P1.1": _check_p1_1, "P1.2": _check_p1_2, "P1.3": _check_p1_3, "P1.4": _check_p1_4,
     "P1.5": _check_p1_5, "P1.6": _check_p1_6, "P1.7": _check_p1_7, "P1.8": _check_p1_8,
+    "P3.1": _check_p3_1, "P3.2": _check_p3_2, "P3.3": _check_p3_3, "P3.4": _check_p3_4,
 }
 
 _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
-          "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8"]
+          "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8",
+          "P3.1", "P3.2", "P3.3", "P3.4"]
 
 
 def run(items: list[str] | None = None, *, write: bool = True) -> dict:
