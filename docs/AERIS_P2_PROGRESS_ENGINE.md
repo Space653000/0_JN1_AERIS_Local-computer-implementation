@@ -59,8 +59,12 @@ prioritization rather than done quickly and unsafely.
 ## P2.5 — Wired into the acceptance script
 **Requires:** `scripts/local-acceptance.ps1`/`.sh` calls the generator so a
 full acceptance run leaves fresh Evidence automatically.
-**Status: gap.** Reasonable next increment once P2.1 is proven; not done this
-tick to keep the change small and reviewable.
+**Status: done.** Both `scripts/local-acceptance.ps1` and
+`scripts/local-acceptance.sh` invoke `python -m aeris_runtime.progress_verify`
+at the end of the run, with a non-fatal warning (not a hard failure) if any
+item comes back FAIL/UNKNOWN — a fresh acceptance run always leaves current
+Evidence without requiring a separate manual step. Verified via
+`progress_verify.CHECKS["P2.5"]` against the real scripts (`ps1=True sh=True`).
 
 ## P2.6 — Tests for the generator itself
 **Requires:** the generator's checks are themselves tested (e.g. a forced
@@ -72,10 +76,10 @@ failing check correctly demotes an item to UNKNOWN/FAIL, not silently PASS).
 **Status: this document + progress_verify.py docstrings.**
 
 ## Sequencing
-P2.1 + P2.2 + P2.6 (the generator itself, re-check-everything behavior, and
-its own tests) were the first tractable, self-contained slice. P2.3 (history)
-was completed in a later tick once the generator had produced enough
-Evidence to make history reconstruction meaningful. P2.4 and P2.5 remain
-open: P2.4 opens a genuine HTTP attack-surface design question and is
-deliberately left for explicit Human prioritization; P2.5 is a small,
-low-risk script-wiring change and is a reasonable next increment.
+P2.1 + P2.2 + P2.5 + P2.6 (the generator itself, re-check-everything
+behavior, acceptance-script wiring, and its own tests) are done. P2.3
+(history) was completed once the generator had produced enough Evidence to
+make history reconstruction meaningful. Only P2.4 remains open: it opens a
+genuine HTTP attack-surface design question (an unauthenticated loopback
+endpoint executing local checks and writing files) and is deliberately left
+for explicit Human prioritization rather than rushed.
