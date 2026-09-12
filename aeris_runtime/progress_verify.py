@@ -379,6 +379,53 @@ def _check_p5_9() -> CheckResult:
     return CheckResult(ok, detail, "docs/AERIS_P5_ENGINEER_FACTORY.md")
 
 
+def _check_p6_1() -> CheckResult:
+    try:
+        from .review import independent_acceptance
+        payload = independent_acceptance("progress_verify")
+        ok = payload.get("final_result") in {"PASS", "PASS_WITH_LIMITS", "BLOCKED", "FAIL"}
+        return CheckResult(ok, f"independent_acceptance() callable, final_result={payload.get('final_result')}", "aeris_runtime/review.py:independent_acceptance")
+    except Exception as exc:
+        return CheckResult(False, f"independent_acceptance() raised: {exc}", "aeris_runtime/review.py")
+
+
+def _check_p6_2() -> CheckResult:
+    try:
+        from .completion import assess
+        payload = assess(write=False)
+        ok = "not trusted as proof" in str(payload.get("truth", "")) and "assessed_software_items" in payload
+        return CheckResult(ok, f"completion.assess() callable; software_local_gaps_after={payload.get('software_local_gaps_after')}", "aeris_runtime/completion.py:assess")
+    except Exception as exc:
+        return CheckResult(False, f"completion.assess() raised: {exc}", "aeris_runtime/completion.py")
+
+
+def _check_p6_3() -> CheckResult:
+    ok, detail = _grep("aeris_runtime/review.py", "AUDIT_LEDGER_INVALID", "CORE_CACHE_INTEGRITY_FAIL")
+    return CheckResult(ok, detail, "aeris_runtime/review.py")
+
+
+def _check_p6_4() -> CheckResult:
+    ok, detail = _grep("aeris_runtime/review.py", "VERSIONED_IMPLEMENTATION_WORKTREE_DIRTY", "_versioned_worktree_dirty")
+    return CheckResult(ok, detail, "aeris_runtime/review.py")
+
+
+def _check_p6_6() -> CheckResult:
+    ok, detail = _grep("aeris_runtime/review.py", "REAL_MACHINE_ACCEPTANCE_NOT_PRESENT", "REAL_MACHINE_ACCEPTANCE_FAILED")
+    return CheckResult(ok, detail, "aeris_runtime/review.py")
+
+
+def _check_p6_7() -> CheckResult:
+    doc_ok, doc_detail = _grep("docs/AERIS_P6_COMPANY_ACCEPTANCE.md", "P6.1", "P6.8")
+    doc_exists = (ROOT / "docs/AERIS_P6_COMPANY_ACCEPTANCE.md").exists()
+    return CheckResult(doc_exists and doc_ok, doc_detail, "docs/AERIS_P6_COMPANY_ACCEPTANCE.md")
+
+
+def _check_p6_8() -> CheckResult:
+    p6_registered = [k for k in CHECKS if k.startswith("P6.")]
+    ok = len(p6_registered) >= 6
+    return CheckResult(ok, f"P6 checks registered: {sorted(p6_registered)}", "aeris_runtime/progress_verify.py")
+
+
 CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P0.1": _check_p0_1, "P0.2": _check_p0_2, "P0.3": _check_p0_3, "P0.4": _check_p0_4,
     "P0.5": _check_p0_5, "P0.6": _check_p0_6, "P0.7": _check_p0_7,
@@ -391,6 +438,8 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P4.6": _check_p4_6, "P4.7": _check_p4_7,
     "P5.1": _check_p5_1, "P5.2": _check_p5_2, "P5.3": _check_p5_3, "P5.5": _check_p5_5,
     "P5.6": _check_p5_6, "P5.7": _check_p5_7, "P5.8": _check_p5_8, "P5.9": _check_p5_9,
+    "P6.1": _check_p6_1, "P6.2": _check_p6_2, "P6.3": _check_p6_3, "P6.4": _check_p6_4,
+    "P6.6": _check_p6_6, "P6.7": _check_p6_7, "P6.8": _check_p6_8,
 }
 
 _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
@@ -398,7 +447,8 @@ _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P2.1", "P2.2", "P2.5", "P2.6", "P2.7",
           "P3.1", "P3.2", "P3.3", "P3.4", "P3.7", "P3.8",
           "P4.1", "P4.2", "P4.3", "P4.5", "P4.6", "P4.7",
-          "P5.1", "P5.2", "P5.3", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9"]
+          "P5.1", "P5.2", "P5.3", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9",
+          "P6.1", "P6.2", "P6.3", "P6.4", "P6.6", "P6.7", "P6.8"]
 
 
 def run(items: list[str] | None = None, *, write: bool = True) -> dict:
