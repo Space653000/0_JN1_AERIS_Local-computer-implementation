@@ -1,0 +1,26 @@
+{
+  "suite_id": "R068-DIRECTIONAL-MIC-ARRAY-SCREEN-V1", "role_id": "R068", "skill_id": "directional-mic-array-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact interval and boolean-logic comparison against declared scalars; no physical microphone array was observed.",
+  "scope": "Supplied sidelobe suppression, array-geometry-symmetric flag, unique-DOA-claim flag and ambiguity-resolution flag only",
+  "base_input": {
+    "model": "SUPPLIED_DIRECTIONAL_MIC_ARRAY_SCREEN", "sidelobe_suppression_db": 20.0, "min_acceptable_sidelobe_suppression_db": 15.0,
+    "array_geometry_symmetric": false, "claimed_unique_doa": true, "ambiguity_resolved_by_asymmetry_or_extra_sensor": false
+  },
+  "cases": [
+    {"id": "MIC-SIDELOBE-SUPPRESSED-AND-UNIQUE-DOA-VALID-ACCEPT", "kind": "positive", "question": "Does adequate sidelobe suppression with a unique DOA claim from an asymmetric array clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "MIC-NARROW-BEAM-HIDES-SIDELOBES-AND-SYMMETRIC-AMBIGUITY-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are insufficient sidelobe suppression and an unresolved symmetric-array unique-DOA claim both correctly rejected together, rather than one masking the other?", "input_overrides": {"sidelobe_suppression_db": 10.0, "array_geometry_symmetric": true}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "WIDEN_THE_APERTURE_OR_APPLY_SIDELOBE_TAPERING_OR_RELAX_THE_SUPPRESSION_TARGET", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "ADD_AN_ASYMMETRIC_ELEMENT_OR_EXTRA_SENSOR_TO_RESOLVE_THE_AMBIGUITY_OR_WITHDRAW_THE_UNIQUE_DOA_CLAIM", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "MIC-EXACT-SIDELOBE-BOUNDARY", "kind": "boundary", "question": "Does a sidelobe suppression exactly at the declared minimum correctly pass the inclusive bound rather than being rejected?", "input_overrides": {"sidelobe_suppression_db": 15.0}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "MIC-NEGATIVE-SUPPRESSION-BOUND-REJECTED", "kind": "negative", "question": "Is a negative minimum-sidelobe-suppression bound rejected rather than silently accepted?", "input_overrides": {"min_acceptable_sidelobe_suppression_db": -1.0}, "expected_error": "ValueError"}
+  ]
+}

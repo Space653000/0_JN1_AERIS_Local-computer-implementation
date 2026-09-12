@@ -427,6 +427,11 @@ ROLE_DOMAIN_CONTRACTS['R067']=[{
     'method':'methods/roles/conference-array-aec-screening-baseline.json',
     'suite':'golden/roles/R067/golden.json',
     'scope':'Declared off-beam attenuation and AEC-tail-to-room-path margin against declared bounds, from supplied scalars; no full room/talker coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R068']=[{
+    'skill_id':'directional-mic-array-screening-baseline',
+    'method':'methods/roles/directional-mic-array-screening-baseline.json',
+    'suite':'golden/roles/R068/golden.json',
+    'scope':'Declared sidelobe suppression and unique-DOA-claim/symmetric-geometry flags against alias/ambiguity antipatterns; no full steering-angle coverage matrix or physical instrument measurement.'}]
 
 
 def standards_families(value):

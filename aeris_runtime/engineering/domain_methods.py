@@ -175,6 +175,7 @@ from .amr_warning_doa_screening import analyze as amr_warning_doa_screening_mode
 from .quadruped_capture_screening import analyze as quadruped_capture_screening_model
 from .humanoid_interaction_screening import analyze as humanoid_interaction_screening_model
 from .conference_array_aec_screening import analyze as conference_array_aec_screening_model
+from .directional_mic_array_screening import analyze as directional_mic_array_screening_model
 from .speaker_filter_realization import analyze as speaker_filter_realization_model
 from .microphone_architecture import analyze as microphone_architecture_model
 from .far_field_scenarios import analyze as far_field_scenarios_model
@@ -220,6 +221,7 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'quadruped-capture-screening-baseline':quadruped_capture_screening_model,
           'humanoid-interaction-screening-baseline':humanoid_interaction_screening_model,
           'conference-array-aec-screening-baseline':conference_array_aec_screening_model,
+          'directional-mic-array-screening-baseline':directional_mic_array_screening_model,
           'speaker-filter-realization-baseline':speaker_filter_realization_model,
           'microphone-architecture-baseline':microphone_architecture_model,
           'microphone-far-field-scenarios-baseline':far_field_scenarios_model,
