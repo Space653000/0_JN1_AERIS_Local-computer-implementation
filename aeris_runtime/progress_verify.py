@@ -260,6 +260,40 @@ def _check_p4_5() -> CheckResult:
         return CheckResult(False, f"local server unreachable at {LOCAL_BASE_URL}: {exc}", "aeris_runtime/controlplane.py")
 
 
+def _check_p5_3() -> CheckResult:
+    try:
+        m = json.loads((ROOT / "config" / "maturity.json").read_text(encoding="utf-8-sig"))
+        caps = m.get("capabilities", {})
+        baselines = m.get("gate_software_baselines", {})
+        names = ["comsol_adapter", "matlab_adapter", "apx_adapter", "klippel_adapter", "soundcheck_adapter", "acqua_adapter"]
+        bad = [n for n in names if caps.get(n, {}).get("state") != "EXTERNAL_LICENSE"
+               or baselines.get(n, {}).get("state") != "TESTED"
+               or "equivalence is not claimed" not in str(baselines.get(n, {}).get("evidence", ""))]
+        from .completion import _free_acoustics
+        free_ok, free_detail = _free_acoustics()
+        ok = not bad and free_ok
+        return CheckResult(ok, f"6 professional-tool gates correctly EXTERNAL_LICENSE with honest non-equivalence baselines; free-baseline check: {free_detail}" if ok else f"inconsistent gate declarations: {bad}", "config/maturity.json; aeris_runtime/completion.py")
+    except Exception as exc:
+        return CheckResult(False, f"check failed: {exc}", "config/maturity.json")
+
+
+def _check_p5_5() -> CheckResult:
+    ok, detail = _grep("aeris_runtime/engineering/orchestration.py", "keyword-only routing is not supported", "\"evidence_curator\":curator", "\"reviewer\":reviewer")
+    return CheckResult(ok, detail, "aeris_runtime/engineering/orchestration.py")
+
+
+def _check_p5_8() -> CheckResult:
+    try:
+        matrix = _http_get_json("/api/v1/capabilities", timeout=_CAPABILITIES_COLD_START_TIMEOUT_S)
+        required = ["total_roles", "maturity_counts", "total_executable_skills", "total_methods",
+                    "total_golden_cases", "total_negative_cases", "total_regression_cases",
+                    "coverage_by_group", "unresolved_capability_gaps"]
+        missing = [k for k in required if k not in matrix]
+        return CheckResult(not missing, f"all present" if not missing else f"missing: {missing}", "aeris_runtime/engineering/factory.py:matrix() via /api/v1/capabilities")
+    except Exception as exc:
+        return CheckResult(False, f"local server unreachable at {LOCAL_BASE_URL}: {exc}", "aeris_runtime/engineering/factory.py")
+
+
 CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P0.1": _check_p0_1, "P0.2": _check_p0_2, "P0.3": _check_p0_3, "P0.4": _check_p0_4,
     "P0.5": _check_p0_5, "P0.6": _check_p0_6, "P0.7": _check_p0_7,
@@ -268,12 +302,14 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P3.1": _check_p3_1, "P3.2": _check_p3_2, "P3.3": _check_p3_3, "P3.4": _check_p3_4,
     "P3.7": _check_p3_7, "P3.8": _check_p3_8,
     "P4.1": _check_p4_1, "P4.2": _check_p4_2, "P4.3": _check_p4_3, "P4.5": _check_p4_5,
+    "P5.3": _check_p5_3, "P5.5": _check_p5_5, "P5.8": _check_p5_8,
 }
 
 _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8",
           "P3.1", "P3.2", "P3.3", "P3.4", "P3.7", "P3.8",
-          "P4.1", "P4.2", "P4.3", "P4.5"]
+          "P4.1", "P4.2", "P4.3", "P4.5",
+          "P5.3", "P5.5", "P5.8"]
 
 
 def run(items: list[str] | None = None, *, write: bool = True) -> dict:
