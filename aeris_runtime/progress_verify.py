@@ -209,17 +209,31 @@ def _check_p3_4() -> CheckResult:
     return CheckResult(ok, detail, "scripts/run_capability_factory.py")
 
 
+def _check_p3_7() -> CheckResult:
+    # L4 requires real instruments/calibration/expert approval; no software
+    # change can honestly grant it. The acceptance criterion is that the
+    # codebase says so explicitly rather than silently allowing an L4 claim.
+    ok, detail = _grep("aeris_runtime/engineering/factory.py", "cannot be granted by this factory")
+    return CheckResult(ok, detail, "aeris_runtime/engineering/factory.py (verification_rubric)")
+
+
+def _check_p3_8() -> CheckResult:
+    ok, detail = _grep("docs/AERIS_P3_GOLDEN_ENGINEER.md", "73/100 roles at L2 or higher", "27/100")
+    return CheckResult(ok, detail, "docs/AERIS_P3_GOLDEN_ENGINEER.md")
+
+
 CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P0.1": _check_p0_1, "P0.2": _check_p0_2, "P0.3": _check_p0_3, "P0.4": _check_p0_4,
     "P0.5": _check_p0_5, "P0.6": _check_p0_6, "P0.7": _check_p0_7,
     "P1.1": _check_p1_1, "P1.2": _check_p1_2, "P1.3": _check_p1_3, "P1.4": _check_p1_4,
     "P1.5": _check_p1_5, "P1.6": _check_p1_6, "P1.7": _check_p1_7, "P1.8": _check_p1_8,
     "P3.1": _check_p3_1, "P3.2": _check_p3_2, "P3.3": _check_p3_3, "P3.4": _check_p3_4,
+    "P3.7": _check_p3_7, "P3.8": _check_p3_8,
 }
 
 _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8",
-          "P3.1", "P3.2", "P3.3", "P3.4"]
+          "P3.1", "P3.2", "P3.3", "P3.4", "P3.7", "P3.8"]
 
 
 def run(items: list[str] | None = None, *, write: bool = True) -> dict:

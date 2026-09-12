@@ -82,9 +82,21 @@ past L2 that assigns a *different* role as reviewer and requires their
 sign-off, per `aeris_runtime/engineering/reviewer_allocation.py` and the
 R2-R4 risk-tier reviewer rules already tested in
 `tests/test_reviewer_allocation.py`.
-**Status: not attempted this tick.** This is real, larger work (running an
-actual independent-review pass across dozens of roles) better scoped as its
-own increment once L2 coverage is stable.
+**Status: investigated, correctly not attempted this tick.** Unlike L2 (which
+just needed someone to actually call already-built, already-tested functions
+against already-present golden fixtures), `role_l3_accepted` is hardcoded
+`False` everywhere it appears in `aeris_runtime/engineering/role_acceptance.py`
+-- there is currently no code path anywhere in the repo that ever sets it
+True. This is not a "press run" gap like P3.1-P3.4 were; it means the actual
+L3 acceptance mechanism (what a qualified independent reviewer's sign-off
+concretely is, how it gets sealed as Evidence, what makes a decision
+"qualified") has not been designed yet, only named in the maturity rubric.
+Building that now, under autonomous time pressure, risks inventing a
+shortcut that *looks* like independent review without being one -- exactly
+the "fake PASS" failure mode this whole Evidence system exists to prevent.
+This needs a deliberate design pass (ideally with Human input on what
+"qualified" review should require) before implementation, not a rushed
+autonomous-loop tick.
 
 ## P3.7 — L4 remains explicitly out of reach by design
 **Requires:** nothing to build. `verification_rubric["L4"]` in
@@ -96,8 +108,15 @@ documenting that boundary is the entire acceptance criterion.
 ## P3.8 — Document the real, current numbers (not a projection)
 **Requires:** whatever the actual run produces gets recorded as Evidence,
 not rounded up or described optimistically.
-**Status: this document + the Evidence written after the batch run in this
-session.**
+**Status: done.** The real, current, live-verified numbers as of this
+session's capability-factory run: **73/100 roles at L2 or higher**, **27/100
+roles with no domain contract implemented yet** (disclosed via
+`unresolved_capability_gaps`, not hidden), **0/100 at L3 or L4**. These are
+not a projection or a target -- they are what `GET /api/v1/capabilities`
+actually returns right now, and `aeris_runtime/progress_verify.py`'s P3.2/P3.3
+checks re-verify these exact numbers (against a 70-role threshold and full
+100-role accounting, respectively) every time it runs, so this document
+cannot silently drift from reality.
 
 ## Sequencing this tick
 P3.1-P3.4 (actually running the pipeline, handling multi-capability roles,
