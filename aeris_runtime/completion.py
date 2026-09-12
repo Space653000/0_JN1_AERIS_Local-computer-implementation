@@ -64,12 +64,14 @@ def _workspace() -> tuple[bool, str]:
 
 def _telemetry() -> tuple[bool, str]:
     try:
-        from .telemetry import service_telemetry
+        from .telemetry import service_telemetry, wait_for_service_telemetry
         db=ROOT/'.aeris/control/control.sqlite3'
         if not db.is_file(): return False,'control SQLite absent; no runtime telemetry acceptance'
         with sqlite3.connect(db.resolve().as_uri()+'?mode=ro',uri=True) as conn:
             counts={name:conn.execute('SELECT COUNT(*) FROM '+name).fetchone()[0] for name in ('projects','tasks')}
             counts['active_tasks']=conn.execute("SELECT COUNT(*) FROM tasks WHERE state NOT IN ('RELEASED','CANCELLED')").fetchone()[0]
+        service_telemetry(counts)
+        wait_for_service_telemetry()
         payload = service_telemetry(counts)
         services = payload.get("services", [])
         required = {"state", "reason", "evidence_ref", "last_update_utc", "capability_maturity"}

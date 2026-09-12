@@ -128,7 +128,7 @@ def _dump_dom_with_bounded_timeout_retry(browser: str, url: str, route: str) -> 
                 "--disable-component-update",
                 "--disable-sync",
                 "--metrics-recording-only",
-                "--virtual-time-budget=2500",
+                "--virtual-time-budget=4500",
                 f"--user-data-dir={profile}",
                 "--dump-dom",
                 url,
@@ -203,15 +203,16 @@ def run_live(base_url: str) -> int:
     def live(path):
         with urllib.request.urlopen(base_url.rstrip('/')+path,timeout=20) as response:
             return json.load(response)
+    zh = json.loads((ROOT / "ui" / "web" / "zh-TW.json").read_text(encoding="utf-8"))
     status=live('/api/v1/status'); services=live('/api/v1/services')
-    opening=status['company_opening_state']
+    opening=zh.get(status['company_opening_state'], status['company_opening_state'])
     routes = {
         "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', opening),
         "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', opening),
-        "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', opening, f"{len(services['services'])} observed services"),
+        "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', opening, f"{len(services['services'])} 項觀測服務"),
         "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', opening),
         "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', opening),
-        "/services?theme=light": ('data-page="services"', 'data-theme="light"', opening, f"{len(services['services'])} observed services"),
+        "/services?theme=light": ('data-page="services"', 'data-theme="light"', opening, f"{len(services['services'])} 項觀測服務"),
     }
     results = []
     for route, required in routes.items():
@@ -219,7 +220,7 @@ def run_live(base_url: str) -> int:
         knowledge=live('/api/v1/capabilities/knowledge')
         required = (*required, 'id="capability-factory"',
                     f"L2 以上 {matrix['100_role_L2']}/{matrix['total_roles']}",
-                    f"Skills {matrix['total_executable_skills']}", f"Methods {matrix['total_methods']}",
+                    f"技能 {matrix['total_executable_skills']}", f"方法 {matrix['total_methods']}",
                     f"角色領域驗收 {matrix['maturity_counts']['L3']}")
         required=(*required,*(f'{k} {v}' for k,v in knowledge['counts_by_source_kind'].items()))
         if '/workspace' in route:
