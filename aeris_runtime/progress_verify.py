@@ -311,6 +311,21 @@ def _check_p2_2() -> CheckResult:
     return CheckResult(ok, detail + "; every run() call re-executes every requested item's check, demoting stale PASS on regression", "aeris_runtime/progress_verify.py")
 
 
+def _check_p2_3() -> CheckResult:
+    from .progress_history import compute_history
+    points = compute_history()
+    ok = isinstance(points, list) and len(points) > 0
+    sorted_ok = points == sorted(points, key=lambda p: p["captured_at_utc"])
+    api_ok, _ = _grep("aeris_runtime/controlplane.py", "/api/v1/progress/history", "compute_history")
+    ui_ok, _ = _grep("ui/web/progress.js", "loadHistory", "renderHistory", "/api/v1/progress/history")
+    ok = ok and sorted_ok and api_ok and ui_ok
+    return CheckResult(
+        ok,
+        f"history points reconstructed from real Evidence={len(points)}; chronological={sorted_ok}; api_wired={api_ok}; ui_wired={ui_ok}",
+        "aeris_runtime/progress_history.py; aeris_runtime/controlplane.py; ui/web/progress.js",
+    )
+
+
 def _check_p2_5() -> CheckResult:
     ps1_ok, _ = _grep("scripts/local-acceptance.ps1", "aeris_runtime.progress_verify")
     sh_ok, _ = _grep("scripts/local-acceptance.sh", "aeris_runtime.progress_verify")
@@ -458,7 +473,7 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P0.5": _check_p0_5, "P0.6": _check_p0_6, "P0.7": _check_p0_7,
     "P1.1": _check_p1_1, "P1.2": _check_p1_2, "P1.3": _check_p1_3, "P1.4": _check_p1_4,
     "P1.5": _check_p1_5, "P1.6": _check_p1_6, "P1.7": _check_p1_7, "P1.8": _check_p1_8,
-    "P2.1": _check_p2_1, "P2.2": _check_p2_2, "P2.5": _check_p2_5, "P2.6": _check_p2_6, "P2.7": _check_p2_7,
+    "P2.1": _check_p2_1, "P2.2": _check_p2_2, "P2.3": _check_p2_3, "P2.5": _check_p2_5, "P2.6": _check_p2_6, "P2.7": _check_p2_7,
     "P3.1": _check_p3_1, "P3.2": _check_p3_2, "P3.3": _check_p3_3, "P3.4": _check_p3_4,
     "P3.5": _check_p3_5, "P3.6": _check_p3_6, "P3.7": _check_p3_7, "P3.8": _check_p3_8,
     "P4.1": _check_p4_1, "P4.2": _check_p4_2, "P4.3": _check_p4_3, "P4.4": _check_p4_4, "P4.5": _check_p4_5,
@@ -471,7 +486,7 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
 
 _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8",
-          "P2.1", "P2.2", "P2.5", "P2.6", "P2.7",
+          "P2.1", "P2.2", "P2.3", "P2.5", "P2.6", "P2.7",
           "P3.1", "P3.2", "P3.3", "P3.4", "P3.5", "P3.6", "P3.7", "P3.8",
           "P4.1", "P4.2", "P4.3", "P4.4", "P4.5", "P4.6", "P4.7",
           "P5.1", "P5.2", "P5.3", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9",

@@ -386,6 +386,9 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
         elif path == "/api/v1/progress":
             from .progress import current
             _write_json(handler, 200, current())
+        elif path == "/api/v1/progress/history":
+            from .progress_history import compute_history
+            _write_json(handler, 200, {"points": compute_history()})
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True

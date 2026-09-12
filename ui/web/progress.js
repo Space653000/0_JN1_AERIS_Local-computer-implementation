@@ -65,6 +65,34 @@ function renderItems(items) {
     </div>`).join('');
 }
 
+function renderHistory(points) {
+  const el = document.getElementById('historyChart');
+  if (!points.length) {
+    el.innerHTML = `<div class="history-empty">${L('尚無歷史紀錄', 'No history yet')}</div>`;
+    return;
+  }
+  const locale = L('zh-TW', 'en-US');
+  el.innerHTML = points.map(p => {
+    const pct = p.overall_percent;
+    const when = new Date(p.captured_at_utc).toLocaleString(locale);
+    const title = `${p.candidate_sha.slice(0, 10)} · ${pct}% · ${when}`;
+    return `<div class="history-bar-wrap" title="${title}">
+      <div class="history-bar ${tierClass(pct)}" style="height:${Math.max(pct, 2)}%"></div>
+    </div>`;
+  }).join('');
+}
+
+async function loadHistory() {
+  try {
+    const r = await fetch('/api/v1/progress/history', { cache: 'no-store' });
+    if (!r.ok) return renderHistory([]);
+    const d = await r.json();
+    renderHistory(d.points || []);
+  } catch (e) {
+    renderHistory([]);
+  }
+}
+
 async function load() {
   const r = await fetch('/api/v1/progress', { cache: 'no-store' });
   const d = await r.json();
@@ -85,7 +113,9 @@ async function load() {
 }
 
 load();
+loadHistory();
 setInterval(load, 10000);
+setInterval(loadHistory, 60000);
 window.addEventListener('focus', load);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
-document.getElementById('refreshBtn')?.addEventListener('click', load);
+document.getElementById('refreshBtn')?.addEventListener('click', () => { load(); loadHistory(); });

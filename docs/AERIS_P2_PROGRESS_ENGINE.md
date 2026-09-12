@@ -29,8 +29,23 @@ survive a regression silently.
 ## P2.3 — Progress history, not just current snapshot
 **Requires:** being able to see the score trend across the session's commits,
 not only the latest state.
-**Status: gap.** Timestamped Evidence filenames already give an implicit
-history on disk; a rollup script/view is not built. Deferred past this tick.
+**Status: done.** `aeris_runtime/progress_history.py`'s `compute_history()`
+reconstructs the trend from the timestamped per-item Evidence files
+`progress_verify` already writes under `.aeris/evidence/progress/*.json` —
+no separately maintained log, so it cannot drift from reality. It groups
+Evidence by `candidate_sha`, takes each item's latest capture at that sha,
+and scores it against the *current* contract's `required_items` (an item
+that did not exist yet at an older sha correctly shows as not-yet-passed for
+that point, rather than being silently backfilled). Exposed via
+`GET /api/v1/progress/history` (`aeris_runtime/controlplane.py`) and
+rendered as a bar chart on `/progress` (`ui/web/progress.js`'s
+`renderHistory()`/`loadHistory()`, `ui/web/progress.css`'s
+`.history-chart`/`.history-bar`). Verified against the real repo: 46 distinct
+commits reconstructed, chronologically sorted, matching the `overall_percent`
+progression observed live across the session. Tested in
+`tests/test_progress_history.py` (empty dir, chronological reconstruction,
+latest-capture-wins, malformed-file tolerance, fail-closed on unreadable
+contract). Wired into `progress_verify.CHECKS["P2.3"]`.
 
 ## P2.4 — Progress Center UI can trigger re-verification
 **Requires:** `/progress` lets a human re-run the checks from the browser
@@ -56,9 +71,11 @@ failing check correctly demotes an item to UNKNOWN/FAIL, not silently PASS).
 **Requires:** this document plus inline docstrings in the generator.
 **Status: this document + progress_verify.py docstrings.**
 
-## Sequencing this tick
+## Sequencing
 P2.1 + P2.2 + P2.6 (the generator itself, re-check-everything behavior, and
-its own tests) are the tractable, self-contained slice. P2.3-P2.5 are real
-but each opens its own design question (history storage/view, an HTTP
-attack-surface decision, and a script-wiring change touching the acceptance
-path) and are left open rather than rushed.
+its own tests) were the first tractable, self-contained slice. P2.3 (history)
+was completed in a later tick once the generator had produced enough
+Evidence to make history reconstruction meaningful. P2.4 and P2.5 remain
+open: P2.4 opens a genuine HTTP attack-surface design question and is
+deliberately left for explicit Human prioritization; P2.5 is a small,
+low-risk script-wiring change and is a reasonable next increment.
