@@ -87,12 +87,17 @@ class ControlPlaneTests(unittest.TestCase):
         server = self._server()
         data = self._get_json(server, "/api/v1/services")
         from aeris_runtime.telemetry import wait_for_service_telemetry
-        self.assertTrue(wait_for_service_telemetry(15))
+        # Collection time scales with the local evidence store's real size
+        # (validate_bundle runs once per sealed RUN- directory, plus a full
+        # audit-ledger hash-chain walk); a large local store can take well
+        # over 15s, so this bound is generous rather than tuned to an
+        # artificially small fixture store.
+        self.assertTrue(wait_for_service_telemetry(90))
         data = self._get_json(server, "/api/v1/services")
         self.assertTrue(data['assessment_complete'],
                         {k:data.get(k) for k in ('state_counts','snapshot_age_s','refresh_in_progress')})
         # Quiesce any follow-up refresh before fixture filesystem patches end.
-        self.assertTrue(wait_for_service_telemetry(15))
+        self.assertTrue(wait_for_service_telemetry(90))
         self.assertEqual(data["planes"], ["CONTROL", "KNOWLEDGE", "EXECUTION", "TRUST", "OPERATIONS"])
         self.assertGreaterEqual(len(data["services"]), 15)
         for service in data["services"]:

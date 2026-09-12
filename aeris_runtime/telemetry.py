@@ -152,7 +152,14 @@ class TelemetryProjection:
         self.lock=threading.Lock(); self.worker=None; self.snapshot=None
         self.running=False; self.requested=None
         self.snapshot_at=None; self.snapshot_key=None; self.error=None
-        self.refresh_after_s=2.0; self.max_age_s=10.0
+        # Collection cost scales with the local evidence store (validate_bundle
+        # runs once per sealed RUN- directory) and the audit ledger's hash-chain
+        # length; both grow with real usage, and a full pass can take well over
+        # a minute on a store with 1000+ sealed bundles. These bounds are sized
+        # for that reality rather than the near-instant collection time of an
+        # empty/small store, so a real completed snapshot stays servable
+        # instead of forever missing its own freshness window.
+        self.refresh_after_s=30.0; self.max_age_s=180.0
 
     def _refresh(self,summary,key,started):
         while True:
@@ -212,6 +219,6 @@ def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
     return _SERVICE_PROJECTION.get(control_summary)
 
 
-def wait_for_service_telemetry(timeout=15):
+def wait_for_service_telemetry(timeout=90):
     """CLI/test synchronization; the HTTP response never uses this wait."""
     return _SERVICE_PROJECTION.wait_for_refresh(timeout)
