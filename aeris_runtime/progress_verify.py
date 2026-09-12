@@ -182,9 +182,21 @@ def _check_p3_1() -> CheckResult:
     return CheckResult(ok, f"shared-skill evaluation index has {count}/100 role records", "aeris_runtime/engineering/factory.py:evaluate_role; scripts/run_capability_factory.py")
 
 
+
+# /api/v1/capabilities now serves a cached matrix instantly once warm (see
+# aeris_runtime/engineering/api.py's background-refresh live_matrix), but the
+# very first call after a server restart is a genuine cold start that can
+# take several minutes at this session's evidence-store volume. progress_verify
+# is meant to be runnable right after a fresh restart (see how this module's
+# own tick routine restarts the server before re-verifying), so these two
+# checks use a generous timeout rather than misreporting a real cold start as
+# "server unreachable".
+_CAPABILITIES_COLD_START_TIMEOUT_S = 360.0
+
+
 def _check_p3_2() -> CheckResult:
     try:
-        matrix = _http_get_json("/api/v1/capabilities")
+        matrix = _http_get_json("/api/v1/capabilities", timeout=_CAPABILITIES_COLD_START_TIMEOUT_S)
         l2 = int(matrix.get("100_role_L2", 0))
         ok = l2 >= 70
         return CheckResult(ok, f"100_role_L2={l2}/100 (threshold 70)", "aeris_runtime/engineering/role_acceptance.py; scripts/run_capability_factory.py")
@@ -194,7 +206,7 @@ def _check_p3_2() -> CheckResult:
 
 def _check_p3_3() -> CheckResult:
     try:
-        matrix = _http_get_json("/api/v1/capabilities")
+        matrix = _http_get_json("/api/v1/capabilities", timeout=_CAPABILITIES_COLD_START_TIMEOUT_S)
         gaps = matrix.get("unresolved_capability_gaps") or []
         l2 = int(matrix.get("100_role_L2", 0))
         total = int(matrix.get("total_roles", 0))
