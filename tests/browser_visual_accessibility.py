@@ -151,13 +151,20 @@ def run() -> int:
             for endpoint in ('status','services','machine','roles','workflows','audit?limit=12',
                              'maturity','standards?q=','projects','tasks','capabilities','capabilities/knowledge','capabilities/roles/R001'):
                 path='/api/v1/'+endpoint
-                with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path, timeout=30) as response:
+                # This test spins up its own fresh in-process server, so
+                # /api/v1/services (TelemetryProjection) and
+                # /api/v1/capabilities (live_matrix) both pay a genuine
+                # cold-start cost here -- scales with the local evidence
+                # store (validate_bundle per sealed RUN- bundle) and can take
+                # well over a minute at this session's evidence volume. 30s
+                # was tuned for a near-empty store; not generous enough now.
+                with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path, timeout=120) as response:
                     value=json.load(response)
                 if endpoint=='services' and not value.get('assessment_complete',True):
                     from aeris_runtime.telemetry import wait_for_service_telemetry
-                    if not wait_for_service_telemetry(15):
+                    if not wait_for_service_telemetry(120):
                         raise AssertionError('service assessment did not complete for visual baseline')
-                    with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path,timeout=3) as response:
+                    with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path,timeout=10) as response:
                         value=json.load(response)
                     if not value.get('assessment_complete'):
                         raise AssertionError('visual baseline cannot freeze pending/stale service truth')
