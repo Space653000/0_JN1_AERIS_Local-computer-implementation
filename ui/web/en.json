@@ -1,4 +1,8 @@
 {
+  "G0 契約格式 → G1 數值合理性 → G2 領域物理原則 → G3 歷史案例比對 → G4 同儕獨立複查 → G5 人工最終核准。六關全部通過才算完成，不是跑完程式就算數。": "G0 contract format -> G1 numerical sanity -> G2 domain physics -> G3 golden-case comparison -> G4 independent peer review -> G5 final human approval. All six gates must pass; finishing the code alone does not count.",
+  "G0 契約格式 → G1 數值合理性 → G2 領域物理原則 → G3 歷史案例比對 → G4 同儕獨立複查 → G5 人工最終核准。六關全部通過才算完成。": "G0 contract format -> G1 numerical sanity -> G2 domain physics -> G3 golden-case comparison -> G4 independent peer review -> G5 final human approval. All six gates must pass.",
+  "R0 唯讀不動手 → R1 可復原的本機小改動 → R2 需要前置審查才能執行 → R3 牽涉實體硬體風險 → R4 要對外釋出，需要人工簽署。數字越大，需要的人工把關越多。": "R0 read-only -> R1 reversible local change -> R2 execution needs a precondition review -> R3 involves physical hardware risk -> R4 external release, needs human sign-off. Higher numbers need more human gatekeeping.",
+  "L0 尚無能力紀錄 → L1 已登錄合約框架，尚未執行 → L2 本機可執行、已有證據 → L3 領域審查通過 → L4 真實儀器與人工驗證通過。數字越大，代表驗證得越紮實。": "L0 no capability record -> L1 contract registered, not yet executed -> L2 locally executable with evidence -> L3 domain review passed -> L4 verified with real instruments and human sign-off. Higher numbers mean more solid verification.",
   "能力矩陣": "Capability Matrix",
   "能力矩陣／執行分析": "Capability matrix / execution analysis",
   "專業能力工廠": "Professional Capability Factory",
