@@ -367,6 +367,11 @@ ROLE_DOMAIN_CONTRACTS['R096']=[{
     'method':'methods/roles/reliability-halt-screening-baseline.json',
     'suite':'golden/roles/R096/golden.json',
     'scope':'Exact one-sided binomial upper bound on HALT trial/failure counts against a declared acceptance threshold; no accelerated-life extrapolation or physical chamber execution.'}]
+ROLE_DOMAIN_CONTRACTS['R093']=[{
+    'skill_id':'factory-eol-capability-screening-baseline',
+    'method':'methods/roles/factory-eol-capability-screening-baseline.json',
+    'suite':'golden/roles/R093/golden.json',
+    'scope':'Process capability (Cpk) against declared spec limits and percent gage R&R against total variation, from supplied scalars; no ANOVA gage study or physical EOL test-limit authorization.'}]
 
 
 def standards_families(value):

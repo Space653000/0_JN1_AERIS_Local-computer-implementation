@@ -28,11 +28,13 @@
   },
   "required_skills": [
     "process-quality",
-    "engineering-requirements"
+    "engineering-requirements",
+    "factory-eol-capability-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/process-quality.json",
-    "methods/engineering/engineering-requirements.json"
+    "methods/engineering/engineering-requirements.json",
+    "methods/roles/factory-eol-capability-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/process-quality.json",
@@ -154,11 +156,13 @@
     "question": "Set factory EOL decision limits from process capability, gage variation and false-reject cost",
     "required_methods": [
       "methods/engineering/process-quality.json",
-      "methods/engineering/engineering-requirements.json"
+      "methods/engineering/engineering-requirements.json",
+      "methods/roles/factory-eol-capability-screening-baseline.json"
     ],
     "required_skills": [
       "process-quality",
-      "engineering-requirements"
+      "engineering-requirements",
+      "factory-eol-capability-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -174,7 +178,14 @@
       "neighbor_owns": "Separate supplier incoming quality, sampling and traceability from assembly/test-system variation"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "factory-eol-capability-screening-baseline",
+      "method": "methods/roles/factory-eol-capability-screening-baseline.json",
+      "suite": "golden/roles/R093/golden.json",
+      "scope": "Process capability (Cpk) against declared spec limits and percent gage R&R against total variation, from supplied scalars; no ANOVA gage study or physical EOL test-limit authorization."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Set factory EOL decision limits from process capability, gage variation and false-reject cost",

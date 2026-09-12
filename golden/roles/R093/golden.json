@@ -1,0 +1,30 @@
+{
+  "suite_id": "R093-EOL-CAPABILITY-SCREEN-V1", "role_id": "R093", "skill_id": "factory-eol-capability-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact Cpk formula and AIAG MSA quadrature %GRR computed directly from supplied scalars; no physical gage R&R study was observed.",
+  "scope": "Supplied process mean/std, spec limits, gage standard deviation and acceptance thresholds only",
+  "base_input": {
+    "model": "SUPPLIED_EOL_CAPABILITY_SCREEN", "process_mean": 100.0, "process_std": 1.0, "usl": 106.0, "lsl": 94.0,
+    "gage_std": 0.3, "min_acceptable_cpk": 1.33, "max_acceptable_grr_percent": 30.0
+  },
+  "cases": [
+    {"id": "EOL-HEALTHY-PROCESS-GOOD-GAGE-ACCEPT", "kind": "positive", "question": "Does a healthy process (Cpk 2.0) with a good gage (28.7% GRR) clear declared 1.33/30% thresholds?", "input_overrides": {}, "checks": [
+      {"path": "cpk", "expected": 2.0, "absolute_tolerance": 1e-9},
+      {"path": "grr_percent", "expected": 28.73478855663454, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "measurement_system_study_performed", "expected": false, "absolute_tolerance": 0},
+      {"path": "eol_test_limit_set", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "EOL-MARGINAL-CPK-CORRECTLY-REJECTED", "kind": "counter_hypothesis", "question": "Does a Cpk of 1.25 correctly fail a 1.33 minimum rather than being rounded up to acceptable?", "input_overrides": {"process_std": 1.6}, "checks": [
+      {"path": "cpk", "expected": 1.2499999999999998, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "TIGHTEN_PROCESS_VARIATION_OR_RECENTER_MEAN_OR_RELAX_SPEC_LIMITS", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "EOL-ZERO-GAGE-VARIATION-BOUNDARY", "kind": "boundary", "question": "Does a zero gage standard deviation (a perfect, noiseless gage) correctly return exactly 0% GRR rather than dividing by zero?", "input_overrides": {"process_mean": 50.0, "process_std": 2.0, "usl": 60.0, "lsl": 40.0, "gage_std": 0.0}, "checks": [
+      {"path": "cpk", "expected": 1.6666666666666667, "absolute_tolerance": 1e-9},
+      {"path": "grr_percent", "expected": 0.0, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "EOL-INVERTED-SPEC-LIMITS-REJECTED", "kind": "negative", "question": "Is an upper spec limit at or below the lower spec limit rejected rather than silently accepted?", "input_overrides": {"usl": 90.0, "lsl": 94.0}, "expected_error": "ValueError"}
+  ]
+}
