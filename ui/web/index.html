@@ -79,12 +79,12 @@
         </div>
         <div class="card">
           <div class="section-title"><h3>Dynamic Pod</h3><span id="podMeta" class="chip">尚未規劃</span></div>
-          <div id="pod角色席位" class="role-list empty">輸入工程問題後按「規劃 Dynamic Pod」</div>
+          <div id="podRoles" class="role-list empty">輸入工程問題後按「規劃 Dynamic Pod」</div>
           <div class="invoke-box">
             <label for="invokePrompt">向 Pod Lead 詢問</label>
             <textarea id="invokePrompt" rows="4" placeholder="工程問題只送本機 AI；知識 僅作 supporting context"></textarea>
             <button id="invokeLead">執行本機角色</button>
-            <pre id="invoke結果" class="pre response"></pre>
+            <pre id="invokeResult" class="pre response"></pre>
           </div>
         </div>
       </div>
@@ -98,7 +98,7 @@
       <div class="grid2">
         <div class="card">
           <div class="section-title"><h3>100 席角色</h3><input id="roleFilter" class="compact" placeholder="搜尋角色" aria-label="搜尋角色"></div>
-          <div id="all角色席位" class="role-browser"></div>
+          <div id="allRoles" class="role-browser"></div>
         </div>
         <div class="stack">
           <div class="card">
@@ -111,13 +111,13 @@
           </div>
           <div class="card">
             <div class="section-title"><h3>標準 登錄庫</h3></div>
-            <div class="row"><input id="standardQuery" placeholder="IEC / AES / CTA / ITU" aria-label="搜尋標準"><button id="standard搜尋">搜尋</button></div>
-            <div id="standard結果s" class="search-results"></div>
+            <div class="row"><input id="standardQuery" placeholder="IEC / AES / CTA / ITU" aria-label="搜尋標準"><button id="standardSearch">搜尋</button></div>
+            <div id="standardResults" class="search-results"></div>
           </div>
           <div class="card">
             <div class="section-title"><h3>知識 搜尋</h3></div>
-            <div class="row"><input id="knowledgeQuery" placeholder="搜尋本機知識" aria-label="搜尋本機知識"><button id="knowledge搜尋">搜尋</button></div>
-            <div id="knowledge結果s" class="search-results"></div>
+            <div class="row"><input id="knowledgeQuery" placeholder="搜尋本機知識" aria-label="搜尋本機知識"><button id="knowledgeSearch">搜尋</button></div>
+            <div id="knowledgeResults" class="search-results"></div>
           </div>
           <div class="card">
             <div class="section-title"><h3>Audit 最近事件</h3></div>
