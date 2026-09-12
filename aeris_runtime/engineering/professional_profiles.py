@@ -372,6 +372,11 @@ ROLE_DOMAIN_CONTRACTS['R093']=[{
     'method':'methods/roles/factory-eol-capability-screening-baseline.json',
     'suite':'golden/roles/R093/golden.json',
     'scope':'Process capability (Cpk) against declared spec limits and percent gage R&R against total variation, from supplied scalars; no ANOVA gage study or physical EOL test-limit authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R092']=[{
+    'skill_id':'instrument-sequence-safety-screening-baseline',
+    'method':'methods/roles/instrument-sequence-safety-screening-baseline.json',
+    'suite':'golden/roles/R092/golden.json',
+    'scope':'Planned stimulus amplitude/duration/step-count against declared fixture safety limits, from supplied scalars; no physical instrument IO or Human execution authorization.'}]
 
 
 def standards_families(value):
