@@ -71,6 +71,19 @@ commonly role-mapped skills.
 same `/api/v1/capabilities/fixture/{role}` data source as P1.7, so there is
 no separate "placeholder content" path to accidentally ship.
 
+**Coverage audit (2026-09-13):** verified every one of the 100 canonical
+role seats' every required skill actually produces a working teaching
+fixture, not just the highest-traffic ones. Iterating
+`professional_profiles.profiles()` and calling
+`factory.fixture_for(role_id, skill_id)` for all 398 role/skill pairs
+(shared-catalog skills + all 93 roles' domain-execution-contract skills)
+raised zero exceptions -- every skill genuinely has a runnable usage
+example, sourced either from the shared catalog's fixture or from the
+role's own `golden/roles/R0XX/golden.json` positive case. README section
+15.1 documents one such call end-to-end (R095, verified live via
+`curl` against the running server, HTTP 200) as the canonical
+"how do I actually use one of the 100 engineers" example.
+
 ## Sequencing this tick
 P4.1-P4.3 (browsable library + reused teaching panel + honest no-fixture
 disclosure) are the concrete build. P4.4 (full zh-TW translation of every
