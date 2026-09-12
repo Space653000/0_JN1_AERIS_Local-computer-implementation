@@ -15,6 +15,25 @@ def _head_sha() -> str | None:
         return None
 
 
+def _next_action(truth_state: str, phase_percent: dict, items: list[dict]) -> str:
+    """Name the actual next unfinished item, instead of a stale fixed string.
+
+    A prior version of this function only ever distinguished "P0 incomplete"
+    from "everything after P0", so it kept reporting a leftover P0-era
+    message ("等待 Human 批准進入 P1") long after P1-P6 had real, unrelated
+    progress. Compute it live from the same per-item states the page renders.
+    """
+    if truth_state == "FAIL_CLOSED":
+        return "修復 runtime/candidate 對齊或無效 Evidence 後重新驗證（見 truth_errors）"
+    for phase in PHASES:
+        if phase_percent.get(phase) == 100:
+            continue
+        pending = [item["id"] for item in items if item["id"].startswith(phase + ".") and item["state"] != "PASS"]
+        if pending:
+            return f"完成 {phase} 未通過項目：{'、'.join(pending)}"
+    return "P0-P6 全部項目已通過"
+
+
 def current() -> dict:
     """Project only durable Evidence that matches the currently loaded runtime."""
     status = supervisor_status()
@@ -52,6 +71,7 @@ def current() -> dict:
             })
 
     phase_percent = evaluation.phase_percent if evaluation.state != "FAIL_CLOSED" else {phase: None for phase in PHASES}
+    next_action = _next_action(evaluation.state, phase_percent, items)
     return {
         "schema_version": 2,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -63,7 +83,7 @@ def current() -> dict:
         "phase_percent": phase_percent,
         "items": items,
         "blockers": status.get("blockers") or [],
-        "next_action": "完成 P0.6/P0.7 Progress Truth 與 Evidence" if phase_percent.get("P0") != 100 else "等待 Human 批准進入 P1",
+        "next_action": next_action,
         "truth_state": evaluation.state,
         "truth_errors": list(evaluation.errors),
         "truth": "Evidence-only projection. Missing Evidence is UNKNOWN; mismatched runtime/candidate or invalid Evidence fails closed.",

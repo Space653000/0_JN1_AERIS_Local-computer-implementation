@@ -1,4 +1,5 @@
 import json
+import re
 import tempfile
 import threading
 import unittest
@@ -48,6 +49,19 @@ class ControlPlaneTests(unittest.TestCase):
         with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}{path}", timeout=3) as response:
             self.assertEqual(response.status, 200)
             return json.loads(response.read().decode("utf-8"))
+
+    def test_ui_pages_have_no_inline_script_blocked_by_csp(self):
+        # controlplane's Content-Security-Policy header sends script-src
+        # 'self' with no 'unsafe-inline'/nonce, so any <script>...</script>
+        # block (as opposed to <script src="...">) is silently blocked by
+        # the browser -- the page renders its static shell forever and never
+        # runs. progress.html shipped exactly this bug (an inline loader that
+        # never executed); guard every served page against it.
+        for path in (controlplane.UI_ROOT).glob("*.html"):
+            text = path.read_text(encoding="utf-8")
+            for match in re.finditer(r"<script(?P<attrs>[^>]*)>(?P<body>[^<]*)</script>", text, re.IGNORECASE):
+                if "src=" not in match.group("attrs") and match.group("body").strip():
+                    self.fail(f"{path.name} has an inline <script> body; CSP script-src 'self' silently blocks it")
 
     def test_root_is_real_dashboard_not_404(self):
         server = self._server()

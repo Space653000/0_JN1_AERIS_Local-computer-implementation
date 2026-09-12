@@ -12,6 +12,7 @@ from .company import load_company_manifest, validate_company_manifest
 from .config import ROOT, load_config, set_persisted_mode
 from .corecache import create_snapshot, verify_core_cache
 from .evidence import create_bundle, seal_bundle, validate_bundle
+from .engineering.l3_award import human_decide, human_revoke, pending_review_packets, prepare_review, role_l3_status, verify_ledger as verify_l3_ledger
 from .ingress import approve_quarantined_ingress, download_public_url, public_cloud_query
 from .knowledge import build_index, search as knowledge_search, stats as knowledge_stats
 from .machine import detect as machine_detect, write_report
@@ -264,6 +265,27 @@ def cmd_review(args):
     return 0 if payload.get("final_result") in {"PASS", "PASS_WITH_LIMITS"} else 16
 
 
+def cmd_l3(args):
+    try:
+        if args.action == "prepare":
+            payload = prepare_review(args.run_id)
+        elif args.action == "pending":
+            payload = pending_review_packets()
+        elif args.action == "status":
+            payload = role_l3_status(args.role_id, skill_id=args.skill)
+        elif args.action == "award":
+            payload = human_decide(args.packet_sha256, args.approver, args.decision, note=args.note)
+        elif args.action == "revoke":
+            payload = human_revoke(args.packet_sha256, args.approver, note=args.note)
+        else:
+            payload = verify_l3_ledger()
+        _print(payload)
+        return 0
+    except Exception as exc:
+        print(f"AERIS L3 award error: {exc}", file=sys.stderr)
+        return 17
+
+
 def build_parser():
     p = argparse.ArgumentParser(prog="aeris", description="AERIS portable local-first company runtime")
     s = p.add_subparsers(dest="command", required=True)
@@ -371,6 +393,25 @@ def build_parser():
 
     rv = s.add_parser("review", help="Generate deterministic independent-review evidence for Claude")
     rv.add_argument("--reviewer", default="Claude Code")
+
+    l3 = s.add_parser("l3", help="L3 role-domain award: AI prepares/organizes the review, only a Human grants it")
+    l3s = l3.add_subparsers(dest="action", required=True)
+    l3s.add_parser("pending", help="List AI-prepared review packets awaiting a Human decision")
+    l3p = l3s.add_parser("prepare", help="AI organizes a completed challenges.run() receipt for Human review")
+    l3p.add_argument("run_id")
+    l3st = l3s.add_parser("status", help="Currently active L3 grants for a role, re-verified live")
+    l3st.add_argument("role_id")
+    l3st.add_argument("--skill")
+    l3a = l3s.add_parser("award", help="Human GRANT/REJECT decision on a prepared review packet")
+    l3a.add_argument("packet_sha256")
+    l3a.add_argument("--approver", required=True)
+    l3a.add_argument("decision", choices=["GRANT", "REJECT"])
+    l3a.add_argument("--note", default="")
+    l3r = l3s.add_parser("revoke", help="Human revocation of a prior L3 grant")
+    l3r.add_argument("packet_sha256")
+    l3r.add_argument("--approver", required=True)
+    l3r.add_argument("--note", default="")
+    l3s.add_parser("verify", help="Verify the L3 award ledger's hash chain")
     return p
 
 
@@ -406,6 +447,8 @@ def main():
         return cmd_audit(a)
     if a.command == "review":
         return cmd_review(a)
+    if a.command == "l3":
+        return cmd_l3(a)
     return 1
 
 

@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
-from .audit import LEDGER_PATH
+from . import audit
 from .config import ROOT, load_config
 from .expected_runs import assess_all as expected_run_health
 from .knowledge import search as knowledge_search, stats as knowledge_stats
@@ -249,9 +249,13 @@ def _serve_ui(handler: Any, path: str) -> bool:
 
 
 def _audit_recent(limit: int = 50, offset: int = 0) -> dict[str, Any]:
-    if not LEDGER_PATH.exists():
+    # Read audit.LEDGER_PATH fresh here rather than importing the name by
+    # value at module load: a bound import copy would not see
+    # patch.object(audit, "LEDGER_PATH", ...) from test isolation.
+    ledger_path = audit.LEDGER_PATH
+    if not ledger_path.exists():
         return {"records": [], "total": 0}
-    all_lines = LEDGER_PATH.read_text(encoding="utf-8-sig", errors="replace").splitlines()
+    all_lines = ledger_path.read_text(encoding="utf-8-sig", errors="replace").splitlines()
     total = len(all_lines)
     limit = max(1, min(limit, 200))
     offset = max(0, offset)
