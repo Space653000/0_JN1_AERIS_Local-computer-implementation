@@ -93,9 +93,34 @@ repeat a mistaken "gap" finding.
 **Requires:** broader golden suites (Speaker/Microphone/Array/DSP/Product/
 Failure), each case carrying input/expected/tolerance/units/method version/
 reason/negative variant/failure expectation/SHA-256.
-**Status: partially satisfied.** `golden/acoustics/v1/` and 73 roles'
-`golden/roles/R*/` already follow this shape; broadening coverage further is
-real but large content work like P4.4, not a single-tick item.
+**Status: field-complete, breadth-limited by architecture -- real remaining
+work, precisely scoped below.**
+
+Audited 2026-09-13: all 42 shared-catalog skills' `golden/engineering/*/*/golden.json`
+files already carry every one of the 8 required fields (verified
+programmatically, zero files missing any field). All 93 domain-execution-
+contract roles' `golden/roles/R0XX/golden.json` already carry the full
+4-case shape (positive/counter_hypothesis/boundary/negative). So field
+*correctness* is done everywhere it applies.
+
+What's actually missing is case *breadth* for the 42 shared-catalog skills,
+and it turns out to be an architectural constraint, not a content gap:
+`golden/engineering/*/*/golden.json` is not hand-authored or independently
+extensible -- it is a **derived artifact**, regenerated verbatim from the
+single fixture dict returned by `cases.fixtures()` for that skill_id
+(`factory.py`'s `materialize()`: `write(ROOT/golden_ref/"golden.json",
+{**fixture, "sha256": catalog.digest(fixture)})`). `catalog.definitions()`
+asserts `set(result) == set(HANDLERS)`, i.e. **exactly one fixture per
+skill**, not a list. Broadening this to a 4-case suite (matching the role
+golden shape) means changing `cases.fixtures()` to yield multiple cases per
+skill and changing every consumer that assumes a single fixture
+(`factory.evaluate_role`'s golden/negative/regression check, `run-skill`'s
+CLI, the Skills Library's teaching-example endpoint, the knowledge-corpus
+builder) to iterate a list instead. That is a real design change touching
+the shared `catalog.py`/`cases.py` module every one of the 42 skills
+depends on at once -- correctly out of scope for a single tick, and risky
+to rush without dedicated review, unlike the additive, per-role
+domain-contract work this session otherwise did 19 times without incident.
 
 ## P5.5 — Capability-driven Dynamic Pod Router (section 11)
 **Requires:** pod routing uses product/transducer/lifecycle/requirement/
