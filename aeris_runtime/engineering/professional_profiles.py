@@ -402,6 +402,11 @@ ROLE_DOMAIN_CONTRACTS['R062']=[{
     'method':'methods/roles/vr-xr-headset-screening-baseline.json',
     'suite':'golden/roles/R062/golden.json',
     'scope':'Declared motion-to-sound latency and strap-rubbing noise margin against declared bounds, from supplied scalars; no physical wear-test or Human production sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R063']=[{
+    'skill_id':'automotive-cabin-tuning-screening-baseline',
+    'method':'methods/roles/automotive-cabin-tuning-screening-baseline.json',
+    'suite':'golden/roles/R063/golden.json',
+    'scope':'Declared driver/rear-seat level spread and road-noise validation flag against declared bounds; no full seat/speed coverage matrix or physical in-cabin measurement.'}]
 
 
 def standards_families(value):

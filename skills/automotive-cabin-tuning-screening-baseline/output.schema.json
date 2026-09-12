@@ -1,0 +1,4 @@
+{
+  "type": "object", "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {"values": {"type": "object", "required": ["seat_level_spread_db", "tuning_validated_under_road_noise", "checks", "disposition"]}, "physical_measurement_verified": {"const": false}}
+}

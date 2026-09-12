@@ -170,6 +170,7 @@ from .next_experiment_safety import analyze as next_experiment_safety_model
 from .test_automation_result_screening import analyze as test_automation_result_screening_model
 from .doe_monte_carlo_design_screening import analyze as doe_monte_carlo_design_screening_model
 from .vr_xr_headset_screening import analyze as vr_xr_headset_screening_model
+from .automotive_cabin_tuning_screening import analyze as automotive_cabin_tuning_screening_model
 from .speaker_filter_realization import analyze as speaker_filter_realization_model
 from .microphone_architecture import analyze as microphone_architecture_model
 from .far_field_scenarios import analyze as far_field_scenarios_model
@@ -210,6 +211,7 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'test-automation-result-screening-baseline':test_automation_result_screening_model,
           'doe-monte-carlo-design-screening-baseline':doe_monte_carlo_design_screening_model,
           'vr-xr-headset-screening-baseline':vr_xr_headset_screening_model,
+          'automotive-cabin-tuning-screening-baseline':automotive_cabin_tuning_screening_model,
           'speaker-filter-realization-baseline':speaker_filter_realization_model,
           'microphone-architecture-baseline':microphone_architecture_model,
           'microphone-far-field-scenarios-baseline':far_field_scenarios_model,

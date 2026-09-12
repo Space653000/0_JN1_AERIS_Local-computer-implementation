@@ -1,0 +1,29 @@
+{
+  "suite_id": "R063-AUTOMOTIVE-CABIN-TUNING-SCREEN-V1", "role_id": "R063", "skill_id": "automotive-cabin-tuning-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact absolute-difference and boolean comparison against declared scalars; no physical vehicle cabin was observed.",
+  "scope": "Supplied driver/rear seat levels, declared acceptable spread and road-noise-validation flag only",
+  "base_input": {
+    "model": "SUPPLIED_AUTOMOTIVE_CABIN_TUNING_SCREEN", "driver_seat_level_db": 75.0, "rear_seat_level_db": 72.0,
+    "max_acceptable_seat_level_spread_db": 5.0, "tuning_validated_under_road_noise": true
+  },
+  "cases": [
+    {"id": "AUTO-SEAT-BALANCE-AND-ROAD-VALIDATED-ACCEPT", "kind": "positive", "question": "Does a small driver/rear seat spread with road-noise validation clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "seat_level_spread_db", "expected": 3.0, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "AUTO-DRIVER-OPTIMIZATION-AND-PARKED-ONLY-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are a large driver/rear seat spread and a parked-only validation both correctly rejected together, rather than one masking the other?", "input_overrides": {"rear_seat_level_db": 65.0, "tuning_validated_under_road_noise": false}, "checks": [
+      {"path": "seat_level_spread_db", "expected": 10.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "REBALANCE_THE_TUNING_ACROSS_SEATS_OR_RELAX_THE_LEVEL_SPREAD_TARGET", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "REVALIDATE_THE_TUNING_UNDER_REPRESENTATIVE_ROAD_NOISE_NOT_ONLY_A_PARKED_CABIN", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "AUTO-EXACT-SPREAD-BOUNDARY", "kind": "boundary", "question": "Does a seat level spread exactly at the declared bound correctly pass the inclusive limit rather than being rejected?", "input_overrides": {"rear_seat_level_db": 70.0}, "checks": [
+      {"path": "seat_level_spread_db", "expected": 5.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "AUTO-NEGATIVE-SPREAD-BOUND-REJECTED", "kind": "negative", "question": "Is a negative acceptable-spread bound rejected rather than silently accepted?", "input_overrides": {"max_acceptable_seat_level_spread_db": -1.0}, "expected_error": "ValueError"}
+  ]
+}
