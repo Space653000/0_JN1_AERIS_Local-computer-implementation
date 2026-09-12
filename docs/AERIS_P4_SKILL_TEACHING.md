@@ -35,12 +35,20 @@ available" rather than a silent failure when `/fixture` 404s.
 **Requires:** skill descriptions in the library are in Traditional Chinese,
 consistent with the rest of the zh-TW-first UI, not raw English `acceptance`
 strings from the manifest.
-**Status: gap, partially addressed.** Skill manifests only carry English
-`acceptance`/`applicability` strings; a full zh-TW translation of all 132
-skills' descriptions is a large content task (like en.json but the reverse
-direction and much bigger), not done this tick. The library will show the
-English source honestly rather than a fabricated translation, and this gap
-is disclosed rather than silently shipped as "done."
+**Status: done.** `ui/web/skills-zh-tw.json` carries a hand-authored
+Traditional-Chinese translation for every one of the 105 skills that has a
+non-empty `acceptance` string (100% coverage of translatable content, as of
+a 152-skill catalog). `capabilities.js`'s Skills Library reads this file and
+prefers it; a skill with no English source text at all (the ~47 shared
+`catalog.HANDLERS` skills like `butterworth-filter` that were never given an
+`acceptance` string in either language) honestly shows "尚無說明文字" (no
+description available) rather than a fabricated translation -- that is a
+separate, pre-existing missing-description gap, not something P4.4 (which
+is specifically about translating *existing* descriptions) can close by
+inventing prose. If new skills are added later with an English `acceptance`
+string but no `skills-zh-tw.json` entry, they fall back to showing the
+English source tagged `EN`, honestly disclosed rather than silently
+mistranslated.
 
 ## P4.5 — Wire coverage into `aeris_runtime.progress_verify`
 **Requires:** "how many of the 132 skills have a reachable taught example" is

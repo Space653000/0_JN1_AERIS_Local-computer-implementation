@@ -263,6 +263,19 @@ def _check_p4_3() -> CheckResult:
     return CheckResult(ok, detail, "ui/web/capabilities.js")
 
 
+def _check_p4_4() -> CheckResult:
+    try:
+        skills = _http_get_json("/api/v1/skills").get("skills", [])
+        translatable = {s["skill_id"] for s in skills if str(s.get("acceptance", "")).strip()}
+        translations = json.loads((ROOT / "ui/web/skills-zh-tw.json").read_text(encoding="utf-8"))
+        missing = translatable - set(translations)
+        extra = set(translations) - {s["skill_id"] for s in skills}
+        ok = not missing and not extra
+        return CheckResult(ok, f"translatable_skills={len(translatable)}; translated={len(translations)}; missing={sorted(missing)}; stale_extra={sorted(extra)}" if not ok else f"all {len(translatable)} translatable skills have a zh-TW entry in skills-zh-tw.json", "ui/web/skills-zh-tw.json; ui/web/capabilities.js")
+    except Exception as exc:
+        return CheckResult(False, f"check failed: {exc}", "ui/web/skills-zh-tw.json")
+
+
 def _check_p4_5() -> CheckResult:
     try:
         data = _http_get_json("/api/v1/skills")
@@ -448,7 +461,7 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P2.1": _check_p2_1, "P2.2": _check_p2_2, "P2.5": _check_p2_5, "P2.6": _check_p2_6, "P2.7": _check_p2_7,
     "P3.1": _check_p3_1, "P3.2": _check_p3_2, "P3.3": _check_p3_3, "P3.4": _check_p3_4,
     "P3.5": _check_p3_5, "P3.6": _check_p3_6, "P3.7": _check_p3_7, "P3.8": _check_p3_8,
-    "P4.1": _check_p4_1, "P4.2": _check_p4_2, "P4.3": _check_p4_3, "P4.5": _check_p4_5,
+    "P4.1": _check_p4_1, "P4.2": _check_p4_2, "P4.3": _check_p4_3, "P4.4": _check_p4_4, "P4.5": _check_p4_5,
     "P4.6": _check_p4_6, "P4.7": _check_p4_7,
     "P5.1": _check_p5_1, "P5.2": _check_p5_2, "P5.3": _check_p5_3, "P5.5": _check_p5_5,
     "P5.6": _check_p5_6, "P5.7": _check_p5_7, "P5.8": _check_p5_8, "P5.9": _check_p5_9,
@@ -460,7 +473,7 @@ _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8",
           "P2.1", "P2.2", "P2.5", "P2.6", "P2.7",
           "P3.1", "P3.2", "P3.3", "P3.4", "P3.5", "P3.6", "P3.7", "P3.8",
-          "P4.1", "P4.2", "P4.3", "P4.5", "P4.6", "P4.7",
+          "P4.1", "P4.2", "P4.3", "P4.4", "P4.5", "P4.6", "P4.7",
           "P5.1", "P5.2", "P5.3", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9",
           "P6.1", "P6.2", "P6.3", "P6.4", "P6.6", "P6.7", "P6.8"]
 

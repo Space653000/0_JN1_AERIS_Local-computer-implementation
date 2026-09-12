@@ -59,12 +59,16 @@
     const lib=document.createElement('section');lib.className='section';lib.id='skill-library';
     lib.innerHTML='<div class="section-title"><div><div class="section-kicker">哈利說的AI軟體必修課</div><h2>技能圖書館</h2></div><span class="pill teal" id="skillLibCount">—</span></div><div class="panel"><input id="skillLibQuery" class="compact" placeholder="搜尋技能，例如 beamforming、laptop" aria-label="搜尋技能" style="margin-bottom:9px;width:100%"><div id="skillLibList" class="list"></div><div id="skillLibTaught" class="callout" hidden style="margin-top:9px"></div></div>';
     section.parentNode.insertBefore(lib,section.nextSibling);
-    let skills=[];
+    let skills=[],skillZhTw={};
     function renderSkillLib(q){
       const query=(q||'').toLowerCase();
       const filtered=skills.filter(s=>!query||`${s.skill_id} ${s.acceptance||''}`.toLowerCase().includes(query));
       document.getElementById('skillLibCount').textContent=`${filtered.length}／${skills.length} 項技能`;
-      document.getElementById('skillLibList').innerHTML=filtered.map(s=>`<div class="row"><div><div class="row-name">${escape(s.skill_id)}</div><div class="row-meta">${escape(s.acceptance||'')}</div></div>${s.role_mappings&&s.role_mappings.length?`<button class="btn" type="button" data-skill-example="${escape(s.skill_id)}" data-skill-role="${escape(s.role_mappings[0])}">查看教學範例</button>`:'<span class="pill">尚無可用範例角色</span>'}</div>`).join('')||'<div class="empty">沒有符合的技能</div>';
+      document.getElementById('skillLibList').innerHTML=filtered.map(s=>{
+        const zh=skillZhTw[s.skill_id];
+        const desc=zh?escape(zh):(s.acceptance?`<span class="pill" title="尚無繁中翻譯，誠實顯示原文">EN</span> ${escape(s.acceptance)}`:'<span class="pill">尚無說明文字</span>');
+        return `<div class="row"><div><div class="row-name">${escape(s.skill_id)}</div><div class="row-meta">${desc}</div></div>${s.role_mappings&&s.role_mappings.length?`<button class="btn" type="button" data-skill-example="${escape(s.skill_id)}" data-skill-role="${escape(s.role_mappings[0])}">查看教學範例</button>`:'<span class="pill">尚無可用範例角色</span>'}</div>`;
+      }).join('')||'<div class="empty">沒有符合的技能</div>';
     }
     document.getElementById('skillLibList').addEventListener('click',async e=>{
       const btn=e.target.closest('[data-skill-example]');if(!btn)return;
@@ -76,7 +80,9 @@
       }catch(err){panel.innerHTML=`<b>${escape(btn.dataset.skillExample)}</b><p>此技能目前沒有可重現的教學範例（${escape(err.message)}），誠實顯示為缺少範例，而非假裝已驗證。</p>`}
     });
     document.getElementById('skillLibQuery').addEventListener('input',e=>renderSkillLib(e.target.value));
-    rawApi('/api/v1/skills').then(d=>{skills=d.skills||[];renderSkillLib('')}).catch(e=>{document.getElementById('skillLibList').textContent='技能清單載入失敗：'+e.message});
+    Promise.all([rawApi('/api/v1/skills'),fetch('/assets/skills-zh-tw.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}).catch(()=>({}))])
+      .then(([d,zh])=>{skills=d.skills||[];skillZhTw=zh||{};renderSkillLib('')})
+      .catch(e=>{document.getElementById('skillLibList').textContent='技能清單載入失敗：'+e.message});
   }
 
   refresh();setInterval(refresh,10000);addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
