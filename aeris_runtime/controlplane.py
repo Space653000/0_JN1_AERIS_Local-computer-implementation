@@ -224,7 +224,7 @@ def _body(handler: Any) -> dict[str, Any]:
 def _serve_ui(handler: Any, path: str) -> bool:
     if path in {"/", "/dashboard"}:
         target = UI_ROOT / "dashboard.html"
-    elif path in {"/workspace", "/services"}:
+    elif path in {"/workspace", "/services", "/activity"}:
         target = UI_ROOT / (path.lstrip("/") + ".html")
     elif path in {"/progress", "/progress-center"}:
         target = UI_ROOT / "progress.html"
@@ -248,17 +248,22 @@ def _serve_ui(handler: Any, path: str) -> bool:
     return True
 
 
-def _audit_recent(limit: int = 50) -> list[dict[str, Any]]:
+def _audit_recent(limit: int = 50, offset: int = 0) -> dict[str, Any]:
     if not LEDGER_PATH.exists():
-        return []
-    lines = LEDGER_PATH.read_text(encoding="utf-8-sig", errors="replace").splitlines()[-max(1, min(limit, 200)):]
+        return {"records": [], "total": 0}
+    all_lines = LEDGER_PATH.read_text(encoding="utf-8-sig", errors="replace").splitlines()
+    total = len(all_lines)
+    limit = max(1, min(limit, 200))
+    offset = max(0, offset)
+    newest_first = list(reversed(all_lines))
+    page = newest_first[offset:offset + limit]
     result = []
-    for line in reversed(lines):
+    for line in page:
         try:
             result.append(json.loads(line))
         except json.JSONDecodeError:
             result.append({"invalid_record": True, "raw": line[:400]})
-    return result
+    return {"records": result, "total": total}
 
 
 def _status(opening: dict[str, Any]) -> dict[str, Any]:
@@ -369,7 +374,11 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
         elif path == "/api/v1/machine":
             _write_json(handler, 200, machine_detect())
         elif path == "/api/v1/audit":
-            _write_json(handler, 200, {"records": _audit_recent(int((qs.get("limit") or ["50"])[0]))})
+            page = _audit_recent(int((qs.get("limit") or ["50"])[0]), int((qs.get("offset") or ["0"])[0]))
+            _write_json(handler, 200, page)
+        elif path == "/api/v1/audit/verify":
+            from .audit import verify_ledger
+            _write_json(handler, 200, verify_ledger())
         elif path == "/api/v1/progress":
             from .progress import current
             _write_json(handler, 200, current())
