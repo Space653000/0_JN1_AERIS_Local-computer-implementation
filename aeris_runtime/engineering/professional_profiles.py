@@ -447,6 +447,11 @@ ROLE_DOMAIN_CONTRACTS['R085']=[{
     'method':'methods/roles/acoustic-dataset-screening-baseline.json',
     'suite':'golden/roles/R085/golden.json',
     'scope':'Declared sample-rate-uniformity/resampling and duplicate-source-count flags against mixed-rate and cross-split-leakage antipatterns; no full ingestion-pipeline audit or Human dataset-release sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R086']=[{
+    'skill_id':'benchmark-teardown-screening-baseline',
+    'method':'methods/roles/benchmark-teardown-screening-baseline.json',
+    'suite':'golden/roles/R086/golden.json',
+    'scope':'Declared SPL-matched and topology-claim/validation flags against unmatched-benchmark and visual-topology-as-validated antipatterns; no full product test-condition matrix or Human publication sign-off.'}]
 
 
 def standards_families(value):

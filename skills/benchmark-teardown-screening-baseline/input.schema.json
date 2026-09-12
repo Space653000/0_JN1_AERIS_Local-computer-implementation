@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "spl_matched_across_products", "topology_visually_inferred", "topology_electrically_validated"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_BENCHMARK_TEARDOWN_SCREEN"},
+    "spl_matched_across_products": {"type": "boolean"}, "topology_visually_inferred": {"type": "boolean"},
+    "topology_electrically_validated": {"type": "boolean"}
+  }
+}
