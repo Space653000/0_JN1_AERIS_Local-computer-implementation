@@ -162,6 +162,7 @@ from .structural_acoustic import analyze as structural_acoustic_model
 from .room_decay import analyze as room_decay_model
 from .room_correction import analyze as room_correction_model
 from .speaker_digital_transport import analyze as speaker_digital_transport_model
+from .reliability_halt import analyze as reliability_halt_model
 from .speaker_filter_realization import analyze as speaker_filter_realization_model
 from .microphone_architecture import analyze as microphone_architecture_model
 from .far_field_scenarios import analyze as far_field_scenarios_model
@@ -194,6 +195,7 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'room-decay-spatial-baseline':room_decay_model,
           'room-correction-spatial-baseline':room_correction_model,
           'speaker-digital-transport-baseline':speaker_digital_transport_model,
+          'reliability-halt-screening-baseline':reliability_halt_model,
           'speaker-filter-realization-baseline':speaker_filter_realization_model,
           'microphone-architecture-baseline':microphone_architecture_model,
           'microphone-far-field-scenarios-baseline':far_field_scenarios_model,

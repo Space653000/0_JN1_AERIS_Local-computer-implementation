@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "reliability-halt-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/reliability-halt-screening-baseline.json",
+  "input_schema": "skills/reliability-halt-screening-baseline/input.schema.json", "output_schema": "skills/reliability-halt-screening-baseline/output.schema.json",
+  "role_mappings": ["R096"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Exact one-sided binomial upper bound on failure probability from supplied trial/failure counts against a declared acceptance threshold; no accelerated-life extrapolation or physical HALT chamber execution"
+}

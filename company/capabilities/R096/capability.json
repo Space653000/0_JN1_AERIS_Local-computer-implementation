@@ -28,11 +28,13 @@
   },
   "required_skills": [
     "reliability-binomial",
-    "thermal-rc"
+    "thermal-rc",
+    "reliability-halt-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/reliability-binomial.json",
-    "methods/engineering/thermal-rc.json"
+    "methods/engineering/thermal-rc.json",
+    "methods/roles/reliability-halt-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/reliability-binomial.json",
@@ -154,11 +156,13 @@
     "question": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
     "required_methods": [
       "methods/engineering/reliability-binomial.json",
-      "methods/engineering/thermal-rc.json"
+      "methods/engineering/thermal-rc.json",
+      "methods/roles/reliability-halt-screening-baseline.json"
     ],
     "required_skills": [
       "reliability-binomial",
-      "thermal-rc"
+      "thermal-rc",
+      "reliability-halt-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -174,7 +178,14 @@
       "neighbor_owns": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "reliability-halt-screening-baseline",
+      "method": "methods/roles/reliability-halt-screening-baseline.json",
+      "suite": "golden/roles/R096/golden.json",
+      "scope": "Exact one-sided binomial upper bound on HALT trial/failure counts against a declared acceptance threshold; no accelerated-life extrapolation or physical chamber execution."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",

@@ -362,6 +362,11 @@ ROLE_DOMAIN_CONTRACTS['R044']=[{
     'method':'methods/roles/microphone-aec-enhancement-domain-review.json',
     'suite':'golden/roles/R044/aec-control.json',
     'scope':'Independent ERLE, near-speech, alignment, drift, double-talk, tail and nonlinear-residual review; no measured echo path or perceptual acceptance.'}]
+ROLE_DOMAIN_CONTRACTS['R096']=[{
+    'skill_id':'reliability-halt-screening-baseline',
+    'method':'methods/roles/reliability-halt-screening-baseline.json',
+    'suite':'golden/roles/R096/golden.json',
+    'scope':'Exact one-sided binomial upper bound on HALT trial/failure counts against a declared acceptance threshold; no accelerated-life extrapolation or physical chamber execution.'}]
 
 
 def standards_families(value):

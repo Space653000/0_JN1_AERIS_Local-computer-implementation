@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "trials", "failures", "confidence", "max_acceptable_failure_probability"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_HALT_BINOMIAL_SCREEN"},
+    "trials": {"type": "number"}, "failures": {"type": "number"},
+    "confidence": {"type": "number"}, "max_acceptable_failure_probability": {"type": "number"}
+  }
+}
