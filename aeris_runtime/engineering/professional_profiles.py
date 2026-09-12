@@ -457,6 +457,11 @@ ROLE_DOMAIN_CONTRACTS['R087']=[{
     'method':'methods/roles/patent-prior-art-screening-baseline.json',
     'suite':'golden/roles/R087/golden.json',
     'scope':'Declared novelty-verdict/claim-element-mapping and date-type-used flags against keyword-similarity-as-novelty and priority/publication-date-confusion antipatterns; no full claim chart or Human legal sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R088']=[{
+    'skill_id':'research-hypothesis-screening-baseline',
+    'method':'methods/roles/research-hypothesis-screening-baseline.json',
+    'suite':'golden/roles/R088/golden.json',
+    'scope':'Declared replication-claim/independent-replication and raw-data-disclosure flags against citation-as-replication and hidden-raw-data antipatterns; no full literature review or Human peer-review sign-off.'}]
 
 
 def standards_families(value):
