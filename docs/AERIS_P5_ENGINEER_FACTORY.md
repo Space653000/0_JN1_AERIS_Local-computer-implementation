@@ -45,13 +45,17 @@ role-specific domain execution contract implemented yet:
 same conservative, bounded-scope, explicit-exclusions style already used
 (see e.g. `methods/roles/thermal-rc.json`'s literal textbook RC time-constant
 formula) -- not fabricated thresholds.
-**Status: investigated, not yet built this tick.** Authoring new acoustic/
-domain contracts requires getting the underlying engineering right (unlike
-P3, which only had to *run* already-reviewed contracts). Doing this well
-needs picking one concrete, textbook-formula-backed case at a time and
-verifying it against a real reference calculation, not batching many roles
-at once under time pressure. Next tick's target: one Product Chief role
-(most structurally similar to existing patterns) as a proof case.
+**Status: done.** A later session built exactly this, one role at a time,
+each hand-verified against exact closed-form math before being written into
+its golden fixture: R096 (HALT binomial), R093 (Cpk/gage R&R), R092
+(instrument-sequence safety), R095 (incoming-lot sampling), R100 (next-
+experiment safety), R091 (test-automation retry/pass-signal), R078 (DOE
+resolution/Monte-Carlo validity), R062-R068 (all 7 Product Chiefs), and
+R083-R088 (all 6 Distinguished Experts) -- 20 new contracts total, taking
+100_role_L2 from 73/100 to 93/100. Every one follows the same pattern this
+section named: a real formula or a real antipattern-guarding boolean check,
+never a fabricated threshold, with all four golden-case kinds (positive/
+counter_hypothesis/boundary/negative) hand-verified.
 
 ## P5.2 — Honest boundary: some roles may never need a domain contract
 **Requires:** roles that are inherently judgment/oversight/desk-research
@@ -59,7 +63,14 @@ roles (Chief Council, competitive benchmark, patent research) are not forced
 into a fake "bounded execution" just to move a percentage. The maturity
 rubric's L1 ("complete referenced contract") may be the honest ceiling for
 some of these without a real physical/analytical capability behind it.
-**Status: this document's own accounting above.**
+**Status: held, and re-confirmed after P5.1's sweep.** Competitive benchmark
+(R086) and patent research (R087) turned out to still admit a real bounded
+antipattern-guard (matched-SPL / claim-element-mapping) without needing to
+fabricate a physical measurement, so they were completed under P5.1 instead
+of being left at L1. The 7 Chief Council roles (R001-R004, R006-R008) remain
+the honest boundary: they synthesize/arbitrate across other roles' outputs,
+which is not the same shape as a single bounded analytical check, and are
+deliberately left at their current maturity rather than forced.
 
 ## P5.3 — Free Tool Bus adapter software baseline (re-checked, already correct)
 **Requires:** per section 9 of the parent spec, COMSOL/MATLAB/Ansys/APx/
@@ -101,9 +112,13 @@ spec as written.
 ## P5.6 — Dashboard as company capability map (section 12)
 **Requires:** the dashboard should let a human see real coverage (which
 roles, which skills, which gaps) at a glance.
-**Status: substantially satisfied by P1.4's capability graph + P4's Skills
-Library**, built before this phase was named. Re-verify against section 12's
-exact wording next tick rather than assuming full overlap.
+**Status: satisfied.** P1.4's capability graph shows per-role maturity at a
+glance; P4's Skills Library shows the full skill catalog with reachable
+teaching examples; a later session's Progress Center rebuild
+(`ui/web/progress.html`) added a phase-by-phase visual (ring chart + colored
+bars) so the whole P0-P6 blueprint's real coverage is visible on one page,
+not just the capability layer. Together these satisfy section 12's "see
+real coverage at a glance" requirement.
 
 ## P5.7 — Reviewer allocation actually challenges results (Core engineering criterion)
 **Requires:** the full loop in the parent spec's final section: requirement
@@ -112,27 +127,44 @@ verify -> **independent Reviewer challenges the result** -> correct/refine
 -> report -> reproducible Knowledge. The "independent Reviewer challenges"
 step is the same mechanism P3.6 found is not yet real (no code path sets
 `role_l3_accepted` True).
-**Status: same open item as P3.6** -- needs the Human's definition of what a
-qualified challenge/review requires before building it.
+**Status: done, per the Human's explicit decision** ("L3: AI 做審查整理，
+真人做最終核准"). `aeris_runtime/engineering/l3_award.py` implements exactly
+this: `prepare_review()` packages an already-sealed `challenges.run()`
+receipt (which already runs the full requirement -> method -> Evidence ->
+independent-reviewer-challenge -> reproduction loop this item names) into a
+review packet; `human_decide()` is the *only* code path that can ever set an
+L3 grant, and it requires a named Human approver and re-verifies the backing
+evidence on every status check (fail-closed). Every pre-existing
+`role_l3_awarded: False` self-report in `domain_review.py`/`challenges.py`
+is untouched -- this ledger sits beside them as an independent Human-decision
+record, not a change to what the AI is allowed to self-certify. CLI:
+`aeris l3 pending|prepare|status|award|revoke|verify`. Tests:
+`tests/test_l3_award.py`.
 
 ## P5.8 — Total-count accounting (section 13's "final report" requirement)
 **Requires:** total roles, L0-L4 counts, total executable skills/methods/
 golden/negative/regression cases, per-group coverage, unresolved gaps --
 all as a real, re-derivable report, not prose.
-**Status: mostly available live** via `GET /api/v1/capabilities` already;
-wiring a dedicated `progress_verify` check for this is a natural, low-risk
-next increment (same pattern as P3.2/P3.3).
+**Status: done.** `GET /api/v1/capabilities` returns all of these fields
+live; `progress_verify._check_p5_8` asserts every required field
+(`total_roles`, `maturity_counts`, `total_executable_skills`,
+`total_methods`, `total_golden_cases`, `total_negative_cases`,
+`total_regression_cases`, `coverage_by_group`, `unresolved_capability_gaps`)
+is present on every re-run.
 
 ## P5.9 — Do not stop at green tests
 **Requires:** treating `100_role_L2 = 100/100` as the real bar, not "tests
 pass" or "percentage looks good."
-**Status: acknowledged and tracked** -- 73/100 is the honest current number,
-not rounded up, and this document says so plainly.
+**Status: acknowledged and tracked** -- 93/100 is the honest current number
+after P5.1's sweep, not rounded up to 100. The remaining 7 (P5.2's Chief
+Council roles) are disclosed as a deliberate, by-nature boundary, not a gap
+still being worked -- `100_role_L2 = 100/100` is not this factory's real
+achievable bar for roles that are inherently cross-cutting judgment, and
+this document says so plainly rather than quietly redefining the bar to
+declare victory.
 
-## Sequencing
-Lowest-risk, highest-confidence next steps: P5.3 (adapter interface stubs,
-purely declarative) and P5.8 (a progress_verify check for the existing
-live coverage numbers). P5.1 (new domain contracts) is real and valuable
-but needs one careful, verified case at a time, not a batch. P5.5/P5.6 need
-a verification pass before claiming status either way. P5.7 is blocked on
-the same Human decision as P3.6.
+## Sequencing (updated after P5.1's sweep)
+P5.1, P5.3, P5.5, P5.6, P5.7, P5.8 are all done; P5.2/P5.9 are honest,
+by-nature boundaries rather than open work. The one remaining real gap is
+P5.4 (broadening golden-suite coverage further) -- large content work like
+P4.4, not a single-tick item, and not faked here.
