@@ -377,6 +377,11 @@ ROLE_DOMAIN_CONTRACTS['R092']=[{
     'method':'methods/roles/instrument-sequence-safety-screening-baseline.json',
     'suite':'golden/roles/R092/golden.json',
     'scope':'Planned stimulus amplitude/duration/step-count against declared fixture safety limits, from supplied scalars; no physical instrument IO or Human execution authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R095']=[{
+    'skill_id':'incoming-lot-sampling-screening-baseline',
+    'method':'methods/roles/incoming-lot-sampling-screening-baseline.json',
+    'suite':'golden/roles/R095/golden.json',
+    'scope':'Exact one-sided binomial upper bound on lot nonconforming fraction against a declared acceptance threshold, gated on measured (not certificate-only) incoming inspection data; no assembly/test-system variation decomposition.'}]
 
 
 def standards_families(value):

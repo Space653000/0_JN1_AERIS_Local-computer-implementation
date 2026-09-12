@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "source_kind", "sample_size", "observed_nonconforming", "confidence", "max_acceptable_lot_fraction_nonconforming"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_INCOMING_LOT_SAMPLING_SCREEN"},
+    "source_kind": {"type": "string", "enum": ["MEASURED_INCOMING_INSPECTION", "SUPPLIER_CERTIFICATE_ONLY"]},
+    "sample_size": {"type": "integer"}, "observed_nonconforming": {"type": "integer"},
+    "confidence": {"type": "number"}, "max_acceptable_lot_fraction_nonconforming": {"type": "number"}
+  }
+}

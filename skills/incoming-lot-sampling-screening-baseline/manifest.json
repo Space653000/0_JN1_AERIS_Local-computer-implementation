@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "incoming-lot-sampling-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/incoming-lot-sampling-screening-baseline.json",
+  "input_schema": "skills/incoming-lot-sampling-screening-baseline/input.schema.json", "output_schema": "skills/incoming-lot-sampling-screening-baseline/output.schema.json",
+  "role_mappings": ["R095"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Exact one-sided binomial upper bound on lot nonconforming fraction against a declared acceptance threshold, gated on measured (not certificate-only) incoming inspection data; no assembly/test-system variation decomposition"
+}

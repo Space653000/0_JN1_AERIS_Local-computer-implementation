@@ -1,0 +1,7 @@
+{
+  "method_id": "incoming-lot-sampling-screening-baseline", "version": "1.0.0", "role": "R095", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:incoming_lot_sampling_model", "applicability": "Supplied sample size, observed nonconforming count, declared data source kind, confidence and acceptance threshold",
+  "equations": {"one_sided_upper_fraction_nonconforming": "1.0 if nonconforming==sample_size else scipy.stats.beta.ppf(confidence, nonconforming+1, sample_size-nonconforming)"},
+  "assumptions": ["Sample units are independent identical Bernoulli trials from the lot", "Supplied sample/nonconforming counts are exact, not estimated", "This screen does not itself separate assembly/test-system variation from incoming lot variation"],
+  "excluded": ["Assembly/test-system variation decomposition", "supplier certificate authenticity verification", "physical/calibrated incoming inspection execution", "Human approval"], "golden_tests": "golden/roles/R095/golden.json"
+}

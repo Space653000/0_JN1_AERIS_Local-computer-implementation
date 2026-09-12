@@ -28,11 +28,13 @@
   },
   "required_skills": [
     "process-quality",
-    "repeatability-reproducibility"
+    "repeatability-reproducibility",
+    "incoming-lot-sampling-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/process-quality.json",
-    "methods/engineering/repeatability-reproducibility.json"
+    "methods/engineering/repeatability-reproducibility.json",
+    "methods/roles/incoming-lot-sampling-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/process-quality.json",
@@ -154,11 +156,13 @@
     "question": "Separate supplier incoming quality, sampling and traceability from assembly/test-system variation",
     "required_methods": [
       "methods/engineering/process-quality.json",
-      "methods/engineering/repeatability-reproducibility.json"
+      "methods/engineering/repeatability-reproducibility.json",
+      "methods/roles/incoming-lot-sampling-screening-baseline.json"
     ],
     "required_skills": [
       "process-quality",
-      "repeatability-reproducibility"
+      "repeatability-reproducibility",
+      "incoming-lot-sampling-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -174,7 +178,14 @@
       "neighbor_owns": "Set factory EOL decision limits from process capability, gage variation and false-reject cost"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "incoming-lot-sampling-screening-baseline",
+      "method": "methods/roles/incoming-lot-sampling-screening-baseline.json",
+      "suite": "golden/roles/R095/golden.json",
+      "scope": "Exact one-sided binomial upper bound on lot nonconforming fraction against a declared acceptance threshold, gated on measured (not certificate-only) incoming inspection data; no assembly/test-system variation decomposition."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Separate supplier incoming quality, sampling and traceability from assembly/test-system variation",
