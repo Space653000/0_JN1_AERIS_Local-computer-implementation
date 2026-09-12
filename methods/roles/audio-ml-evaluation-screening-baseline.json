@@ -1,0 +1,7 @@
+{
+  "method_id": "audio-ml-evaluation-screening-baseline", "version": "1.0.0", "role": "R084", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:audio_ml_evaluation_screening_model", "applicability": "Supplied train/test source-recording overlap count and declared production-robustness-claim/validation flags",
+  "equations": {"no_overlap_check": "train_test_overlap_count == 0", "robustness_claim_check": "(not claimed_production_robust) or production_validated"},
+  "assumptions": ["Declared train/test overlap count is an exact count of shared source recordings, not an estimate", "Production-representative validation means evaluation on data drawn from the actual deployment distribution, not additional synthetic data", "This screen evaluates one declared evaluation claim, not the full model training pipeline"],
+  "excluded": ["Full dataset provenance audit", "distribution-shift characterization", "Human model-release sign-off"], "golden_tests": "golden/roles/R084/golden.json"
+}

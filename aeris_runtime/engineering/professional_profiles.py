@@ -437,6 +437,11 @@ ROLE_DOMAIN_CONTRACTS['R083']=[{
     'method':'methods/roles/codec-transport-screening-baseline.json',
     'suite':'golden/roles/R083/golden.json',
     'scope':'Declared jitter-buffer margin and consecutive-loss-burst length against declared bounds, from supplied scalars; no full network-condition coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R084']=[{
+    'skill_id':'audio-ml-evaluation-screening-baseline',
+    'method':'methods/roles/audio-ml-evaluation-screening-baseline.json',
+    'suite':'golden/roles/R084/golden.json',
+    'scope':'Declared train/test overlap count and production-robustness-claim/validation flags against leakage and synthetic-as-robust antipatterns; no full dataset provenance audit or Human model-release sign-off.'}]
 
 
 def standards_families(value):
