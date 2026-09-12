@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "attempt_count", "final_attempt_passed", "retries_disclosed", "explicit_pass_signal_received"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_TEST_AUTOMATION_RESULT_SCREEN"},
+    "attempt_count": {"type": "integer"}, "final_attempt_passed": {"type": "boolean"},
+    "retries_disclosed": {"type": "boolean"}, "explicit_pass_signal_received": {"type": "boolean"}
+  }
+}

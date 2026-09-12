@@ -387,6 +387,11 @@ ROLE_DOMAIN_CONTRACTS['R100']=[{
     'method':'methods/roles/next-experiment-safety-screening-baseline.json',
     'suite':'golden/roles/R100/golden.json',
     'scope':'Proposed next-experiment point against a declared safe region and a minimum new-information distance from prior coverage, from supplied scalars; no point-history search or physical execution authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R091']=[{
+    'skill_id':'test-automation-result-screening-baseline',
+    'method':'methods/roles/test-automation-result-screening-baseline.json',
+    'suite':'golden/roles/R091/golden.json',
+    'scope':'Declared attempt count, retry disclosure and explicit pass-signal flags against retry-hiding and process-alive-as-pass antipatterns; no full automation-run resource/timeout budget or physical release authorization.'}]
 
 
 def standards_families(value):
