@@ -407,6 +407,11 @@ ROLE_DOMAIN_CONTRACTS['R063']=[{
     'method':'methods/roles/automotive-cabin-tuning-screening-baseline.json',
     'suite':'golden/roles/R063/golden.json',
     'scope':'Declared driver/rear-seat level spread and road-noise validation flag against declared bounds; no full seat/speed coverage matrix or physical in-cabin measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R064']=[{
+    'skill_id':'amr-warning-doa-screening-baseline',
+    'method':'methods/roles/amr-warning-doa-screening-baseline.json',
+    'suite':'golden/roles/R064/golden.json',
+    'scope':'Declared warning-to-motor-noise margin and DOA-update displacement against declared bounds, from supplied scalars; no full velocity/load coverage matrix or physical instrument measurement.'}]
 
 
 def standards_families(value):
