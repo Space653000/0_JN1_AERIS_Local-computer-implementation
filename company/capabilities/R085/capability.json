@@ -28,11 +28,13 @@
   },
   "required_skills": [
     "requirement-traceability",
-    "provenance-research"
+    "provenance-research",
+    "acoustic-dataset-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/provenance-research.json"
+    "methods/engineering/provenance-research.json",
+    "methods/roles/acoustic-dataset-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/requirement-traceability.json",
@@ -154,11 +156,13 @@
     "question": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
     "required_methods": [
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/provenance-research.json"
+      "methods/engineering/provenance-research.json",
+      "methods/roles/acoustic-dataset-screening-baseline.json"
     ],
     "required_skills": [
       "requirement-traceability",
-      "provenance-research"
+      "provenance-research",
+      "acoustic-dataset-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -174,7 +178,14 @@
       "neighbor_owns": "Maintain requirement-test-evidence and configuration links across revisions"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "acoustic-dataset-screening-baseline",
+      "method": "methods/roles/acoustic-dataset-screening-baseline.json",
+      "suite": "golden/roles/R085/golden.json",
+      "scope": "Declared sample-rate-uniformity/resampling and duplicate-source-count flags against mixed-rate and cross-split-leakage antipatterns; no full ingestion-pipeline audit or Human dataset-release sign-off."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",

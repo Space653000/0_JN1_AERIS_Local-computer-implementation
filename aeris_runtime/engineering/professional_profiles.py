@@ -442,6 +442,11 @@ ROLE_DOMAIN_CONTRACTS['R084']=[{
     'method':'methods/roles/audio-ml-evaluation-screening-baseline.json',
     'suite':'golden/roles/R084/golden.json',
     'scope':'Declared train/test overlap count and production-robustness-claim/validation flags against leakage and synthetic-as-robust antipatterns; no full dataset provenance audit or Human model-release sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R085']=[{
+    'skill_id':'acoustic-dataset-screening-baseline',
+    'method':'methods/roles/acoustic-dataset-screening-baseline.json',
+    'suite':'golden/roles/R085/golden.json',
+    'scope':'Declared sample-rate-uniformity/resampling and duplicate-source-count flags against mixed-rate and cross-split-leakage antipatterns; no full ingestion-pipeline audit or Human dataset-release sign-off.'}]
 
 
 def standards_families(value):
