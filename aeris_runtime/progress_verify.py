@@ -222,6 +222,32 @@ def _check_p3_8() -> CheckResult:
     return CheckResult(ok, detail, "docs/AERIS_P3_GOLDEN_ENGINEER.md")
 
 
+def _check_p4_1() -> CheckResult:
+    ok, detail = _grep("ui/web/capabilities.js", "skill-library", "skillLibList", "skillLibQuery")
+    return CheckResult(ok, detail, "ui/web/capabilities.js")
+
+
+def _check_p4_2() -> CheckResult:
+    ok, detail = _grep("ui/web/capabilities.js", "data-skill-example", "taughtHTML(data.fixture)")
+    return CheckResult(ok, detail, "ui/web/capabilities.js")
+
+
+def _check_p4_3() -> CheckResult:
+    ok, detail = _grep("ui/web/capabilities.js", "尚無可用範例角色", "誠實顯示為缺少範例")
+    return CheckResult(ok, detail, "ui/web/capabilities.js")
+
+
+def _check_p4_5() -> CheckResult:
+    try:
+        data = _http_get_json("/api/v1/skills")
+        skills = data.get("skills", [])
+        with_mapping = [s for s in skills if s.get("role_mappings")]
+        ok = len(skills) >= 100 and len(with_mapping) / max(1, len(skills)) >= 0.9
+        return CheckResult(ok, f"skills={len(skills)}; with_role_mapping={len(with_mapping)} ({round(100*len(with_mapping)/max(1,len(skills)))}%)", "ui/web/capabilities.js; aeris_runtime/controlplane.py:/api/v1/skills")
+    except Exception as exc:
+        return CheckResult(False, f"local server unreachable at {LOCAL_BASE_URL}: {exc}", "aeris_runtime/controlplane.py")
+
+
 CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P0.1": _check_p0_1, "P0.2": _check_p0_2, "P0.3": _check_p0_3, "P0.4": _check_p0_4,
     "P0.5": _check_p0_5, "P0.6": _check_p0_6, "P0.7": _check_p0_7,
@@ -229,11 +255,13 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P1.5": _check_p1_5, "P1.6": _check_p1_6, "P1.7": _check_p1_7, "P1.8": _check_p1_8,
     "P3.1": _check_p3_1, "P3.2": _check_p3_2, "P3.3": _check_p3_3, "P3.4": _check_p3_4,
     "P3.7": _check_p3_7, "P3.8": _check_p3_8,
+    "P4.1": _check_p4_1, "P4.2": _check_p4_2, "P4.3": _check_p4_3, "P4.5": _check_p4_5,
 }
 
 _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8",
-          "P3.1", "P3.2", "P3.3", "P3.4", "P3.7", "P3.8"]
+          "P3.1", "P3.2", "P3.3", "P3.4", "P3.7", "P3.8",
+          "P4.1", "P4.2", "P4.3", "P4.5"]
 
 
 def run(items: list[str] | None = None, *, write: bool = True) -> dict:

@@ -43,12 +43,41 @@
     document.getElementById('capRun').onclick=async()=>{const button=document.getElementById('capRun');button.disabled=true;try{const params=JSON.parse(document.getElementById('capParams').value),objective=document.getElementById('capObjective').value.trim();if(!objective)throw Error('請填寫工程目標');const report=await api('/execute',{role_id:document.getElementById('capRole').value,skill_id:document.getElementById('capSkill').value,params,objective,source_kind:document.getElementById('capSource').value,risk:'R1'});document.getElementById('capOutput').textContent=JSON.stringify({state:report.state,task:report.task_id,workflow:report.workflow_id,證據:report.evidence_run_id,review:report.review,source:report.source_kind,result:report.numerical_result.values},null,2);await refresh();}catch(e){showError(e);}finally{button.disabled=false;}};
   }
   function showError(e){document.getElementById('capOutput').textContent='未完成：'+e.message;}
-  function renderTaught(fx){
-    const panel=document.getElementById('capTaught');if(!panel)return;
+  function taughtHTML(fx){
     const checks=(fx.checks||[]).map(c=>`<li><code>${escape(c.path)}</code> 應該 ${c.reduction==='length'?'有':'等於'} <b>${escape(c.expected)}</b>${typeof c.expected==='number'?` (±${escape(c.absolute_tolerance)} ${escape(c.unit||'')})`:''}</li>`).join('');
     const negative=fx.negative_patch?`<p><b>刻意輸入錯誤試試看：</b>若把 ${escape(Object.keys(fx.negative_patch).join('、'))} 改成 ${escape(Object.values(fx.negative_patch).join('、'))}，本機分析應該要拒絕並回報：<code>${escape(fx.failure_expectation||'')}</code>，而不是硬算出一個看起來正常的答案。</p>`:'';
-    panel.innerHTML=`<b>這是教學／示範用的合成案例，不是真實工程驗收：</b><p>${escape(text(fx.reason||''))}</p><p><b>預期結果：</b></p><ul style="margin:4px 0 0 18px;padding:0">${checks||'<li>（此案例未定義數值檢查點）</li>'}</ul>${negative}`;
+    return `<b>這是教學／示範用的合成案例，不是真實工程驗收：</b><p>${escape(text(fx.reason||''))}</p><p><b>預期結果：</b></p><ul style="margin:4px 0 0 18px;padding:0">${checks||'<li>（此案例未定義數值檢查點）</li>'}</ul>${negative}`;
+  }
+  function renderTaught(fx){
+    const panel=document.getElementById('capTaught');if(!panel)return;
+    panel.innerHTML=taughtHTML(fx);
     panel.hidden=false;
   }
+
+  if(page==='services'){
+    const rawApi=async path=>{const r=await fetch(path,{cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error||d.detail||r.status);return d};
+    const lib=document.createElement('section');lib.className='section';lib.id='skill-library';
+    lib.innerHTML='<div class="section-title"><div><div class="section-kicker">哈利說的AI軟體必修課</div><h2>技能圖書館</h2></div><span class="pill teal" id="skillLibCount">—</span></div><div class="panel"><input id="skillLibQuery" class="compact" placeholder="搜尋技能，例如 beamforming、laptop" aria-label="搜尋技能" style="margin-bottom:9px;width:100%"><div id="skillLibList" class="list"></div><div id="skillLibTaught" class="callout" hidden style="margin-top:9px"></div></div>';
+    section.parentNode.insertBefore(lib,section.nextSibling);
+    let skills=[];
+    function renderSkillLib(q){
+      const query=(q||'').toLowerCase();
+      const filtered=skills.filter(s=>!query||`${s.skill_id} ${s.acceptance||''}`.toLowerCase().includes(query));
+      document.getElementById('skillLibCount').textContent=`${filtered.length}／${skills.length} 項技能`;
+      document.getElementById('skillLibList').innerHTML=filtered.map(s=>`<div class="row"><div><div class="row-name">${escape(s.skill_id)}</div><div class="row-meta">${escape(s.acceptance||'')}</div></div>${s.role_mappings&&s.role_mappings.length?`<button class="btn" type="button" data-skill-example="${escape(s.skill_id)}" data-skill-role="${escape(s.role_mappings[0])}">查看教學範例</button>`:'<span class="pill">尚無可用範例角色</span>'}</div>`).join('')||'<div class="empty">沒有符合的技能</div>';
+    }
+    document.getElementById('skillLibList').addEventListener('click',async e=>{
+      const btn=e.target.closest('[data-skill-example]');if(!btn)return;
+      const panel=document.getElementById('skillLibTaught');
+      panel.hidden=false;panel.textContent='載入教學範例中…';
+      try{
+        const data=await rawApi(`/api/v1/capabilities/fixture/${btn.dataset.skillRole}?skill=${encodeURIComponent(btn.dataset.skillExample)}`);
+        panel.innerHTML=`<b>${escape(btn.dataset.skillExample)}</b>`+taughtHTML(data.fixture);
+      }catch(err){panel.innerHTML=`<b>${escape(btn.dataset.skillExample)}</b><p>此技能目前沒有可重現的教學範例（${escape(err.message)}），誠實顯示為缺少範例，而非假裝已驗證。</p>`}
+    });
+    document.getElementById('skillLibQuery').addEventListener('input',e=>renderSkillLib(e.target.value));
+    rawApi('/api/v1/skills').then(d=>{skills=d.skills||[];renderSkillLib('')}).catch(e=>{document.getElementById('skillLibList').textContent='技能清單載入失敗：'+e.message});
+  }
+
   refresh();setInterval(refresh,10000);addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 })();
