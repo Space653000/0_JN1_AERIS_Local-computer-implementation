@@ -1,0 +1,7 @@
+{
+  "method_id": "next-experiment-safety-screening-baseline", "version": "1.0.0", "role": "R100", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:next_experiment_safety_model", "applicability": "Supplied proposed point, declared safe region bounds, and the already-computed nearest-previous-point distance",
+  "equations": {"within_safe_region": "safe_region_min <= proposed_point <= safe_region_max", "sufficiently_new": "nearest_previous_point_distance >= min_new_information_distance"},
+  "assumptions": ["Supplied safe region bounds are the actual, current, authoritative safe operating region", "Caller has already computed the true nearest-previous-point distance; this screen does not search point history", "This screen evaluates one proposed step only, not a full experiment sequence"],
+  "excluded": ["Point-history search/deduplication", "risk gate authority beyond this single-step screen", "physical execution and Human authorization"], "golden_tests": "golden/roles/R100/golden.json"
+}

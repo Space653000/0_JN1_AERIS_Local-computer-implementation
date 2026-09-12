@@ -31,12 +31,14 @@
   "required_skills": [
     "experiment-optimization",
     "factorial-doe",
-    "monte-carlo"
+    "monte-carlo",
+    "next-experiment-safety-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/experiment-optimization.json",
     "methods/engineering/factorial-doe.json",
-    "methods/engineering/monte-carlo.json"
+    "methods/engineering/monte-carlo.json",
+    "methods/roles/next-experiment-safety-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/experiment-optimization.json",
@@ -176,12 +178,14 @@
     "required_methods": [
       "methods/engineering/experiment-optimization.json",
       "methods/engineering/factorial-doe.json",
-      "methods/engineering/monte-carlo.json"
+      "methods/engineering/monte-carlo.json",
+      "methods/roles/next-experiment-safety-screening-baseline.json"
     ],
     "required_skills": [
       "experiment-optimization",
       "factorial-doe",
-      "monte-carlo"
+      "monte-carlo",
+      "next-experiment-safety-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -197,7 +201,14 @@
       "neighbor_owns": "Rank FACA hypotheses and choose experiments that distinguish root causes before closure"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "next-experiment-safety-screening-baseline",
+      "method": "methods/roles/next-experiment-safety-screening-baseline.json",
+      "suite": "golden/roles/R100/golden.json",
+      "scope": "Proposed next-experiment point against a declared safe region and a minimum new-information distance from prior coverage, from supplied scalars; no point-history search or physical execution authorization."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Select safe next experiments from informative coverage and observed loss without overriding risk gates",

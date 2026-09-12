@@ -382,6 +382,11 @@ ROLE_DOMAIN_CONTRACTS['R095']=[{
     'method':'methods/roles/incoming-lot-sampling-screening-baseline.json',
     'suite':'golden/roles/R095/golden.json',
     'scope':'Exact one-sided binomial upper bound on lot nonconforming fraction against a declared acceptance threshold, gated on measured (not certificate-only) incoming inspection data; no assembly/test-system variation decomposition.'}]
+ROLE_DOMAIN_CONTRACTS['R100']=[{
+    'skill_id':'next-experiment-safety-screening-baseline',
+    'method':'methods/roles/next-experiment-safety-screening-baseline.json',
+    'suite':'golden/roles/R100/golden.json',
+    'scope':'Proposed next-experiment point against a declared safe region and a minimum new-information distance from prior coverage, from supplied scalars; no point-history search or physical execution authorization.'}]
 
 
 def standards_families(value):
