@@ -28,11 +28,13 @@
   },
   "required_skills": [
     "provenance-research",
-    "evidence-counterreview"
+    "evidence-counterreview",
+    "patent-prior-art-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/provenance-research.json",
-    "methods/engineering/evidence-counterreview.json"
+    "methods/engineering/evidence-counterreview.json",
+    "methods/roles/patent-prior-art-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/provenance-research.json",
@@ -154,11 +156,13 @@
     "question": "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",
     "required_methods": [
       "methods/engineering/provenance-research.json",
-      "methods/engineering/evidence-counterreview.json"
+      "methods/engineering/evidence-counterreview.json",
+      "methods/roles/patent-prior-art-screening-baseline.json"
     ],
     "required_skills": [
       "provenance-research",
-      "evidence-counterreview"
+      "evidence-counterreview",
+      "patent-prior-art-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -174,7 +178,14 @@
       "neighbor_owns": "Determine standards edition, regional applicability and requirement change impact from licensed-access metadata"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "patent-prior-art-screening-baseline",
+      "method": "methods/roles/patent-prior-art-screening-baseline.json",
+      "suite": "golden/roles/R087/golden.json",
+      "scope": "Declared novelty-verdict/claim-element-mapping and date-type-used flags against keyword-similarity-as-novelty and priority/publication-date-confusion antipatterns; no full claim chart or Human legal sign-off."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Map patent claim elements and prior-art dates with jurisdiction/status and citation provenance",

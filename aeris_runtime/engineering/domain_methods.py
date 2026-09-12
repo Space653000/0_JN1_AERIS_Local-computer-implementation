@@ -180,6 +180,7 @@ from .codec_transport_screening import analyze as codec_transport_screening_mode
 from .audio_ml_evaluation_screening import analyze as audio_ml_evaluation_screening_model
 from .acoustic_dataset_screening import analyze as acoustic_dataset_screening_model
 from .benchmark_teardown_screening import analyze as benchmark_teardown_screening_model
+from .patent_prior_art_screening import analyze as patent_prior_art_screening_model
 from .speaker_filter_realization import analyze as speaker_filter_realization_model
 from .microphone_architecture import analyze as microphone_architecture_model
 from .far_field_scenarios import analyze as far_field_scenarios_model
@@ -230,6 +231,7 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'audio-ml-evaluation-screening-baseline':audio_ml_evaluation_screening_model,
           'acoustic-dataset-screening-baseline':acoustic_dataset_screening_model,
           'benchmark-teardown-screening-baseline':benchmark_teardown_screening_model,
+          'patent-prior-art-screening-baseline':patent_prior_art_screening_model,
           'speaker-filter-realization-baseline':speaker_filter_realization_model,
           'microphone-architecture-baseline':microphone_architecture_model,
           'microphone-far-field-scenarios-baseline':far_field_scenarios_model,

@@ -452,6 +452,11 @@ ROLE_DOMAIN_CONTRACTS['R086']=[{
     'method':'methods/roles/benchmark-teardown-screening-baseline.json',
     'suite':'golden/roles/R086/golden.json',
     'scope':'Declared SPL-matched and topology-claim/validation flags against unmatched-benchmark and visual-topology-as-validated antipatterns; no full product test-condition matrix or Human publication sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R087']=[{
+    'skill_id':'patent-prior-art-screening-baseline',
+    'method':'methods/roles/patent-prior-art-screening-baseline.json',
+    'suite':'golden/roles/R087/golden.json',
+    'scope':'Declared novelty-verdict/claim-element-mapping and date-type-used flags against keyword-similarity-as-novelty and priority/publication-date-confusion antipatterns; no full claim chart or Human legal sign-off.'}]
 
 
 def standards_families(value):
