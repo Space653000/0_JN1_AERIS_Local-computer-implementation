@@ -1,5 +1,7 @@
 # CLAUDE.md — AERIS Local Independent Acceptance
 
+> **2026-09-12 人工首席工程師覆寫（Autopilot Mode）：** 使用者已明確、多次、書面授權本 session 的 Claude Code 直接接手施工/實作/自行判斷全權處理（非僅獨立審查），原因是不再信任先前 Codex 施工結論，要求「一次只做一個 Gate：Plan → Implement → Execute → Evidence → Verify → PASS」並持續自動推進，只在花錢／刪重要資料／不可逆操作時才停下來問。這與下文「Role」段落原始設計（Claude = 獨立審查者，不做安裝/施工）**互相矛盾**；本覆寫僅對已明確給出此指示的 session 有效，下一個未收到相同覆寫指示的 Claude Code session，應預設回到下文原始的「獨立審查者」角色，除非使用者再次明確授權 Autopilot Mode。
+>
 > **2026-09-07 審查優先：HOLD_FOR_SOL_RED_TEAM。** 先讀 [Astra → Sol → Astra 閘門](docs/ASTRA_SOL_REVIEW_GATE_V1.md)。下文 Full-Build／兩個 URL／缺口清零／續建命令只適用於閘門解除後的已授權有限批次。本次只修訂與發布文件；第 4 項等待使用者切換 GPT-5.6 Sol High，尚未執行本機總驗收。
 
 Repository: `Space653000/0_JN1_AERIS_Local-computer-implementation`  
