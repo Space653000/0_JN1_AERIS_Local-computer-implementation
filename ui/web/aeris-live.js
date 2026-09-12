@@ -16,7 +16,17 @@
   const api=async(path,options={})=>{const r=await fetch(path,{cache:'no-store',headers:{'Content-Type':'application/json'},...options});const body=await r.json().catch(()=>({}));if(!r.ok)throw new Error(body.detail||body.error||`HTTP ${r.status}`);return body};
   const row=(name,meta,badge='')=>`<div class="row"><div><div class="row-name">${esc(t(name))}</div><div class="row-meta">${esc(t(meta))}</div></div>${badge?`<span class="pill">${esc(t(badge))}</span>`:''}</div>`;
   const stateClass=s=>s==='健康'||s==='PASS'?'green':s==='DEGRADED'||s==='STALE'?'amber':s==='BLOCKED'||s==='FAILED'?'rose':'';
+  const WF_STEPS=[['DRAFT','草稿'],['READY','就緒'],['RUNNING','執行中'],['EXECUTED','已執行'],['EVIDENCED','已具證據'],['VERIFIED','已驗證'],['APPROVED','已核准'],['RELEASED','已釋出']];
+  const gateClass=g=>g==='PASS'?'green':g==='FAIL'||g==='BLOCKED'?'rose':g==='NOT_RUN'?'':'amber';
+  const workflowTimeline=w=>{
+    const idx=WF_STEPS.findIndex(([code])=>code===String(w.state||'').toUpperCase());
+    const steps=WF_STEPS.map(([code,label],i)=>`<div class="step ${i<idx?'done':i===idx?'active':''}"><b>${esc(L(label,code))}</b></div>`).join('');
+    const outcomes=w.verification?.outcomes||{};
+    const gates=Object.entries(outcomes).map(([k,v])=>`<span class="pill ${gateClass(v)}">${esc(k)} ${esc(v)}</span>`).join('');
+    return `<div class="timeline" style="margin-top:8px">${steps}</div><div class="chips" style="margin-top:6px">${gates||`<span class="pill">${esc(L('尚無驗證關卡紀錄','no verification gate records'))}</span>`}</div>`;
+  };
   let assetBaseline=null,refreshing=false,lastPod=null;
+  const expandedWorkflows=new Set();
   const sidebar=document.querySelector('.sidebar');if(sidebar)sidebar.setAttribute('aria-label','AERIS 主要導覽');
   const main=document.querySelector('main.main');if(main)main.id='mainContent';
   const live=$('openingState');if(live){live.setAttribute('role','status');live.setAttribute('aria-live','polite')}
@@ -41,7 +51,9 @@
     $('rulesTelemetry').textContent=byName['Constitution / Rules']?.reason||'UNKNOWN';$('skillsTelemetry').textContent=byName['Skill + Method Registry']?.reason||'UNKNOWN';
     $('knowledgeTelemetry').textContent=byName['Memory + Knowledge']?.reason||'UNKNOWN';$('evidenceTelemetry').textContent=byName['Evidence Store']?.reason||'UNKNOWN';$('toolsTelemetry').textContent=byName['Free Local Acoustic Baseline']?.reason||'UNKNOWN';
     $('workflowCount').textContent=`${workflows.workflows.length} ${L('筆執行紀錄','runs')}`;
-    $('workflowRuns').innerHTML=workflows.workflows.length?workflows.workflows.slice(0,8).map(w=>row(w.workflow_id,`${t(w.state)} · ${L('任務','Task')} ${w.task_id}`,w.execution?.skill_id||L('尚無技能','No skill'))).join(''):`<div class="empty">${L('尚無工作流程執行紀錄','No workflow runs yet')}</div>`;
+    const wfList=workflows.workflows.slice(0,8);
+    $('workflowRuns').innerHTML=wfList.length?wfList.map((w,i)=>`<div class="row wf-row" data-wf-id="${esc(w.workflow_id)}" style="cursor:pointer"><div><div class="row-name">${esc(w.workflow_id)}</div><div class="row-meta">${esc(t(w.state))} · ${esc(L('任務','Task'))} ${esc(w.task_id)}</div></div><span class="pill">${esc(t(w.execution?.skill_id||L('尚無技能','No skill')))}</span></div><div class="wf-detail" id="wfDetail${i}" ${expandedWorkflows.has(w.workflow_id)?'':'hidden'}>${workflowTimeline(w)}</div>`).join(''):`<div class="empty">${L('尚無工作流程執行紀錄','No workflow runs yet')}</div>`;
+    $('workflowRuns').onclick=e=>{const r=e.target.closest('.wf-row');if(!r)return;const i=[...$('workflowRuns').querySelectorAll('.wf-row')].indexOf(r);const detail=$('wfDetail'+i);if(!detail)return;detail.hidden=!detail.hidden;if(detail.hidden)expandedWorkflows.delete(r.dataset.wfId);else expandedWorkflows.add(r.dataset.wfId)};
     $('watchdogState').textContent=byName['Watchdog Recovery']?.state||'UNKNOWN';
     $('operationsList').innerHTML=row('機器／GPU',byName['Machine / GPU Qualification']?.reason,byName['Machine / GPU Qualification']?.state)+row('監看器',byName['Watchdog Recovery']?.reason,byName['Watchdog Recovery']?.state)+row('離線連續性',byName['Offline Continuity']?.reason,byName['Offline Continuity']?.state)+row('預期執行',byName['Expected-run Health']?.reason,byName['Expected-run Health']?.state);
     $('auditState').textContent=byName['Audit Ledger']?.state||'UNKNOWN';
