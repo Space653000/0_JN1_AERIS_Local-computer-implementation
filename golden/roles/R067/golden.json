@@ -1,0 +1,29 @@
+{
+  "suite_id": "R067-CONFERENCE-ARRAY-AEC-SCREEN-V1", "role_id": "R067", "skill_id": "conference-array-aec-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact interval comparison and subtraction against declared scalars; no physical conference room was observed.",
+  "scope": "Supplied off-beam attenuation, AEC tail length, room path length and declared acceptance thresholds only",
+  "base_input": {
+    "model": "SUPPLIED_CONFERENCE_ARRAY_AEC_SCREEN", "off_beam_attenuation_db": 10.0, "max_acceptable_off_beam_attenuation_db": 15.0,
+    "aec_tail_length_ms": 300.0, "room_path_length_ms": 200.0, "min_acceptable_aec_tail_margin_ms": 50.0
+  },
+  "cases": [
+    {"id": "CONF-STEERING-AND-AEC-TAIL-WITHIN-BOUNDS-ACCEPT", "kind": "positive", "question": "Does a modest off-beam attenuation with a healthy AEC-tail margin clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "aec_tail_margin_ms", "expected": 100.0, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "CONF-STEERING-DROPS-INTERRUPTION-AND-AEC-TAIL-SHORT-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are excess off-beam attenuation and an insufficient AEC tail both correctly rejected together, rather than one masking the other?", "input_overrides": {"off_beam_attenuation_db": 20.0, "aec_tail_length_ms": 220.0}, "checks": [
+      {"path": "aec_tail_margin_ms", "expected": 20.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "WIDEN_THE_STEERING_BEAM_OR_ADD_AN_INTERRUPTION_DETECTOR_OR_RELAX_THE_ATTENUATION_BOUND", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "LENGTHEN_THE_AEC_FILTER_TAIL_OR_TREAT_THE_ROOM_TO_SHORTEN_ITS_REVERBERANT_PATH_OR_RELAX_THE_MARGIN_TARGET", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "CONF-EXACT-AEC-TAIL-MARGIN-BOUNDARY", "kind": "boundary", "question": "Does an AEC-tail margin exactly at the declared minimum correctly pass the inclusive bound rather than being rejected?", "input_overrides": {"aec_tail_length_ms": 250.0}, "checks": [
+      {"path": "aec_tail_margin_ms", "expected": 50.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "CONF-NEGATIVE-ATTENUATION-BOUND-REJECTED", "kind": "negative", "question": "Is a negative maximum-attenuation bound rejected rather than silently accepted?", "input_overrides": {"max_acceptable_off_beam_attenuation_db": -1.0}, "expected_error": "ValueError"}
+  ]
+}

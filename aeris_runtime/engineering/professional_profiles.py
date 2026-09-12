@@ -422,6 +422,11 @@ ROLE_DOMAIN_CONTRACTS['R066']=[{
     'method':'methods/roles/humanoid-interaction-screening-baseline.json',
     'suite':'golden/roles/R066/golden.json',
     'scope':'Declared user-interruption-to-residual-echo margin and joint-noise-to-speech margin against declared bounds, from supplied scalars; no full conversational/motion coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R067']=[{
+    'skill_id':'conference-array-aec-screening-baseline',
+    'method':'methods/roles/conference-array-aec-screening-baseline.json',
+    'suite':'golden/roles/R067/golden.json',
+    'scope':'Declared off-beam attenuation and AEC-tail-to-room-path margin against declared bounds, from supplied scalars; no full room/talker coverage matrix or physical instrument measurement.'}]
 
 
 def standards_families(value):

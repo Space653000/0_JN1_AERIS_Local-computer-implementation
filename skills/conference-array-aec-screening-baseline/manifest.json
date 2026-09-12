@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "conference-array-aec-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/conference-array-aec-screening-baseline.json",
+  "input_schema": "skills/conference-array-aec-screening-baseline/input.schema.json", "output_schema": "skills/conference-array-aec-screening-baseline/output.schema.json",
+  "role_mappings": ["R067"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Declared off-beam attenuation and AEC-tail-to-room-path margin against declared bounds, from supplied scalars; no full room/talker coverage matrix or physical instrument measurement"
+}
