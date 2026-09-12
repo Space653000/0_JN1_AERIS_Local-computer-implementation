@@ -1,0 +1,233 @@
+"""P2.1/P2.2 Progress Engine: generate PROGRESS_TRUTH.json Evidence by actually
+running checks, instead of a human hand-typing "result": "PASS".
+
+Every invocation re-checks every item this module knows about against the
+current source tree and the current git HEAD; it never carries a prior PASS
+forward without re-running its check (P2.2). A check that cannot run (e.g. the
+local server is not reachable for an HTTP-backed item) reports UNKNOWN/FAIL,
+never a guessed PASS.
+"""
+from __future__ import annotations
+
+import json
+import subprocess
+import unittest
+import urllib.request
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Callable
+
+from .config import ROOT
+from .progress_truth import CANONICAL_AUTHORITY_SHA
+
+EVIDENCE_DIR = ROOT / ".aeris" / "evidence" / "progress"
+TRUTH_PATH = EVIDENCE_DIR / "PROGRESS_TRUTH.json"
+LOCAL_BASE_URL = "http://127.0.0.1:8765"
+
+
+@dataclass(frozen=True)
+class CheckResult:
+    passed: bool
+    detail: str
+    artifact: str
+
+
+def _head_sha() -> str:
+    return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "HEAD"], text=True, timeout=5).strip()
+
+
+def _current_branch() -> str:
+    return subprocess.check_output(["git", "-C", str(ROOT), "rev-parse", "--abbrev-ref", "HEAD"], text=True, timeout=5).strip()
+
+
+def _run_unittest(*module_names: str) -> tuple[bool, str]:
+    import io
+    loader = unittest.TestLoader()
+    suite = unittest.TestSuite(loader.loadTestsFromName(name) for name in module_names)
+    result = unittest.TextTestRunner(verbosity=0, stream=io.StringIO()).run(suite)
+    ok = result.wasSuccessful()
+    return ok, f"ran={result.testsRun} failures={len(result.failures)} errors={len(result.errors)} modules={','.join(module_names)}"
+
+
+def _grep(path: str, *needles: str) -> tuple[bool, str]:
+    text = (ROOT / path).read_text(encoding="utf-8")
+    missing = [n for n in needles if n not in text]
+    return (not missing), (f"all present in {path}" if not missing else f"missing in {path}: {missing}")
+
+
+def _http_get_json(path: str) -> dict:
+    with urllib.request.urlopen(LOCAL_BASE_URL + path, timeout=5) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def _check_p0_1() -> CheckResult:
+    ok, detail = _run_unittest("tests.test_site_zh_tw", "tests.test_ui_core_ssot", "tests.test_controlplane")
+    return CheckResult(ok, detail, "tests/test_site_zh_tw.py; tests/test_ui_core_ssot.py; tests/test_controlplane.py")
+
+
+def _check_p0_2() -> CheckResult:
+    try:
+        branch = _current_branch()
+        subprocess.run(["git", "-C", str(ROOT), "fetch", "origin", branch], check=True, capture_output=True, timeout=20)
+        behind = subprocess.check_output(["git", "-C", str(ROOT), "rev-list", "--count", f"origin/{branch}..HEAD"], text=True, timeout=5).strip()
+        ok = behind == "0"
+        return CheckResult(ok, f"branch={branch} unpushed_commits={behind}", f"git ref origin/{branch}")
+    except Exception as exc:
+        return CheckResult(False, f"git check failed: {exc}", "git")
+
+
+def _check_p0_3() -> CheckResult:
+    try:
+        from .blueprint_compatibility import validate
+        validate(ROOT)
+        remote = subprocess.check_output(
+            ["git", "ls-remote", "https://github.com/Space653000/0_JN1_AERIS.git", "refs/heads/main"],
+            text=True, timeout=20,
+        ).split()[0]
+        ok = remote == CANONICAL_AUTHORITY_SHA
+        return CheckResult(ok, f"local pointers compatible; canonical Core main={remote}", "aeris_runtime/blueprint_compatibility.py; core.lock.json")
+    except Exception as exc:
+        return CheckResult(False, f"blueprint compatibility check failed: {exc}", "aeris_runtime/blueprint_compatibility.py")
+
+
+def _check_p0_4() -> CheckResult:
+    return _check_p0_1()
+
+
+def _check_p0_5() -> CheckResult:
+    ok1, d1 = _grep(".aeris/core-reference/aeris-theme.js", "localStorage.getItem(THEME_KEY)", "localStorage.setItem(THEME_KEY,next)")
+    ok2, d2 = _grep("ui/web/i18n.js", "localStorage.getItem(LANG_KEY)", "localStorage.setItem(LANG_KEY")
+    return CheckResult(ok1 and ok2, f"{d1}; {d2}", "static code presence check only, not a live click-through")
+
+
+def _check_p0_6() -> CheckResult:
+    ok, detail = _run_unittest("tests.test_progress_truth")
+    return CheckResult(ok, detail, "tests/test_progress_truth.py")
+
+
+def _check_p0_7() -> CheckResult:
+    try:
+        health = _http_get_json("/health")
+        head = _head_sha()
+        aligned = health.get("implementation_sha") == head
+        return CheckResult(aligned, f"live implementation_sha={health.get('implementation_sha')} head={head}", "aeris_runtime/progress.py; ui/web/progress.html")
+    except Exception as exc:
+        return CheckResult(False, f"local server unreachable at {LOCAL_BASE_URL}: {exc}", "aeris_runtime/progress.py")
+
+
+def _check_p1_1() -> CheckResult:
+    ok, detail = _grep(".aeris/core-reference/aeris.css", "--accent:#62c5ba", "--accent:#72d0c5")
+    return CheckResult(ok, detail, ".aeris/core-reference/aeris.css")
+
+
+def _check_p1_2() -> CheckResult:
+    ok, detail = _grep("ui/web/dashboard.html", "summary-card", "feature-card")
+    return CheckResult(ok, detail, "ui/web/dashboard.html")
+
+
+def _check_p1_3() -> CheckResult:
+    try:
+        result = _http_get_json("/api/v1/audit/verify")
+        ok = bool(result.get("valid"))
+        return CheckResult(ok, f"records={result.get('records')} errors={len(result.get('errors', []))}", "aeris_runtime/audit.py; ui/web/activity.html")
+    except Exception as exc:
+        return CheckResult(False, f"local server unreachable at {LOCAL_BASE_URL}: {exc}", "aeris_runtime/audit.py")
+
+
+def _check_p1_4() -> CheckResult:
+    ok, detail = _grep("ui/web/capabilities.js", "cap-graph-group", "lvl-${escape(r.level)}")
+    return CheckResult(ok, detail, "ui/web/capabilities.js; ui/web/capabilities.css")
+
+
+def _check_p1_5() -> CheckResult:
+    ok, detail = _grep("ui/web/aeris-live.js", "stateClass", "gateClass")
+    return CheckResult(ok, detail, "ui/web/aeris-live.js")
+
+
+def _check_p1_6() -> CheckResult:
+    ok, detail = _grep("ui/web/aeris-live.js", "WF_STEPS", "expandedWorkflows")
+    return CheckResult(ok, detail, "ui/web/aeris-live.js")
+
+
+def _check_p1_7() -> CheckResult:
+    ok, detail = _grep("ui/web/capabilities.js", "renderTaught", "negative_patch")
+    return CheckResult(ok, detail, "ui/web/capabilities.js")
+
+
+def _check_p1_8() -> CheckResult:
+    ok, detail = _grep("ui/web/dashboard.html", "G0 契約格式")
+    return CheckResult(ok, detail, "ui/web/dashboard.html; ui/web/workspace.html; ui/web/services.html")
+
+
+CHECKS: dict[str, Callable[[], CheckResult]] = {
+    "P0.1": _check_p0_1, "P0.2": _check_p0_2, "P0.3": _check_p0_3, "P0.4": _check_p0_4,
+    "P0.5": _check_p0_5, "P0.6": _check_p0_6, "P0.7": _check_p0_7,
+    "P1.1": _check_p1_1, "P1.2": _check_p1_2, "P1.3": _check_p1_3, "P1.4": _check_p1_4,
+    "P1.5": _check_p1_5, "P1.6": _check_p1_6, "P1.7": _check_p1_7, "P1.8": _check_p1_8,
+}
+
+_ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
+          "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8"]
+
+
+def run(items: list[str] | None = None, *, write: bool = True) -> dict:
+    """Re-run every requested item's real check and (optionally) write fresh Evidence."""
+    targets = items if items is not None else _ORDER
+    head = _head_sha()
+    now = datetime.now(timezone.utc)
+    stamp = now.strftime("%Y%m%dT%H%M%SZ")
+    truth = json.loads(TRUTH_PATH.read_text(encoding="utf-8")) if TRUTH_PATH.exists() else {"schema_version": 1, "items": {}}
+    report = {}
+    for item_id in targets:
+        check = CHECKS.get(item_id)
+        if check is None:
+            report[item_id] = {"result": "UNKNOWN", "detail": "no automated check registered for this item"}
+            continue
+        outcome = check()
+        result = "PASS" if outcome.passed else "FAIL"
+        report[item_id] = {"result": result, "detail": outcome.detail}
+        if write:
+            evidence = {
+                "schema_version": 1, "item": item_id, "result": result,
+                "captured_at_utc": now.isoformat(),
+                "candidate_sha": head, "runtime_sha": head, "authority_sha": CANONICAL_AUTHORITY_SHA,
+                "acceptance_gate": item_id, "command": f"aeris_runtime.progress_verify:{item_id}",
+                "exit_code": 0 if outcome.passed else 1, "relevant_output": [outcome.detail],
+                "artifact": outcome.artifact, "acceptance_result": result, "blocker": None if outcome.passed else "automated check failed",
+                "next_action": "see PROGRESS_TRUTH.json ordering" if outcome.passed else "fix the regression this check found, then re-run",
+                "truth": "Generated by aeris_runtime.progress_verify, not hand-authored.",
+            }
+            evidence_path = EVIDENCE_DIR / f"{item_id}-{result}-{stamp}.json"
+            EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
+            evidence_path.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            if outcome.passed:
+                truth.setdefault("items", {})[item_id] = {
+                    "authority_sha": CANONICAL_AUTHORITY_SHA, "source_sha": head,
+                    "evidence_type": "local_targeted_acceptance",
+                    "evidence_pointer": f".aeris/evidence/progress/{evidence_path.name}",
+                    "acceptance_gate": item_id, "result": "PASS", "score": 100,
+                    "observed_at": now.isoformat(), "blocker": None,
+                    "next_action": "automated",
+                }
+            else:
+                truth.setdefault("items", {}).pop(item_id, None)
+    if write:
+        truth["updated_at_utc"] = now.isoformat()
+        TRUTH_PATH.write_text(json.dumps(truth, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return report
+
+
+def main() -> int:
+    import argparse
+    parser = argparse.ArgumentParser(description="Re-verify AERIS P0/P1 Progress Truth items with real checks")
+    parser.add_argument("items", nargs="*", help="specific item ids (default: all known items)")
+    parser.add_argument("--dry-run", action="store_true", help="run checks without writing Evidence")
+    args = parser.parse_args()
+    report = run(args.items or None, write=not args.dry_run)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if all(v["result"] == "PASS" for v in report.values()) else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
