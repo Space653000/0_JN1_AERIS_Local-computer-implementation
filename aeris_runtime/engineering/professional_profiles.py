@@ -412,6 +412,11 @@ ROLE_DOMAIN_CONTRACTS['R064']=[{
     'method':'methods/roles/amr-warning-doa-screening-baseline.json',
     'suite':'golden/roles/R064/golden.json',
     'scope':'Declared warning-to-motor-noise margin and DOA-update displacement against declared bounds, from supplied scalars; no full velocity/load coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R065']=[{
+    'skill_id':'quadruped-capture-screening-baseline',
+    'method':'methods/roles/quadruped-capture-screening-baseline.json',
+    'suite':'golden/roles/R065/golden.json',
+    'scope':'Declared footfall headroom margin and body-orientation deviation against declared bounds, from supplied scalars; no full gait/orientation coverage matrix or physical instrument measurement.'}]
 
 
 def standards_families(value):
