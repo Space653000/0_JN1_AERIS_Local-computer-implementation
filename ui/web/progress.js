@@ -93,9 +93,36 @@ async function loadHistory() {
   }
 }
 
-async function load() {
-  const r = await fetch('/api/v1/progress', { cache: 'no-store' });
-  const d = await r.json();
+const LAST_GOOD_KEY = 'aeris_progress_last_good';
+
+function saveLastGood(d) {
+  try {
+    localStorage.setItem(LAST_GOOD_KEY, JSON.stringify({ d, savedAt: Date.now() }));
+  } catch (e) {}
+}
+
+function loadLastGood() {
+  try {
+    const raw = localStorage.getItem(LAST_GOOD_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function renderStaleBanner(savedAt) {
+  const el = document.getElementById('staleBanner');
+  if (!el) return;
+  if (savedAt === null) { el.hidden = true; return; }
+  const locale = L('zh-TW', 'en-US');
+  el.hidden = false;
+  el.textContent = L(
+    `目前正在重新驗證中，下方為上次成功驗證的結果（${new Date(savedAt).toLocaleString(locale)}），數字不會因此消失或歸零。`,
+    `Re-verification in progress -- showing the last successfully verified result (${new Date(savedAt).toLocaleString(locale)}); numbers won't blank out during this window.`
+  );
+}
+
+function renderProgressPayload(d) {
   const locale = L('zh-TW', 'en-US');
   document.getElementById('state').textContent =
     L('已更新 ', 'Updated ') + new Date(d.generated_at_utc).toLocaleString(locale);
@@ -104,12 +131,41 @@ async function load() {
   renderPhaseBars(d.phase_percent);
   document.getElementById('nextAction').textContent = renderNextAction(d.next_action);
   document.getElementById('blockers').textContent = d.blockers.length ? d.blockers.join(L('、', ', ')) : L('無', 'None');
-  const truthEl = document.getElementById('truthState');
-  truthEl.textContent = d.truth_state;
-  truthEl.className = 'pill' + (d.truth_state === 'FAIL_CLOSED' ? ' rose' : d.truth_state === 'VALID' ? ' green' : ' amber');
   document.getElementById('shaLine').textContent = (d.implementation_sha || 'UNKNOWN').slice(0, 12) +
     (d.runtime_candidate_aligned ? L('（與程式碼對齊）', ' (aligned with source)') : L('（與程式碼不一致）', ' (mismatched with source)'));
   renderItems(d.items);
+}
+
+async function load() {
+  const r = await fetch('/api/v1/progress', { cache: 'no-store' });
+  const d = await r.json();
+
+  // The truth-state pill always reflects the REAL current status --
+  // never hidden or faked, per this project's fail-closed-and-honest
+  // design. Only the reference numbers below it fall back to the last
+  // verified snapshot instead of blanking to null/UNKNOWN, so a
+  // transient re-verification window (right after every commit/restart)
+  // doesn't look like the system broke.
+  const truthEl = document.getElementById('truthState');
+  truthEl.textContent = d.truth_state;
+  truthEl.className = 'pill' + (d.truth_state === 'FAIL_CLOSED' ? ' rose' : d.truth_state === 'VALID' ? ' green' : ' amber');
+
+  if (d.overall_percent !== null && d.overall_percent !== undefined) {
+    renderProgressPayload(d);
+    renderStaleBanner(null);
+    saveLastGood(d);
+    return;
+  }
+  const cached = loadLastGood();
+  if (cached) {
+    renderProgressPayload(cached.d);
+    renderStaleBanner(cached.savedAt);
+  } else {
+    // No prior good snapshot exists yet (e.g. first-ever load) -- there
+    // is genuinely nothing honest to show but UNKNOWN.
+    renderProgressPayload(d);
+    renderStaleBanner(null);
+  }
 }
 
 load();
