@@ -307,5 +307,39 @@ class HelmholtzPortResonanceTests(unittest.TestCase):
                 self.assertAlmostEqual(self._hz(area_m2, effective_length_m, volume_m3, sound_speed_m_s), expected, places=6)
 
 
+class ThermalRcResponseTests(unittest.TestCase):
+    """First-order RC thermal circuit, re-derived from the textbook
+    formulas rather than the implementation: steady_temperature_c =
+    ambient + power*resistance (Ohm's-law analog), and
+    temperature_c(t) = ambient + power*resistance*(1 - exp(-t/(R*C)))
+    (the standard RC step response). Checked across 3 different power/
+    resistance/capacity/ambient/time-series combinations, not just the
+    one-time-constant point the shared golden fixture covers."""
+
+    def _values(self, power_w, thermal_resistance_k_w, thermal_capacity_j_k, ambient_c, limit_c, time_s):
+        params = {
+            "power_w": power_w, "thermal_resistance_k_w": thermal_resistance_k_w,
+            "thermal_capacity_j_k": thermal_capacity_j_k, "ambient_c": ambient_c,
+            "limit_c": limit_c, "time_s": time_s,
+        }
+        return catalog.execute("thermal-rc", params)["values"]
+
+    def test_steady_state_and_step_response_hold_across_parameters(self):
+        cases = [
+            (2, 10, 5, 20, 60, [0, 50, 100]),
+            (3, 8, 4, 25, 80, [0, 16, 32, 64]),
+            (1.5, 12, 6, 22, 55, [0, 72, 144]),
+        ]
+        for power_w, resistance, capacity, ambient_c, limit_c, time_s in cases:
+            with self.subTest(power_w=power_w, resistance=resistance, capacity=capacity, ambient_c=ambient_c):
+                values = self._values(power_w, resistance, capacity, ambient_c, limit_c, time_s)
+                expected_steady = ambient_c + power_w * resistance
+                tau = resistance * capacity
+                expected_temps = [ambient_c + power_w * resistance * (1 - math.exp(-t / tau)) for t in time_s]
+                self.assertAlmostEqual(values["steady_temperature_c"], expected_steady, places=8)
+                for actual, expected in zip(values["temperature_c"], expected_temps):
+                    self.assertAlmostEqual(actual, expected, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()

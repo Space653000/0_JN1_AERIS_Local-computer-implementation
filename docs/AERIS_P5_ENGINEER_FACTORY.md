@@ -182,12 +182,19 @@ existing golden fixture never reaches). The helmholtz-port skill
 (Speaker suite, a second skill there) checks the textbook ideal
 Helmholtz resonator formula `f = c/(2*pi) * sqrt(A/(L*V))`, re-derived
 independently and checked across 3 different area/length/volume/
-sound-speed combinations. This adds genuine multi-point regression
-coverage without touching `cases.py`/`catalog.py`'s single-fixture
-contract at all -- it's a wholly separate, additive test file. It now
-spans all 6 suites (DSP x2, Speaker x2, Product x2, Microphone,
-Array x2, Failure) and covers 10 of 42 skills so far;
-**P5.4 is not being marked done by this** -- it is
+sound-speed combinations. The thermal-rc skill (Speaker suite, a third
+skill there) checks the standard first-order RC thermal circuit:
+steady-state temperature = ambient + power*resistance, and the
+exponential step response temperature(t) = ambient +
+power*resistance*(1-exp(-t/(R*C))), both re-derived from the textbook
+formulas and checked across 3 different power/resistance/capacity/
+ambient/time-series combinations spanning the full response curve, not
+just the single one-time-constant point the shared golden fixture
+covers. This adds genuine multi-point regression coverage without
+touching `cases.py`/`catalog.py`'s single-fixture contract at all --
+it's a wholly separate, additive test file. It now spans all 6 suites
+(DSP x2, Speaker x3, Product x2, Microphone, Array x2, Failure) and
+covers 11 of 42 skills so far; **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
 not to overstate a small first step as completion. The intended pattern
