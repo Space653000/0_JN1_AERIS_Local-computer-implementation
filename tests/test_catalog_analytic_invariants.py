@@ -454,5 +454,46 @@ class UncertaintyPropagationGumLawTests(unittest.TestCase):
                 self.assertAlmostEqual(expanded, coverage_factor * expected_combined, places=8)
 
 
+class LevelStatisticsEnergyAverageTests(unittest.TestCase):
+    """Leq is the standard acoustics equivalent-continuous-level formula,
+    10*log10(time-weighted average of 10^(L/10)) -- independently
+    recomputed here directly from that textbook definition (the
+    implementation instead subtracts the maximum level first purely for
+    numerical stability, an equivalent but differently-shaped
+    computation). L10/L50/L90 are checked against the plain definition
+    of a duration-weighted exceedance percentile ("the level exceeded
+    X% of the time"), worked out by hand for stratified duration splits
+    where the answer is unambiguous."""
+
+    def _values(self, levels_db, durations_s):
+        return catalog.execute("level-statistics", {"levels_db": levels_db, "durations_s": durations_s})["values"]
+
+    def test_leq_matches_energy_average_definition_across_distributions(self):
+        cases = [([60, 80], [1, 1]), ([50, 60, 70], [1, 1, 1]), ([40, 90], [9, 1])]
+        for levels_db, durations_s in cases:
+            with self.subTest(levels_db=levels_db, durations_s=durations_s):
+                total = sum(durations_s)
+                expected_leq = 10 * math.log10(
+                    sum(d * 10 ** (l / 10) for l, d in zip(levels_db, durations_s)) / total)
+                values = self._values(levels_db, durations_s)
+                self.assertAlmostEqual(values["leq_db"], expected_leq, places=8)
+                self.assertAlmostEqual(values["duration_s"], total, places=8)
+
+    def test_percentile_exceedance_matches_duration_weighted_definition(self):
+        # Three equal-duration thirds: the quietest third is exceeded 90%
+        # of the time (L90), the middle third 50% of the time (L50), and
+        # only the loudest third is exceeded just 10% of the time (L10).
+        values = self._values([50, 60, 70], [1, 1, 1])
+        self.assertAlmostEqual(values["l10_db"], 70, places=8)
+        self.assertAlmostEqual(values["l50_db"], 60, places=8)
+        self.assertAlmostEqual(values["l90_db"], 50, places=8)
+        # A quiet level dominating 90% of the duration is exceeded at
+        # every one of the standard percentile thresholds (10/50/90 all
+        # fall inside that 90% majority window).
+        dominant = self._values([40, 90], [9, 1])
+        for key in ("l10_db", "l50_db", "l90_db"):
+            self.assertAlmostEqual(dominant[key], 40, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()
