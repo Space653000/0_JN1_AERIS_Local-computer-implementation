@@ -1,0 +1,63 @@
+/* Implementation-owned overrides for the read-only Core stylesheet
+   (.aeris/core-reference/aeris.css) -- never edit that file directly,
+   it is a protected mirror; patch behavior here instead and include
+   this file after aeris.css on every page that has the sidebar.
+
+   Bug fixed here: at the phone/narrow-tablet breakpoint (max-width:720px)
+   the Core CSS sets `.sidebar-utilities{display:none}`, which silently
+   removes the ENTIRE utility bar -- dark/light toggle, language switch
+   (injected by i18n.js), account management and logout (injected by
+   logout-button.js) -- with no other way to reach any of them on a
+   phone. Restored below as a compact, icon-only, right-aligned row
+   matching the same icon-only treatment the Core CSS already uses for
+   the sidebar at the 1080px breakpoint, rather than inventing a new
+   pattern. */
+@media (max-width: 720px) {
+  /* Second, more serious bug found while fixing the first one: the Core
+     CSS's `.nav-group:not(:first-of-type){display:none}` intends to hide
+     only the secondary nav sections (智慧層/信任層), keeping the primary
+     AERIS section (Dashboard/Workspace/Activity/Progress/Roles) visible.
+     But `:first-of-type` matches "first sibling of this tag among ALL
+     sibling elements of the same tag", not "first among elements with
+     this class" -- since `.brand` and `.sidebar-live` are ALSO <div>
+     children before the nav-groups, none of the .nav-group divs is
+     actually :first-of-type, so `:not(:first-of-type)` matches every
+     single one and the ENTIRE navigation menu (not just the secondary
+     sections) disappears on phones. Needs !important: the Core
+     selector's specificity (.class + :pseudo-class) is higher than a
+     plain .nav-group override would otherwise beat via source order
+     alone. */
+  .nav-group {
+    display: block !important;
+  }
+  .sidebar-utilities {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: auto;
+    padding-left: 10px;
+    flex-shrink: 0;
+    /* Pin to the right edge of the horizontally-scrolling nav bar so
+       these controls (theme, language, admin, logout) are always
+       reachable without having to scroll the nav row first -- that
+       was the original complaint: on a phone there was no visible way
+       to reach them at all. */
+    position: sticky;
+    right: 0;
+    background: var(--sidebar);
+    box-shadow: -12px 0 10px -6px var(--sidebar);
+  }
+  .sidebar-utilities [data-sidebar-toggle] {
+    /* "collapse/expand" is a vertical-sidebar concept; the mobile
+       layout is already a horizontal bar, so this control has nothing
+       meaningful to do here. */
+    display: none;
+  }
+  .sidebar-utilities .utility-btn {
+    min-height: 31px;
+    padding: 6px 8px;
+  }
+  .sidebar-utilities .utility-btn span:last-child {
+    display: none;
+  }
+}
