@@ -1242,5 +1242,72 @@ class ProductSystemPlanSkillSetAndGateTests(unittest.TestCase):
         self.assertFalse(gate)
 
 
+class EvidenceCounterreviewFailClosedTests(unittest.TestCase):
+    """This reviewer has no real evidence store to check references
+    against, so its allowed-evidence set is deliberately always empty
+    regardless of caller input -- an EVIDENCE-classified claim must
+    get UNSUPPORTED_EVIDENCE even when it supplies a reference that
+    exactly matches the caller-supplied approved_evidence_refs list,
+    proving that list is genuinely ignored rather than silently
+    trusted (checked here by supplying a matching ref and confirming
+    the finding fires anyway -- independent of the implementation's
+    internal fail-closed set, sourced from the documented security
+    invariant, not the code). Missing uncertainty/counter_hypothesis
+    each produce their own independent finding. An executor cannot
+    review its own run."""
+
+    def test_evidence_claims_always_unsupported_and_self_review_blocked(self):
+        claims = [
+            {"classification": "EVIDENCE", "evidence_refs": ["some-ref"], "uncertainty": "x", "counter_hypothesis": "y"},
+            {"classification": "INFERENCE"},
+        ]
+        params = {"executor_role": "R015", "reviewer_role": "R098",
+                   "approved_evidence_refs": ["some-ref"], "claims": claims}
+        values = catalog.execute("evidence-counterreview", params)["values"]
+        self.assertIn({"claim": 0, "code": "UNSUPPORTED_EVIDENCE"}, values["findings"])
+        self.assertIn({"claim": 1, "code": "MISSING_UNCERTAINTY"}, values["findings"])
+        self.assertIn({"claim": 1, "code": "MISSING_COUNTER_HYPOTHESIS"}, values["findings"])
+        self.assertEqual(values["decision"], "CHANGES_REQUIRED")
+        with self.assertRaises(ValueError):
+            catalog.execute("evidence-counterreview",
+                             {"executor_role": "R015", "reviewer_role": "R015",
+                              "approved_evidence_refs": [], "claims": claims})
+
+
+class LocalAudioRegressionExactLinearFitTests(unittest.TestCase):
+    """When training targets are constructed as an exact linear
+    function of the (implementation-standardized) training features
+    -- y = intercept + slope*z, with z the z-score using the
+    training set's own mean/std, computed here independently, not
+    sourced from the implementation -- a near-zero ridge penalty
+    ridge regression must recover that exact relationship: validation
+    predictions must match intercept + slope*z_val (using the SAME
+    training mean/std applied to validation features) to within
+    negligible ridge-induced bias, and the reported
+    training_only_scaler_mean must equal the training set's own mean."""
+
+    def test_recovers_exact_linear_relationship_via_training_standardization(self):
+        train_features = [[1.0], [2.0], [3.0], [4.0]]
+        x = np.array(train_features)
+        mean, scale = x.mean(axis=0), x.std(axis=0)
+        z_train = (x - mean) / scale
+        intercept, slope = 5.0, 3.0
+        train_targets = (intercept + slope * z_train[:, 0]).tolist()
+
+        validation_features = [[1.5], [3.5]]
+        z_val = (np.array(validation_features) - mean) / scale
+        expected_predictions = intercept + slope * z_val[:, 0]
+
+        params = {"train_features": train_features, "validation_features": validation_features,
+                   "train_targets": train_targets, "validation_targets": expected_predictions.tolist(),
+                   "train_ids": ["a", "b", "c", "d"], "validation_ids": ["e", "f"], "ridge": 1e-9}
+        values = catalog.execute("local-audio-regression", params)["values"]
+        for actual, expected in zip(values["predictions"], expected_predictions):
+            self.assertAlmostEqual(actual, expected, places=5)
+        self.assertLess(values["validation_rmse"], 1e-6)
+        for actual, expected in zip(values["training_only_scaler_mean"], mean.tolist()):
+            self.assertAlmostEqual(actual, expected, places=10)
+
+
 if __name__ == "__main__":
     unittest.main()
