@@ -1093,5 +1093,33 @@ class EnhancementAecMetricsOrthogonalNoiseTests(unittest.TestCase):
         self.assertAlmostEqual(values["erle_db"], expected_erle, places=8)
 
 
+class FailureHypothesesStatusAndDedupTests(unittest.TestCase):
+    """status is CONTESTED iff a hypothesis has any refuting evidence,
+    else TEST_REQUIRED; support_count/refutation_count are the sizes
+    of the *deduplicated* evidence-reference sets (repeated citations
+    of the same evidence must not inflate the count); next_tests
+    lists each hypothesis's discriminating test in the same order --
+    all independently checked here with references constructed to
+    contain exact duplicates, so any implementation that used len() on
+    the raw list instead of a set would be caught."""
+
+    def test_status_counts_and_next_tests(self):
+        rows = [
+            {"id": "H1", "support_refs": ["E1", "E1", "E2"], "refute_refs": [],
+             "alternative_cause": "a", "discriminating_test": "t1"},
+            {"id": "H2", "support_refs": [], "refute_refs": ["E3", "E3"],
+             "alternative_cause": "b", "discriminating_test": "t2"},
+        ]
+        values = catalog.execute("failure-hypotheses", {"hypotheses": rows})["values"]
+        by_id = {h["id"]: h for h in values["hypotheses"]}
+        self.assertEqual(by_id["H1"]["status"], "TEST_REQUIRED")
+        self.assertEqual(by_id["H1"]["support_count"], 2)
+        self.assertEqual(by_id["H1"]["refutation_count"], 0)
+        self.assertEqual(by_id["H2"]["status"], "CONTESTED")
+        self.assertEqual(by_id["H2"]["support_count"], 0)
+        self.assertEqual(by_id["H2"]["refutation_count"], 1)
+        self.assertEqual(values["next_tests"], ["t1", "t2"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -201,8 +201,12 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x7, Speaker x7, Product x4, Microphone x6, Array x3, Failure x7) and
-covers 34 of 42 skills so far (added `enhancement-aec-metrics`: a
+(DSP x7, Speaker x7, Product x4, Microphone x6, Array x3, Failure x8) and
+covers 35 of 42 skills so far (added `failure-hypotheses`: status is
+CONTESTED iff a hypothesis has any refuting evidence,
+support/refutation counts are deduplicated-set sizes (checked with
+constructed exact-duplicate references so a raw-list-length bug would
+be caught), and next_tests preserves order; `enhancement-aec-metrics`: a
 Gram-Schmidt-orthogonal artifact component constructed independently
 via linear algebra makes SI-SDR's projection recover the clean
 reference exactly, so the residual is exactly that (mean-removed)
