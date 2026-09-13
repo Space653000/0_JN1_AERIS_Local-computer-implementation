@@ -201,8 +201,12 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x5, Speaker x4, Product x2, Microphone x3, Array x2, Failure x3) and
-covers 19 of 42 skills so far (added `transfer-coherence`: a noiseless
+(DSP x5, Speaker x4, Product x2, Microphone x4, Array x2, Failure x3) and
+covers 20 of 42 skills so far (added `circuit-noise-budget`: four
+independent textbook formulas -- Johnson-Nyquist thermal noise, ideal
+ADC quantization noise, root-sum-square combination of uncorrelated
+sources, and the jitter-limited SNR ceiling -- each re-derived from
+first principles across 2 circuit configurations; `transfer-coherence`: a noiseless
 constant-gain LTI system (response = gain*reference, no delay or
 noise, constructed here) must yield that exact real gain at every
 valid bin with zero imaginary part and coherence exactly 1, the

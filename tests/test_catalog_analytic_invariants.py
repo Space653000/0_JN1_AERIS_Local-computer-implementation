@@ -610,5 +610,43 @@ class TransferCoherenceNoiselessGainTests(unittest.TestCase):
                     self.assertAlmostEqual(coherence, 1.0, places=6)
 
 
+class CircuitNoiseBudgetStandardFormulaTests(unittest.TestCase):
+    """Four independent, textbook physics/electronics formulas, each
+    re-derived here from first principles rather than copied from the
+    implementation: Johnson-Nyquist thermal noise
+    sqrt(4*k*T*R*bandwidth); ideal ADC quantization noise
+    fullscale/(2^bits*sqrt(12)); root-sum-square combination of
+    uncorrelated noise sources (thermal, amplifier density integrated
+    over bandwidth, quantization); and the jitter-limited SNR ceiling
+    -20*log10(2*pi*f*jitter). Checked across 2 different circuit
+    configurations."""
+
+    def _values(self, resistance_ohm, temperature_k, bandwidth_hz, amplifier_noise_v_per_sqrt_hz,
+                adc_fullscale_v, adc_bits, signal_frequency_hz, jitter_rms_s):
+        params = {"resistance_ohm": resistance_ohm, "temperature_k": temperature_k, "bandwidth_hz": bandwidth_hz,
+                   "amplifier_noise_v_per_sqrt_hz": amplifier_noise_v_per_sqrt_hz, "adc_fullscale_v": adc_fullscale_v,
+                   "adc_bits": adc_bits, "signal_frequency_hz": signal_frequency_hz, "jitter_rms_s": jitter_rms_s}
+        return catalog.execute("circuit-noise-budget", params)["values"]
+
+    def test_noise_formulas_hold_across_circuit_configurations(self):
+        boltzmann = 1.380649e-23
+        cases = [
+            (1000, 300, 20000, 1e-9, 2, 16, 1000, 1e-9),
+            (4700, 290, 8000, 2e-9, 3.3, 12, 5000, 5e-10),
+        ]
+        for resistance_ohm, temperature_k, bandwidth_hz, density, fullscale_v, bits, freq_hz, jitter_s in cases:
+            with self.subTest(resistance_ohm=resistance_ohm, adc_bits=bits):
+                thermal = math.sqrt(4 * boltzmann * temperature_k * resistance_ohm * bandwidth_hz)
+                quantization = fullscale_v / (2 ** bits * math.sqrt(12))
+                rss = math.sqrt(thermal ** 2 + density ** 2 * bandwidth_hz + quantization ** 2)
+                jitter_limit_db = -20 * math.log10(2 * math.pi * freq_hz * jitter_s)
+                values = self._values(resistance_ohm, temperature_k, bandwidth_hz, density, fullscale_v, bits,
+                                       freq_hz, jitter_s)
+                self.assertAlmostEqual(values["johnson_noise_rms_v"], thermal, places=12)
+                self.assertAlmostEqual(values["quantization_rms_v"], quantization, places=12)
+                self.assertAlmostEqual(values["input_noise_rss_v"], rss, places=12)
+                self.assertAlmostEqual(values["jitter_snr_limit_db"], jitter_limit_db, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()
