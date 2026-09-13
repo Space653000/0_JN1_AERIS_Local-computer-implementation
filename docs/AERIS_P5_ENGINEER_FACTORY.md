@@ -201,8 +201,8 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x4, Speaker x3, Product x2, Microphone x3, Array x2, Failure x3) and
-covers 17 of 42 skills so far (added `fractional-octave`: a pure tone
+(DSP x4, Speaker x4, Product x2, Microphone x3, Array x2, Failure x3) and
+covers 18 of 42 skills so far (added `fractional-octave`: a pure tone
 placed on an exact FFT bin must land its entire A^2/2 Parseval energy
 in the single third-octave band whose analytic edges independently
 contain that frequency; `uncertainty-propagation`: GUM's law of
@@ -215,11 +215,14 @@ checked against the plain definition of a duration-weighted exceedance
 percentile for stratified duration splits worked out by hand;
 `leakage-tolerance`: the standard Hagen-Poiseuille laminar pipe flow
 formula and its linearized uncertainty derived independently via the
-power rule, dR/dr = -4R/r; and `correlation-outliers`: data
-constructed to lie exactly on a line must recover that exact
-slope/intercept with |r|=1 and zero standard error -- a mathematical
-fact about ordinary least squares -- plus an unambiguous extreme
-outlier vs. a tight cluster with none); **P5.4 is not being marked done by this** -- it is
+power rule, dR/dr = -4R/r; `correlation-outliers`: data constructed to
+lie exactly on a line must recover that exact slope/intercept with
+|r|=1 and zero standard error -- a mathematical fact about ordinary
+least squares -- plus an unambiguous extreme outlier vs. a tight
+cluster with none; and `resonance-characterization`: half-power
+bandwidth and Q constructed so the -3dB crossings land exactly on grid
+points, making the expected bandwidth/Q known by hand with no
+interpolation ambiguity); **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
 not to overstate a small first step as completion. The intended pattern

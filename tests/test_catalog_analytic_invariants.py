@@ -554,5 +554,32 @@ class CorrelationOutliersPerfectLineTests(unittest.TestCase):
         self.assertEqual(without_outlier["outlier_indices"], [])
 
 
+class ResonanceCharacterizationHalfPowerTests(unittest.TestCase):
+    """Half-power (-3 dB) bandwidth is the frequency span where amplitude
+    falls to peak/sqrt(2) -- constructed here so the crossing amplitude
+    lands exactly on a grid point on each side (no interpolation
+    ambiguity), so the resulting bandwidth and Q = f_peak / bandwidth
+    are known exactly by hand rather than sourced from the
+    implementation. Checked for two different peak positions,
+    bandwidths and amplitude scales."""
+
+    def _values(self, frequency_hz, amplitude):
+        return catalog.execute("resonance-characterization",
+                                {"frequency_hz": frequency_hz, "amplitude": amplitude})["values"]
+
+    def test_half_power_bandwidth_and_q_hold_at_exact_grid_crossings(self):
+        s2 = math.sqrt(2)
+        cases = [
+            ([80, 90, 100, 110, 120], [0.5, s2, 2, s2, 0.5], 100, 20, 5.0),
+            ([10, 20, 30, 40, 50, 60], [0.1, 2 * s2, 4, 2 * s2, 0.1, 0.05], 30, 20, 1.5),
+        ]
+        for frequency_hz, amplitude, expected_peak, expected_bandwidth, expected_q in cases:
+            with self.subTest(frequency_hz=frequency_hz):
+                values = self._values(frequency_hz, amplitude)
+                self.assertAlmostEqual(values["peak_frequency_hz"], expected_peak, places=8)
+                self.assertAlmostEqual(values["half_power_bandwidth_hz"], expected_bandwidth, places=8)
+                self.assertAlmostEqual(values["q_estimate"], expected_q, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()
