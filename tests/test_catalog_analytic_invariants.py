@@ -1158,5 +1158,27 @@ class FactorialDoeMainEffectTests(unittest.TestCase):
         self.assertAlmostEqual(values["main_effects"]["B"], (2 + 4) / 2 - (1 + 3) / 2)
 
 
+class TimeFrequencyAnalysisParsevalTests(unittest.TestCase):
+    """Parseval's theorem again: a pure sinusoid of amplitude A has
+    mean-square power A^2/2, independent of how the implementation's
+    Welch PSD estimate bins that energy across frequency -- so
+    integrated_power (the PSD's own frequency-domain integral) must
+    equal A^2/2 for a tone placed on an exact bin (integer cycles per
+    record, no leakage). Checked across 2 frequencies, sample rates,
+    segment lengths and amplitudes."""
+
+    def _integrated_power(self, frequency_hz, sample_rate_hz, n, segment_samples, amplitude):
+        samples = [amplitude * math.sin(2 * math.pi * frequency_hz * i / sample_rate_hz) for i in range(n)]
+        params = {"samples": samples, "sample_rate_hz": sample_rate_hz, "segment_samples": segment_samples}
+        return catalog.execute("time-frequency-analysis", params)["values"]["integrated_power"]
+
+    def test_integrated_power_matches_parseval_mean_square(self):
+        cases = [(512, 8192, 1024, 256, 1.0), (1000, 16000, 1600, 400, 2.0)]
+        for frequency_hz, sample_rate_hz, n, segment_samples, amplitude in cases:
+            with self.subTest(frequency_hz=frequency_hz, sample_rate_hz=sample_rate_hz):
+                actual = self._integrated_power(frequency_hz, sample_rate_hz, n, segment_samples, amplitude)
+                self.assertAlmostEqual(actual, amplitude ** 2 / 2, places=6)
+
+
 if __name__ == "__main__":
     unittest.main()

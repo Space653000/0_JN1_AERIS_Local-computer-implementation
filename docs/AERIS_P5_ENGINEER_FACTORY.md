@@ -201,8 +201,11 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x7, Speaker x7, Product x6, Microphone x6, Array x3, Failure x8) and
-covers 37 of 42 skills so far (added `factorial-doe`: a full 2^k
+(DSP x8, Speaker x7, Product x6, Microphone x6, Array x3, Failure x8) and
+covers 38 of 42 skills so far (added `time-frequency-analysis`:
+Parseval's theorem again -- a pure tone on an exact FFT bin makes
+integrated_power equal A^2/2, independent of how the Welch PSD
+estimate bins that energy across frequency; `factorial-doe`: a full 2^k
 design's lexicographic run order and each factor's main effect
 (mean response at its high level minus its low level) are textbook
 DOE definitions, hand-computed for a constructed 2-factor design with
