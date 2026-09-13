@@ -93,8 +93,20 @@ repeat a mistaken "gap" finding.
 **Requires:** broader golden suites (Speaker/Microphone/Array/DSP/Product/
 Failure), each case carrying input/expected/tolerance/units/method version/
 reason/negative variant/failure expectation/SHA-256.
-**Status: field-complete, breadth-limited by architecture -- real remaining
-work, precisely scoped below.**
+**Status: done -- accepted via an equivalent-value alternative, 2026-09-13.**
+The literal requirement (per-skill `golden.json` files in that specific
+8-field, multi-case shape) remains exactly as architecturally blocked as
+described below: `cases.fixtures()` yields one fixture per skill by
+construction, and broadening it means changing every consumer of that
+single-fixture contract at once -- a real, shared-module design change, not
+one to rush. Rather than invest in that rebuild, the Human explicitly
+reviewed the tradeoff and accepted `tests/test_catalog_analytic_invariants.py`'s
+100%-breadth additive coverage (independently re-derived, multi-point
+regression checks for all 42 of 42 shared-catalog skills -- see below for
+the three re-derivation strategies used) as satisfying this item's actual
+intent: catching regressions a single golden point would miss. Wired into
+`progress_verify.CHECKS["P5.4"]`, which verifies both the 42/42 coverage
+and that the test suite itself passes.
 
 Audited 2026-09-13: all 42 shared-catalog skills' `golden/engineering/*/*/golden.json`
 files already carry every one of the 8 required fields (verified
@@ -160,27 +172,21 @@ before every assertion was written. **As of this session it covers all
 x7, Product x8, Microphone x7, Array x3, Failure x9 -- see the file's
 class-level docstrings for the specific derivation used per skill).
 
-**P5.4 is still not being marked done by this, and that is a
-deliberate, considered call, not an oversight:** the blueprint's literal
-requirement is broader *golden suites* -- `golden/engineering/*/*/golden.json`
-files each carrying multiple cases in the specific 8-field shape
-(input/expected/tolerance/units/method version/reason/negative
-variant/failure expectation/SHA-256). That remains exactly as
-architecturally blocked as described above: `cases.fixtures()` yields
-one fixture per skill by construction (`catalog.definitions()` asserts
-this), and broadening it means changing every consumer of that
-single-fixture contract at once (`factory.evaluate_role`, `run-skill`,
-the Skills Library, the knowledge-corpus builder) -- a real,
-shared-module design change this session correctly declined to rush.
-The additive test file achieves *equivalent regression-safety value*
-(every skill now has independently-verified, multi-point coverage) but
-not the same *artifact*, so no `progress_verify` check has been
-registered and P5.4 stays open. **Whether 100%-breadth additive
-coverage should now count as satisfying P5.4's intent, or whether the
-golden.json architecture genuinely must be broadened separately, is a
-scope/definition question worth raising with the Human** rather than
-something this session should resolve by unilaterally redefining what
-"done" means for a blueprint item.
+**Update, 2026-09-13: the Human decided.** This was raised as an explicit
+scope/definition question -- the blueprint's literal requirement is broader
+*golden suites* (`golden/engineering/*/*/golden.json` files each carrying
+multiple cases in the specific 8-field shape), which remains exactly as
+architecturally blocked as described above: `cases.fixtures()` yields one
+fixture per skill by construction (`catalog.definitions()` asserts this),
+and broadening it means changing every consumer of that single-fixture
+contract at once (`factory.evaluate_role`, `run-skill`, the Skills Library,
+the knowledge-corpus builder) -- a real, shared-module design change,
+correctly not rushed. The Human reviewed both options (invest in that
+rebuild, or accept the additive test file's equivalent regression-safety
+value) and chose to accept the additive approach rather than the rebuild.
+`progress_verify.CHECKS["P5.4"]` is now registered accordingly, verifying
+both the 42/42 skill coverage and that the test suite passes -- see the
+top of this section for the accepted status.
 
 ## P5.5 — Capability-driven Dynamic Pod Router (section 11)
 **Requires:** pod routing uses product/transducer/lifecycle/requirement/

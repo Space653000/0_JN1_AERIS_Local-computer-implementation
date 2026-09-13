@@ -383,6 +383,36 @@ def _check_p5_3() -> CheckResult:
         return CheckResult(False, f"check failed: {exc}", "config/maturity.json")
 
 
+def _check_p5_4() -> CheckResult:
+    # Accepted 2026-09-13: the blueprint's literal requirement (per-skill
+    # golden.json files in an 8-field, multi-case shape) is architecturally
+    # blocked -- cases.fixtures() yields exactly one fixture per skill by
+    # construction (catalog.definitions() asserts this), and broadening it
+    # means changing every consumer of that single-fixture contract at
+    # once. The Human explicitly accepted the additive-test-file approach
+    # (equivalent regression-safety value, different artifact) as
+    # satisfying this item rather than requiring the architecture rebuild.
+    # See docs/AERIS_P5_ENGINEER_FACTORY.md's P5.4 section for the full
+    # reasoning and the three re-derivation strategies used.
+    try:
+        import re as _re
+        content = (ROOT / "tests/test_catalog_analytic_invariants.py").read_text(encoding="utf-8")
+        covered = set(_re.findall(r'catalog\.execute\("([a-z0-9-]+)"', content))
+        from .engineering.cases import fixtures
+        all_skills = set(f["skill_id"] for f in fixtures())
+        missing = sorted(all_skills - covered)
+        tests_ok, tests_detail = _run_unittest("tests.test_catalog_analytic_invariants")
+        ok = not missing and tests_ok
+        return CheckResult(
+            ok,
+            f"independent multi-point invariant coverage: {len(covered)}/{len(all_skills)} shared-catalog "
+            f"skills (missing={missing}); {tests_detail}",
+            "tests/test_catalog_analytic_invariants.py; docs/AERIS_P5_ENGINEER_FACTORY.md",
+        )
+    except Exception as exc:
+        return CheckResult(False, f"check failed: {exc}", "tests/test_catalog_analytic_invariants.py")
+
+
 def _check_p5_5() -> CheckResult:
     ok, detail = _grep("aeris_runtime/engineering/orchestration.py", "keyword-only routing is not supported", "\"evidence_curator\":curator", "\"reviewer\":reviewer")
     return CheckResult(ok, detail, "aeris_runtime/engineering/orchestration.py")
@@ -517,7 +547,7 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P3.5": _check_p3_5, "P3.6": _check_p3_6, "P3.7": _check_p3_7, "P3.8": _check_p3_8,
     "P4.1": _check_p4_1, "P4.2": _check_p4_2, "P4.3": _check_p4_3, "P4.4": _check_p4_4, "P4.5": _check_p4_5,
     "P4.6": _check_p4_6, "P4.7": _check_p4_7,
-    "P5.1": _check_p5_1, "P5.2": _check_p5_2, "P5.3": _check_p5_3, "P5.5": _check_p5_5,
+    "P5.1": _check_p5_1, "P5.2": _check_p5_2, "P5.3": _check_p5_3, "P5.4": _check_p5_4, "P5.5": _check_p5_5,
     "P5.6": _check_p5_6, "P5.7": _check_p5_7, "P5.8": _check_p5_8, "P5.9": _check_p5_9,
     "P6.1": _check_p6_1, "P6.2": _check_p6_2, "P6.3": _check_p6_3, "P6.4": _check_p6_4, "P6.5": _check_p6_5,
     "P6.6": _check_p6_6, "P6.7": _check_p6_7, "P6.8": _check_p6_8,
@@ -528,7 +558,7 @@ _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P2.1", "P2.2", "P2.3", "P2.4", "P2.5", "P2.6", "P2.7",
           "P3.1", "P3.2", "P3.3", "P3.4", "P3.5", "P3.6", "P3.7", "P3.8",
           "P4.1", "P4.2", "P4.3", "P4.4", "P4.5", "P4.6", "P4.7",
-          "P5.1", "P5.2", "P5.3", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9",
+          "P5.1", "P5.2", "P5.3", "P5.4", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9",
           "P6.1", "P6.2", "P6.3", "P6.4", "P6.5", "P6.6", "P6.7", "P6.8"]
 
 
