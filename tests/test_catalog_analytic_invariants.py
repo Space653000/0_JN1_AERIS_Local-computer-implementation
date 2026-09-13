@@ -341,5 +341,34 @@ class ThermalRcResponseTests(unittest.TestCase):
                     self.assertAlmostEqual(actual, expected, places=8)
 
 
+class ResponsePhaseGroupDelayTests(unittest.TestCase):
+    """Group delay = -d(phase)/d(omega). For a perfectly linear phase
+    response phase(f) = -2*pi*f*delay (constructed here with a known,
+    chosen delay, not sourced from the implementation), the true group
+    delay is that same constant at every frequency point, including the
+    array edges -- a mathematical identity of what "constant group
+    delay" means, independent of how the implementation's numerical
+    derivative (np.gradient) computes it. Checked across 3 different
+    delay values and frequency grids, including one with uneven
+    spacing."""
+
+    def _group_delay(self, frequency_hz, delay_s):
+        phase_rad = [-2 * math.pi * f * delay_s for f in frequency_hz]
+        params = {"frequency_hz": frequency_hz, "magnitude_db": [0] * len(frequency_hz),
+                   "phase_rad": phase_rad, "smoothing_octaves": 0}
+        return catalog.execute("response-phase-delay", params)["values"]["group_delay_s"]
+
+    def test_constant_group_delay_holds_at_every_point(self):
+        cases = [
+            ([100, 200, 300], 0.001),
+            ([50, 150, 250, 350], 0.0005),
+            ([1000, 2000, 3000], 0.0002),
+        ]
+        for frequency_hz, delay_s in cases:
+            with self.subTest(frequency_hz=frequency_hz, delay_s=delay_s):
+                for actual in self._group_delay(frequency_hz, delay_s):
+                    self.assertAlmostEqual(actual, delay_s, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()

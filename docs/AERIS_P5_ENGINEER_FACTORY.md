@@ -190,11 +190,19 @@ power*resistance*(1-exp(-t/(R*C))), both re-derived from the textbook
 formulas and checked across 3 different power/resistance/capacity/
 ambient/time-series combinations spanning the full response curve, not
 just the single one-time-constant point the shared golden fixture
-covers. This adds genuine multi-point regression coverage without
-touching `cases.py`/`catalog.py`'s single-fixture contract at all --
-it's a wholly separate, additive test file. It now spans all 6 suites
-(DSP x2, Speaker x3, Product x2, Microphone, Array x2, Failure) and
-covers 11 of 42 skills so far; **P5.4 is not being marked done by this** -- it is
+covers. The response-phase-delay skill (DSP suite, a third skill there)
+checks group delay = -d(phase)/d(omega): for a perfectly linear phase
+response constructed from a known, chosen delay (not sourced from the
+implementation), the true group delay is that same constant at every
+frequency point including the array edges -- a mathematical identity
+of what "constant group delay" means, independent of how the
+implementation's numerical derivative computes it. Checked across 3
+different delay values and frequency grids, one with uneven spacing.
+This adds genuine multi-point regression coverage without touching
+`cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
+wholly separate, additive test file. It now spans all 6 suites
+(DSP x3, Speaker x3, Product x2, Microphone, Array x2, Failure) and
+covers 12 of 42 skills so far; **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
 not to overstate a small first step as completion. The intended pattern
