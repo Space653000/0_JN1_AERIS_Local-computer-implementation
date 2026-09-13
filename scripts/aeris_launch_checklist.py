@@ -26,11 +26,25 @@ FRONTEND_PAGES = ["/", "/dashboard", "/progress", "/workspace", "/activity", "/s
 ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = ROOT / ".aeris" / "control" / "control.sqlite3"
 AUDIT_LEDGER_PATH = ROOT / ".aeris" / "audit" / "audit.jsonl"
+SUPERVISOR_TOKEN_PATH = ROOT / ".aeris" / "state" / ".supervisor-token"
+
+
+def _auth_headers() -> dict:
+    # Same-machine tooling authenticates via the supervisor token
+    # (operations.py writes it fresh, 0600, at every startup) instead of a
+    # browser session -- see aeris_runtime/auth.py's SUPERVISOR_TOKEN_PATH.
+    if SUPERVISOR_TOKEN_PATH.is_file():
+        try:
+            return {"X-AERIS-Supervisor-Token": SUPERVISOR_TOKEN_PATH.read_text(encoding="utf-8-sig").strip()}
+        except OSError:
+            pass
+    return {}
 
 
 def _get(base: str, path: str) -> tuple[bool, str, int]:
     try:
-        with urllib.request.urlopen(base + path, timeout=TIMEOUT_S) as resp:
+        request = urllib.request.Request(base + path, headers=_auth_headers())
+        with urllib.request.urlopen(request, timeout=TIMEOUT_S) as resp:
             body = resp.read().decode("utf-8", errors="replace")
             return True, body, resp.status
     except urllib.error.HTTPError as exc:

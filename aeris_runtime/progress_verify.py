@@ -61,7 +61,14 @@ def _http_get_json(path: str, timeout: float = 30.0) -> dict:
     # synchronously over all 100 roles' evidence, unlike the cached/async
     # telemetry endpoints; a short timeout here would misreport a slow-but-
     # working server as unreachable.
-    with urllib.request.urlopen(LOCAL_BASE_URL + path, timeout=timeout) as response:
+    from . import auth
+    request = urllib.request.Request(LOCAL_BASE_URL + path)
+    if auth.SUPERVISOR_TOKEN_PATH.is_file():
+        try:
+            request.add_header(auth.SUPERVISOR_TOKEN_HEADER, auth.SUPERVISOR_TOKEN_PATH.read_text(encoding="utf-8-sig").strip())
+        except OSError:
+            pass
+    with urllib.request.urlopen(request, timeout=timeout) as response:
         return json.loads(response.read().decode("utf-8"))
 
 

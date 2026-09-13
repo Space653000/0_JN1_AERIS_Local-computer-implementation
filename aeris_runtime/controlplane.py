@@ -188,6 +188,13 @@ class ControlStore:
 # docs/AERIS_ACCESS_CONTROL.md.
 PUBLIC_GET_PATHS = {"/", "/login", "/favicon.ico", "/api/v1/auth/status"}
 PUBLIC_POST_PATHS = {"/api/v1/auth/login"}
+# Only these UI pages get redirected to /login when signed out. Paths
+# outside this set and outside /api/v1/ (notably /health, /status --
+# handled entirely outside this module, in operations.py's _Handler) must
+# fall through untouched: they are not pages this module serves, and a
+# blanket "redirect anything unrecognized" rule previously broke /health,
+# which the launcher scripts poll to detect the server coming up.
+PROTECTED_UI_PAGES = {"/dashboard", "/workspace", "/services", "/activity", "/progress", "/progress-center"}
 
 
 def _is_public_asset(path: str) -> bool:
@@ -199,6 +206,8 @@ def _session_token(handler: Any) -> str | None:
 
 
 def _is_authenticated(handler: Any) -> bool:
+    if auth.verify_supervisor_token(handler.headers.get(auth.SUPERVISOR_TOKEN_HEADER)):
+        return True
     return auth.verify_session(_session_token(handler))
 
 
@@ -418,9 +427,12 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
     if not authenticated and early_path not in PUBLIC_GET_PATHS and not _is_public_asset(early_path):
         if early_path.startswith("/api/v1/"):
             _write_json(handler, 401, {"error": "unauthorized", "detail": "Sign in at /login."})
-        else:
+            return True
+        if early_path in PROTECTED_UI_PAGES:
             _write_redirect(handler, "/login")
-        return True
+            return True
+        # Not a page this module serves (e.g. /health, /status) -- fall
+        # through untouched rather than redirecting an unrelated route.
     if early_path.startswith("/api/v1/capabilities"):
         if urlsplit("http://"+handler.headers.get("Host","")).hostname not in {"localhost","127.0.0.1","::1"}:
             _write_json(handler,403,{"error":"loopback_host_required"}); return True

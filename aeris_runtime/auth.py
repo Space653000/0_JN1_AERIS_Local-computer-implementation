@@ -36,6 +36,15 @@ from typing import Any
 from .config import ROOT
 
 CREDENTIALS_PATH = ROOT / ".aeris" / "state" / "auth_credentials.json"
+# Same file operations.py writes at supervisor startup (0600, regenerated
+# every run) for the existing /shutdown endpoint. Reused here so local,
+# same-machine tooling (progress_verify.py, the launcher scripts) can call
+# the API without a browser session -- anyone who can read this file
+# already runs as the same local OS user and could reach everything this
+# login system protects some other way, so this isn't a new trust
+# boundary, just formalizing the one operations.py already established.
+SUPERVISOR_TOKEN_PATH = ROOT / ".aeris" / "state" / ".supervisor-token"
+SUPERVISOR_TOKEN_HEADER = "X-AERIS-Supervisor-Token"
 PBKDF2_ITERATIONS = 310_000
 SESSION_COOKIE_NAME = "aeris_session"
 SESSION_TTL_S = 12 * 3600
@@ -142,6 +151,16 @@ def revoke_session(token: str | None) -> None:
         return
     with _lock:
         _sessions.pop(token, None)
+
+
+def verify_supervisor_token(supplied: str | None) -> bool:
+    if not supplied or not SUPERVISOR_TOKEN_PATH.is_file():
+        return False
+    try:
+        expected = SUPERVISOR_TOKEN_PATH.read_text(encoding="utf-8-sig").strip()
+    except OSError:
+        return False
+    return bool(expected) and secrets.compare_digest(expected, supplied)
 
 
 def parse_cookie(cookie_header: str | None, name: str) -> str | None:

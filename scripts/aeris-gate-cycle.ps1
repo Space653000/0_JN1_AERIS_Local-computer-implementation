@@ -32,7 +32,12 @@ $verifyExit = $LASTEXITCODE
 Write-Host '=== Reading /api/v1/progress ===' -ForegroundColor Cyan
 & $Py -c @"
 import urllib.request, json
-d = json.loads(urllib.request.urlopen('http://127.0.0.1:8765/api/v1/progress').read().decode('utf-8'))
+from pathlib import Path
+token_path = Path(r'$Root') / '.aeris' / 'state' / '.supervisor-token'
+headers = {}
+if token_path.is_file():
+    headers['X-AERIS-Supervisor-Token'] = token_path.read_text(encoding='utf-8-sig').strip()
+d = json.loads(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8765/api/v1/progress', headers=headers)).read().decode('utf-8'))
 print('truth_state:', d['truth_state'])
 print('truth_errors:', d['truth_errors'])
 print('overall_percent:', d['overall_percent'])

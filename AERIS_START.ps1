@@ -29,7 +29,17 @@ if (-not $health) {
 }
 
 Write-Host '預熱能力矩陣快取（首次計算約需 1-2 分鐘，屬正常現象）/ Warming up the capability matrix cache (first computation legitimately takes ~1-2 min)...' -ForegroundColor Cyan
-try { & $Python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:$Port/api/v1/capabilities',timeout=240).read()" 2>$null } catch {}
+try {
+  & $Python -c @"
+import urllib.request
+from pathlib import Path
+token_path = Path(r'$Root') / '.aeris' / 'state' / '.supervisor-token'
+headers = {}
+if token_path.is_file():
+    headers['X-AERIS-Supervisor-Token'] = token_path.read_text(encoding='utf-8-sig').strip()
+urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:$Port/api/v1/capabilities', headers=headers), timeout=240).read()
+"@ 2>$null
+} catch {}
 
 Write-Host '重新驗證全公司工程進度（確保點檢表反映真實狀態）/ Refreshing full company progress Evidence...' -ForegroundColor Cyan
 & $Python -m aeris_runtime.progress_verify
