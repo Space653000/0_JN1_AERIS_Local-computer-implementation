@@ -8,6 +8,7 @@ these tests independently re-derive the same physical formula and check
 it holds at several other points, catching a regression that a single
 fixed point could miss (e.g. a sign error that only shows up off a
 convenient round number)."""
+import cmath
 import math
 import random
 import unittest
@@ -879,6 +880,40 @@ class NvhIntegrationSinusoidTests(unittest.TestCase):
                 self.assertAlmostEqual(values["acceleration_rms_m_s2"], expected_a_rms, places=8)
                 self.assertAlmostEqual(values["velocity_rms_m_s"], expected_v_rms, places=8)
                 self.assertAlmostEqual(values["displacement_rms_m"], expected_d_rms, places=8)
+
+
+class PorousAbsorptionDelanyBazleyTests(unittest.TestCase):
+    """The Delany-Bazley empirical model for a homogeneous fibrous
+    absorber over a rigid backing is a published acoustics formula,
+    independently re-typed here from the standard reference (complex
+    characteristic impedance and wavenumber as power-law functions of
+    the dimensionless flow-resistivity ratio, then the normal-incidence
+    reflection/absorption from the resulting rigid-backed input
+    impedance) rather than copied from the implementation's source.
+    Also checks the physical bound that absorption must lie in [0,1].
+    Checked across 2 different flow resistivities and thicknesses."""
+
+    def _delany_bazley_absorption(self, frequency_hz, flow_resistivity, thickness_m):
+        rho0, c0 = 1.204, 343
+        x = rho0 * frequency_hz / flow_resistivity
+        zc = rho0 * c0 * (1 + 0.0571 * x ** -0.754 - 1j * 0.087 * x ** -0.732)
+        kc = 2 * math.pi * frequency_hz / c0 * (1 + 0.0978 * x ** -0.700 - 1j * 0.189 * x ** -0.595)
+        zin = -1j * zc / cmath.tan(kc * thickness_m)
+        reflection = (zin - rho0 * c0) / (zin + rho0 * c0)
+        return 1 - abs(reflection) ** 2
+
+    def test_absorption_matches_independent_delany_bazley_and_stays_bounded(self):
+        cases = [([200, 500, 1000, 2000], 10000, 0.02), ([300, 800, 1500], 20000, 0.05)]
+        for frequency_hz, flow_resistivity, thickness_m in cases:
+            with self.subTest(flow_resistivity=flow_resistivity, thickness_m=thickness_m):
+                params = {"frequency_hz": frequency_hz, "flow_resistivity_pa_s_m2": flow_resistivity,
+                           "thickness_m": thickness_m}
+                values = catalog.execute("porous-absorption", params)["values"]
+                for f, actual in zip(frequency_hz, values["absorption_normal_incidence"]):
+                    expected = self._delany_bazley_absorption(f, flow_resistivity, thickness_m)
+                    self.assertAlmostEqual(actual, expected, places=10)
+                    self.assertGreaterEqual(actual, 0.0)
+                    self.assertLessEqual(actual, 1.0)
 
 
 if __name__ == "__main__":

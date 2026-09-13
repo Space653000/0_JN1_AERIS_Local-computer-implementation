@@ -201,8 +201,12 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x7, Speaker x6, Product x2, Microphone x5, Array x3, Failure x4) and
-covers 27 of 42 skills so far (added `nvh-integration`: for a pure
+(DSP x7, Speaker x7, Product x2, Microphone x5, Array x3, Failure x4) and
+covers 28 of 42 skills so far (added `porous-absorption`: the
+Delany-Bazley empirical model for a rigid-backed fibrous absorber,
+independently re-typed here from the standard published reference
+rather than copied from the implementation's source, plus the
+physical bound that absorption must lie in [0,1]; `nvh-integration`: for a pure
 sinusoidal acceleration with an exact integer number of cycles in the
 record, first-year calculus gives velocity_rms =
 acceleration_rms/omega and displacement_rms =
