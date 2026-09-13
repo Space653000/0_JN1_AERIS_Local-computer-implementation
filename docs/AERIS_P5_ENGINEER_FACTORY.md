@@ -201,8 +201,12 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x4, Speaker x4, Product x2, Microphone x3, Array x2, Failure x3) and
-covers 18 of 42 skills so far (added `fractional-octave`: a pure tone
+(DSP x5, Speaker x4, Product x2, Microphone x3, Array x2, Failure x3) and
+covers 19 of 42 skills so far (added `transfer-coherence`: a noiseless
+constant-gain LTI system (response = gain*reference, no delay or
+noise, constructed here) must yield that exact real gain at every
+valid bin with zero imaginary part and coherence exactly 1, the
+textbook definition of perfect predictability; `fractional-octave`: a pure tone
 placed on an exact FFT bin must land its entire A^2/2 Parseval energy
 in the single third-octave band whose analytic edges independently
 contain that frequency; `uncertainty-propagation`: GUM's law of

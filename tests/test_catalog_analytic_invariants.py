@@ -581,5 +581,34 @@ class ResonanceCharacterizationHalfPowerTests(unittest.TestCase):
                 self.assertAlmostEqual(values["q_estimate"], expected_q, places=8)
 
 
+class TransferCoherenceNoiselessGainTests(unittest.TestCase):
+    """For a noiseless LTI system where the response is exactly a
+    constant real gain applied to the reference (response = gain *
+    reference, no delay, no added noise) -- a case constructed here,
+    not sourced from the implementation -- the transfer function must
+    equal that same real gain at every valid frequency bin (zero
+    imaginary part), and coherence must be exactly 1 everywhere: the
+    response is perfectly predictable from the reference, which is the
+    textbook definition of unit coherence. Checked for a positive and a
+    negative gain."""
+
+    def _values(self, gain, fs=8192, n=1024):
+        reference = [math.sin(2 * math.pi * 200 * i / fs) + 0.5 * math.sin(2 * math.pi * 500 * i / fs) +
+                     0.3 * math.sin(2 * math.pi * 1000 * i / fs) for i in range(n)]
+        response = [gain * v for v in reference]
+        return catalog.execute("transfer-coherence",
+                                {"reference": reference, "response": response, "sample_rate_hz": fs})["values"]
+
+    def test_constant_gain_and_unit_coherence_hold_at_every_bin(self):
+        for gain in (3.0, -2.0):
+            with self.subTest(gain=gain):
+                values = self._values(gain)
+                self.assertGreater(len(values["coherence"]), 0)
+                for real, imag, coherence in zip(values["transfer_real"], values["transfer_imag"], values["coherence"]):
+                    self.assertAlmostEqual(real, gain, places=6)
+                    self.assertAlmostEqual(imag, 0.0, places=6)
+                    self.assertAlmostEqual(coherence, 1.0, places=6)
+
+
 if __name__ == "__main__":
     unittest.main()
