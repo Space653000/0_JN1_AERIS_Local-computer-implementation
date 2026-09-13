@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import json
 import subprocess
+import threading
+import time as _time
 import unittest
 import urllib.request
 from dataclasses import dataclass
@@ -333,6 +335,19 @@ def _check_p2_3() -> CheckResult:
     )
 
 
+def _check_p2_4() -> CheckResult:
+    state_ok, _ = _grep("aeris_runtime/progress_verify.py", "_WEB_TRIGGER_LOCK", "def web_trigger_status", "def start_web_triggered_run")
+    api_ok, _ = _grep("aeris_runtime/controlplane.py", '"/api/v1/progress/reverify"', "start_web_triggered_run")
+    admin_gated, _ = _grep("aeris_runtime/controlplane.py", '_has_permission(handler, "admin")')
+    ui_ok, _ = _grep("ui/web/progress.js", "initReverifyButton", "pollReverifyStatus", "/api/v1/progress/reverify")
+    ok = state_ok and api_ok and admin_gated and ui_ok
+    return CheckResult(
+        ok,
+        f"background single-flight state machine wired={state_ok}; endpoints wired={api_ok}; gated to admin only={admin_gated}; Progress Center button wired={ui_ok}",
+        "aeris_runtime/progress_verify.py; aeris_runtime/controlplane.py; ui/web/progress.js",
+    )
+
+
 def _check_p2_5() -> CheckResult:
     ps1_ok, _ = _grep("scripts/local-acceptance.ps1", "aeris_runtime.progress_verify")
     sh_ok, _ = _grep("scripts/local-acceptance.sh", "aeris_runtime.progress_verify")
@@ -480,7 +495,7 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P0.5": _check_p0_5, "P0.6": _check_p0_6, "P0.7": _check_p0_7,
     "P1.1": _check_p1_1, "P1.2": _check_p1_2, "P1.3": _check_p1_3, "P1.4": _check_p1_4,
     "P1.5": _check_p1_5, "P1.6": _check_p1_6, "P1.7": _check_p1_7, "P1.8": _check_p1_8,
-    "P2.1": _check_p2_1, "P2.2": _check_p2_2, "P2.3": _check_p2_3, "P2.5": _check_p2_5, "P2.6": _check_p2_6, "P2.7": _check_p2_7,
+    "P2.1": _check_p2_1, "P2.2": _check_p2_2, "P2.3": _check_p2_3, "P2.4": _check_p2_4, "P2.5": _check_p2_5, "P2.6": _check_p2_6, "P2.7": _check_p2_7,
     "P3.1": _check_p3_1, "P3.2": _check_p3_2, "P3.3": _check_p3_3, "P3.4": _check_p3_4,
     "P3.5": _check_p3_5, "P3.6": _check_p3_6, "P3.7": _check_p3_7, "P3.8": _check_p3_8,
     "P4.1": _check_p4_1, "P4.2": _check_p4_2, "P4.3": _check_p4_3, "P4.4": _check_p4_4, "P4.5": _check_p4_5,
@@ -493,11 +508,61 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
 
 _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P1.1", "P1.2", "P1.3", "P1.4", "P1.5", "P1.6", "P1.7", "P1.8",
-          "P2.1", "P2.2", "P2.3", "P2.5", "P2.6", "P2.7",
+          "P2.1", "P2.2", "P2.3", "P2.4", "P2.5", "P2.6", "P2.7",
           "P3.1", "P3.2", "P3.3", "P3.4", "P3.5", "P3.6", "P3.7", "P3.8",
           "P4.1", "P4.2", "P4.3", "P4.4", "P4.5", "P4.6", "P4.7",
           "P5.1", "P5.2", "P5.3", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9",
           "P6.1", "P6.2", "P6.3", "P6.4", "P6.6", "P6.7", "P6.8"]
+
+
+# P2.4: let the (now authenticated, admin-only) Progress Center UI trigger
+# a re-verification instead of requiring a terminal. This state machine is
+# what makes that safe to expose over HTTP: at most one run() at a time
+# (a full run can legitimately take minutes -- see
+# .claude/skills/aeris-gate/SKILL.md's cold-start measurement -- so a
+# second overlapping trigger must not start a second run() racing the
+# first one's Evidence writes), plus a cooldown after each run so a
+# compromised/careless owner session can't hammer this into a denial-of-
+# service against the local machine's own CPU.
+_WEB_TRIGGER_LOCK = threading.Lock()
+_WEB_TRIGGER_STATE = {"running": False, "last_started_at": None, "last_finished_at": None, "last_result": None}
+WEB_TRIGGER_COOLDOWN_S = 30.0
+
+
+def web_trigger_status() -> dict:
+    with _WEB_TRIGGER_LOCK:
+        return dict(_WEB_TRIGGER_STATE)
+
+
+def start_web_triggered_run() -> tuple[bool, str]:
+    """Returns (started, reason). Never blocks the caller -- the actual
+    run() happens on a daemon thread; the HTTP handler just reports
+    whether a new run was accepted."""
+    with _WEB_TRIGGER_LOCK:
+        if _WEB_TRIGGER_STATE["running"]:
+            return False, "a re-verification is already running"
+        last_finished = _WEB_TRIGGER_STATE["last_finished_at"]
+        if last_finished is not None and (_time.monotonic() - last_finished) < WEB_TRIGGER_COOLDOWN_S:
+            remaining = WEB_TRIGGER_COOLDOWN_S - (_time.monotonic() - last_finished)
+            return False, f"cooldown active, try again in {remaining:.0f}s"
+        _WEB_TRIGGER_STATE["running"] = True
+        _WEB_TRIGGER_STATE["last_started_at"] = _time.monotonic()
+
+    def _worker():
+        try:
+            result = run()
+            outcome = "OK"
+        except Exception as exc:  # noqa: BLE001 -- must never leave "running" stuck True
+            result = {"error": type(exc).__name__, "detail": str(exc)}
+            outcome = "ERROR"
+        with _WEB_TRIGGER_LOCK:
+            _WEB_TRIGGER_STATE["running"] = False
+            _WEB_TRIGGER_STATE["last_finished_at"] = _time.monotonic()
+            _WEB_TRIGGER_STATE["last_result"] = outcome
+        del result  # already persisted to Evidence/PROGRESS_TRUTH.json by run() itself
+
+    threading.Thread(target=_worker, daemon=True, name="aeris-web-triggered-progress-verify").start()
+    return True, "started"
 
 
 def run(items: list[str] | None = None, *, write: bool = True) -> dict:

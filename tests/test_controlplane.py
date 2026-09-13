@@ -2,6 +2,7 @@ import json
 import re
 import tempfile
 import threading
+import time
 import unittest
 import urllib.error
 import urllib.request
@@ -178,6 +179,46 @@ class ControlPlaneTests(unittest.TestCase):
         with self.assertRaises(urllib.error.HTTPError) as ctx:
             urllib.request.urlopen(request, timeout=3)
         self.assertEqual(ctx.exception.code, 403)
+
+    def test_reverify_trigger_requires_admin_permission(self):
+        server = self._server()
+        auth.grant_user("viewer", "viewer-password-1", ["progress"])
+        token = auth.create_session("viewer")
+        self.addCleanup(auth.revoke_session, token)
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/progress/reverify",
+            data=b"{}", headers={"Cookie": f"{auth.SESSION_COOKIE_NAME}={token}"}, method="POST",
+        )
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(request, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
+
+    def test_owner_can_trigger_reverify_and_poll_status(self):
+        from unittest.mock import patch
+        from aeris_runtime import progress_verify
+        server = self._server()
+        with patch.object(progress_verify, "run", return_value={}):
+            request = urllib.request.Request(
+                f"http://127.0.0.1:{server.server_port}/api/v1/progress/reverify",
+                data=b"{}", headers={"Cookie": self._session_cookie()}, method="POST",
+            )
+            with urllib.request.urlopen(request, timeout=3) as response:
+                self.assertEqual(response.status, 202)
+                body = json.loads(response.read().decode("utf-8"))
+                self.assertTrue(body["started"])
+            for _ in range(50):
+                status_request = urllib.request.Request(
+                    f"http://127.0.0.1:{server.server_port}/api/v1/progress/reverify",
+                    headers={"Cookie": self._session_cookie()},
+                )
+                with urllib.request.urlopen(status_request, timeout=3) as response:
+                    status = json.loads(response.read().decode("utf-8"))
+                if not status["running"]:
+                    break
+                time.sleep(0.05)
+            self.assertFalse(status["running"])
+        progress_verify._WEB_TRIGGER_STATE.update(
+            {"running": False, "last_started_at": None, "last_finished_at": None, "last_result": None})
 
     def test_roles_api_returns_100(self):
         server = self._server()

@@ -50,11 +50,32 @@ contract). Wired into `progress_verify.CHECKS["P2.3"]`.
 ## P2.4 — Progress Center UI can trigger re-verification
 **Requires:** `/progress` lets a human re-run the checks from the browser
 instead of needing a terminal.
-**Status: gap, deliberately deferred.** Running arbitrary local checks from an
-HTTP handler is a real attack-surface/safety question (an unauthenticated
-loopback endpoint that executes test suites and writes files) that deserves
-its own careful design, not a rushed add-on. Left for explicit Human
-prioritization rather than done quickly and unsafely.
+**Status: done.** Originally deferred because an unauthenticated loopback
+endpoint that executes local checks and writes Evidence files was a genuine
+attack-surface question. That objection is now resolved by the multi-user
+auth system (see `docs/AERIS_ACCESS_CONTROL.md`): the trigger endpoint is
+gated to the `"admin"` permission specifically, which only the single owner
+account ever carries — no granted account, however broadly scoped, can
+reach it.
+
+Implementation: `aeris_runtime/progress_verify.py` holds a single-flight,
+cooldown-protected background-thread state machine (`_WEB_TRIGGER_LOCK`,
+`_WEB_TRIGGER_STATE`, `WEB_TRIGGER_COOLDOWN_S = 30.0`,
+`web_trigger_status()`, `start_web_triggered_run()`) so at most one
+verification run is ever in flight and a burst of clicks can't pile up
+concurrent `run()` calls. `aeris_runtime/controlplane.py` exposes
+`GET /api/v1/progress/reverify` (current status, any authenticated caller)
+and `POST /api/v1/progress/reverify` (admin-only trigger, 202 on start or
+409 if already running/in cooldown). `ui/web/progress.html`/`progress.js`
+add a "重新驗證全部項目" button that only renders for the owner (checked via
+`/api/v1/auth/status`'s `role` field, defense-in-depth alongside the
+server-side gate) and polls the status endpoint every 3s while a run is
+active, then reloads the page's data on completion. Tested at the module
+level in `tests/test_progress_verify.py::WebTriggeredRunTests` (idle status,
+background execution/completion, second-trigger rejection, cooldown, and
+exception safety) and at the HTTP layer in `tests/test_controlplane.py`
+(non-admin gets 403; owner gets 202 and can poll status to completion).
+Wired into `progress_verify.CHECKS["P2.4"]`.
 
 ## P2.5 — Wired into the acceptance script
 **Requires:** `scripts/local-acceptance.ps1`/`.sh` calls the generator so a
@@ -79,7 +100,7 @@ failing check correctly demotes an item to UNKNOWN/FAIL, not silently PASS).
 P2.1 + P2.2 + P2.5 + P2.6 (the generator itself, re-check-everything
 behavior, acceptance-script wiring, and its own tests) are done. P2.3
 (history) was completed once the generator had produced enough Evidence to
-make history reconstruction meaningful. Only P2.4 remains open: it opens a
-genuine HTTP attack-surface design question (an unauthenticated loopback
-endpoint executing local checks and writing files) and is deliberately left
-for explicit Human prioritization rather than rushed.
+make history reconstruction meaningful. P2.4 (UI-triggered re-verification)
+was completed once the multi-user auth system made an admin-only gate
+possible, resolving the original attack-surface objection. All of P2.1–P2.7
+are now done.

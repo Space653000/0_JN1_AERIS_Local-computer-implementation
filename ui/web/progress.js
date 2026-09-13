@@ -168,8 +168,67 @@ async function load() {
   }
 }
 
+// P2.4: the button only appears for the owner (checked server-side too --
+// this is just so a granted account never sees a control it would get a
+// 403 from). Polls /api/v1/progress/reverify's GET status while a run is
+// in flight so the button honestly reflects "still running" rather than
+// looking clickable again immediately.
+let reverifyPolling = null;
+
+async function initReverifyButton() {
+  const btn = document.getElementById('reverifyBtn');
+  if (!btn) return;
+  try {
+    const r = await fetch('/api/v1/auth/status', { cache: 'no-store' });
+    const status = await r.json();
+    if (status.role !== 'owner') return;
+  } catch (e) {
+    return;
+  }
+  btn.hidden = false;
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.textContent = L('觸發中…', 'Starting…');
+    try {
+      const r = await fetch('/api/v1/progress/reverify', { method: 'POST' });
+      const d = await r.json();
+      if (!r.ok || !d.started) {
+        btn.textContent = L('重新驗證全部項目', 'Re-verify all items');
+        btn.disabled = false;
+        alert(d.detail || L('無法啟動重新驗證', 'Could not start re-verification'));
+        return;
+      }
+      pollReverifyStatus(btn);
+    } catch (e) {
+      btn.textContent = L('重新驗證全部項目', 'Re-verify all items');
+      btn.disabled = false;
+    }
+  });
+}
+
+function pollReverifyStatus(btn) {
+  if (reverifyPolling) clearInterval(reverifyPolling);
+  reverifyPolling = setInterval(async () => {
+    try {
+      const r = await fetch('/api/v1/progress/reverify', { cache: 'no-store' });
+      const status = await r.json();
+      if (status.running) {
+        btn.textContent = L('驗證中…（可能需要數分鐘）', 'Verifying… (can take a few minutes)');
+        return;
+      }
+      clearInterval(reverifyPolling);
+      reverifyPolling = null;
+      btn.textContent = L('重新驗證全部項目', 'Re-verify all items');
+      btn.disabled = false;
+      load();
+      loadHistory();
+    } catch (e) {}
+  }, 3000);
+}
+
 load();
 loadHistory();
+initReverifyButton();
 setInterval(load, 10000);
 setInterval(loadHistory, 60000);
 window.addEventListener('focus', load);

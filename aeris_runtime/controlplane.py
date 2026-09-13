@@ -573,6 +573,9 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
         elif path == "/api/v1/progress/history":
             from .progress_history import compute_history
             _write_json(handler, 200, {"points": compute_history()})
+        elif path == "/api/v1/progress/reverify":
+            from . import progress_verify
+            _write_json(handler, 200, progress_verify.web_trigger_status())
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True
@@ -704,6 +707,17 @@ def handle_post(handler: Any) -> bool:
             _write_json(handler, 200, execute_workflow(path.split("/")[-2], str(payload.get("actor", "Local UI"))))
         elif path.startswith("/api/v1/reproduction/"):
             _write_json(handler, 200, reproduce_run(path.rsplit("/", 1)[-1]))
+        elif path == "/api/v1/progress/reverify":
+            # P2.4: deliberately gated to "admin" specifically, not just
+            # "logged in" or capabilities_execute -- this runs local
+            # checks and writes Evidence files, so only the owner (never
+            # a granted account, however broadly scoped) may trigger it.
+            if not _has_permission(handler, "admin"):
+                _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can trigger re-verification."})
+                return True
+            from . import progress_verify
+            started, reason = progress_verify.start_web_triggered_run()
+            _write_json(handler, 202 if started else 409, {"started": started, "detail": reason})
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True
