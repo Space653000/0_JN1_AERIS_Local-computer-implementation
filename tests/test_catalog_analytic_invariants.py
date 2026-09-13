@@ -9,6 +9,7 @@ it holds at several other points, catching a regression that a single
 fixed point could miss (e.g. a sign error that only shows up off a
 convenient round number)."""
 import cmath
+import hashlib
 import math
 import random
 import statistics
@@ -1178,6 +1179,32 @@ class TimeFrequencyAnalysisParsevalTests(unittest.TestCase):
             with self.subTest(frequency_hz=frequency_hz, sample_rate_hz=sample_rate_hz):
                 actual = self._integrated_power(frequency_hz, sample_rate_hz, n, segment_samples, amplitude)
                 self.assertAlmostEqual(actual, amplitude ** 2 / 2, places=6)
+
+
+class ProvenanceResearchScoringTests(unittest.TestCase):
+    """A document's match score is simply |title+content tokens
+    intersected with query tokens| / |query tokens| -- a plain
+    set-overlap ratio, independently computed here -- and a zero-score
+    document must be excluded entirely from matches. Ties are broken
+    by id ascending. Constructed with two documents that score
+    identically (2/3, via different token overlaps) and one that
+    shares no tokens with the query at all."""
+
+    def test_score_formula_and_zero_score_exclusion(self):
+        def make_doc(doc_id, title, content):
+            return {"id": doc_id, "title": title, "text": content,
+                     "sha256": hashlib.sha256(content.encode()).hexdigest(),
+                     "rights": "PUBLIC_METADATA", "source": "unit-test"}
+
+        documents = [
+            make_doc("D2", "Random Notes", "test acoustic test again"),
+            make_doc("D1", "Acoustic Resonance Study", "details about resonance profile"),
+            make_doc("D3", "Unrelated", "nothing matches"),
+        ]
+        values = catalog.execute("provenance-research", {"query": "acoustic resonance test", "documents": documents})["values"]
+        self.assertEqual([m["id"] for m in values["matches"]], ["D1", "D2"])
+        for match in values["matches"]:
+            self.assertAlmostEqual(match["score"], 2 / 3, places=10)
 
 
 if __name__ == "__main__":
