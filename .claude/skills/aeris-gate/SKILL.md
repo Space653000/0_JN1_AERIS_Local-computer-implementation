@@ -62,8 +62,30 @@ real investigation of the codebase — not invented from the phase label alone.
 
 `aeris_runtime.engineering.api.live_matrix()` and
 `aeris_runtime.telemetry.TelemetryProjection` both cache expensive
-recomputation (evidence-store validation scales with how many sealed
-`RUN-*` bundles exist, which only grows). If either becomes slow again as
-the evidence store keeps growing, the fix is tuning `_MATRIX_REFRESH_AFTER_S`
-/ `TelemetryProjection.refresh_after_s`/`max_age_s`, not reverting to
-synchronous recomputation.
+recomputation, and both are slow on a cold cache. If either becomes slow
+again, the fix is tuning `_MATRIX_REFRESH_AFTER_S` /
+`TelemetryProjection.refresh_after_s`/`max_age_s` for the warm path, and
+a warm-up call (see below) for the cold path -- not reverting to
+synchronous recomputation on every request.
+
+**Measured 2026-09-13** (`scripts/profile_matrix.py`, a throwaway
+diagnostic kept for future re-profiling): a cold `/api/v1/capabilities`
+call takes ~70s across 100 roles, roughly 0.5-2s per role fairly
+uniformly -- **not** concentrated in roles with more historical Evidence,
+so this is fixed per-role I/O overhead (several small JSON reads +
+SHA-256 bundle hashing + a per-role SQLite connection open in
+`role_acceptance.py`'s `status()`/`status_for_skill()`/`_observe_composition()`),
+not an unbounded scaling-with-total-evidence-store-size bug -- reassuring
+for the "must run forever" requirement, since each role's own check stays
+bounded regardless of how much history accumulates elsewhere. Still slow
+enough that a naive short timeout right after a fresh restart will flake
+(this bit `AERIS_START.ps1`'s post-restart `progress_verify` pass, whose
+P3.2/P3.3/P5.1/P5.2 checks all hit this same cold endpoint). Fixed by
+adding an explicit warm-up `GET /api/v1/capabilities` (240s client
+timeout, comfortable margin above the measured ~70s) immediately after
+the health check and before running `progress_verify`, so the cache is
+already populated before anything else queries it. If this measurement
+changes materially in a future session (e.g. after real parallelization
+of the per-role loop, or if it start scaling upward with time), re-run
+`scripts/profile_matrix.py` and update this note rather than trusting a
+stale number.
