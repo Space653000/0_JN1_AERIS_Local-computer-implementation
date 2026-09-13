@@ -23,7 +23,7 @@
       if(!q)return true;
       return `${r.event_type||''} ${r.actor||''}`.toLowerCase().includes(q);
     });
-    $('auditRows').innerHTML=filtered.length?filtered.map(r=>`<tr><td>${esc(r.timestamp_utc||'')}</td><td><b>${esc(r.event_type||'EVENT')}</b></td><td>${esc(r.actor||'')}</td><td>${isVerifiedRecord(r)?'<span class="pill green">有判定</span>':'<span class="pill">資訊</span>'}</td><td class="row-meta">${esc(summarize(r.payload))}</td></tr>`).join(''):'<tr><td colspan="5">尚無符合篩選的事件</td></tr>';
+    $('auditRows').innerHTML=filtered.length?filtered.map(r=>`<tr><td>${esc(r.timestamp_utc||'')}</td><td><b>${esc(t(r.event_type||'EVENT'))}</b><div class="row-meta">${esc(r.event_type||'')}</div></td><td>${esc(r.actor||'')}</td><td>${isVerifiedRecord(r)?'<span class="pill green">有判定</span>':'<span class="pill">資訊</span>'}</td><td class="row-meta">${esc(summarize(r.payload))}</td></tr>`).join(''):'<tr><td colspan="5">尚無符合篩選的事件</td></tr>';
     $('totalCount').textContent=`${total} 筆帳本紀錄 · 已載入 ${rows.length} 筆`;
     $('pageMeta').textContent=rows.length>=total?'已載入全部':`已載入 ${rows.length}／${total}`;
     $('loadMoreBtn').disabled=rows.length>=total;
