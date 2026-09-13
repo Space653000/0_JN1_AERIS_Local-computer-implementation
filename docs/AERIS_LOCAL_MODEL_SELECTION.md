@@ -58,6 +58,35 @@ needed. The smaller models were not re-tested with step-by-step
 prompting; the point already established (sub-10B models fail this
 regardless of vendor) was sufficient.
 
+## What was deliberately left unchanged, and why
+
+The zero-cost installer/bootstrap scripts (`scripts/one-click-install.*`,
+`INSTALL_AERIS_LOCAL.ps1`, `scripts/autopilot.*`, and the machine-profile
+configs under `config/machine_profiles/`) still default to
+`qwen3:4b-instruct`, and were deliberately **not** changed to
+gemma2:27b or to a non-Chinese-origin small model:
+
+- gemma2:27b is a 15.6GB download and needs real GPU headroom. The
+  installer targets a much wider range of machines, including
+  CPU-only and Jetson profiles (see `config/machine_profiles/`) where a
+  27B model is not a reasonable default -- this decision was scoped to
+  *this* machine's already-provisioned, already-tested model, not to
+  every possible target hardware profile.
+- Before assuming a same-size non-Chinese-origin swap would satisfy the
+  "prefer non-Chinese-origin" instruction at the small-model tier too,
+  `llama3.2:3b` (Meta, smaller than qwen3:4b-instruct at 2.0GB vs
+  2.5GB) was tested on the same domain-framing question from Test 1.
+  It also defaulted to generic ML-model-evaluation language ("model's
+  expected behavior", "inference pipeline", "generalizes... across its
+  intended domain") and produced a confused, ungrounded example (an
+  "out-of-range" numeric input like -10, not this codebase's actual
+  negative-case convention of rejecting malformed parameters with
+  ValueError) -- the same category of miss llama3.1:8b and gemma2:9b
+  made in Test 1. qwen3:4b-instruct remains the better in-domain choice
+  at the small-model tier, so per the explicit "unless the Chinese-origin
+  model is demonstrably stronger" clause, it correctly stays the
+  installer's bootstrap default.
+
 ## Conclusion
 
 Model **size/capacity**, not vendor, was the actual variable that
