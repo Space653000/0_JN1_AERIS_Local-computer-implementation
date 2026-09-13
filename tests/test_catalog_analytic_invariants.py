@@ -411,5 +411,48 @@ class FractionalOctaveParsevalTests(unittest.TestCase):
                 self.assertAlmostEqual(sum(powers.values()), expected_power, places=8)
 
 
+class UncertaintyPropagationGumLawTests(unittest.TestCase):
+    """GUM's law of propagation of uncertainty is a bilinear form,
+    combined = sqrt((s*u) @ correlation @ (s*u)), independently
+    re-derived here at its two textbook extremes rather than copied from
+    the implementation: with the default identity correlation (no
+    covariance term is supplied), it collapses to plain root-sum-square
+    of the individual contributions s_i*u_i; with every pair fully
+    correlated (correlation matrix of all ones), it collapses to the
+    absolute value of their plain sum, since sqrt((sum x)^2) = |sum x|.
+    Checked across single- and multi-contributor cases, including a
+    negative sensitivity coefficient."""
+
+    def _combined(self, sensitivities, uncertainties, correlation_matrix, coverage_factor):
+        params = {"sensitivity_coefficients": sensitivities, "standard_uncertainties": uncertainties,
+                   "coverage_factor": coverage_factor}
+        if correlation_matrix is not None:
+            params["correlation_matrix"] = correlation_matrix
+        values = catalog.execute("uncertainty-propagation", params)["values"]
+        return values["combined_standard_uncertainty"], values["expanded_uncertainty"]
+
+    def test_independent_contributors_combine_as_root_sum_square(self):
+        cases = [([1.0, 2.0, 0.5], [0.1, 0.05, 0.2], 2.0), ([3.0], [0.02], 1.0)]
+        for sensitivities, uncertainties, coverage_factor in cases:
+            with self.subTest(sensitivities=sensitivities):
+                contributions = [s * u for s, u in zip(sensitivities, uncertainties)]
+                expected_combined = math.sqrt(sum(c * c for c in contributions))
+                combined, expanded = self._combined(sensitivities, uncertainties, None, coverage_factor)
+                self.assertAlmostEqual(combined, expected_combined, places=8)
+                self.assertAlmostEqual(expanded, coverage_factor * expected_combined, places=8)
+
+    def test_fully_correlated_contributors_combine_as_plain_sum(self):
+        cases = [([1.0, 2.0, 0.5], [0.1, 0.05, 0.2], 2.0), ([1.5, -2.0], [0.3, 0.1], 3.0)]
+        for sensitivities, uncertainties, coverage_factor in cases:
+            with self.subTest(sensitivities=sensitivities):
+                n = len(sensitivities)
+                all_ones = [[1.0] * n for _ in range(n)]
+                contributions = [s * u for s, u in zip(sensitivities, uncertainties)]
+                expected_combined = abs(sum(contributions))
+                combined, expanded = self._combined(sensitivities, uncertainties, all_ones, coverage_factor)
+                self.assertAlmostEqual(combined, expected_combined, places=8)
+                self.assertAlmostEqual(expanded, coverage_factor * expected_combined, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()
