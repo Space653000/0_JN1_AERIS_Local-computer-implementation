@@ -132,14 +132,18 @@ formula `fs = 1/(2*pi*sqrt(Mms*Cms))` holds across 3 different
 mass/compliance pairs, and the latency-budget skill's
 `serial_latency_ms = sum(buffers)/fs*1000 + sum(stages)` and
 `uncompensated_drift_ms_per_hour = ppm*3.6` hold across 3 different
-buffer/stage/ppm combinations -- all hand-verified by direct execution
-before being written as assertions (negative `clock_difference_ppm` was
-found to be outside the method's declared applicability and rejected by
-the implementation, so only non-negative ppm is exercised). This adds
-genuine multi-point regression coverage without touching
-`cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
-wholly separate, additive test file. It covers 3 of 42 skills so far;
-**P5.4 is not being marked done by this** -- it is
+buffer/stage/ppm combinations, and the microphone-sensitivity skill's
+four dB/dBV conversions (`sensitivity_dbv_per_pa`, `signal_spl_db`,
+`equivalent_noise_spl_db`, `snr_db`, all plain `20*log10(ratio)` forms)
+hold across 3 different sensitivity/noise/signal combinations -- all
+hand-verified by direct execution before being written as assertions
+(negative `clock_difference_ppm` was found to be outside the method's
+declared applicability and rejected by the implementation, so only
+non-negative ppm is exercised). This adds genuine multi-point regression
+coverage without touching `cases.py`/`catalog.py`'s single-fixture
+contract at all -- it's a wholly separate, additive test file. It now
+spans 4 of the 6 suites (DSP, Speaker, Product, Microphone) and covers
+4 of 42 skills so far; **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
 not to overstate a small first step as completion. The intended pattern

@@ -88,5 +88,34 @@ class LatencyBudgetSerialSumTests(unittest.TestCase):
                 self.assertAlmostEqual(values["uncompensated_drift_ms_per_hour"], expected_drift, places=6)
 
 
+class MicrophoneSensitivityDbConversionTests(unittest.TestCase):
+    """All four outputs are plain dB/dBV conversions, re-derived here from
+    first principles (20*log10 of a ratio), not sourced from the
+    implementation: sensitivity_dbv_per_pa = 20*log10(Vpa), signal/noise
+    SPL = 20*log10(level / Vpa / 20uPa reference), and
+    snr_db = 20*log10(signal/noise). Checked across 3 different
+    sensitivity/noise/signal combinations spanning the Microphone suite
+    (the shared golden fixture only covers one point)."""
+
+    def _values(self, sensitivity_mv_per_pa, noise_rms_v, signal_rms_v):
+        params = {
+            "sensitivity_mv_per_pa": sensitivity_mv_per_pa,
+            "noise_rms_v": noise_rms_v, "signal_rms_v": signal_rms_v,
+        }
+        return catalog.execute("microphone-sensitivity", params)["values"]
+
+    def test_db_conversions_hold_across_sensitivity_and_levels(self):
+        cases = [(10, 1e-5, 0.01), (20, 5e-6, 0.02), (5, 2e-5, 0.005)]
+        for sensitivity_mv_per_pa, noise_rms_v, signal_rms_v in cases:
+            with self.subTest(sensitivity_mv_per_pa=sensitivity_mv_per_pa,
+                               noise_rms_v=noise_rms_v, signal_rms_v=signal_rms_v):
+                values = self._values(sensitivity_mv_per_pa, noise_rms_v, signal_rms_v)
+                vpa = sensitivity_mv_per_pa / 1000
+                self.assertAlmostEqual(values["sensitivity_dbv_per_pa"], 20 * math.log10(vpa), places=6)
+                self.assertAlmostEqual(values["signal_spl_db"], 20 * math.log10(signal_rms_v / vpa / 20e-6), places=6)
+                self.assertAlmostEqual(values["equivalent_noise_spl_db"], 20 * math.log10(noise_rms_v / vpa / 20e-6), places=6)
+                self.assertAlmostEqual(values["snr_db"], 20 * math.log10(signal_rms_v / noise_rms_v), places=6)
+
+
 if __name__ == "__main__":
     unittest.main()
