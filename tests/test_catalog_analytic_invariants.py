@@ -1140,5 +1140,23 @@ class ExperimentOptimizationMaximinTests(unittest.TestCase):
         self.assertEqual(values["unexplored_count"], 9)
 
 
+class FactorialDoeMainEffectTests(unittest.TestCase):
+    """A full 2^k factorial design's run order is the lexicographic
+    product of {low, high} per factor, and each factor's main effect
+    is simply mean(response at that factor's high level) - mean
+    (response at its low level) -- a textbook DOE definition,
+    independently hand-computed here for a constructed 2-factor,
+    4-run design where each run's response is chosen so the two main
+    effects are distinct, unambiguous numbers."""
+
+    def test_run_order_and_main_effects(self):
+        factors = {"A": [0, 10], "B": [0, 100]}
+        responses = [1, 2, 3, 4]
+        values = catalog.execute("factorial-doe", {"factors": factors, "responses": responses})["values"]
+        self.assertEqual(values["runs"], [{"A": 0, "B": 0}, {"A": 0, "B": 100}, {"A": 10, "B": 0}, {"A": 10, "B": 100}])
+        self.assertAlmostEqual(values["main_effects"]["A"], (3 + 4) / 2 - (1 + 2) / 2)
+        self.assertAlmostEqual(values["main_effects"]["B"], (2 + 4) / 2 - (1 + 3) / 2)
+
+
 if __name__ == "__main__":
     unittest.main()
