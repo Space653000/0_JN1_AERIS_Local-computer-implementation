@@ -1036,5 +1036,23 @@ class EngineeringRequirementsPassFailCoverageTests(unittest.TestCase):
         self.assertEqual(values["engineering_outcome"], "INCOMPLETE_OR_FAIL")
 
 
+class InstrumentSequenceArithmeticTests(unittest.TestCase):
+    """sample_count is simply round(sample_rate_hz*duration_s) and
+    voltage_margin_v is simply safe_rms_limit_v-requested_rms_v --
+    both independently computed here from the constructed inputs,
+    including a case where the requested voltage exactly equals the
+    safety limit (zero margin, still a valid dry-run request)."""
+
+    def test_sample_count_and_voltage_margin_arithmetic(self):
+        cases = [(48000, 2.5, 1.0, 3.0), (16000, 0.333, 0.5, 0.5)]
+        for fs, duration_s, requested_v, limit_v in cases:
+            with self.subTest(fs=fs, duration_s=duration_s):
+                params = {"sample_rate_hz": fs, "duration_s": duration_s, "requested_rms_v": requested_v,
+                           "safe_rms_limit_v": limit_v, "mode": "SYNTHETIC_DRY_RUN"}
+                values = catalog.execute("instrument-sequence", params)["values"]
+                self.assertEqual(values["sample_count"], round(fs * duration_s))
+                self.assertAlmostEqual(values["voltage_margin_v"], limit_v - requested_v, places=10)
+
+
 if __name__ == "__main__":
     unittest.main()
