@@ -284,5 +284,28 @@ class RequirementTraceabilityCoverageRatioTests(unittest.TestCase):
                 self.assertAlmostEqual(self._coverage(requirement_ids, test_ids, links), expected_coverage, places=10)
 
 
+class HelmholtzPortResonanceTests(unittest.TestCase):
+    """Ideal Helmholtz resonator frequency, re-derived from the textbook
+    formula f = c/(2*pi) * sqrt(A/(L*V)) rather than the implementation.
+    Checked across 3 different area/length/volume/sound-speed
+    combinations, not just the one point the shared golden fixture
+    already covers."""
+
+    def _hz(self, area_m2, effective_length_m, volume_m3, sound_speed_m_s):
+        params = {
+            "area_m2": area_m2, "effective_length_m": effective_length_m,
+            "volume_m3": volume_m3, "sound_speed_m_s": sound_speed_m_s,
+        }
+        return catalog.execute("helmholtz-port", params)["values"]["helmholtz_hz"]
+
+    def test_resonance_formula_holds_across_geometry_and_sound_speed(self):
+        cases = [(0.001, 0.1, 0.01, 343), (0.0005, 0.05, 0.002, 343), (0.002, 0.15, 0.03, 340)]
+        for area_m2, effective_length_m, volume_m3, sound_speed_m_s in cases:
+            with self.subTest(area_m2=area_m2, effective_length_m=effective_length_m,
+                               volume_m3=volume_m3, sound_speed_m_s=sound_speed_m_s):
+                expected = sound_speed_m_s / (2 * math.pi) * math.sqrt(area_m2 / (effective_length_m * volume_m3))
+                self.assertAlmostEqual(self._hz(area_m2, effective_length_m, volume_m3, sound_speed_m_s), expected, places=6)
+
+
 if __name__ == "__main__":
     unittest.main()

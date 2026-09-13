@@ -178,11 +178,15 @@ requirement-traceability skill (Product suite, a second skill there)
 checks a plain ratio -- `coverage = (requirements with >=1 link) /
 (total requirements)` -- across partial, full, and zero coverage
 (the zero case, an empty links list, is a genuine edge case the single
-existing golden fixture never reaches). This adds genuine multi-point
-regression coverage without touching `cases.py`/`catalog.py`'s
-single-fixture contract at all -- it's a wholly separate, additive test
-file. It now spans all 6 suites (DSP x2, Speaker, Product x2,
-Microphone, Array x2, Failure) and covers 9 of 42 skills so far;
+existing golden fixture never reaches). The helmholtz-port skill
+(Speaker suite, a second skill there) checks the textbook ideal
+Helmholtz resonator formula `f = c/(2*pi) * sqrt(A/(L*V))`, re-derived
+independently and checked across 3 different area/length/volume/
+sound-speed combinations. This adds genuine multi-point regression
+coverage without touching `cases.py`/`catalog.py`'s single-fixture
+contract at all -- it's a wholly separate, additive test file. It now
+spans all 6 suites (DSP x2, Speaker x2, Product x2, Microphone,
+Array x2, Failure) and covers 10 of 42 skills so far;
 **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
