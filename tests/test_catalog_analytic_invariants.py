@@ -188,5 +188,46 @@ class ReliabilityBinomialZeroFailuresTests(unittest.TestCase):
                 self.assertAlmostEqual(self._upper(trials, 0, confidence), expected, places=10)
 
 
+class LinearArrayPatternSteeringPeakTests(unittest.TestCase):
+    """Two independent invariants, re-derived from the array-pattern
+    definition itself rather than the implementation: (1) at the exact
+    steering angle, every element's phase term is identically zero by
+    definition (direction == steering direction), so the coherently
+    summed normalized power there must equal exactly 1 regardless of
+    array geometry, frequency, or steering angle -- this isn't a
+    property the implementation computes so much as a mathematical
+    identity of what "steering" means. (2) alias_free_spacing is the
+    textbook spatial-Nyquist grating-lobe criterion, max element
+    spacing <= half a wavelength (c/(2*freq)), re-derived here and
+    checked against both a compliant and a non-compliant geometry.
+    Checked across 5 different array/frequency/steering combinations."""
+
+    def _values(self, positions_m, frequency_hz, sound_speed_m_s, steering_deg):
+        params = {
+            "positions_m": positions_m, "frequency_hz": frequency_hz,
+            "sound_speed_m_s": sound_speed_m_s, "steering_deg": steering_deg,
+        }
+        return catalog.execute("linear-array-pattern", params)["values"]
+
+    def test_peak_at_steering_angle_and_alias_free_criterion(self):
+        cases = [
+            ([0, 0.02, 0.04, 0.06], 1000, 343, 0),
+            ([0, 0.05, 0.10], 2000, 343, 0),
+            ([0, 0.03, 0.09, 0.15], 1500, 340, 30),
+            ([0, 0.1], 500, 343, -15),
+            ([0, 0.2, 0.4], 3000, 343, 0),
+        ]
+        for positions_m, frequency_hz, sound_speed_m_s, steering_deg in cases:
+            with self.subTest(positions_m=positions_m, frequency_hz=frequency_hz,
+                               sound_speed_m_s=sound_speed_m_s, steering_deg=steering_deg):
+                values = self._values(positions_m, frequency_hz, sound_speed_m_s, steering_deg)
+                angles = values["angles_deg"]
+                closest_index = min(range(len(angles)), key=lambda i: abs(angles[i] - steering_deg))
+                self.assertAlmostEqual(values["normalized_power"][closest_index], 1.0, places=8)
+                max_spacing = max(b - a for a, b in zip(positions_m, positions_m[1:]))
+                expected_alias_free = max_spacing <= sound_speed_m_s / (2 * frequency_hz)
+                self.assertEqual(values["alias_free_spacing"], expected_alias_free)
+
+
 if __name__ == "__main__":
     unittest.main()

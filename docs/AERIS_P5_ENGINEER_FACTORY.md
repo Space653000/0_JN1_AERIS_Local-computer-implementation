@@ -156,11 +156,21 @@ retyped correctly, not that the statistics are right), the zero-failures
 case has a genuinely independent closed form derived from first
 principles -- observing zero failures in n trials, the one-sided upper
 bound p solves `(1-p)^n = alpha`, so `p = 1 - alpha**(1/n)` -- checked
-across 3 different trial-count/confidence combinations. This adds
-genuine multi-point regression coverage without touching `cases.py`/
+across 3 different trial-count/confidence combinations. The
+linear-array-pattern skill (Array suite, a second skill in this suite)
+has two independent invariants: at the exact steering angle every
+element's phase term is zero by definition, so the coherently summed
+normalized power there must equal exactly 1 regardless of geometry,
+frequency, or steering angle (a mathematical identity of what
+"steering" means, not a computed property) -- and `alias_free_spacing`
+is the textbook spatial-Nyquist grating-lobe criterion (max element
+spacing <= half a wavelength), re-derived independently and checked
+against both a compliant and a non-compliant geometry. Checked across
+5 different array/frequency/steering combinations. This adds genuine
+multi-point regression coverage without touching `cases.py`/
 `catalog.py`'s single-fixture contract at all -- it's a wholly separate,
-additive test file. It now spans **all 6 suites** (DSP, Speaker,
-Product, Microphone, Array, Failure) and covers 6 of 42 skills so far;
+additive test file. It now spans all 6 suites (DSP, Speaker, Product,
+Microphone, Array x2, Failure) and covers 7 of 42 skills so far;
 **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
