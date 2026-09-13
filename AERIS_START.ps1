@@ -58,4 +58,42 @@ if ($checklistExit -eq 0) {
   Write-Warning '有項目未通過點檢，請檢查上方訊息再開啟瀏覽器 / Some checks failed -- review the output above before relying on the UI.'
 }
 
+# Best-effort: keep the Cloudflare Quick Tunnel (remote/phone access) alive
+# across restarts. Entirely optional and non-fatal -- if cloudflared was
+# never installed, or the tunnel fails to (re)start, this must never fail
+# the overall startup script. The tunnel's public URL rotates every time
+# cloudflared restarts, so it is printed here rather than assumed stable;
+# see scripts/aeris_tunnel_status.ps1 to re-check it later without
+# restarting anything.
+try {
+  $cloudflared = Join-Path $Root '.aeris\bin\cloudflared.exe'
+  if (Test-Path $cloudflared) {
+    $running = Get-Process cloudflared -ErrorAction SilentlyContinue
+    if (-not $running) {
+      Write-Host ''
+      Write-Host '啟動 Cloudflare Tunnel（遠端/手機連線用，非必要功能）/ Starting Cloudflare Tunnel (optional, for remote/phone access)...' -ForegroundColor Cyan
+      $tunnelLog = Join-Path $Root '.aeris\bin\tunnel-err.log'
+      Start-Process -FilePath $cloudflared -ArgumentList 'tunnel','--url',"http://127.0.0.1:$Port" `
+        -RedirectStandardOutput (Join-Path $Root '.aeris\bin\tunnel-out.log') `
+        -RedirectStandardError $tunnelLog -WindowStyle Hidden | Out-Null
+      $tunnelUrl = $null
+      for ($i = 0; $i -lt 15 -and -not $tunnelUrl; $i++) {
+        Start-Sleep -Seconds 1
+        if (Test-Path $tunnelLog) {
+          $match = Select-String -Path $tunnelLog -Pattern 'https://\S+\.trycloudflare\.com' -ErrorAction SilentlyContinue | Select-Object -Last 1
+          if ($match) { $tunnelUrl = ([regex]::Match($match.Line, 'https://\S+\.trycloudflare\.com')).Value }
+        }
+      }
+      if ($tunnelUrl) {
+        Write-Host "目前隧道網址（每次重啟會改變）/ Current tunnel URL (rotates on every restart): $tunnelUrl" -ForegroundColor Yellow
+        Write-Host '若此網址與 outputs/aeris-public-site/index.html 的登入連結不同，記得重新部署 / If this differs from the deployed public page, redeploy it.' -ForegroundColor Yellow
+      } else {
+        Write-Warning 'Cloudflare Tunnel 已啟動但尚未取得網址，請稍後執行 scripts\aeris_tunnel_status.ps1 查看 / Tunnel started but URL not yet available -- check scripts\aeris_tunnel_status.ps1 shortly.'
+      }
+    }
+  }
+} catch {
+  Write-Warning "Cloudflare Tunnel 啟動略過（非必要功能，不影響本機系統）/ Skipped starting the Cloudflare Tunnel (optional, does not affect the local system): $($_.Exception.Message)"
+}
+
 exit $checklistExit
