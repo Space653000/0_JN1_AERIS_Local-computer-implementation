@@ -495,5 +495,31 @@ class LevelStatisticsEnergyAverageTests(unittest.TestCase):
             self.assertAlmostEqual(dominant[key], 40, places=8)
 
 
+class LeakageToleranceHagenPoiseuilleTests(unittest.TestCase):
+    """Hagen-Poiseuille laminar pipe flow resistance, R = 8*mu*L/(pi*r^4),
+    is a standard physics formula, independently recomputed here rather
+    than copied from the implementation. Since R is proportional to
+    r^-4, elementary calculus gives dR/dr = -4R/r, so linearized
+    first-order uncertainty propagation must satisfy
+    u_R = |dR/dr|*u_r = 4*R*u_r/r -- derived from the power rule, not
+    from the implementation's own expression for it. Checked across 3
+    different geometries and viscosities."""
+
+    def _values(self, radius_m, length_m, viscosity_pa_s, radius_uncertainty_m):
+        params = {"radius_m": radius_m, "length_m": length_m, "viscosity_pa_s": viscosity_pa_s,
+                   "radius_standard_uncertainty_m": radius_uncertainty_m}
+        return catalog.execute("leakage-tolerance", params)["values"]
+
+    def test_resistance_and_linearized_uncertainty_hold_across_geometries(self):
+        cases = [(0.001, 0.01, 1.8e-05, 1e-05), (0.002, 0.02, 2.0e-05, 2e-05), (0.0005, 0.005, 1.5e-05, 1e-06)]
+        for radius_m, length_m, viscosity_pa_s, radius_uncertainty_m in cases:
+            with self.subTest(radius_m=radius_m, length_m=length_m):
+                expected_r = 8 * viscosity_pa_s * length_m / (math.pi * radius_m ** 4)
+                expected_u = 4 * expected_r * radius_uncertainty_m / radius_m
+                values = self._values(radius_m, length_m, viscosity_pa_s, radius_uncertainty_m)
+                self.assertAlmostEqual(values["flow_resistance_pa_s_m3"], expected_r, places=2)
+                self.assertAlmostEqual(values["standard_uncertainty_pa_s_m3"], expected_u, places=2)
+
+
 if __name__ == "__main__":
     unittest.main()
