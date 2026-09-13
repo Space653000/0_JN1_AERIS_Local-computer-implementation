@@ -14,6 +14,8 @@ import random
 import statistics
 import unittest
 
+import numpy as np
+
 from aeris_runtime.engineering import catalog
 
 
@@ -1052,6 +1054,43 @@ class InstrumentSequenceArithmeticTests(unittest.TestCase):
                 values = catalog.execute("instrument-sequence", params)["values"]
                 self.assertEqual(values["sample_count"], round(fs * duration_s))
                 self.assertAlmostEqual(values["voltage_margin_v"], limit_v - requested_v, places=10)
+
+
+class EnhancementAecMetricsOrthogonalNoiseTests(unittest.TestCase):
+    """SI-SDR projects the mean-removed estimate onto the mean-removed
+    clean reference; constructing an artifact component that is
+    Gram-Schmidt orthogonal to mean-removed clean (independently, via
+    linear algebra, not sourced from the implementation) makes that
+    projection recover the clean reference exactly, so the residual is
+    exactly the (also mean-removed) artifact component and SI-SDR is
+    the ratio of their RMS values in dB. RMSE and ERLE are checked
+    directly against their plain textbook definitions."""
+
+    def test_si_sdr_rmse_and_erle_match_independent_construction(self):
+        n = 64
+        clean = np.array([math.sin(2 * math.pi * 3 * i / n) for i in range(n)])
+        centered = clean - clean.mean()
+        probe = np.array([math.cos(2 * math.pi * 7 * i / n) + 0.5 for i in range(n)])
+        artifact = probe - np.dot(probe, centered) / np.dot(centered, centered) * centered
+        processed = clean + 0.3 * artifact
+        echo_before = [2.0 * math.sin(2 * math.pi * 5 * i / n) for i in range(n)]
+        echo_after = [0.1 * math.sin(2 * math.pi * 5 * i / n) for i in range(n)]
+        params = {"clean": clean.tolist(), "processed": processed.tolist(), "echo_before": echo_before,
+                   "echo_after": echo_after, "far_end_only": True}
+        values = catalog.execute("enhancement-aec-metrics", params)["values"]
+
+        target_rms = math.sqrt(np.mean(centered ** 2))
+        residual = 0.3 * (artifact - artifact.mean())
+        residual_rms = math.sqrt(np.mean(residual ** 2))
+        expected_si_sdr = 20 * math.log10(target_rms / residual_rms)
+        expected_rmse = math.sqrt(np.mean((processed - clean) ** 2))
+        before_rms = math.sqrt(np.mean(np.array(echo_before) ** 2))
+        after_rms = math.sqrt(np.mean(np.array(echo_after) ** 2))
+        expected_erle = 20 * math.log10(before_rms / after_rms)
+
+        self.assertAlmostEqual(values["si_sdr_db"], expected_si_sdr, places=6)
+        self.assertAlmostEqual(values["rmse"], expected_rmse, places=10)
+        self.assertAlmostEqual(values["erle_db"], expected_erle, places=8)
 
 
 if __name__ == "__main__":
