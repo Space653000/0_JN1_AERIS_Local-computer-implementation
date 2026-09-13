@@ -9,6 +9,7 @@ it holds at several other points, catching a regression that a single
 fixed point could miss (e.g. a sign error that only shows up off a
 convenient round number)."""
 import math
+import random
 import unittest
 
 from aeris_runtime.engineering import catalog
@@ -715,6 +716,137 @@ class PsychoacousticDescriptorsBarkAndCentroidTests(unittest.TestCase):
                 self.assertAlmostEqual(values["bark_centroid"], expected_bark_centroid, places=8)
                 for actual, expected in zip(values["bark_positions"], expected_bark_positions):
                     self.assertAlmostEqual(actual, expected, places=8)
+
+
+class RoomImpulseResponseExactDecayTests(unittest.TestCase):
+    """Schroeder backward-integrated energy decay of a perfectly
+    geometric impulse response ir[n] = r^n is itself exactly geometric
+    (a mathematical property of summing a geometric series' tail, not
+    sourced from the implementation), so its decay curve is perfectly
+    linear in dB with a single well-defined slope. EDT/T20/T30 are all
+    just that same slope extrapolated to -60dB, so for this
+    construction all three must equal the same reverberation time --
+    computed here directly from r via RT60 = -3/(fs*log10(r)), the
+    algebraic inverse of choosing r for a target RT60. Checked at two
+    different reverberation times and sample rates."""
+
+    def _values(self, rt60_s, fs, seconds):
+        n = int(fs * seconds)
+        r = 10 ** (-3 / (rt60_s * fs))
+        impulse_response = [r ** i for i in range(n)]
+        params = {"impulse_response": impulse_response, "sample_rate_hz": fs, "usable_decay_db": 90}
+        return catalog.execute("room-ir-decay", params)["values"]
+
+    def test_edt_t20_t30_all_recover_the_constructed_rt60(self):
+        cases = [(0.5, 48000, 3.0), (1.2, 16000, 5.0)]
+        for rt60_s, fs, seconds in cases:
+            with self.subTest(rt60_s=rt60_s, fs=fs):
+                values = self._values(rt60_s, fs, seconds)
+                self.assertEqual(values["direct_arrival_sample"], 0)
+                for key in ("edt_s", "t20_s", "t30_s"):
+                    self.assertAlmostEqual(values[key], rt60_s, places=6)
+
+
+class DelaySumBeamformingAlignmentTests(unittest.TestCase):
+    """At broadside (steering_deg=0), sin(0)=0 makes every channel's
+    steering delay exactly zero regardless of array geometry or sound
+    speed -- a property of the geometry, not the implementation -- so
+    the beamformed output must equal the plain elementwise mean of the
+    raw channels exactly (no interpolation error, since a zero delay
+    samples at exact integer indices). Separately, for a genuinely
+    coherent plane wave arriving from a chosen angle (constructed here
+    as one channel being an exact-integer-sample-delayed copy of
+    another, with the delay/geometry chosen so the true physical delay
+    is exactly 1 sample), steering to that same angle must recover the
+    original source waveform exactly, since averaging two aligned
+    identical copies of a signal returns that signal."""
+
+    def test_broadside_steering_equals_plain_channel_average(self):
+        rng = random.Random(1)
+        channel_a = [rng.random() for _ in range(64)]
+        channel_b = [rng.random() for _ in range(64)]
+        channel_c = [rng.random() for _ in range(64)]
+        params = {"positions_m": [0, 0.05, 0.1], "channels": [channel_a, channel_b, channel_c],
+                   "sample_rate_hz": 48000, "sound_speed_m_s": 343, "steering_deg": 0}
+        values = catalog.execute("delay-sum-beamforming", params)["values"]
+        expected = [(a + b + c) / 3 for a, b, c in zip(channel_a, channel_b, channel_c)]
+        self.assertEqual(values["steering_delays_samples"], [0.0, 0.0, 0.0])
+        for actual, expected_value in zip(values["samples"], expected):
+            self.assertAlmostEqual(actual, expected_value, places=10)
+
+    def test_steering_to_a_coherent_wave_recovers_the_source_exactly(self):
+        fs, sound_speed, positions, angle_deg = 1000, 343, [0, 0.343], 90
+        source = [math.sin(2 * math.pi * 5 * i / fs) + 0.3 * math.cos(2 * math.pi * 11 * i / fs) for i in range(80)]
+        delayed_channel = [0.0] + source[:-1]
+        params = {"positions_m": positions, "channels": [source, delayed_channel], "sample_rate_hz": fs,
+                   "sound_speed_m_s": sound_speed, "steering_deg": angle_deg}
+        values = catalog.execute("delay-sum-beamforming", params)["values"]
+        self.assertEqual(values["steering_delays_samples"], [0.0, 1.0])
+        start = values["valid_start_sample"]
+        for i in range(start, len(values["samples"])):
+            self.assertAlmostEqual(values["samples"][i], source[i], places=10)
+
+
+class FrequencyWeightingReferenceTests(unittest.TestCase):
+    """Two standard acoustics facts about frequency weighting curves,
+    independently known rather than sourced from the implementation:
+    Z-weighting is defined as flat/unweighted, so it must be an exact
+    identity passthrough of the input samples; and A-weighting is
+    defined to be normalized to 0dB (unity gain) at 1kHz, so a steady
+    1kHz tone's weighted RMS must be almost identical to its unweighted
+    RMS (allowing a small tolerance for the causal filter's startup
+    transient, which the implementation itself documents as something
+    the caller must exclude for a precise level reading)."""
+
+    def test_z_weighting_is_an_exact_passthrough(self):
+        rng = random.Random(3)
+        samples = [rng.random() * 2 - 1 for _ in range(1024)]
+        values = catalog.execute("frequency-weighting",
+                                  {"samples": samples, "sample_rate_hz": 8192, "weighting": "Z"})["values"]
+        expected_rms = math.sqrt(sum(s * s for s in samples) / len(samples))
+        for actual, expected in zip(values["weighted_samples"], samples):
+            self.assertEqual(actual, expected)
+        self.assertAlmostEqual(values["rms"], expected_rms, places=10)
+
+    def test_a_weighting_is_normalized_to_0db_at_1khz(self):
+        fs, n, tone_hz = 8192, 1024, 1000
+        samples = [math.sin(2 * math.pi * tone_hz * i / fs) for i in range(n)]
+        values = catalog.execute("frequency-weighting",
+                                  {"samples": samples, "sample_rate_hz": fs, "weighting": "A"})["values"]
+        unweighted_rms = math.sqrt(sum(s * s for s in samples) / len(samples))
+        gain_db = 20 * math.log10(values["rms"] / unweighted_rms)
+        self.assertLess(abs(gain_db), 0.05)
+
+
+class HarmonicNoiseAnalysisExactReconstructionTests(unittest.TestCase):
+    """For a signal built from a DC offset plus known-amplitude,
+    known-phase sinusoids at exact integer multiples of the
+    fundamental and nothing else (constructed here, not sourced from
+    the implementation), the harmonic least-squares fit is exact: it
+    must recover the constructed DC and every harmonic amplitude
+    (regardless of phase, since amplitude = hypot(sin_coeff,cos_coeff)
+    is phase-invariant), THD must equal
+    sqrt(sum(harmonic_amplitudes^2))/fundamental_amplitude computed
+    directly from those same constructed amplitudes, and the noise
+    residual must be zero since there is no unmodeled content."""
+
+    def test_recovers_exact_dc_amplitudes_and_thd_with_zero_residual(self):
+        fs, f0, n = 8000, 100, 800
+        dc, amplitudes, phases = 0.05, [1.0, 0.2, 0.1], [0.3, 1.1, 2.0]
+        samples = []
+        for i in range(n):
+            t = i / fs
+            value = dc + sum(a * math.sin(2 * math.pi * h * f0 * t + ph)
+                              for h, (a, ph) in enumerate(zip(amplitudes, phases), start=1))
+            samples.append(value)
+        params = {"samples": samples, "sample_rate_hz": fs, "fundamental_hz": f0, "harmonics": len(amplitudes)}
+        values = catalog.execute("harmonic-noise-analysis", params)["values"]
+        expected_thd = math.sqrt(sum(a ** 2 for a in amplitudes[1:])) / amplitudes[0]
+        self.assertAlmostEqual(values["dc"], dc, places=8)
+        for actual, expected in zip(values["harmonic_peak_amplitudes"], amplitudes):
+            self.assertAlmostEqual(actual, expected, places=8)
+        self.assertAlmostEqual(values["thd_ratio"], expected_thd, places=8)
+        self.assertAlmostEqual(values["noise_rms"], 0.0, places=8)
 
 
 if __name__ == "__main__":

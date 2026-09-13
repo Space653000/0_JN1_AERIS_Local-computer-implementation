@@ -201,8 +201,24 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x5, Speaker x5, Product x2, Microphone x4, Array x2, Failure x4) and
-covers 22 of 42 skills so far (added `psychoacoustic-descriptors`: the
+(DSP x7, Speaker x5, Product x2, Microphone x5, Array x3, Failure x4) and
+covers 26 of 42 skills so far (added `harmonic-noise-analysis`: a
+signal built from a DC offset plus known-amplitude, known-phase
+sinusoids at exact harmonic multiples and nothing else makes the
+least-squares harmonic fit exact -- it must recover the constructed
+DC/amplitudes and a THD computed directly from them, with zero noise
+residual; `frequency-weighting`: Z-weighting must be an exact identity
+passthrough (it is defined as unweighted) and A-weighting must show
+~0dB gain on a steady 1kHz tone (its defined normalization point);
+`delay-sum-beamforming`: broadside steering (0°) zeroes every
+channel's delay regardless of geometry, so output must equal the
+plain channel average exactly, and steering to a genuinely coherent
+plane wave (one channel an exact-integer-sample-delayed copy of
+another) must recover the original source waveform exactly;
+`room-ir-decay`: a perfectly geometric synthetic impulse response
+makes Schroeder decay exactly linear in dB, so EDT/T20/T30 must all
+independently recover the same constructed reverberation time; and
+`psychoacoustic-descriptors`: the
 Zwicker Bark-scale formula and the standard power-weighted-average
 definitions of spectral/Bark centroid, independently recomputed and
 checked for a single dominant bin (centroid must equal that bin's
