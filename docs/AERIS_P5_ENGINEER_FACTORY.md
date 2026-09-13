@@ -127,13 +127,19 @@ independently re-derives each covered skill's underlying physical formula
 in the test itself (not sourced from the fixture) and checks it holds at
 several points across the input space, not just the one point the shared
 golden fixture already covers -- e.g. Butterworth unit-DC-gain holds
-across 4 different cutoff/order pairs, and the lumped-speaker resonance
+across 4 different cutoff/order pairs, the lumped-speaker resonance
 formula `fs = 1/(2*pi*sqrt(Mms*Cms))` holds across 3 different
-mass/compliance pairs, both hand-verified by direct execution before
-being written as assertions. This adds genuine multi-point regression
-coverage without touching `cases.py`/`catalog.py`'s single-fixture
-contract at all -- it's a wholly separate, additive test file. It covers
-2 of 42 skills so far; **P5.4 is not being marked done by this** -- it is
+mass/compliance pairs, and the latency-budget skill's
+`serial_latency_ms = sum(buffers)/fs*1000 + sum(stages)` and
+`uncompensated_drift_ms_per_hour = ppm*3.6` hold across 3 different
+buffer/stage/ppm combinations -- all hand-verified by direct execution
+before being written as assertions (negative `clock_difference_ppm` was
+found to be outside the method's declared applicability and rejected by
+the implementation, so only non-negative ppm is exercised). This adds
+genuine multi-point regression coverage without touching
+`cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
+wholly separate, additive test file. It covers 3 of 42 skills so far;
+**P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
 not to overstate a small first step as completion. The intended pattern

@@ -54,5 +54,39 @@ class LumpedSpeakerResonanceTests(unittest.TestCase):
                 self.assertAlmostEqual(self._fs_hz(moving_mass_kg, compliance_m_per_n), expected, places=6)
 
 
+class LatencyBudgetSerialSumTests(unittest.TestCase):
+    """serial_latency_ms = sum(buffer_samples)/sample_rate_hz*1000 +
+    sum(other_stage_ms); uncompensated_drift_ms_per_hour = ppm*3.6 (ppm
+    of an hour, in milliseconds: 1e-6 * 3_600_000). Both re-derived here
+    from first principles (unit conversion, not sourced from the
+    implementation) and checked across several buffer/stage/ppm
+    combinations, not just the one point the shared golden fixture
+    already covers. Negative clock_difference_ppm is outside this
+    method's declared applicability (rejected by the implementation), so
+    only non-negative ppm values are exercised here."""
+
+    def _values(self, sample_rate_hz, buffer_samples, other_stage_ms, clock_difference_ppm):
+        params = {
+            "sample_rate_hz": sample_rate_hz, "buffer_samples": buffer_samples,
+            "other_stage_ms": other_stage_ms, "clock_difference_ppm": clock_difference_ppm,
+        }
+        return catalog.execute("latency-budget", params)["values"]
+
+    def test_serial_sum_and_ppm_conversion_hold_across_inputs(self):
+        cases = [
+            (48000, [480, 960], [10, 20], 50),
+            (44100, [256, 512, 128], [5], 100),
+            (96000, [960], [0, 0, 15], 0),
+        ]
+        for sample_rate_hz, buffer_samples, other_stage_ms, clock_difference_ppm in cases:
+            with self.subTest(sample_rate_hz=sample_rate_hz, buffer_samples=buffer_samples,
+                               other_stage_ms=other_stage_ms, clock_difference_ppm=clock_difference_ppm):
+                values = self._values(sample_rate_hz, buffer_samples, other_stage_ms, clock_difference_ppm)
+                expected_serial = sum(buffer_samples) / sample_rate_hz * 1000 + sum(other_stage_ms)
+                expected_drift = clock_difference_ppm * 3.6
+                self.assertAlmostEqual(values["serial_latency_ms"], expected_serial, places=6)
+                self.assertAlmostEqual(values["uncompensated_drift_ms_per_hour"], expected_drift, places=6)
+
+
 if __name__ == "__main__":
     unittest.main()
