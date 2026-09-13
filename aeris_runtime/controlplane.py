@@ -14,6 +14,7 @@ from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
 from . import audit
+from . import auth
 from .config import ROOT, load_config
 from .expected_runs import assess_all as expected_run_health
 from .knowledge import search as knowledge_search, stats as knowledge_stats
@@ -180,6 +181,84 @@ class ControlStore:
         return {"projects": projects, "tasks": tasks, "active_tasks": active}
 
 
+# Reachable without a signed-in session: the public "intro" page (status/
+# features/blueprint, no live operational data), the login page and its
+# API, and the static assets both of those pages render with. Every other
+# page and /api/v1/* endpoint requires a valid session -- see auth.py and
+# docs/AERIS_ACCESS_CONTROL.md.
+PUBLIC_GET_PATHS = {"/", "/login", "/favicon.ico", "/api/v1/auth/status"}
+PUBLIC_POST_PATHS = {"/api/v1/auth/login"}
+
+
+def _is_public_asset(path: str) -> bool:
+    return path.startswith("/assets/")
+
+
+def _session_token(handler: Any) -> str | None:
+    return auth.parse_cookie(handler.headers.get("Cookie"), auth.SESSION_COOKIE_NAME)
+
+
+def _is_authenticated(handler: Any) -> bool:
+    return auth.verify_session(_session_token(handler))
+
+
+def _write_redirect(handler: Any, location: str) -> None:
+    handler.send_response(302)
+    handler.send_header("Location", location)
+    handler.send_header("Content-Length", "0")
+    handler.send_header("Cache-Control", "no-store")
+    handler.end_headers()
+
+
+def _set_session_cookie(handler: Any, token: str) -> None:
+    handler.send_header("Set-Cookie", f"{auth.SESSION_COOKIE_NAME}={token}; HttpOnly; SameSite=Strict; Path=/; Max-Age={auth.SESSION_TTL_S}")
+
+
+def _clear_session_cookie(handler: Any) -> None:
+    handler.send_header("Set-Cookie", f"{auth.SESSION_COOKIE_NAME}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0")
+
+
+def _handle_auth_get(handler: Any, path: str) -> bool:
+    if path != "/api/v1/auth/status":
+        return False
+    authenticated = _is_authenticated(handler)
+    _write_json(handler, 200, {"authenticated": authenticated, "credentials_configured": auth.has_credentials()})
+    return True
+
+
+def _handle_auth_post(handler: Any, path: str, payload: dict[str, Any]) -> bool:
+    if path == "/api/v1/auth/login":
+        username, password = str(payload.get("username", "")), str(payload.get("password", ""))
+        if not auth.has_credentials():
+            _write_json(handler, 503, {"error": "no_credentials_configured", "detail": "Run `python -m aeris_runtime auth set-credentials` locally first."})
+            return True
+        if not auth.verify_credentials(username, password):
+            _write_json(handler, 401, {"error": "invalid_credentials"})
+            return True
+        token = auth.create_session()
+        body = json.dumps({"authenticated": True}).encode("utf-8")
+        handler.send_response(200)
+        handler.send_header("Content-Type", "application/json; charset=utf-8")
+        handler.send_header("Content-Length", str(len(body)))
+        handler.send_header("Cache-Control", "no-store")
+        _set_session_cookie(handler, token)
+        handler.end_headers()
+        handler.wfile.write(body)
+        return True
+    if path == "/api/v1/auth/logout":
+        auth.revoke_session(_session_token(handler))
+        body = json.dumps({"authenticated": False}).encode("utf-8")
+        handler.send_response(200)
+        handler.send_header("Content-Type", "application/json; charset=utf-8")
+        handler.send_header("Content-Length", str(len(body)))
+        handler.send_header("Cache-Control", "no-store")
+        _clear_session_cookie(handler)
+        handler.end_headers()
+        handler.wfile.write(body)
+        return True
+    return False
+
+
 def _write_json(handler: Any, code: int, payload: Any) -> None:
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     handler.send_response(code)
@@ -222,7 +301,11 @@ def _body(handler: Any) -> dict[str, Any]:
 
 
 def _serve_ui(handler: Any, path: str) -> bool:
-    if path in {"/", "/dashboard"}:
+    if path == "/":
+        target = UI_ROOT / "intro.html"
+    elif path == "/login":
+        target = UI_ROOT / "login.html"
+    elif path == "/dashboard":
         target = UI_ROOT / "dashboard.html"
     elif path in {"/workspace", "/services", "/activity"}:
         target = UI_ROOT / (path.lstrip("/") + ".html")
@@ -328,7 +411,17 @@ def _save_import(payload: dict[str, Any]) -> dict[str, Any]:
 
 def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
     from urllib.parse import urlsplit as _split
-    if _split(handler.path).path.startswith("/api/v1/capabilities"):
+    early_path = _split(handler.path).path
+    if _handle_auth_get(handler, early_path):
+        return True
+    authenticated = _is_authenticated(handler)
+    if not authenticated and early_path not in PUBLIC_GET_PATHS and not _is_public_asset(early_path):
+        if early_path.startswith("/api/v1/"):
+            _write_json(handler, 401, {"error": "unauthorized", "detail": "Sign in at /login."})
+        else:
+            _write_redirect(handler, "/login")
+        return True
+    if early_path.startswith("/api/v1/capabilities"):
         if urlsplit("http://"+handler.headers.get("Host","")).hostname not in {"localhost","127.0.0.1","::1"}:
             _write_json(handler,403,{"error":"loopback_host_required"}); return True
         from .engineering.api import get
@@ -433,6 +526,15 @@ def handle_post(handler: Any) -> bool:
     path = urlsplit(handler.path).path
     if not path.startswith("/api/v1/"):
         return False
+    if path in PUBLIC_POST_PATHS or path == "/api/v1/auth/logout":
+        try:
+            payload = _body(handler) if path in PUBLIC_POST_PATHS else {}
+        except ValueError as exc:
+            _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)}); return True
+        return _handle_auth_post(handler, path, payload)
+    if not _is_authenticated(handler):
+        _write_json(handler, 401, {"error": "unauthorized", "detail": "Sign in at /login."})
+        return True
     if path.startswith("/api/v1/capabilities/"):
         host=handler.headers.get("Host",""); origin=handler.headers.get("Origin")
         if urlsplit("http://"+host).hostname not in {"localhost","127.0.0.1","::1"} or origin and origin!="http://"+host or not handler.headers.get("Content-Type","").lower().startswith("application/json"):

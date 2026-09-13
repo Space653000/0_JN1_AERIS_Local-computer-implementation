@@ -286,6 +286,30 @@ def cmd_l3(args):
         return 17
 
 
+def cmd_auth(args):
+    from . import auth
+    if args.action == "set-credentials":
+        import getpass
+        username = input("Username: ").strip()
+        password = getpass.getpass("Password (min 8 chars): ")
+        confirm = getpass.getpass("Confirm password: ")
+        if password != confirm:
+            print("Passwords do not match.", file=sys.stderr)
+            return 18
+        try:
+            auth.set_credentials(username, password)
+        except ValueError as exc:
+            print(f"AERIS auth error: {exc}", file=sys.stderr)
+            return 18
+        print("Credentials set. All existing sessions were invalidated.")
+        return 0
+    if args.action == "status":
+        _print({"credentials_configured": auth.has_credentials()})
+        return 0
+    print("Unknown auth action.", file=sys.stderr)
+    return 18
+
+
 def build_parser():
     p = argparse.ArgumentParser(prog="aeris", description="AERIS portable local-first company runtime")
     s = p.add_subparsers(dest="command", required=True)
@@ -412,6 +436,11 @@ def build_parser():
     l3r.add_argument("--approver", required=True)
     l3r.add_argument("--note", default="")
     l3s.add_parser("verify", help="Verify the L3 award ledger's hash chain")
+
+    at = s.add_parser("auth", help="Local control-plane login credentials (single owner)")
+    ats = at.add_subparsers(dest="action", required=True)
+    ats.add_parser("set-credentials", help="Interactively set the username/password required to sign in (getpass, never echoed or logged)")
+    ats.add_parser("status", help="Whether credentials have been configured")
     return p
 
 
@@ -449,6 +478,8 @@ def main():
         return cmd_review(a)
     if a.command == "l3":
         return cmd_l3(a)
+    if a.command == "auth":
+        return cmd_auth(a)
     return 1
 
 

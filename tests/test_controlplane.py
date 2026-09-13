@@ -3,6 +3,7 @@ import re
 import tempfile
 import threading
 import unittest
+import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
 from pathlib import Path
@@ -11,6 +12,7 @@ from unittest.mock import patch
 import aeris_runtime.controlplane as controlplane
 import aeris_runtime.operations as operations
 import aeris_runtime.workflow as workflow
+from aeris_runtime import auth
 
 
 class ControlPlaneTests(unittest.TestCase):
@@ -45,8 +47,16 @@ class ControlPlaneTests(unittest.TestCase):
         self.addCleanup(lambda: (server.shutdown(), server.server_close(), p2.stop(), p1.stop()))
         return server
 
-    def _get_json(self, server, path):
-        with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}{path}", timeout=3) as response:
+    def _session_cookie(self):
+        token = auth.create_session()
+        self.addCleanup(auth.revoke_session, token)
+        return f"{auth.SESSION_COOKIE_NAME}={token}"
+
+    def _get_json(self, server, path, authenticated=True):
+        request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}{path}")
+        if authenticated:
+            request.add_header("Cookie", self._session_cookie())
+        with urllib.request.urlopen(request, timeout=3) as response:
             self.assertEqual(response.status, 200)
             return json.loads(response.read().decode("utf-8"))
 
@@ -63,12 +73,35 @@ class ControlPlaneTests(unittest.TestCase):
                 if "src=" not in match.group("attrs") and match.group("body").strip():
                     self.fail(f"{path.name} has an inline <script> body; CSP script-src 'self' silently blocks it")
 
-    def test_root_is_real_dashboard_not_404(self):
+    def test_root_is_public_intro_not_dashboard(self):
         server = self._server()
         with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}/", timeout=3) as response:
             body = response.read().decode("utf-8")
             self.assertEqual(response.status, 200)
             self.assertEqual(response.headers.get_content_charset(), "utf-8")
+            self.assertIn("AERIS", body)
+            self.assertIn("登入", body)
+
+    def test_dashboard_requires_authentication(self):
+        server = self._server()
+        request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/dashboard")
+        with urllib.request.urlopen(request, timeout=3) as response:
+            # urlopen follows the 302 to /login automatically; assert we
+            # actually landed on the login page, not the real dashboard.
+            self.assertEqual(response.geturl(), f"http://127.0.0.1:{server.server_port}/login")
+            self.assertIn("登入", response.read().decode("utf-8"))
+        api_request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/api/v1/progress")
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(api_request, timeout=3)
+        self.assertEqual(ctx.exception.code, 401)
+
+    def test_dashboard_is_real_dashboard_when_authenticated(self):
+        server = self._server()
+        request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/dashboard")
+        request.add_header("Cookie", self._session_cookie())
+        with urllib.request.urlopen(request, timeout=3) as response:
+            body = response.read().decode("utf-8")
+            self.assertEqual(response.status, 200)
             self.assertIn("本機聲學工程公司", body)
             self.assertIn("確定性 技能", body)
             self.assertIn("標準 登錄庫", body)

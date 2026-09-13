@@ -8,7 +8,7 @@ import urllib.request
 from http.server import ThreadingHTTPServer
 from unittest.mock import patch
 
-from aeris_runtime import operations
+from aeris_runtime import auth, operations
 from aeris_runtime.engineering import api, catalog
 from aeris_runtime.engineering.orchestration import run_role
 
@@ -20,10 +20,14 @@ class EngineeringApiTests(unittest.TestCase):
         self.thread.start()
         self.base = f'http://127.0.0.1:{self.server.server_port}'
         self.addCleanup(lambda: (self.server.shutdown(), self.server.server_close(), self.thread.join()))
+        token = auth.create_session()
+        self.addCleanup(auth.revoke_session, token)
+        self.session_cookie = f'{auth.SESSION_COOKIE_NAME}={token}'
 
     def request(self, path, data=None, **headers):
         if data is not None:
             headers.setdefault('Content-Type', 'application/json')
+        headers.setdefault('Cookie', self.session_cookie)
         req = urllib.request.Request(self.base+path, data=json.dumps(data).encode() if data is not None else None, headers=headers)
         try:
             with urllib.request.urlopen(req, timeout=10) as response:

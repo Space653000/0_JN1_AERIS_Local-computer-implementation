@@ -417,6 +417,20 @@ cloud/software trust baselines closed
 → signed/attested release + formal Human approval
 ```
 
+## 20.5 存取控制：公開介紹頁 vs. 需登入的操作系統
+
+只有 `/`（公開介紹頁）與 `/login` 對外開放；儀表板、工作區、進度中心、活動紀錄、服務頁與全部
+`/api/v1/*` API 一律需要登入。首次使用請先在本機執行一次：
+
+```bash
+python -m aeris_runtime auth set-credentials
+```
+
+互動式輸入帳號密碼（`getpass`，畫面不回顯，也不會被記錄），僅將加鹽雜湊值存在本機
+`.aeris/state/auth_credentials.json`（已被 `.gitignore` 排除，不會被提交）。細節、session 生命週期與
+目前刻意尚未涵蓋的範圍（例如未來公開對外連線時的正式 HTTPS/反向代理）見
+[`docs/AERIS_ACCESS_CONTROL.md`](docs/AERIS_ACCESS_CONTROL.md)。
+
 ## 21. Persistent Build Phases：換電腦不用重走聊天歷史
 
 AERIS 後續建設不再依賴某一次 ChatGPT/Codex 對話內容。
