@@ -201,8 +201,14 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x7, Speaker x5, Product x2, Microphone x5, Array x3, Failure x4) and
-covers 26 of 42 skills so far (added `harmonic-noise-analysis`: a
+(DSP x7, Speaker x6, Product x2, Microphone x5, Array x3, Failure x4) and
+covers 27 of 42 skills so far (added `nvh-integration`: for a pure
+sinusoidal acceleration with an exact integer number of cycles in the
+record, first-year calculus gives velocity_rms =
+acceleration_rms/omega and displacement_rms =
+acceleration_rms/omega^2, independently derived from the analytic
+integral rather than the implementation's frequency-domain division
+by j*omega; `harmonic-noise-analysis`: a
 signal built from a DC offset plus known-amplitude, known-phase
 sinusoids at exact harmonic multiples and nothing else makes the
 least-squares harmonic fit exact -- it must recover the constructed

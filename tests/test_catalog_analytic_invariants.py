@@ -849,5 +849,37 @@ class HarmonicNoiseAnalysisExactReconstructionTests(unittest.TestCase):
         self.assertAlmostEqual(values["noise_rms"], 0.0, places=8)
 
 
+class NvhIntegrationSinusoidTests(unittest.TestCase):
+    """For a pure sinusoidal acceleration a(t) = A*sin(2*pi*f0*t) with an
+    exact integer number of cycles in the record (so the frequency-
+    domain integration's periodicity assumption holds exactly, no FFT
+    leakage), calculus gives the exact analytic integrals: velocity(t)
+    = -(A/omega)*cos(2*pi*f0*t) and displacement(t) =
+    -(A/omega^2)*sin(2*pi*f0*t), both still pure sinusoids of the same
+    frequency, so velocity_rms = acceleration_rms/omega and
+    displacement_rms = acceleration_rms/omega^2 -- independently
+    derived here from first-year calculus, not sourced from the
+    implementation's own frequency-domain division by (j*omega).
+    Checked across two different amplitudes/frequencies/sample rates."""
+
+    def _values(self, amplitude, frequency_hz, sample_rate_hz, n):
+        acceleration = [amplitude * math.sin(2 * math.pi * frequency_hz * i / sample_rate_hz) for i in range(n)]
+        return catalog.execute("nvh-integration",
+                                {"acceleration_m_s2": acceleration, "sample_rate_hz": sample_rate_hz})["values"]
+
+    def test_velocity_and_displacement_rms_match_analytic_integration(self):
+        cases = [(2.0, 50, 4000, 320), (0.5, 20, 2000, 200)]
+        for amplitude, frequency_hz, sample_rate_hz, n in cases:
+            with self.subTest(amplitude=amplitude, frequency_hz=frequency_hz):
+                omega = 2 * math.pi * frequency_hz
+                expected_a_rms = amplitude / math.sqrt(2)
+                expected_v_rms = expected_a_rms / omega
+                expected_d_rms = expected_v_rms / omega
+                values = self._values(amplitude, frequency_hz, sample_rate_hz, n)
+                self.assertAlmostEqual(values["acceleration_rms_m_s2"], expected_a_rms, places=8)
+                self.assertAlmostEqual(values["velocity_rms_m_s"], expected_v_rms, places=8)
+                self.assertAlmostEqual(values["displacement_rms_m"], expected_d_rms, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()
