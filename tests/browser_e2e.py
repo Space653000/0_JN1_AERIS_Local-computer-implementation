@@ -165,7 +165,12 @@ def run() -> int:
     # cookie or the local-tooling supervisor-token header, so this test's
     # own process bypasses the gate directly -- safe because it only
     # patches this ephemeral, in-process test server, never the real one.
-    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None), patch.object(controlplane, "_is_authenticated", return_value=True):
+    # _has_permission is a separate check from _is_authenticated (added by
+    # the later multi-user/scoped-permission rewrite -- see
+    # docs/AERIS_ACCESS_CONTROL.md) that independently re-resolves the
+    # caller's identity rather than consulting _is_authenticated's mocked
+    # result, so it must be patched too or every route 403s.
+    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None), patch.object(controlplane, "_is_authenticated", return_value=True), patch.object(controlplane, "_has_permission", return_value=True):
         server = ThreadingHTTPServer(("127.0.0.1", 0), operations._Handler)
         server.shutdown_token = "ci-browser-e2e-only"
         thread = threading.Thread(target=server.serve_forever, daemon=True)

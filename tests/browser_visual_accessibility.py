@@ -137,7 +137,10 @@ def run() -> int:
     # Same rationale as browser_e2e.py's run(): a raw headless-Chrome
     # --dump-dom navigation can't attach a session cookie, so this
     # ephemeral in-process test server bypasses the login gate directly.
-    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None), patch.object(controlplane, "_is_authenticated", return_value=True):
+    # _has_permission independently re-resolves the caller's identity
+    # rather than consulting _is_authenticated's mocked result, so it
+    # must be patched too or every route 403s (see browser_e2e.py).
+    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None), patch.object(controlplane, "_is_authenticated", return_value=True), patch.object(controlplane, "_has_permission", return_value=True):
         snapshots = {}
         class SnapshotHandler(operations._Handler):
             def do_GET(self):
