@@ -201,8 +201,14 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x5, Speaker x4, Product x2, Microphone x4, Array x2, Failure x3) and
-covers 20 of 42 skills so far (added `circuit-noise-budget`: four
+(DSP x5, Speaker x4, Product x2, Microphone x4, Array x2, Failure x4) and
+covers 21 of 42 skills so far (added `monte-carlo`: for a linear
+combination of independent normals, elementary probability theory
+gives the mean and SD in closed form -- independently re-derived from
+the raw inputs, not read off the implementation's own analytic_mean/
+analytic_sd output fields -- and checked that the large-trial-count
+simulation converges close to that same value, confirming simulation
+and closed form agree; `circuit-noise-budget`: four
 independent textbook formulas -- Johnson-Nyquist thermal noise, ideal
 ADC quantization noise, root-sum-square combination of uncorrelated
 sources, and the jitter-limited SNR ceiling -- each re-derived from

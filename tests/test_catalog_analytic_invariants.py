@@ -648,5 +648,37 @@ class CircuitNoiseBudgetStandardFormulaTests(unittest.TestCase):
                 self.assertAlmostEqual(values["jitter_snr_limit_db"], jitter_limit_db, places=8)
 
 
+class MonteCarloLinearCombinationTests(unittest.TestCase):
+    """For Y = sum(c_i * X_i) with independent X_i ~ N(mean_i, std_i),
+    elementary probability theory (linearity of expectation, variance
+    of a sum of independent variables) gives E[Y] = sum(c_i*mean_i) and
+    SD[Y] = sqrt(sum((c_i*std_i)^2)) -- independently recomputed here
+    from the raw inputs, not read off the implementation's own
+    analytic_mean/analytic_sd output fields. The large-trial-count
+    Monte Carlo simulation must also converge close to that same
+    independently-derived value, which confirms the simulation and the
+    closed form agree rather than both being wrong the same way.
+    Checked across two different linear combinations."""
+
+    def _values(self, means, standard_deviations, coefficients, trials, seed):
+        params = {"means": means, "standard_deviations": standard_deviations, "coefficients": coefficients,
+                   "trials": trials, "seed": seed}
+        return catalog.execute("monte-carlo", params)["values"]
+
+    def test_analytic_and_simulated_moments_match_independent_formula(self):
+        cases = [([10, 20], [1, 2], [2, -1], 20000, 42), ([5, 0, 3], [0.5, 1, 0.2], [1, 3, -2], 50000, 7)]
+        for means, stds, coefficients, trials, seed in cases:
+            with self.subTest(means=means, coefficients=coefficients):
+                expected_mean = sum(m * c for m, c in zip(means, coefficients))
+                expected_sd = math.sqrt(sum((s * c) ** 2 for s, c in zip(stds, coefficients)))
+                values = self._values(means, stds, coefficients, trials, seed)
+                self.assertAlmostEqual(values["analytic_mean"], expected_mean, places=8)
+                self.assertAlmostEqual(values["analytic_sd"], expected_sd, places=8)
+                mean_tolerance = 0.05 * max(1, abs(expected_mean)) + 0.1
+                sd_tolerance = 0.1 * expected_sd + 0.05
+                self.assertLess(abs(values["mean"] - expected_mean), mean_tolerance)
+                self.assertLess(abs(values["standard_deviation"] - expected_sd), sd_tolerance)
+
+
 if __name__ == "__main__":
     unittest.main()
