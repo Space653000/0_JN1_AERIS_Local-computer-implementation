@@ -948,5 +948,30 @@ class RepeatabilityReproducibilityVarianceDecompositionTests(unittest.TestCase):
                 self.assertAlmostEqual(values["reproducibility_sd"], math.sqrt(within + between), places=10)
 
 
+class DfmeaRankingRpnAndOrderingTests(unittest.TestCase):
+    """DFMEA's Risk Priority Number is simply severity*occurrence*
+    detection, and the standard convention flags severity>=9 for
+    mandatory human review regardless of RPN -- both independently
+    computed here from the constructed inputs. Ranking order is
+    checked against the documented sort key (severity descending, then
+    RPN descending, then id) using failure modes constructed so no two
+    orderings could coincidentally agree by chance."""
+
+    def test_rpn_human_review_flag_and_sort_order(self):
+        modes = [
+            {"id": "A", "severity": 5, "occurrence": 4, "detection": 3, "countermeasure": "x", "owner": "y"},
+            {"id": "B", "severity": 9, "occurrence": 2, "detection": 2, "countermeasure": "x", "owner": "y"},
+            {"id": "C", "severity": 5, "occurrence": 8, "detection": 8, "countermeasure": "x", "owner": "y"},
+            {"id": "D", "severity": 2, "occurrence": 10, "detection": 10, "countermeasure": "x", "owner": "y"},
+        ]
+        values = catalog.execute("dfmea-ranking", {"failure_modes": modes})["values"]
+        by_id = {m["id"]: m for m in values["ranked_modes"]}
+        for mode in modes:
+            entry = by_id[mode["id"]]
+            self.assertEqual(entry["rpn"], mode["severity"] * mode["occurrence"] * mode["detection"])
+            self.assertEqual(entry["human_review_required"], mode["severity"] >= 9)
+        self.assertEqual([m["id"] for m in values["ranked_modes"]], ["B", "C", "A", "D"])
+
+
 if __name__ == "__main__":
     unittest.main()
