@@ -166,11 +166,18 @@ frequency, or steering angle (a mathematical identity of what
 is the textbook spatial-Nyquist grating-lobe criterion (max element
 spacing <= half a wavelength), re-derived independently and checked
 against both a compliant and a non-compliant geometry. Checked across
-5 different array/frequency/steering combinations. This adds genuine
-multi-point regression coverage without touching `cases.py`/
+5 different array/frequency/steering combinations. The spectral-analysis
+skill (DSP suite, a second skill there) checks two textbook Fourier
+identities for a coherently-sampled pure sinusoid: the single-sided FFT
+magnitude at its bin equals exactly the peak amplitude, and the
+time-domain RMS equals amplitude/sqrt(2) regardless of coherent
+sampling -- both re-derived from first principles, checked across 3
+different sample-count/bin/amplitude/sample-rate combinations
+constructed independently of the shared golden fixture. This adds
+genuine multi-point regression coverage without touching `cases.py`/
 `catalog.py`'s single-fixture contract at all -- it's a wholly separate,
-additive test file. It now spans all 6 suites (DSP, Speaker, Product,
-Microphone, Array x2, Failure) and covers 7 of 42 skills so far;
+additive test file. It now spans all 6 suites (DSP x2, Speaker, Product,
+Microphone, Array x2, Failure) and covers 8 of 42 skills so far;
 **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as

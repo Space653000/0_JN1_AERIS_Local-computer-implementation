@@ -229,5 +229,32 @@ class LinearArrayPatternSteeringPeakTests(unittest.TestCase):
                 self.assertEqual(values["alias_free_spacing"], expected_alias_free)
 
 
+class SpectralAnalysisCoherentSineTests(unittest.TestCase):
+    """Two textbook Fourier-analysis identities, re-derived from first
+    principles rather than the implementation: for a pure sinusoid
+    A*sin(2*pi*k*n/N) sampled coherently (integer periods across the
+    window, rectangular window, no leakage), the single-sided FFT
+    magnitude at bin k equals exactly the peak amplitude A, and the
+    time-domain RMS equals A/sqrt(2) regardless of coherent sampling
+    (RMS is a plain time-domain property of any sinusoid). Checked
+    across 3 different sample-count/bin/amplitude/sample-rate
+    combinations, each constructed here (not sourced from the shared
+    golden fixture) so the true amplitude is known independently of
+    whatever the implementation computes."""
+
+    def _values(self, n, bin_k, amplitude, sample_rate_hz):
+        samples = [amplitude * math.sin(2 * math.pi * bin_k * t / n) for t in range(n)]
+        params = {"samples": samples, "sample_rate_hz": sample_rate_hz, "window": "rectangular"}
+        return catalog.execute("spectral-analysis", params)["values"]
+
+    def test_coherent_bin_amplitude_and_rms_hold_across_signals(self):
+        cases = [(1024, 64, 1.0, 8192), (512, 32, 2.5, 4000), (2048, 100, 0.7, 16000)]
+        for n, bin_k, amplitude, sample_rate_hz in cases:
+            with self.subTest(n=n, bin_k=bin_k, amplitude=amplitude, sample_rate_hz=sample_rate_hz):
+                values = self._values(n, bin_k, amplitude, sample_rate_hz)
+                self.assertAlmostEqual(values["amplitude"][bin_k], amplitude, places=8)
+                self.assertAlmostEqual(values["rms"], amplitude / math.sqrt(2), places=8)
+
+
 if __name__ == "__main__":
     unittest.main()
