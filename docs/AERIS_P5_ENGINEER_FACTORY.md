@@ -201,8 +201,14 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x7, Speaker x7, Product x2, Microphone x5, Array x3, Failure x7) and
-covers 31 of 42 skills so far (added `process-quality`: Pp and Ppk
+(DSP x7, Speaker x7, Product x3, Microphone x5, Array x3, Failure x7) and
+covers 32 of 42 skills so far (added `engineering-requirements`: PASS
+iff the observed value lies in [minimum, maximum], margin as
+min(value-minimum, maximum-value) (negative when out of range),
+MISSING for an unmatched requirement, coverage as the observed
+fraction, and overall outcome PASS only if every check passed --
+checked with one constructed requirement set covering all three
+outcomes at once; `process-quality`: Pp and Ppk
 are standard Six Sigma process-capability formulas, independently
 recomputed with Python's stdlib `statistics` module rather than the
 implementation's numpy calls, checked across a well-centered

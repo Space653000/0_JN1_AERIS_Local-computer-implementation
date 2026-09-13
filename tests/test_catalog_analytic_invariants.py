@@ -1003,5 +1003,38 @@ class ProcessQualityCapabilityIndexTests(unittest.TestCase):
                 self.assertEqual(result["out_of_spec_count"], expected_oos)
 
 
+class EngineeringRequirementsPassFailCoverageTests(unittest.TestCase):
+    """A requirement check's outcome is just PASS iff the observed value
+    lies in [minimum, maximum], margin_to_nearest_limit is
+    min(value-minimum, maximum-value) (negative when out of range,
+    which is itself informative -- how far out, not just that it
+    failed), a requirement with no matching observation is MISSING,
+    coverage is the observed fraction of all requirements, and the
+    overall outcome is PASS only if every individual check passed.
+    All independently recomputed here from a constructed requirement
+    set covering all three outcomes at once."""
+
+    def test_pass_fail_missing_margin_coverage_and_outcome(self):
+        requirements = [
+            {"id": "R1", "minimum": 10, "maximum": 20, "unit": "db"},
+            {"id": "R2", "minimum": 0, "maximum": 5, "unit": "ms"},
+            {"id": "R3", "minimum": 1, "maximum": 2, "unit": "v"},
+        ]
+        observations = [
+            {"requirement_id": "R1", "unit": "db", "value": 15, "evidence_ref": "e1"},
+            {"requirement_id": "R2", "unit": "ms", "value": 7, "evidence_ref": "e2"},
+        ]
+        values = catalog.execute("engineering-requirements",
+                                  {"requirements": requirements, "observations": observations})["values"]
+        by_id = {c["id"]: c for c in values["checks"]}
+        self.assertEqual(by_id["R1"]["outcome"], "PASS")
+        self.assertAlmostEqual(by_id["R1"]["margin_to_nearest_limit"], min(15 - 10, 20 - 15))
+        self.assertEqual(by_id["R2"]["outcome"], "FAIL")
+        self.assertAlmostEqual(by_id["R2"]["margin_to_nearest_limit"], min(7 - 0, 5 - 7))
+        self.assertEqual(by_id["R3"]["outcome"], "MISSING")
+        self.assertAlmostEqual(values["coverage"], 2 / 3)
+        self.assertEqual(values["engineering_outcome"], "INCOMPLETE_OR_FAIL")
+
+
 if __name__ == "__main__":
     unittest.main()
