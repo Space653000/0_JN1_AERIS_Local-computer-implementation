@@ -147,11 +147,20 @@ pair with a known, chosen integer sample shift (mathematically
 unambiguous by construction) and checking the algorithm recovers
 exactly that shift, then independently re-deriving `tdoa_s` and
 `doa_deg` from the same known shift -- checked across 3 different
-shift/sample-rate/spacing/sound-speed combinations. This adds genuine
-multi-point regression coverage without touching `cases.py`/
+shift/sample-rate/spacing/sound-speed combinations. The
+reliability-binomial skill (Failure suite) calls
+`scipy.stats.beta.ppf(confidence, failures+1, trials-failures)` (the
+general Clopper-Pearson exact bound); rather than re-calling that same
+library function (which would only check the parameter mapping was
+retyped correctly, not that the statistics are right), the zero-failures
+case has a genuinely independent closed form derived from first
+principles -- observing zero failures in n trials, the one-sided upper
+bound p solves `(1-p)^n = alpha`, so `p = 1 - alpha**(1/n)` -- checked
+across 3 different trial-count/confidence combinations. This adds
+genuine multi-point regression coverage without touching `cases.py`/
 `catalog.py`'s single-fixture contract at all -- it's a wholly separate,
-additive test file. It now spans 5 of the 6 suites (DSP, Speaker,
-Product, Microphone, Array) and covers 5 of 42 skills so far;
+additive test file. It now spans **all 6 suites** (DSP, Speaker,
+Product, Microphone, Array, Failure) and covers 6 of 42 skills so far;
 **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as

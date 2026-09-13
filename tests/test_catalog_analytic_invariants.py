@@ -160,5 +160,33 @@ class GccPhatTdoaKnownShiftTests(unittest.TestCase):
                 self.assertAlmostEqual(values["doa_deg"], expected_doa, places=6)
 
 
+class ReliabilityBinomialZeroFailuresTests(unittest.TestCase):
+    """reliability-binomial's implementation calls
+    scipy.stats.beta.ppf(confidence, failures+1, trials-failures) (the
+    general Clopper-Pearson exact one-sided upper bound) -- re-calling
+    the same library function with the same arguments would just check
+    that the parameter mapping was retyped correctly, not that the
+    underlying statistics are right. For the zero-failures case
+    specifically there is a genuinely independent closed form: observing
+    zero failures in n trials, the one-sided upper confidence bound p
+    solves (1-p)^n = alpha (the probability of seeing zero failures if
+    the true failure rate were exactly p), so p = 1 - alpha**(1/n) --
+    derived here from that probability argument, not from calling
+    scipy.stats.beta at all. Checked across 3 different trial-count/
+    confidence combinations, all with zero observed failures."""
+
+    def _upper(self, trials, failures, confidence):
+        params = {"trials": trials, "failures": failures, "confidence": confidence}
+        return catalog.execute("reliability-binomial", params)["values"]["one_sided_upper_failure_probability"]
+
+    def test_zero_failures_closed_form_holds_across_trials_and_confidence(self):
+        cases = [(100, 0.95), (50, 0.90), (200, 0.99)]
+        for trials, confidence in cases:
+            with self.subTest(trials=trials, confidence=confidence):
+                alpha = 1 - confidence
+                expected = 1 - alpha ** (1 / trials)
+                self.assertAlmostEqual(self._upper(trials, 0, confidence), expected, places=10)
+
+
 if __name__ == "__main__":
     unittest.main()
