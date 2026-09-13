@@ -1207,5 +1207,40 @@ class ProvenanceResearchScoringTests(unittest.TestCase):
             self.assertAlmostEqual(match["score"], 2 / 3, places=10)
 
 
+class ProductSystemPlanSkillSetAndGateTests(unittest.TestCase):
+    """needed_skills is a deterministic list: two baseline skills plus
+    speaker-specific skills iff the transducer includes a speaker and
+    microphone-specific skills iff it includes a microphone --
+    independently enumerated here for all three transducer categories.
+    human_release_gate is simply risk in {R3, R4}, checked for a gated
+    and an ungated risk level."""
+
+    def _needed_skills_and_gate(self, transducer, risk):
+        params = {
+            "product_index": 3, "lifecycle": "EVT", "objective": "x", "transducer": transducer, "risk": risk,
+            "requirements": [{"id": "FR1", "minimum": -3, "maximum": 3, "unit": "dB"}],
+            "observations": [{"requirement_id": "FR1", "value": 1, "unit": "dB", "evidence_ref": "e"}],
+        }
+        values = catalog.execute("product-system-plan", params)["values"]
+        return values["needed_skills"], values["human_release_gate"]
+
+    def test_needed_skills_and_release_gate_across_transducers_and_risk(self):
+        skills, gate = self._needed_skills_and_gate("Both", "R3")
+        self.assertEqual(skills, ["engineering-requirements", "requirement-traceability",
+                                    "lumped-speaker", "harmonic-noise-analysis",
+                                    "microphone-sensitivity", "enhancement-aec-metrics"])
+        self.assertTrue(gate)
+
+        skills, gate = self._needed_skills_and_gate("Speaker", "R1")
+        self.assertEqual(skills, ["engineering-requirements", "requirement-traceability",
+                                    "lumped-speaker", "harmonic-noise-analysis"])
+        self.assertFalse(gate)
+
+        skills, gate = self._needed_skills_and_gate("Microphone", "R2")
+        self.assertEqual(skills, ["engineering-requirements", "requirement-traceability",
+                                    "microphone-sensitivity", "enhancement-aec-metrics"])
+        self.assertFalse(gate)
+
+
 if __name__ == "__main__":
     unittest.main()

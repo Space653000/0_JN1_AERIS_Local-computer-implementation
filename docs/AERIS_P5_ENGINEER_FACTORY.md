@@ -201,8 +201,13 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x8, Speaker x7, Product x7, Microphone x6, Array x3, Failure x8) and
-covers 39 of 42 skills so far (added `provenance-research`: match
+(DSP x8, Speaker x7, Product x8, Microphone x6, Array x3, Failure x8) and
+covers 40 of 42 skills so far (added `product-system-plan`:
+needed_skills is a deterministic list -- two baseline skills plus
+speaker-specific skills iff the transducer includes a speaker and
+microphone-specific skills iff it includes a microphone --
+independently enumerated for all three transducer categories, and
+human_release_gate is simply risk in {R3,R4}; `provenance-research`: match
 score is a plain set-overlap ratio (title+content tokens intersected
 with query tokens, over query token count), a zero-score document
 must be excluded entirely, and ties break by id ascending -- checked
