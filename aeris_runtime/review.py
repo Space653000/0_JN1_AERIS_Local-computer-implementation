@@ -122,6 +122,11 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
     elif expected_runs.get("overall") in {"DEGRADED", "NOT_CONFIGURED"}:
         limits.append("EXPECTED_RUN_MONITOR_NOT_HEALTHY_OR_NOT_CONFIGURED")
 
+    from .release_attestation import current_release_authority_status
+    release_authority = current_release_authority_status()
+    if not release_authority["aligned"]:
+        limits.append(f"FOUR_WAY_RELEASE_AUTHORITY_NOT_ALIGNED:{release_authority['reason']}")
+
     if failures:
         result = "FAIL"
     elif blockers:
@@ -139,7 +144,8 @@ def independent_acceptance(reviewer: str = "Claude Code") -> dict[str, Any]:
         "final_result": result,
         "canonical_core_sha": core.get("core_sha") or "UNKNOWN",
         "candidate_core_sha": (_read(ROOT / "core.lock.json") or {}).get("baseline_sha"),
-        "four_way_aligned": False,
+        "four_way_aligned": release_authority["aligned"],
+        "four_way_alignment_reason": release_authority["reason"],
         "implementation_sha": _git_sha(),
         "local_target_path": str(ROOT),
         "machine_profile": machine.get("profile"),

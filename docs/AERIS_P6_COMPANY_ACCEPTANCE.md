@@ -57,19 +57,58 @@ pass final acceptance.
 **Status: done, pre-existing.** `_versioned_worktree_dirty()` feeding
 `VERSIONED_IMPLEMENTATION_WORKTREE_DIRTY` into `failures`.
 
-## P6.5 — Formal four-way release attestation is honestly not yet wired
+## P6.5 — Formal four-way release attestation is now wired
 **Requires:** disclosing, rather than fabricating, whether the heavier
 cryptographic four-way release-attestation mechanism
 (`release_evidence.py:validate_version_tuple()`, which needs a pre-sealed
 `version_tuple.json` and a signed implementer attestation) is actually
 invoked by routine acceptance.
-**Status: genuine, disclosed gap.** `independent_acceptance()` hardcodes
-`four_way_aligned: False` rather than calling `validate_version_tuple()` --
-correctly, since that function expects signing/attestation infrastructure
-this local company does not have configured. This is not a "forgot to
-wire it" gap like P2/P4/P5's; it is a deliberately heavier, formal-release-
-only mechanism this local-first company has not been asked to stand up.
-Left honestly `False` rather than faked `True`.
+**Status: done -- mechanism fully built, wired, and tested; the Human's own
+one-time key-generation step is the only remaining manual action, by
+design.** The Human explicitly asked for this to be built now rather than
+deferred. `release_evidence.py` already contained a complete, tested
+two-party HMAC-signature verification engine (implementer attestation +
+independent Human G5 approval, with subject/credential/context-collision
+protection) from earlier work -- what was missing was production tooling
+to actually use it and the wiring to call it instead of hardcoding
+`False`. Both are now in place:
+
+- `aeris_runtime/release_attestation.py`: computes the honest, objective
+  version tuple (core/implementation SHAs, tracked-file digests for
+  `config/` and `ui/web/`, and the real `SUPERVISOR_STARTED` audit-ledger
+  timestamp -- refusing to fabricate any of it, e.g. it raises rather than
+  guessing if the worktree is dirty or AERIS has never been started), seals
+  an Evidence bundle for it, and signs AERIS's own **implementer**
+  attestation with an auto-provisioned local key (`.aeris/authority/
+  implementer.key`) that represents AERIS's own operating identity --
+  never the Human's.
+- `independent_acceptance()` (`review.py`) now calls
+  `release_attestation.current_release_authority_status()` instead of
+  hardcoding `False`; it reports `four_way_aligned: true` only once a real,
+  independently-signed Human G5 receipt resolves against the current
+  release, and otherwise reports the honest reason why not (e.g.
+  `NO_RELEASE_AUTHORITY_TRUST_STORE_CONFIGURED`) as an informational
+  `limits` entry, not a hard failure -- this remains an optional, heavier
+  gate, not a routine-acceptance requirement.
+- Three scripts give the Human a plain path to actually use it:
+  `scripts/authority-keygen.py --human` (generates the Human's own key --
+  deliberately not something AERIS can run on the Human's behalf, or the
+  "independent" review would be fake), `scripts/prepare-release-
+  attestation.py` (AERIS's half: version tuple + Evidence + implementer
+  signature), and `scripts/mint-g5-approval.py` (the Human's half: signs
+  the actual approval with their own key file).
+
+**Why AERIS cannot complete this alone, even now:** `release_evidence.py`'s
+own G5 gate check requires the reviewer principal to be `kind=='HUMAN'`
+with `human_authority=='Human Chief Engineer'`, and separately rejects a
+reviewer/implementer subject or key collision -- both enforced in code, not
+just convention. Generating a "Human" key myself and signing with it would
+technically satisfy every check while representing zero genuine independent
+review, which is exactly the P3.6 "no automated process self-certifies
+Human approval" principle this project has held everywhere else. Verified
+end-to-end with a real (test) two-key signature exchange in
+`tests/test_release_attestation.py`: 6/6 passing, including a dedicated
+test that an implementer key can never resolve as its own reviewer.
 
 ## P6.6 — Company acceptance requires real-machine evidence, not just tests
 **Requires:** unit tests passing alone must not be sufficient; there must be
@@ -98,6 +137,12 @@ items got, not a one-off manual claim.
 ## Sequencing
 P6.1-P6.4/P6.6/P6.7 describe mechanisms that already existed before this
 document was written; only the `progress_verify` wiring (P6.8) and this
-write-up were new work. P6.5 stays an honestly disclosed gap: it needs a
-signing/attestation decision from the Human before it could ever be wired,
-not a code change this session can make unilaterally.
+write-up were new work. P6.5 needed a signing/attestation decision from the
+Human before it could be wired -- the Human made that call explicitly
+("現在就做" / do it now, reusing the existing HMAC two-party mechanism
+rather than deferring or inventing a new scheme) -- and the mechanism is now
+fully built, wired, and tested. All of P6.1-P6.8 are done. The one manual
+step that remains, by design and forever (see P6.5 above), is the Human
+running `authority-keygen.py`/`mint-g5-approval.py` themselves whenever they
+want to formally bless a specific release -- that is not a gap, it is the
+whole point of requiring an independent Human signature.

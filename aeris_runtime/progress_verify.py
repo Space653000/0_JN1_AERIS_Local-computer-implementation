@@ -473,6 +473,23 @@ def _check_p6_4() -> CheckResult:
     return CheckResult(ok, detail, "aeris_runtime/review.py")
 
 
+def _check_p6_5() -> CheckResult:
+    wired_ok, _ = _grep("aeris_runtime/review.py", "current_release_authority_status", "release_attestation")
+    not_hardcoded, _ = _grep("aeris_runtime/review.py", '"four_way_aligned": release_authority["aligned"]')
+    module_ok = (ROOT / "aeris_runtime/release_attestation.py").exists()
+    scripts_ok = all((ROOT / f"scripts/{name}").exists() for name in
+                      ("authority-keygen.py", "prepare-release-attestation.py", "mint-g5-approval.py"))
+    tests_ok, tests_detail = _run_unittest("tests.test_release_attestation")
+    ok = wired_ok and not_hardcoded and module_ok and scripts_ok and tests_ok
+    return CheckResult(
+        ok,
+        f"review.py calls the real mechanism={wired_ok}; no longer hardcoded={not_hardcoded}; "
+        f"module present={module_ok}; Human-facing scripts present={scripts_ok}; {tests_detail}",
+        "aeris_runtime/release_attestation.py; aeris_runtime/review.py; scripts/authority-keygen.py; "
+        "scripts/prepare-release-attestation.py; scripts/mint-g5-approval.py",
+    )
+
+
 def _check_p6_6() -> CheckResult:
     ok, detail = _grep("aeris_runtime/review.py", "REAL_MACHINE_ACCEPTANCE_NOT_PRESENT", "REAL_MACHINE_ACCEPTANCE_FAILED")
     return CheckResult(ok, detail, "aeris_runtime/review.py")
@@ -502,7 +519,7 @@ CHECKS: dict[str, Callable[[], CheckResult]] = {
     "P4.6": _check_p4_6, "P4.7": _check_p4_7,
     "P5.1": _check_p5_1, "P5.2": _check_p5_2, "P5.3": _check_p5_3, "P5.5": _check_p5_5,
     "P5.6": _check_p5_6, "P5.7": _check_p5_7, "P5.8": _check_p5_8, "P5.9": _check_p5_9,
-    "P6.1": _check_p6_1, "P6.2": _check_p6_2, "P6.3": _check_p6_3, "P6.4": _check_p6_4,
+    "P6.1": _check_p6_1, "P6.2": _check_p6_2, "P6.3": _check_p6_3, "P6.4": _check_p6_4, "P6.5": _check_p6_5,
     "P6.6": _check_p6_6, "P6.7": _check_p6_7, "P6.8": _check_p6_8,
 }
 
@@ -512,7 +529,7 @@ _ORDER = ["P0.1", "P0.2", "P0.3", "P0.4", "P0.5", "P0.6", "P0.7",
           "P3.1", "P3.2", "P3.3", "P3.4", "P3.5", "P3.6", "P3.7", "P3.8",
           "P4.1", "P4.2", "P4.3", "P4.4", "P4.5", "P4.6", "P4.7",
           "P5.1", "P5.2", "P5.3", "P5.5", "P5.6", "P5.7", "P5.8", "P5.9",
-          "P6.1", "P6.2", "P6.3", "P6.4", "P6.6", "P6.7", "P6.8"]
+          "P6.1", "P6.2", "P6.3", "P6.4", "P6.5", "P6.6", "P6.7", "P6.8"]
 
 
 # P2.4: let the (now authenticated, admin-only) Progress Center UI trigger
