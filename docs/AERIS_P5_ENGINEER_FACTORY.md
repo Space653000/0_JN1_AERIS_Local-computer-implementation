@@ -201,8 +201,14 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x7, Speaker x7, Product x2, Microphone x5, Array x3, Failure x4) and
-covers 28 of 42 skills so far (added `porous-absorption`: the
+(DSP x7, Speaker x7, Product x2, Microphone x5, Array x3, Failure x5) and
+covers 29 of 42 skills so far (added
+`repeatability-reproducibility`: a standard Gauge R&R-style variance
+decomposition (within-group repeatability, between-group variance
+net of the within contribution, and their sum), independently
+recomputed with Python's stdlib `statistics.variance` rather than the
+implementation's numpy calls, checked with a zero-within-variance
+construction and a generic case; `porous-absorption`: the
 Delany-Bazley empirical model for a rigid-backed fibrous absorber,
 independently re-typed here from the standard published reference
 rather than copied from the implementation's source, plus the

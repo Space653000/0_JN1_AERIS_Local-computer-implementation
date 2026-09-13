@@ -11,6 +11,7 @@ convenient round number)."""
 import cmath
 import math
 import random
+import statistics
 import unittest
 
 from aeris_runtime.engineering import catalog
@@ -914,6 +915,37 @@ class PorousAbsorptionDelanyBazleyTests(unittest.TestCase):
                     self.assertAlmostEqual(actual, expected, places=10)
                     self.assertGreaterEqual(actual, 0.0)
                     self.assertLessEqual(actual, 1.0)
+
+
+class RepeatabilityReproducibilityVarianceDecompositionTests(unittest.TestCase):
+    """A standard Gauge R&R-style variance decomposition: within-group
+    variance averages each group's own sample variance (repeatability),
+    between-group variance is the sample variance of the group means
+    minus the within-group variance's contribution to that quantity
+    (between = var(means) - within/n, clipped at zero), and
+    reproducibility is their sum. All independently recomputed here
+    with Python's stdlib `statistics.variance` rather than the
+    implementation's numpy calls. Checked with a zero-within-variance
+    construction (identical replicates per group, so repeatability_sd
+    must be exactly 0 and reproducibility_sd must equal exactly the
+    group means' own standard deviation) and a generic case."""
+
+    def _expected(self, groups):
+        means = [sum(g) / len(g) for g in groups]
+        within = sum(statistics.variance(g) for g in groups) / len(groups)
+        n = len(groups[0])
+        between = max(0.0, statistics.variance(means) - within / n)
+        return within, between
+
+    def test_variance_decomposition_matches_stdlib_statistics(self):
+        cases = [[[5, 5, 5], [7, 7, 7], [9, 9, 9]], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]]
+        for groups in cases:
+            with self.subTest(groups=groups):
+                within, between = self._expected(groups)
+                values = catalog.execute("repeatability-reproducibility", {"groups": groups})["values"]
+                self.assertAlmostEqual(values["repeatability_sd"], math.sqrt(within), places=10)
+                self.assertAlmostEqual(values["between_group_sd"], math.sqrt(between), places=10)
+                self.assertAlmostEqual(values["reproducibility_sd"], math.sqrt(within + between), places=10)
 
 
 if __name__ == "__main__":
