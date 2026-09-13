@@ -117,5 +117,48 @@ class MicrophoneSensitivityDbConversionTests(unittest.TestCase):
                 self.assertAlmostEqual(values["snr_db"], 20 * math.log10(signal_rms_v / noise_rms_v), places=6)
 
 
+class GccPhatTdoaKnownShiftTests(unittest.TestCase):
+    """gcc-phat-tdoa's actual algorithm (FFT cross-correlation with phase-
+    transform weighting) is not independently re-implemented here -- that
+    would just duplicate the implementation and risk copying its own
+    mistakes. Instead the ground truth is established by construction:
+    an impulse in `reference` and the same impulse shifted by a known,
+    chosen integer sample count in `delayed` has a mathematically
+    unambiguous true delay, independent of how the algorithm finds it.
+    The algorithm must recover exactly that constructed shift, and
+    tdoa_s = delay_samples/sample_rate_hz and
+    doa_deg = degrees(asin(tdoa_s*sound_speed_m_s/spacing_m)) are then
+    checked against that same independently known shift -- not against
+    the implementation's own tau. Checked across 3 different shift/
+    sample-rate/spacing/sound-speed combinations, all within each case's
+    physically valid lag window (spacing_m/sound_speed_m_s*sample_rate_hz)."""
+
+    def _values(self, n, ref_index, shift, sample_rate_hz, spacing_m, sound_speed_m_s):
+        reference = [0.0] * n
+        reference[ref_index] = 1.0
+        delayed = [0.0] * n
+        delayed[ref_index + shift] = 1.0
+        params = {
+            "reference": reference, "delayed": delayed, "sample_rate_hz": sample_rate_hz,
+            "spacing_m": spacing_m, "sound_speed_m_s": sound_speed_m_s,
+        }
+        return catalog.execute("gcc-phat-tdoa", params)["values"]
+
+    def test_recovers_exact_constructed_shift_and_doa(self):
+        cases = [
+            (512, 200, 7, 48000, 0.1, 343),
+            (512, 200, -4, 48000, 0.05, 343),
+            (256, 100, 3, 16000, 0.08, 340),
+        ]
+        for n, ref_index, shift, sample_rate_hz, spacing_m, sound_speed_m_s in cases:
+            with self.subTest(shift=shift, sample_rate_hz=sample_rate_hz, spacing_m=spacing_m, sound_speed_m_s=sound_speed_m_s):
+                values = self._values(n, ref_index, shift, sample_rate_hz, spacing_m, sound_speed_m_s)
+                expected_tau = shift / sample_rate_hz
+                expected_doa = math.degrees(math.asin(max(-1.0, min(1.0, expected_tau * sound_speed_m_s / spacing_m))))
+                self.assertEqual(values["delay_samples"], shift)
+                self.assertAlmostEqual(values["tdoa_s"], expected_tau, places=10)
+                self.assertAlmostEqual(values["doa_deg"], expected_doa, places=6)
+
+
 if __name__ == "__main__":
     unittest.main()
