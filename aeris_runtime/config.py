@@ -110,8 +110,22 @@ def load_config() -> RuntimeConfig:
     return RuntimeConfig(
         mode=mode,
         local_base_url=os.getenv("AERIS_LOCAL_BASE_URL", "http://127.0.0.1:11434").rstrip("/"),
-        local_model=os.getenv("AERIS_LOCAL_MODEL", "qwen3:4b-instruct"),
-        local_timeout_sec=_int("AERIS_LOCAL_TIMEOUT_SEC", 120),
+        # gemma2:27b, not a Chinese-origin model: chosen 2026-09-13 after a
+        # live capability comparison found every sub-10B local model tested
+        # (this project's prior default qwen3:4b-instruct included) failed
+        # a basic multi-step engineering algebra question (speaker
+        # resonance fs = 1/(2*pi*sqrt(Mms*Cms)) is invariant when Mms
+        # doubles and Cms halves -- qwen3:4b-instruct, llama3.1:8b,
+        # gemma2:9b and mistral-nemo all incorrectly answered sqrt(2) or
+        # 1/sqrt(2)), while gemma2:27b and qwen3:14b both correctly worked
+        # through it step by step to the right answer (multiplier = 1).
+        # Since a non-Chinese-origin model performed equally well once
+        # given enough capacity, it was preferred as the default per
+        # explicit instruction to favor non-Chinese-origin models unless a
+        # Chinese-origin one is demonstrably stronger -- see
+        # docs/AERIS_LOCAL_MODEL_SELECTION.md for the full comparison.
+        local_model=os.getenv("AERIS_LOCAL_MODEL", "gemma2:27b"),
+        local_timeout_sec=_int("AERIS_LOCAL_TIMEOUT_SEC", 180),
         cloud_base_url=os.getenv("AERIS_CLOUD_BASE_URL", "https://api.openai.com/v1").rstrip("/"),
         cloud_model=os.getenv("AERIS_CLOUD_MODEL", ""),
         cloud_api_key=_secret("AERIS_CLOUD_API_KEY", "AERIS_CLOUD_API_KEY_FILE"),
