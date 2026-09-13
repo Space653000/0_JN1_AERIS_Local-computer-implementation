@@ -654,6 +654,17 @@ def run(items: list[str] | None = None, *, write: bool = True) -> dict:
             else:
                 truth.setdefault("items", {}).pop(item_id, None)
     if write:
+        # The one gate that can never be satisfied by per-item checks alone
+        # (see progress_truth.py: overall==100 still fails closed unless
+        # this is exactly "PASS") -- always recorded honestly as whatever
+        # independent_acceptance() actually returns right now, never
+        # fabricated. This is deliberately NOT gated on "did P6 pass this
+        # run" -- it reflects real, current, whole-company state every time.
+        try:
+            from .review import independent_acceptance
+            truth["p6_comprehensive_acceptance"] = independent_acceptance()["final_result"]
+        except Exception as exc:
+            truth["p6_comprehensive_acceptance"] = f"ERROR:{type(exc).__name__}"
         truth["updated_at_utc"] = now.isoformat()
         TRUTH_PATH.write_text(json.dumps(truth, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return report
