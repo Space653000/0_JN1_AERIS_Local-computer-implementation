@@ -201,8 +201,11 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x3, Speaker x3, Product x2, Microphone, Array x2, Failure) and
-covers 12 of 42 skills so far; **P5.4 is not being marked done by this** -- it is
+(DSP x4, Speaker x3, Product x2, Microphone, Array x2, Failure) and
+covers 13 of 42 skills so far (added `fractional-octave`: a pure tone
+placed on an exact FFT bin must land its entire A^2/2 Parseval energy
+in the single third-octave band whose analytic edges independently
+contain that frequency); **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
 not to overstate a small first step as completion. The intended pattern

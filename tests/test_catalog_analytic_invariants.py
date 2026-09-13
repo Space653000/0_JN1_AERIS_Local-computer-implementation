@@ -370,5 +370,46 @@ class ResponsePhaseGroupDelayTests(unittest.TestCase):
                     self.assertAlmostEqual(actual, delay_s, places=8)
 
 
+class FractionalOctaveParsevalTests(unittest.TestCase):
+    """Parseval's theorem: a pure sinusoid of amplitude A has mean-square
+    power A^2/2, independent of how the implementation bins that energy
+    into 1/N-octave bands. When the tone's frequency lands on an exact
+    FFT bin (no spectral leakage -- chosen here via integer
+    cycles-per-record, not sourced from the implementation), *all* of
+    that A^2/2 must land in the single third-octave band whose analytic
+    edges (center*2^(+-1/(2*fraction)), independently recomputed here)
+    contain the tone, and the sum across every returned band must equal
+    A^2/2. Checked across 3 different frequencies, sample rates, band
+    fractions and amplitudes."""
+
+    def _band_containing(self, frequency_hz, fraction):
+        for k in range(-12 * fraction, 6 * fraction + 1):
+            center = 1000 * 2 ** (k / fraction)
+            lo, hi = center / 2 ** (1 / (2 * fraction)), center * 2 ** (1 / (2 * fraction))
+            if lo <= frequency_hz < hi:
+                return center
+        raise AssertionError("no analytic band covers this frequency")
+
+    def _band_powers(self, frequency_hz, sample_rate_hz, n, fraction, amplitude):
+        samples = [amplitude * math.sin(2 * math.pi * frequency_hz * i / sample_rate_hz) for i in range(n)]
+        params = {"samples": samples, "sample_rate_hz": sample_rate_hz, "fraction": fraction}
+        values = catalog.execute("fractional-octave", params)["values"]
+        return dict(zip(values["centers_hz"], values["band_power_unit2"]))
+
+    def test_tone_energy_lands_entirely_in_its_analytic_band(self):
+        cases = [
+            (512, 8192, 1024, 3, 1.0),
+            (1000, 16000, 1600, 1, 2.0),
+            (250, 8000, 800, 6, 0.5),
+        ]
+        for frequency_hz, sample_rate_hz, n, fraction, amplitude in cases:
+            with self.subTest(frequency_hz=frequency_hz, sample_rate_hz=sample_rate_hz, fraction=fraction):
+                powers = self._band_powers(frequency_hz, sample_rate_hz, n, fraction, amplitude)
+                expected_power = amplitude ** 2 / 2
+                target_center = self._band_containing(frequency_hz, fraction)
+                self.assertAlmostEqual(powers[target_center], expected_power, places=8)
+                self.assertAlmostEqual(sum(powers.values()), expected_power, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()
