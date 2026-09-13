@@ -256,5 +256,33 @@ class SpectralAnalysisCoherentSineTests(unittest.TestCase):
                 self.assertAlmostEqual(values["rms"], amplitude / math.sqrt(2), places=8)
 
 
+class RequirementTraceabilityCoverageRatioTests(unittest.TestCase):
+    """coverage = (count of requirements with at least one link) /
+    (total requirement count) -- a plain ratio, re-derived here from the
+    requirement/link definitions directly rather than the
+    implementation. Checked across partial, full, and zero coverage
+    (the zero case exercises an empty links list, a genuine edge case
+    the single existing golden fixture doesn't reach)."""
+
+    def _coverage(self, requirement_ids, test_ids, links):
+        params = {"requirement_ids": requirement_ids, "test_ids": test_ids, "links": links}
+        return catalog.execute("requirement-traceability", params)["values"]["coverage"]
+
+    def test_coverage_ratio_holds_across_partial_full_and_zero_cases(self):
+        cases = [
+            (["R1", "R2"], ["T1"], [{"requirement_id": "R1", "test_id": "T1", "evidence_ref": "E1"}]),
+            (["R1", "R2", "R3", "R4"], ["T1", "T2"],
+             [{"requirement_id": "R1", "test_id": "T1", "evidence_ref": "E1"},
+              {"requirement_id": "R2", "test_id": "T2", "evidence_ref": "E2"},
+              {"requirement_id": "R3", "test_id": "T1", "evidence_ref": "E3"}]),
+            (["R1"], ["T1"], []),
+        ]
+        for requirement_ids, test_ids, links in cases:
+            with self.subTest(requirement_ids=requirement_ids, links=links):
+                covered = {link["requirement_id"] for link in links}
+                expected_coverage = len(covered) / len(requirement_ids)
+                self.assertAlmostEqual(self._coverage(requirement_ids, test_ids, links), expected_coverage, places=10)
+
+
 if __name__ == "__main__":
     unittest.main()

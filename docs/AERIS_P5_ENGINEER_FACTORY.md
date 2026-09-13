@@ -173,11 +173,16 @@ magnitude at its bin equals exactly the peak amplitude, and the
 time-domain RMS equals amplitude/sqrt(2) regardless of coherent
 sampling -- both re-derived from first principles, checked across 3
 different sample-count/bin/amplitude/sample-rate combinations
-constructed independently of the shared golden fixture. This adds
-genuine multi-point regression coverage without touching `cases.py`/
-`catalog.py`'s single-fixture contract at all -- it's a wholly separate,
-additive test file. It now spans all 6 suites (DSP x2, Speaker, Product,
-Microphone, Array x2, Failure) and covers 8 of 42 skills so far;
+constructed independently of the shared golden fixture. The
+requirement-traceability skill (Product suite, a second skill there)
+checks a plain ratio -- `coverage = (requirements with >=1 link) /
+(total requirements)` -- across partial, full, and zero coverage
+(the zero case, an empty links list, is a genuine edge case the single
+existing golden fixture never reaches). This adds genuine multi-point
+regression coverage without touching `cases.py`/`catalog.py`'s
+single-fixture contract at all -- it's a wholly separate, additive test
+file. It now spans all 6 suites (DSP x2, Speaker, Product x2,
+Microphone, Array x2, Failure) and covers 9 of 42 skills so far;
 **P5.4 is not being marked done by this** -- it is
 nowhere near "broader golden suites" for all six suites, and no
 `progress_verify` check has been registered for it, deliberately, so as
