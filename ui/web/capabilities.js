@@ -4,6 +4,13 @@
   if(!content)return;
   const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const text=value=>window.aerisText?window.aerisText(value):String(value??'');
+  // Plain-language labels for the generic execution envelope only (task/
+  // workflow/evidence/review-decision) -- never for a skill's own numerical
+  // result, which genuinely varies per skill and would need real per-skill
+  // domain knowledge to summarize honestly rather than guessed wording.
+  const DECISION_LABELS={BASELINE_REVIEW_PASS:'初步審查通過',CHANGES_REQUIRED:'需要修改才能通過',
+    NO_DOMAIN_DISPOSITION:'此技能未產出明確判定',INCOMPLETE_OR_FAIL:'不完整或未達標準'};
+  const decisionLabel=d=>DECISION_LABELS[d]||d||'UNKNOWN';
   async function api(path,body){const r=await fetch('/api/v1/capabilities'+path,{cache:'no-store',...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})});const data=await r.json();if(!r.ok)throw Error(data.error||data.detail||r.status);return data;}
   const section=document.createElement('section');section.className='section';section.id='capability-factory';
   section.innerHTML='<div class="section-title"><div><div class="section-kicker">專業能力工廠</div><h2>聲學工程能力矩陣</h2></div><span class="pill" id="capSync">等待真實評估</span></div><div class="panel"><p>免費本機基準 · L2 本職本機執行證據／L3 獨立角色領域驗收／L4 真實儀器、校正與人工驗證。共用技能黃金案例不等於角色驗收；記憶 ≠ Evidence。</p><div id="capCounts" class="chips" aria-live="polite"></div><div id="capKnowledge" class="chips" aria-live="polite">知識來源分類待 API 確認</div><div id="capCoverage" class="list"></div><div class="cap-graph-title" title="L0 尚無能力紀錄 → L1 已登錄合約框架，尚未執行 → L2 本機可執行、已有證據 → L3 領域審查通過 → L4 真實儀器與人工驗證通過。數字越大，代表驗證得越紮實。">能力圖譜 · 依領域分組，顏色代表成熟度 L0–L4</div><div id="capGraph" class="cap-graph" role="img" aria-label="100 席角色能力圖譜"></div><details><summary>檢查 100 席能力、覆蓋與已知弱點</summary><div id="capRows"></div></details></div>';
@@ -26,7 +33,7 @@
   }catch(e){document.getElementById('capSync').textContent='能力 API 尚未就緒：'+e.message;}finally{loading=false;}}
   async function loadRole(){const id=document.getElementById('capRole').value;selectedRole=id;const pack=await api('/roles/'+id);const select=document.getElementById('capSkill');select.innerHTML=pack.required_skills.map(s=>`<option>${escape(s)}</option>`).join('');document.getElementById('capParams').value='';document.getElementById('capOutput').textContent=pack.scope.map(text).join('\n');}
   if(page==='workspace'){
-    const work=document.createElement('div');work.className='panel';work.innerHTML='<h3>執行專業工程能力</h3><p>選擇角色與方法，載入明確標示的合成案例，或貼上自己的 JSON 工程資料。執行會建立 SQLite Task、Workflow、Evidence 與獨立規則審查。</p><label for="capRole">能力席位</label><select id="capRole"></select><label for="capSkill">可執行技能</label><select id="capSkill"></select><label for="capObjective">工程目標</label><input id="capObjective" placeholder="例如：驗證陣列兩通道的延遲與方向估計"><label for="capSource">資料來源</label><select id="capSource"><option value="USER_SUPPLIED_UNVERIFIED">使用者資料（尚未驗證校正）</option><option value="SYNTHETIC">合成 黃金 案例</option></select><label for="capParams">符合 輸入結構描述 的 JSON</label><textarea id="capParams" rows="12" spellcheck="false"></textarea><div class="actions"><button type="button" class="btn" id="capFixture">載入合成 黃金 案例</button><button type="button" class="btn" id="capRun">執行本機分析並建立 Evidence</button></div><div id="capTaught" class="callout" hidden style="margin:9px 0"></div><pre id="capOutput" aria-live="polite"></pre>';
+    const work=document.createElement('div');work.className='panel';work.innerHTML='<h3>執行專業工程能力</h3><p>選擇角色與方法，載入明確標示的合成案例，或貼上自己的 JSON 工程資料。執行會建立 SQLite Task、Workflow、Evidence 與獨立規則審查。</p><label for="capRole">能力席位</label><select id="capRole"></select><label for="capSkill">可執行技能</label><select id="capSkill"></select><label for="capObjective">工程目標</label><input id="capObjective" placeholder="例如：驗證陣列兩通道的延遲與方向估計"><label for="capSource">資料來源</label><select id="capSource"><option value="USER_SUPPLIED_UNVERIFIED">使用者資料（尚未驗證校正）</option><option value="SYNTHETIC">合成 黃金 案例</option></select><label for="capParams">符合 輸入結構描述 的 JSON</label><textarea id="capParams" rows="12" spellcheck="false"></textarea><div class="actions"><button type="button" class="btn" id="capFixture">載入合成 黃金 案例</button><button type="button" class="btn" id="capRun">執行本機分析並建立 Evidence</button></div><div id="capTaught" class="callout" hidden style="margin:9px 0"></div><div id="capSummary" class="callout" hidden style="margin:9px 0"></div><pre id="capOutput" aria-live="polite"></pre>';
     const form=document.createElement('div');form.className='formgrid';
     work.insertBefore(form,work.querySelector('label'));
     for(const id of ['capRole','capSkill','capSource','capObjective','capParams']){
@@ -40,7 +47,14 @@
     document.getElementById('capRole').onchange=()=>loadRole().catch(showError);
     document.getElementById('capSkill').onchange=()=>{document.getElementById('capParams').value='';};
     document.getElementById('capFixture').onclick=async()=>{try{const role=document.getElementById('capRole').value,skill=document.getElementById('capSkill').value;const data=await api('/fixture/'+role+'?skill='+encodeURIComponent(skill));const fx=data.fixture;document.getElementById('capParams').value=JSON.stringify(fx.input,null,2);document.getElementById('capSource').value='SYNTHETIC';document.getElementById('capObjective').value=fx.reason;renderTaught(fx);}catch(e){showError(e);}};
-    document.getElementById('capRun').onclick=async()=>{const button=document.getElementById('capRun');button.disabled=true;try{const params=JSON.parse(document.getElementById('capParams').value),objective=document.getElementById('capObjective').value.trim();if(!objective)throw Error('請填寫工程目標');const report=await api('/execute',{role_id:document.getElementById('capRole').value,skill_id:document.getElementById('capSkill').value,params,objective,source_kind:document.getElementById('capSource').value,risk:'R1'});document.getElementById('capOutput').textContent=JSON.stringify({state:report.state,task:report.task_id,workflow:report.workflow_id,證據:report.evidence_run_id,review:report.review,source:report.source_kind,result:report.numerical_result.values},null,2);await refresh();}catch(e){showError(e);}finally{button.disabled=false;}};
+    document.getElementById('capRun').onclick=async()=>{const button=document.getElementById('capRun');button.disabled=true;try{const params=JSON.parse(document.getElementById('capParams').value),objective=document.getElementById('capObjective').value.trim();if(!objective)throw Error('請填寫工程目標');const report=await api('/execute',{role_id:document.getElementById('capRole').value,skill_id:document.getElementById('capSkill').value,params,objective,source_kind:document.getElementById('capSource').value,risk:'R1'});
+      const decision=report.review?.decision;const summary=document.getElementById('capSummary');
+      summary.hidden=false;
+      summary.innerHTML=`<b>✅ 已執行完成</b><br>獨立交叉審查結果：<b>${escape(decisionLabel(decision))}</b>`+
+        (decision&&!DECISION_LABELS[decision]?`（原始代碼：${escape(decision)}，尚無中文對照，請見下方完整資料）`:'')+
+        `<br>任務編號 <code>${escape(report.task_id)}</code>，已建立可稽核紀錄 <code>${escape(report.evidence_run_id)}</code>。`+
+        `<br><small>下方是完整技術資料（含實際數值結果），供需要逐項核對的人使用。</small>`;
+      document.getElementById('capOutput').textContent=JSON.stringify({state:report.state,task:report.task_id,workflow:report.workflow_id,證據:report.evidence_run_id,review:report.review,source:report.source_kind,result:report.numerical_result.values},null,2);await refresh();}catch(e){showError(e);}finally{button.disabled=false;}};
   }
   function showError(e){document.getElementById('capOutput').textContent='未完成：'+e.message;}
   function taughtHTML(fx){
