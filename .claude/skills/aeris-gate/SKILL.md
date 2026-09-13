@@ -54,9 +54,15 @@ real investigation of the codebase — not invented from the phase label alone.
   machinery to *support* a review is real and already tested.
 - **P4.4**: full zh-TW translation of all 132 skills' descriptions is large
   content work, intentionally not done in one pass.
-- **P2.4**: triggering re-verification from the Progress Center UI is
-  deliberately deferred — an unauthenticated loopback endpoint that executes
-  checks and writes files is a real design question, not a quick add-on.
+- **P2.4 is now done** (was previously listed here as deliberately deferred):
+  the multi-user auth system resolved the original attack-surface objection
+  by letting the trigger endpoint require the owner-only `"admin"`
+  permission. See `docs/AERIS_P2_PROGRESS_ENGINE.md`'s P2.4 section.
+- **P6.5** (formal four-way release-attestation signing) is the one
+  remaining item that genuinely cannot be built without a Human decision
+  — it needs a signing/attestation architecture choice, not a code change.
+  Present it as a decision point; do not invent a signing scheme
+  unilaterally.
 
 ## Known performance traps
 
