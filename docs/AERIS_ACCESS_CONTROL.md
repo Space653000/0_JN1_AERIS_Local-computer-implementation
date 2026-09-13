@@ -24,31 +24,58 @@ the loopback browser or a future remote connect-back path.
   operational data; serving them publicly is no different from anyone being
   able to view a public site's page source.
 
-**Everything else requires a valid session:** `/dashboard`, `/workspace`,
-`/progress`, `/activity`, `/services`, and every `/api/v1/*` endpoint other
-than the two auth ones above. An unauthenticated request to an HTML page
-gets a 302 redirect to `/login`; an unauthenticated request to an API
-endpoint gets a 401 JSON error. See `aeris_runtime/controlplane.py`'s
-`PUBLIC_GET_PATHS`/`PUBLIC_POST_PATHS` for the exact allowlist — everything
-not explicitly listed there is locked by default, not the other way around.
+**Everything else requires a valid session with the right permission:**
+`/dashboard`, `/workspace`, `/progress`, `/activity`, `/services`, `/admin`,
+and every `/api/v1/*` endpoint other than the two auth ones above. An
+unauthenticated request to an HTML page gets a 302 redirect to `/login`; an
+unauthenticated request to an API endpoint gets a 401 JSON error; a
+*signed-in* request to a page or mutating action the account was not
+granted gets a 403. See `aeris_runtime/controlplane.py`'s
+`PUBLIC_GET_PATHS`/`PUBLIC_POST_PATHS`/`PROTECTED_UI_PAGE_PERMISSIONS`/
+`MUTATING_API_PREFIXES` for the exact allowlist and permission map —
+everything not explicitly listed there is locked by default, not the other
+way around.
 
-## Setting your credentials
+## Accounts: one owner, any number of granted accounts
 
-Nothing works until you set a username and password once, locally:
+There is exactly **one owner**, set locally once:
 
 ```bash
 python -m aeris_runtime auth set-credentials
 ```
 
 This prompts interactively (`getpass`, so the password is never echoed to
-the terminal or written to any log). Only a salted PBKDF2-HMAC-SHA256 hash
-(310,000 iterations) is persisted, to `.aeris/state/auth_credentials.json`
-— a path that is already covered by the repository's blanket `.aeris/`
-`.gitignore` rule, so it can never be accidentally committed. The plaintext
-password is never seen, stored, or transmitted by anything other than the
-browser form and this one local prompt.
+the terminal or written to any log) and **wipes every other account and
+session** — it's the local, filesystem-level reset path, not something to
+run casually once other accounts exist. Only a salted PBKDF2-HMAC-SHA256
+hash (310,000 iterations) is ever persisted, to
+`.aeris/state/auth_credentials.json` — a path already covered by the
+repository's blanket `.aeris/` `.gitignore` rule, so it can never be
+accidentally committed. The plaintext password is never seen, stored, or
+transmitted by anything other than the browser form and this one local
+prompt.
 
-Check whether credentials are already configured:
+The owner has every permission, including managing accounts (`admin`), and
+cannot be removed or demoted through the API — only by re-running
+`set-credentials`.
+
+**The owner can grant additional accounts**, each scoped to an explicit
+subset of pages/actions, two ways:
+
+- The `/admin` page (owner-only; a "帳號管理" link appears in the sidebar
+  for the owner on every protected page): add a username/password, tick
+  which pages it can see, and optionally whether it can execute skills or
+  create tasks (`capabilities_execute` — the one grantable permission that
+  covers mutating actions, not just viewing).
+- The CLI: `python -m aeris_runtime auth grant-user <username> --permissions
+  dashboard progress` (prompts for the password via `getpass`);
+  `auth list-users`; `auth revoke-user <username>`.
+
+A granted account can **never** hold `admin` — it isn't in the grantable
+permission set at all (`aeris_runtime/auth.py`'s `GRANTABLE_PERMISSIONS`),
+so there's no checkbox to misconfigure into an accidental second owner.
+
+Check what's currently configured:
 
 ```bash
 python -m aeris_runtime auth status
@@ -81,7 +108,8 @@ python -m aeris_runtime auth status
   to require it under. If a public-facing tunnel is added later, that
   layer needs to terminate TLS and this cookie should be revisited to add
   `Secure`.
-- **Single owner, not multi-user.** One username/password, one class of
-  access (everything or nothing). No roles, no per-page permissions. This
-  matches the stated requirement ("只有我有登入的帳號密碼") — building
-  multi-user RBAC was not asked for and would be scope creep.
+- **Permission granularity stops at "which pages" plus one "can execute"
+  flag.** There's no per-role-seat or per-skill permission (e.g. "can see
+  R073 but not R012"); a granted account either can or can't execute/create
+  anything at all via `capabilities_execute`. Finer-grained permissions
+  were not requested and would be speculative scope beyond what's asked.

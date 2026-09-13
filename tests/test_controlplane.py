@@ -22,9 +22,12 @@ class ControlPlaneTests(unittest.TestCase):
         self.patches = [
             patch.object(controlplane, "DB_PATH", root / "control.sqlite3"),
             patch.object(workflow, "WORKFLOW_ROOT", root / "workflows"),
+            patch.object(auth, "CREDENTIALS_PATH", root / "auth_credentials.json"),
         ]
         for item in self.patches:
             item.start()
+        auth.set_credentials("owner", "test-owner-password-1")
+        self.addCleanup(auth._sessions.clear)
 
     def tearDown(self):
         for item in reversed(self.patches):
@@ -48,7 +51,7 @@ class ControlPlaneTests(unittest.TestCase):
         return server
 
     def _session_cookie(self):
-        token = auth.create_session()
+        token = auth.create_session("owner")
         self.addCleanup(auth.revoke_session, token)
         return f"{auth.SESSION_COOKIE_NAME}={token}"
 
@@ -106,6 +109,75 @@ class ControlPlaneTests(unittest.TestCase):
             self.assertIn("確定性 技能", body)
             self.assertIn("標準 登錄庫", body)
             self.assertIn("/assets/app.js", body)
+
+    def test_granted_user_can_reach_only_permitted_pages(self):
+        server = self._server()
+        auth.grant_user("viewer", "viewer-password-1", ["dashboard"])
+        token = auth.create_session("viewer")
+        self.addCleanup(auth.revoke_session, token)
+        cookie = f"{auth.SESSION_COOKIE_NAME}={token}"
+
+        allowed = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/dashboard", headers={"Cookie": cookie})
+        with urllib.request.urlopen(allowed, timeout=3) as response:
+            self.assertEqual(response.status, 200)
+
+        forbidden = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/workspace", headers={"Cookie": cookie})
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(forbidden, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
+
+    def test_only_owner_can_manage_users(self):
+        server = self._server()
+        auth.grant_user("viewer", "viewer-password-1", ["dashboard"])
+        viewer_token = auth.create_session("viewer")
+        self.addCleanup(auth.revoke_session, viewer_token)
+
+        forbidden = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/api/v1/auth/users",
+                                            headers={"Cookie": f"{auth.SESSION_COOKIE_NAME}={viewer_token}"})
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(forbidden, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
+
+        allowed = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/api/v1/auth/users",
+                                          headers={"Cookie": self._session_cookie()})
+        with urllib.request.urlopen(allowed, timeout=3) as response:
+            data = json.loads(response.read().decode("utf-8"))
+        usernames = {u["username"] for u in data["users"]}
+        self.assertIn("owner", usernames)
+        self.assertIn("viewer", usernames)
+
+    def test_owner_can_grant_and_revoke_a_user_via_api(self):
+        server = self._server()
+        create_request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/auth/users",
+            data=json.dumps({"username": "newhire", "password": "newhire-password-1", "permissions": ["progress"]}).encode(),
+            headers={"Cookie": self._session_cookie(), "Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(create_request, timeout=3) as response:
+            self.assertEqual(response.status, 201)
+        self.assertTrue(auth.verify_credentials("newhire", "newhire-password-1"))
+
+        revoke_request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/auth/users/newhire/revoke",
+            data=b"", headers={"Cookie": self._session_cookie()}, method="POST",
+        )
+        with urllib.request.urlopen(revoke_request, timeout=3) as response:
+            self.assertEqual(response.status, 200)
+        self.assertFalse(auth.verify_credentials("newhire", "newhire-password-1"))
+
+    def test_mutating_api_requires_capabilities_execute_permission(self):
+        server = self._server()
+        auth.grant_user("readonly", "readonly-password-1", ["workspace"])
+        token = auth.create_session("readonly")
+        self.addCleanup(auth.revoke_session, token)
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/projects",
+            data=json.dumps({"name": "Should Be Blocked"}).encode(),
+            headers={"Cookie": f"{auth.SESSION_COOKIE_NAME}={token}", "Content-Type": "application/json"},
+        )
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(request, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
 
     def test_roles_api_returns_100(self):
         server = self._server()

@@ -65,7 +65,11 @@ class ExpectedRunTests(unittest.TestCase):
         from aeris_runtime import auth
         server=ThreadingHTTPServer(('127.0.0.1',0),operations._Handler)
         thread=threading.Thread(target=server.serve_forever,daemon=True); thread.start()
-        token=auth.create_session(); self.addCleanup(auth.revoke_session,token)
+        creds_patch=patch.object(auth,"CREDENTIALS_PATH",Path(self.tmp.name)/"auth_credentials.json"); creds_patch.start()
+        self.addCleanup(creds_patch.stop)
+        auth.set_credentials("owner","test-owner-password-1")
+        self.addCleanup(auth._sessions.clear)
+        token=auth.create_session("owner"); self.addCleanup(auth.revoke_session,token)
         request=urllib.request.Request(f'http://127.0.0.1:{server.server_port}/services?theme=light',headers={'Cookie':f'{auth.SESSION_COOKIE_NAME}={token}'})
         try:
             with patch.object(operations,'_read_json',return_value={'operational_state':'OPEN_WITH_LIMITS'}), patch.object(operations,'HEARTBEAT_FILE',Path(self.tmp.name)/'heartbeat.json'), patch.object(Path,'replace',busy_once):

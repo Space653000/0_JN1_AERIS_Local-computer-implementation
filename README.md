@@ -427,8 +427,10 @@ python -m aeris_runtime auth set-credentials
 ```
 
 互動式輸入帳號密碼（`getpass`，畫面不回顯，也不會被記錄），僅將加鹽雜湊值存在本機
-`.aeris/state/auth_credentials.json`（已被 `.gitignore` 排除，不會被提交）。細節、session 生命週期與
-目前刻意尚未涵蓋的範圍（例如未來公開對外連線時的正式 HTTPS/反向代理）見
+`.aeris/state/auth_credentials.json`（已被 `.gitignore` 排除，不會被提交）。這組帳密是**唯一的擁有者**，
+擁有全部權限（包含管理其他帳號）；擁有者可以在 `/admin` 頁面（或 `auth grant-user` CLI 指令）新增授權
+帳號，逐一勾選每個帳號能看到哪些頁面、能不能執行技能／建立任務，被授權的帳號永遠不能取得擁有者權限。
+細節、session 生命週期與目前刻意尚未涵蓋的範圍（例如未來公開對外連線時的正式 HTTPS/反向代理）見
 [`docs/AERIS_ACCESS_CONTROL.md`](docs/AERIS_ACCESS_CONTROL.md)。
 
 ## 21. Persistent Build Phases：換電腦不用重走聊天歷史

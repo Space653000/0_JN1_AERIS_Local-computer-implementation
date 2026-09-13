@@ -194,7 +194,25 @@ PUBLIC_POST_PATHS = {"/api/v1/auth/login"}
 # fall through untouched: they are not pages this module serves, and a
 # blanket "redirect anything unrecognized" rule previously broke /health,
 # which the launcher scripts poll to detect the server coming up.
-PROTECTED_UI_PAGES = {"/dashboard", "/workspace", "/services", "/activity", "/progress", "/progress-center"}
+# Each protected page maps to the permission scope that grants it (see
+# auth.GRANTABLE_PERMISSIONS); /admin requires the owner-only "admin"
+# scope, which is never in GRANTABLE_PERMISSIONS and so can never be
+# handed to a granted account.
+PROTECTED_UI_PAGE_PERMISSIONS = {
+    "/dashboard": "dashboard", "/workspace": "workspace", "/services": "services",
+    "/activity": "activity", "/progress": "progress", "/progress-center": "progress",
+    "/admin": "admin",
+}
+# POST-only /api/v1/* prefixes that mutate or execute something (create a
+# task, run a skill, execute a role's capability, ...) require the
+# capabilities_execute permission specifically, not just "logged in" --
+# a granted account can be given read-only page access without also
+# being able to trigger real work. Prefix-matched, most-specific first.
+MUTATING_API_PREFIXES = (
+    "/api/v1/capabilities/", "/api/v1/tasks", "/api/v1/projects", "/api/v1/workflows",
+    "/api/v1/skills/run", "/api/v1/imports", "/api/v1/reproduction/", "/api/v1/pods/plan",
+    "/api/v1/roles/",
+)
 
 
 def _is_public_asset(path: str) -> bool:
@@ -205,10 +223,27 @@ def _session_token(handler: Any) -> str | None:
     return auth.parse_cookie(handler.headers.get("Cookie"), auth.SESSION_COOKIE_NAME)
 
 
-def _is_authenticated(handler: Any) -> bool:
+def _current_username(handler: Any) -> str | None:
+    """The authenticated username for this request, or a sentinel for
+    local same-machine tooling using the supervisor token (which acts
+    with full/owner-equivalent access -- see auth.py's docstring on why
+    that's not a new trust boundary)."""
     if auth.verify_supervisor_token(handler.headers.get(auth.SUPERVISOR_TOKEN_HEADER)):
+        return "__local_tooling__"
+    return auth.session_username(_session_token(handler))
+
+
+def _is_authenticated(handler: Any) -> bool:
+    return _current_username(handler) is not None
+
+
+def _has_permission(handler: Any, permission: str) -> bool:
+    username = _current_username(handler)
+    if username is None:
+        return False
+    if username == "__local_tooling__":
         return True
-    return auth.verify_session(_session_token(handler))
+    return auth.has_permission(username, permission)
 
 
 def _write_redirect(handler: Any, location: str) -> None:
@@ -228,11 +263,22 @@ def _clear_session_cookie(handler: Any) -> None:
 
 
 def _handle_auth_get(handler: Any, path: str) -> bool:
-    if path != "/api/v1/auth/status":
-        return False
-    authenticated = _is_authenticated(handler)
-    _write_json(handler, 200, {"authenticated": authenticated, "credentials_configured": auth.has_credentials()})
-    return True
+    if path == "/api/v1/auth/status":
+        username = _current_username(handler)
+        role, permissions = auth.user_permissions(username) if username and username != "__local_tooling__" else (None, [])
+        _write_json(handler, 200, {
+            "authenticated": username is not None, "credentials_configured": auth.has_credentials(),
+            "username": username if username != "__local_tooling__" else None,
+            "role": role, "permissions": permissions,
+        })
+        return True
+    if path == "/api/v1/auth/users":
+        if not _has_permission(handler, "admin"):
+            _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can manage accounts."})
+            return True
+        _write_json(handler, 200, {"users": auth.list_users(), "grantable_permissions": list(auth.GRANTABLE_PERMISSIONS)})
+        return True
+    return False
 
 
 def _handle_auth_post(handler: Any, path: str, payload: dict[str, Any]) -> bool:
@@ -244,7 +290,7 @@ def _handle_auth_post(handler: Any, path: str, payload: dict[str, Any]) -> bool:
         if not auth.verify_credentials(username, password):
             _write_json(handler, 401, {"error": "invalid_credentials"})
             return True
-        token = auth.create_session()
+        token = auth.create_session(username.strip())
         body = json.dumps({"authenticated": True}).encode("utf-8")
         handler.send_response(200)
         handler.send_header("Content-Type", "application/json; charset=utf-8")
@@ -264,6 +310,29 @@ def _handle_auth_post(handler: Any, path: str, payload: dict[str, Any]) -> bool:
         _clear_session_cookie(handler)
         handler.end_headers()
         handler.wfile.write(body)
+        return True
+    if path == "/api/v1/auth/users":
+        if not _has_permission(handler, "admin"):
+            _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can manage accounts."})
+            return True
+        try:
+            auth.grant_user(str(payload.get("username", "")), str(payload.get("password", "")), list(payload.get("permissions", [])))
+        except ValueError as exc:
+            _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)})
+            return True
+        _write_json(handler, 201, {"users": auth.list_users()})
+        return True
+    if path.startswith("/api/v1/auth/users/") and path.endswith("/revoke"):
+        if not _has_permission(handler, "admin"):
+            _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can manage accounts."})
+            return True
+        username = path[len("/api/v1/auth/users/"):-len("/revoke")]
+        try:
+            auth.revoke_user(username)
+        except ValueError as exc:
+            _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)})
+            return True
+        _write_json(handler, 200, {"users": auth.list_users()})
         return True
     return False
 
@@ -316,6 +385,8 @@ def _serve_ui(handler: Any, path: str) -> bool:
         target = UI_ROOT / "login.html"
     elif path == "/dashboard":
         target = UI_ROOT / "dashboard.html"
+    elif path == "/admin":
+        target = UI_ROOT / "admin.html"
     elif path in {"/workspace", "/services", "/activity"}:
         target = UI_ROOT / (path.lstrip("/") + ".html")
     elif path in {"/progress", "/progress-center"}:
@@ -424,15 +495,23 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
     if _handle_auth_get(handler, early_path):
         return True
     authenticated = _is_authenticated(handler)
+    required_permission = PROTECTED_UI_PAGE_PERMISSIONS.get(early_path)
     if not authenticated and early_path not in PUBLIC_GET_PATHS and not _is_public_asset(early_path):
         if early_path.startswith("/api/v1/"):
             _write_json(handler, 401, {"error": "unauthorized", "detail": "Sign in at /login."})
             return True
-        if early_path in PROTECTED_UI_PAGES:
+        if required_permission is not None:
             _write_redirect(handler, "/login")
             return True
         # Not a page this module serves (e.g. /health, /status) -- fall
         # through untouched rather than redirecting an unrelated route.
+    elif authenticated and required_permission is not None and not _has_permission(handler, required_permission):
+        # Signed in, but this account wasn't granted this specific page.
+        # A redirect to /login would just bounce them right back in
+        # (they're already authenticated) -- 403 with a plain message is
+        # the honest response.
+        _write_bytes(handler, 403, f"<h1>403</h1><p>Your account does not have access to this page ({required_permission}).</p>".encode(), "text/html; charset=utf-8")
+        return True
     if early_path.startswith("/api/v1/capabilities"):
         if urlsplit("http://"+handler.headers.get("Host","")).hostname not in {"localhost","127.0.0.1","::1"}:
             _write_json(handler,403,{"error":"loopback_host_required"}); return True
@@ -538,14 +617,22 @@ def handle_post(handler: Any) -> bool:
     path = urlsplit(handler.path).path
     if not path.startswith("/api/v1/"):
         return False
-    if path in PUBLIC_POST_PATHS or path == "/api/v1/auth/logout":
+    if path.startswith("/api/v1/auth/"):
+        # _handle_auth_post checks its own permission requirements per
+        # sub-path (login/logout are public; user management requires
+        # "admin") -- routed here as a whole group rather than
+        # enumerating every auth sub-path in PUBLIC_POST_PATHS.
+        has_body = handler.headers.get("Content-Length", "0") not in ("0", "")
         try:
-            payload = _body(handler) if path in PUBLIC_POST_PATHS else {}
+            payload = _body(handler) if has_body else {}
         except ValueError as exc:
             _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)}); return True
         return _handle_auth_post(handler, path, payload)
     if not _is_authenticated(handler):
         _write_json(handler, 401, {"error": "unauthorized", "detail": "Sign in at /login."})
+        return True
+    if any(path.startswith(prefix) for prefix in MUTATING_API_PREFIXES) and not _has_permission(handler, "capabilities_execute"):
+        _write_json(handler, 403, {"error": "forbidden", "detail": "Your account does not have permission to execute or modify anything (capabilities_execute)."})
         return True
     if path.startswith("/api/v1/capabilities/"):
         host=handler.headers.get("Host",""); origin=handler.headers.get("Origin")

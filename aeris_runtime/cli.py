@@ -7,6 +7,7 @@ import platform
 import sys
 from pathlib import Path
 
+from . import auth
 from .audit import verify_ledger
 from .company import load_company_manifest, validate_company_manifest
 from .config import ROOT, load_config, set_persisted_mode
@@ -287,7 +288,6 @@ def cmd_l3(args):
 
 
 def cmd_auth(args):
-    from . import auth
     if args.action == "set-credentials":
         import getpass
         username = input("Username: ").strip()
@@ -304,7 +304,28 @@ def cmd_auth(args):
         print("Credentials set. All existing sessions were invalidated.")
         return 0
     if args.action == "status":
-        _print({"credentials_configured": auth.has_credentials()})
+        _print({"credentials_configured": auth.has_credentials(), "users": auth.list_users()})
+        return 0
+    if args.action == "list-users":
+        _print({"users": auth.list_users()})
+        return 0
+    if args.action == "grant-user":
+        import getpass
+        password = getpass.getpass("Password (min 8 chars): ")
+        try:
+            auth.grant_user(args.username, password, args.permissions or [])
+        except ValueError as exc:
+            print(f"AERIS auth error: {exc}", file=sys.stderr)
+            return 18
+        print(f"Granted account '{args.username}' with permissions: {args.permissions or []}")
+        return 0
+    if args.action == "revoke-user":
+        try:
+            auth.revoke_user(args.username)
+        except ValueError as exc:
+            print(f"AERIS auth error: {exc}", file=sys.stderr)
+            return 18
+        print(f"Revoked account '{args.username}'.")
         return 0
     print("Unknown auth action.", file=sys.stderr)
     return 18
@@ -437,10 +458,17 @@ def build_parser():
     l3r.add_argument("--note", default="")
     l3s.add_parser("verify", help="Verify the L3 award ledger's hash chain")
 
-    at = s.add_parser("auth", help="Local control-plane login credentials (single owner)")
+    at = s.add_parser("auth", help="Local control-plane login: one owner account plus any number of owner-granted accounts")
     ats = at.add_subparsers(dest="action", required=True)
-    ats.add_parser("set-credentials", help="Interactively set the username/password required to sign in (getpass, never echoed or logged)")
-    ats.add_parser("status", help="Whether credentials have been configured")
+    ats.add_parser("set-credentials", help="Interactively (re)set the OWNER username/password (getpass, never echoed or logged) -- wipes all other accounts and sessions")
+    ats.add_parser("status", help="Whether credentials have been configured, and the current account list")
+    ats.add_parser("list-users", help="List all accounts and their permissions")
+    gu = ats.add_parser("grant-user", help="Owner-only: create a new account scoped to specific pages")
+    gu.add_argument("username")
+    gu.add_argument("--permissions", nargs="*", choices=list(auth.GRANTABLE_PERMISSIONS),
+                     help="Space-separated list of pages/actions this account may access")
+    ru = ats.add_parser("revoke-user", help="Owner-only: remove a granted account (the owner account cannot be revoked this way)")
+    ru.add_argument("username")
     return p
 
 
