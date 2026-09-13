@@ -680,5 +680,42 @@ class MonteCarloLinearCombinationTests(unittest.TestCase):
                 self.assertLess(abs(values["standard_deviation"] - expected_sd), sd_tolerance)
 
 
+class PsychoacousticDescriptorsBarkAndCentroidTests(unittest.TestCase):
+    """The Zwicker Bark-scale formula, bark(f) = 13*atan(0.00076*f) +
+    3.5*atan((f/7500)^2), is a standard psychoacoustics formula,
+    independently recomputed here rather than copied from the
+    implementation. Spectral centroid and Bark centroid are both just
+    the power-weighted average of frequency (respectively Bark
+    position) across bins -- their standard textbook definitions,
+    verified for a single dominant bin (where the centroid must equal
+    that bin's exact frequency/Bark position) and for multi-bin power
+    distributions."""
+
+    def _bark(self, frequency_hz):
+        return 13 * math.atan(0.00076 * frequency_hz) + 3.5 * math.atan((frequency_hz / 7500) ** 2)
+
+    def _values(self, frequency_hz, power):
+        return catalog.execute("psychoacoustic-descriptors",
+                                {"frequency_hz": frequency_hz, "power": power})["values"]
+
+    def test_bark_positions_and_centroids_match_standard_formulas(self):
+        cases = [
+            ([100, 200, 300, 1000], [1, 0, 0, 0]),
+            ([500, 1500], [1, 1]),
+            ([200, 400, 800, 2000, 5000], [2, 3, 1, 4, 0.5]),
+        ]
+        for frequency_hz, power in cases:
+            with self.subTest(frequency_hz=frequency_hz, power=power):
+                total = sum(power)
+                expected_centroid = sum(f * p for f, p in zip(frequency_hz, power)) / total
+                expected_bark_positions = [self._bark(f) for f in frequency_hz]
+                expected_bark_centroid = sum(b * p for b, p in zip(expected_bark_positions, power)) / total
+                values = self._values(frequency_hz, power)
+                self.assertAlmostEqual(values["spectral_centroid_hz"], expected_centroid, places=8)
+                self.assertAlmostEqual(values["bark_centroid"], expected_bark_centroid, places=8)
+                for actual, expected in zip(values["bark_positions"], expected_bark_positions):
+                    self.assertAlmostEqual(actual, expected, places=8)
+
+
 if __name__ == "__main__":
     unittest.main()

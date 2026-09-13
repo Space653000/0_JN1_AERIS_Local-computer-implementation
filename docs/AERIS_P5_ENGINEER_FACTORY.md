@@ -201,8 +201,13 @@ different delay values and frequency grids, one with uneven spacing.
 This adds genuine multi-point regression coverage without touching
 `cases.py`/`catalog.py`'s single-fixture contract at all -- it's a
 wholly separate, additive test file. It now spans all 6 suites
-(DSP x5, Speaker x4, Product x2, Microphone x4, Array x2, Failure x4) and
-covers 21 of 42 skills so far (added `monte-carlo`: for a linear
+(DSP x5, Speaker x5, Product x2, Microphone x4, Array x2, Failure x4) and
+covers 22 of 42 skills so far (added `psychoacoustic-descriptors`: the
+Zwicker Bark-scale formula and the standard power-weighted-average
+definitions of spectral/Bark centroid, independently recomputed and
+checked for a single dominant bin (centroid must equal that bin's
+exact frequency/Bark position) and multi-bin distributions;
+`monte-carlo`: for a linear
 combination of independent normals, elementary probability theory
 gives the mean and SD in closed form -- independently re-derived from
 the raw inputs, not read off the implementation's own analytic_mean/
