@@ -146,8 +146,14 @@ async function load() {
   // verified snapshot instead of blanking to null/UNKNOWN, so a
   // transient re-verification window (right after every commit/restart)
   // doesn't look like the system broke.
+  const TRUTH_STATE_LABELS = {
+    VALID: L('已驗證通過', 'Verified valid'),
+    FAIL_CLOSED: L('驗證失敗（誠實回報，非系統壞掉）', 'Verification failed (honestly reported, not a crash)'),
+    UNKNOWN: L('尚未全部驗證完成（正常過渡狀態）', 'Not fully re-verified yet (normal transient state)'),
+  };
   const truthEl = document.getElementById('truthState');
-  truthEl.textContent = d.truth_state;
+  truthEl.textContent = TRUTH_STATE_LABELS[d.truth_state] || d.truth_state;
+  truthEl.title = L('技術代碼：', 'Technical code: ') + d.truth_state;
   truthEl.className = 'pill' + (d.truth_state === 'FAIL_CLOSED' ? ' rose' : d.truth_state === 'VALID' ? ' green' : ' amber');
 
   if (d.overall_percent !== null && d.overall_percent !== undefined) {

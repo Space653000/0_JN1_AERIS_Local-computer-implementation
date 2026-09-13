@@ -39,6 +39,26 @@ function renderUsers(users) {
   });
 }
 
+function renderSystemOverview(o) {
+  const el = document.getElementById('systemOverview');
+  const db = o.database, ledger = o.audit_ledger, evidence = o.evidence_store;
+  const tableRows = (db.tables || []).map(t =>
+    `<div class="row"><b>${t.name}</b><span>${t.row_count.toLocaleString()} 筆 — ${t.description}</span></div>`
+  ).join('') || `<div class="row"><span>${L('資料庫尚未建立任何資料表', 'No tables yet')}</span></div>`;
+  const ledgerBadge = ledger.valid
+    ? `<span class="pill green">✅ 完整無竄改</span>`
+    : `<span class="pill rose">⚠ 發現問題，需要檢查</span>`;
+  el.innerHTML = `
+    <div class="row"><b>資料庫</b><span>${(db.size_bytes / 1024).toFixed(1)} KB</span></div>
+    <div style="padding:4px 0 8px;color:var(--muted)">${db.explanation}</div>
+    ${tableRows}
+    <div class="row" style="margin-top:12px"><b>審計帳本</b>${ledgerBadge}</div>
+    <div style="padding:4px 0 8px;color:var(--muted)">${ledger.explanation}（目前共 ${(ledger.record_count ?? 0).toLocaleString()} 筆紀錄）</div>
+    <div class="row" style="margin-top:12px"><b>Evidence 證據存放區</b><span>${evidence.file_count.toLocaleString()} 個檔案</span></div>
+    <div style="padding:4px 0 8px;color:var(--muted)">${evidence.explanation}</div>
+  `;
+}
+
 async function load() {
   const r = await fetch('/api/v1/auth/status', { cache: 'no-store' });
   const status = await r.json();
@@ -46,6 +66,7 @@ async function load() {
     document.getElementById('forbiddenNotice').hidden = false;
     document.getElementById('addUserPanel').style.display = 'none';
     document.getElementById('userRows').innerHTML = `<tr><td colspan="4">${L('沒有權限查看', 'No permission to view')}</td></tr>`;
+    document.getElementById('systemOverview').textContent = L('沒有權限查看', 'No permission to view');
     return;
   }
   const ur = await fetch('/api/v1/auth/users', { cache: 'no-store' });
@@ -54,6 +75,13 @@ async function load() {
   grantablePermissions = data.grantable_permissions || [];
   renderPermissionChecks();
   renderUsers(data.users || []);
+  try {
+    const or = await fetch('/api/v1/admin/system-overview', { cache: 'no-store' });
+    if (or.ok) renderSystemOverview(await or.json());
+    else document.getElementById('systemOverview').textContent = L('無法載入系統總覽', 'Could not load system overview');
+  } catch (e) {
+    document.getElementById('systemOverview').textContent = L('無法連線到本機伺服器。', 'Could not reach the local server.');
+  }
 }
 
 document.getElementById('addUserForm').addEventListener('submit', async (ev) => {

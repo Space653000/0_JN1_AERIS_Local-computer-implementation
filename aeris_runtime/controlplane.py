@@ -489,6 +489,52 @@ def _save_import(payload: dict[str, Any]) -> dict[str, Any]:
     return {"path": str(target), "filename": name, "bytes": len(data), "local_only": True}
 
 
+# Plain-Chinese labels for the owner-only system-overview panel (see
+# _admin_system_overview) -- these explain what each raw table/store
+# actually holds, in the terms an owner managing the company would use,
+# not the schema names an engineer reading the code would recognize.
+_ADMIN_TABLE_DESCRIPTIONS = {
+    "projects": "你建立的專案清單（每個專案底下可以有多個任務）",
+    "tasks": "實際指派給某個角色的工作紀錄，包含目前狀態與結果",
+}
+
+
+def _admin_system_overview() -> dict[str, Any]:
+    """Owner-only, plain-language snapshot of what the local database,
+    audit ledger, and evidence store actually contain -- so the owner can
+    understand what's happening under the hood without reading code or a
+    terminal script's output (that used to be the only place this
+    information existed, in scripts/aeris_launch_checklist.py)."""
+    tables: list[dict[str, Any]] = []
+    db_exists = DB_PATH.exists()
+    if db_exists:
+        conn = sqlite3.connect(str(DB_PATH))
+        try:
+            for (name,) in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall():
+                row_count = conn.execute(f'SELECT COUNT(*) FROM "{name}"').fetchone()[0]
+                tables.append({"name": name, "row_count": row_count,
+                                "description": _ADMIN_TABLE_DESCRIPTIONS.get(name, "（尚無中文說明）")})
+        finally:
+            conn.close()
+    ledger = audit.verify_ledger()
+    evidence_dir = ROOT / ".aeris" / "capability-factory"
+    evidence_files = list(evidence_dir.rglob("*.json")) if evidence_dir.exists() else []
+    return {
+        "database": {
+            "exists": db_exists, "size_bytes": DB_PATH.stat().st_size if db_exists else 0, "tables": tables,
+            "explanation": "這是系統核心資料庫，存放你建立過的所有專案與任務紀錄；刪除這個檔案會遺失這些紀錄，但不影響已經產生的 Evidence 證據檔案。",
+        },
+        "audit_ledger": {
+            "valid": ledger.get("valid"), "record_count": ledger.get("records"),
+            "explanation": "審計帳本記錄每一次重要操作，並用雜湊鏈防止事後竄改；「valid」為 true 代表從第一筆紀錄到最新一筆都沒有被動過手腳。",
+        },
+        "evidence_store": {
+            "file_count": len(evidence_files),
+            "explanation": "每次請角色實際執行工程分析，都會在這裡留下一份可回溯查核的證據檔案（含輸入、輸出、時間戳記）；這是系統『誠實揭露』設計的核心，不是暫存檔，不會自動清除。",
+        },
+    }
+
+
 def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
     from urllib.parse import urlsplit as _split
     early_path = _split(handler.path).path
@@ -576,6 +622,15 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
         elif path == "/api/v1/progress/reverify":
             from . import progress_verify
             _write_json(handler, 200, progress_verify.web_trigger_status())
+        elif path == "/api/v1/admin/system-overview":
+            # Owner-only: shows what the database/audit ledger/evidence
+            # store actually contain, in plain language. Not just "logged
+            # in" -- a granted account should not see this even read-only,
+            # since it can reveal how much real work/data exists.
+            if not _has_permission(handler, "admin"):
+                _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can view the system overview."})
+                return True
+            _write_json(handler, 200, _admin_system_overview())
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True

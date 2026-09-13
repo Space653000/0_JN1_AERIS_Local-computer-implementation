@@ -220,6 +220,34 @@ class ControlPlaneTests(unittest.TestCase):
         progress_verify._WEB_TRIGGER_STATE.update(
             {"running": False, "last_started_at": None, "last_finished_at": None, "last_result": None})
 
+    def test_system_overview_requires_admin_permission(self):
+        server = self._server()
+        auth.grant_user("viewer2", "viewer-password-1", ["dashboard"])
+        token = auth.create_session("viewer2")
+        self.addCleanup(auth.revoke_session, token)
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/admin/system-overview",
+            headers={"Cookie": f"{auth.SESSION_COOKIE_NAME}={token}"},
+        )
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(request, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
+
+    def test_owner_sees_plain_language_system_overview(self):
+        server = self._server()
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/admin/system-overview",
+            headers={"Cookie": self._session_cookie()},
+        )
+        with urllib.request.urlopen(request, timeout=3) as response:
+            self.assertEqual(response.status, 200)
+            data = json.loads(response.read().decode("utf-8"))
+        for section in ("database", "audit_ledger", "evidence_store"):
+            self.assertIn(section, data)
+            self.assertIn("explanation", data[section])
+            self.assertGreater(len(data[section]["explanation"]), 0)
+        self.assertIsInstance(data["database"]["tables"], list)
+
     def test_roles_api_returns_100(self):
         server = self._server()
         data = self._get_json(server, "/api/v1/roles")
