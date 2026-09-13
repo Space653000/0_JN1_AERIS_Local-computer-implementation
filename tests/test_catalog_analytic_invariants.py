@@ -521,5 +521,38 @@ class LeakageToleranceHagenPoiseuilleTests(unittest.TestCase):
                 self.assertAlmostEqual(values["standard_uncertainty_pa_s_m3"], expected_u, places=2)
 
 
+class CorrelationOutliersPerfectLineTests(unittest.TestCase):
+    """For data constructed to lie exactly on a line y = a*x + b (a
+    mathematical fact about ordinary least squares, not sourced from
+    the implementation), the fitted slope and intercept must recover
+    a and b exactly, the Pearson correlation must be exactly +-1
+    (perfect fit means zero residual variance), and the slope's
+    standard error must be exactly zero (no scatter around the fit).
+    Checked for both a positive and a negative slope. Outlier flagging
+    is checked with an extreme, unambiguous outlier and with a dataset
+    that has none -- values chosen far past any reasonable modified
+    Z-score threshold in either direction, rather than probing the
+    implementation's exact 3.5 cutoff."""
+
+    def _values(self, x, y):
+        return catalog.execute("correlation-outliers", {"x": x, "y": y})["values"]
+
+    def test_perfect_line_recovers_exact_slope_intercept_and_correlation(self):
+        cases = [([1, 2, 3, 4], [3, 5, 7, 9], 2, 1), ([0, 1, 2, 3, 4], [10, 8, 6, 4, 2], -2, 10)]
+        for x, y, expected_slope, expected_intercept in cases:
+            with self.subTest(x=x, y=y):
+                values = self._values(x, y)
+                self.assertAlmostEqual(values["slope"], expected_slope, places=8)
+                self.assertAlmostEqual(values["intercept"], expected_intercept, places=8)
+                self.assertAlmostEqual(abs(values["pearson_r"]), 1.0, places=8)
+                self.assertAlmostEqual(values["slope_standard_error"], 0.0, places=8)
+
+    def test_extreme_outlier_is_flagged_and_tight_cluster_is_not(self):
+        with_outlier = self._values([1, 2, 3, 4, 5], [10, 11, 9, 10, 1000])
+        self.assertEqual(with_outlier["outlier_indices"], [4])
+        without_outlier = self._values([1, 2, 3, 4, 5], [10, 11, 9, 10, 10.5])
+        self.assertEqual(without_outlier["outlier_indices"], [])
+
+
 if __name__ == "__main__":
     unittest.main()
