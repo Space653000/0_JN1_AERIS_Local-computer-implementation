@@ -122,6 +122,26 @@ depends on at once -- correctly out of scope for a single tick, and risky
 to rush without dedicated review, unlike the additive, per-role
 domain-contract work this session otherwise did 19 times without incident.
 
+**A safe, bounded first step taken this session:** `tests/test_catalog_analytic_invariants.py`
+independently re-derives each covered skill's underlying physical formula
+in the test itself (not sourced from the fixture) and checks it holds at
+several points across the input space, not just the one point the shared
+golden fixture already covers -- e.g. Butterworth unit-DC-gain holds
+across 4 different cutoff/order pairs, and the lumped-speaker resonance
+formula `fs = 1/(2*pi*sqrt(Mms*Cms))` holds across 3 different
+mass/compliance pairs, both hand-verified by direct execution before
+being written as assertions. This adds genuine multi-point regression
+coverage without touching `cases.py`/`catalog.py`'s single-fixture
+contract at all -- it's a wholly separate, additive test file. It covers
+2 of 42 skills so far; **P5.4 is not being marked done by this** -- it is
+nowhere near "broader golden suites" for all six suites, and no
+`progress_verify` check has been registered for it, deliberately, so as
+not to overstate a small first step as completion. The intended pattern
+for continuing this: pick one skill at a time, independently re-derive
+its formula/invariant (never copy the implementation's own math back at
+itself), verify by hand execution, then add a `subTest`-parameterized
+case to this file or a new one in the same style.
+
 ## P5.5 — Capability-driven Dynamic Pod Router (section 11)
 **Requires:** pod routing uses product/transducer/lifecycle/requirement/
 risk/evidence/skills/tools/maturity, not keyword matching, and outputs
