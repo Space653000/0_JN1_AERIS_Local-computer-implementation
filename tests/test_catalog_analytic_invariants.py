@@ -1121,5 +1121,24 @@ class FailureHypothesesStatusAndDedupTests(unittest.TestCase):
         self.assertEqual(values["next_tests"], ["t1", "t2"])
 
 
+class ExperimentOptimizationMaximinTests(unittest.TestCase):
+    """A maximin space-filling policy on a 1D grid [0..10] with
+    observations at both endpoints has an unambiguous, hand-computable
+    answer: for any unexplored point x, its span-normalized distance
+    to the nearer endpoint is min(x/10, (10-x)/10), which is uniquely
+    maximized at the midpoint x=5 (distance 0.5) -- independently
+    derived from the maximin definition itself, not sourced from the
+    implementation. best_observed must be the lower-loss observation."""
+
+    def test_maximin_next_point_and_best_observed(self):
+        candidates = [[i] for i in range(11)]
+        observations = [{"point": [0], "loss": 5.0}, {"point": [10], "loss": 2.0}]
+        values = catalog.execute("experiment-optimization",
+                                  {"candidate_points": candidates, "observations": observations})["values"]
+        self.assertEqual(list(values["next_point"]), [5.0])
+        self.assertEqual(values["best_observed"], {"point": [10], "loss": 2.0})
+        self.assertEqual(values["unexplored_count"], 9)
+
+
 if __name__ == "__main__":
     unittest.main()
