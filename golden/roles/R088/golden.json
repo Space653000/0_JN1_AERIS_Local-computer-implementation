@@ -1,0 +1,26 @@
+{
+  "suite_id": "R088-RESEARCH-HYPOTHESIS-SCREEN-V1", "role_id": "R088", "skill_id": "research-hypothesis-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact boolean-logic comparison against declared scalars; no physical/literature research review was observed.",
+  "scope": "Supplied replication-claim/independent-replication flags and declared raw-data-availability-disclosure flag only",
+  "base_input": {
+    "model": "SUPPLIED_RESEARCH_HYPOTHESIS_SCREEN", "replication_claimed": true, "independent_replication_performed": true, "raw_data_availability_disclosed": true
+  },
+  "cases": [
+    {"id": "RESEARCH-REPLICATED-AND-DATA-DISCLOSED-ACCEPT", "kind": "positive", "question": "Does an actually replicated hypothesis with disclosed raw-data availability clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "citation_count_treated_as_replication", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "RESEARCH-CITATION-ONLY-AND-HIDDEN-DATA-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are a citation-only replication claim and undisclosed raw-data availability both correctly rejected together, rather than one masking the other?", "input_overrides": {"independent_replication_performed": false, "raw_data_availability_disclosed": false}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "PERFORM_AN_ACTUAL_INDEPENDENT_REPLICATION_OR_WITHDRAW_THE_REPLICATION_CLAIM", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "EXPLICITLY_DISCLOSE_RAW_DATA_AVAILABILITY_RATHER_THAN_RELYING_ON_AN_ABSTRACT_SUMMARY", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "RESEARCH-NO-REPLICATION-CLAIM-MADE-BOUNDARY", "kind": "boundary", "question": "Does a hypothesis with no replication claim at all correctly clear via short-circuit, rather than requiring a replication it never claimed?", "input_overrides": {"replication_claimed": false, "independent_replication_performed": false}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "RESEARCH-UNSUPPORTED-MODEL-REJECTED", "kind": "negative", "question": "Is an unrecognized model identifier rejected rather than silently accepted?", "input_overrides": {"model": "UNSUPPORTED_MODEL"}, "expected_error": "ValueError"}
+  ]
+}

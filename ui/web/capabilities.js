@@ -3,27 +3,30 @@
   const page=document.body.dataset.page, content=document.querySelector('.content');
   if(!content)return;
   const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const text=value=>window.aerisText?window.aerisText(value):String(value??'');
   async function api(path,body){const r=await fetch('/api/v1/capabilities'+path,{cache:'no-store',...(body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{})});const data=await r.json();if(!r.ok)throw Error(data.error||data.detail||r.status);return data;}
   const section=document.createElement('section');section.className='section';section.id='capability-factory';
-  section.innerHTML='<div class="section-title"><div><div class="section-kicker">Professional Capability Factory</div><h2>聲學工程能力矩陣</h2></div><span class="pill" id="capSync">等待真實評估</span></div><div class="panel"><p>FREE_LOCAL_BASELINE · L2 本職本機執行證據／L3 獨立角色領域驗收／L4 真實儀器、校正與 Human 驗證。共用 Skill Golden 不等於角色驗收；Memory ≠ Evidence。</p><div id="capCounts" class="chips" aria-live="polite"></div><div id="capKnowledge" class="chips" aria-live="polite">知識來源分類待 API 確認</div><div id="capCoverage" class="list"></div><details><summary>檢查 100 席能力、覆蓋與已知弱點</summary><div id="capRows"></div></details></div>';
+  section.innerHTML='<div class="section-title"><div><div class="section-kicker">專業能力工廠</div><h2>聲學工程能力矩陣</h2></div><span class="pill" id="capSync">等待真實評估</span></div><div class="panel"><p>免費本機基準 · L2 本職本機執行證據／L3 獨立角色領域驗收／L4 真實儀器、校正與人工驗證。共用技能黃金案例不等於角色驗收；記憶 ≠ Evidence。</p><div id="capCounts" class="chips" aria-live="polite"></div><div id="capKnowledge" class="chips" aria-live="polite">知識來源分類待 API 確認</div><div id="capCoverage" class="list"></div><div class="cap-graph-title" title="L0 尚無能力紀錄 → L1 已登錄合約框架，尚未執行 → L2 本機可執行、已有證據 → L3 領域審查通過 → L4 真實儀器與人工驗證通過。數字越大，代表驗證得越紮實。">能力圖譜 · 依領域分組，顏色代表成熟度 L0–L4</div><div id="capGraph" class="cap-graph" role="img" aria-label="100 席角色能力圖譜"></div><details><summary>檢查 100 席能力、覆蓋與已知弱點</summary><div id="capRows"></div></details></div>';
   const anchor=document.querySelector('#roles')||document.querySelector('#pod')||document.querySelector('.footer');content.insertBefore(section,anchor);
   const nav=document.querySelector('.sidebar nav');
-  if(nav){const link=document.createElement('a');link.href='#capability-factory';link.innerHTML='<span class="nav-icon">◇</span><span class="nav-copy"><b>Capabilities</b><small>能力矩陣／執行分析</small></span>';nav.appendChild(link);}
+  if(nav){const link=document.createElement('a');link.href='#capability-factory';link.innerHTML='<span class="nav-icon">◇</span><span class="nav-copy"><b>能力矩陣</b><small>能力矩陣／執行分析</small></span>';nav.appendChild(link);}
   if(location.hash==='#capability-factory')section.scrollIntoView();
   let loading=false,roles=[],selectedRole='';
   async function refresh(){if(loading)return;loading=true;try{const matrix=await api('');roles=matrix.roles;
     document.getElementById('capSync').textContent=`L2 以上 ${matrix['100_role_L2']}/${matrix.total_roles}`;
-    document.getElementById('capCounts').innerHTML=Object.entries(matrix.maturity_counts).map(([k,v])=>`<span class="chip">${escape(k)}: ${escape(v)}</span>`).join('')+`<span class="chip">Skills ${matrix.total_executable_skills}</span><span class="chip">Methods ${matrix.total_methods}</span><span class="chip">Skill Golden ${matrix.total_golden_cases}</span><span class="chip">Role Golden ${matrix.total_role_golden_cases??'UNKNOWN'}</span><span class="chip">Negative ${matrix.total_negative_cases}</span><span class="chip">Regression ${matrix.total_regression_cases}</span><span class="chip">契約框架 ${matrix.total_roles-matrix.maturity_counts.L0}</span><span class="chip">角色領域驗收 ${matrix.maturity_counts.L3}</span><span class="chip">角色實體驗收 ${matrix.maturity_counts.L4}</span>`;
-    document.getElementById('capCoverage').innerHTML=Object.entries(matrix.coverage_by_group).map(([k,v])=>`<div class="row"><b>${escape(k)}</b><span>L2+ ${v.L2_or_higher}/${v.total} · L3 ${v.L3}</span></div>`).join('');
-    document.getElementById('capRows').innerHTML=roles.map(r=>`<article class="row"><div><b>${escape(r.id)} ${escape(r.name)} · ${escape(r.level)}</b><p>Skill ${r.coverage.skills}／Method ${r.coverage.methods}／Knowledge ${r.coverage.knowledge}／Skill Golden ${r.coverage.golden}／Skill 已執行 ${r.coverage.evaluated}／角色案例 ${r.coverage.role_domain_cases??'UNKNOWN'}／角色驗收 ${r.coverage.role_acceptance??'UNKNOWN'}</p><small>${r.skills.map(escape).join(' · ')}</small><p>有執行證據的方法：${Array.isArray(r.executable_skills)?r.executable_skills.map(escape).join(' · ')||'無':'UNKNOWN（舊版 API）'}</p><p>${r.known_weaknesses.map(escape).join('；')}</p></div></article>`).join('');
-    if(document.getElementById('capRole')){const select=document.getElementById('capRole');const old=select.value;select.innerHTML=roles.map(r=>`<option value="${r.id}">${escape(r.id+' '+r.name+' · '+r.level)}</option>`).join('');if(old)select.value=old;if(!selectedRole)await loadRole();}
+    document.getElementById('capCounts').innerHTML=Object.entries(matrix.maturity_counts).map(([k,v])=>`<span class="chip">${escape(k)}: ${escape(v)}</span>`).join('')+`<span class="chip">技能 ${matrix.total_executable_skills}</span><span class="chip">方法 ${matrix.total_methods}</span><span class="chip">技能黃金案例 ${matrix.total_golden_cases}</span><span class="chip">角色黃金案例 ${matrix.total_role_golden_cases??'UNKNOWN'}</span><span class="chip">負例 ${matrix.total_negative_cases}</span><span class="chip">回歸 ${matrix.total_regression_cases}</span><span class="chip">契約框架 ${matrix.total_roles-matrix.maturity_counts.L0}</span><span class="chip">角色領域驗收 ${matrix.maturity_counts.L3}</span><span class="chip">角色實體驗收 ${matrix.maturity_counts.L4}</span>`;
+    document.getElementById('capCoverage').innerHTML=Object.entries(matrix.coverage_by_group).map(([k,v])=>`<div class="row"><b>${escape(window.aerisText?.(k)||k)}</b><span>L2+ ${v.L2_or_higher}/${v.total} · L3 ${v.L3}</span></div>`).join('');
+    const groups=new Map();for(const r of roles){const key=r.display_group||r.group;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r)}
+    document.getElementById('capGraph').innerHTML=[...groups.entries()].map(([group,items])=>`<div class="cap-graph-group"><div class="cap-graph-group-label">${escape(group)} <span class="cap-graph-group-count">${items.length}</span></div><div class="cap-graph-cells">${items.map(r=>`<span class="cap-cell lvl-${escape(r.level)}" title="${escape(r.id)} ${escape(r.display_name||r.name)} · ${escape(r.level)}">${escape(r.id.replace('R',''))}</span>`).join('')}</div></div>`).join('');
+    document.getElementById('capRows').innerHTML=roles.map(r=>`<article class="row"><div><b>${escape(r.id)} ${escape(r.display_name||'專業工程席位')} · ${escape(r.level)}</b><p>技能 ${r.coverage.skills}／方法 ${r.coverage.methods}／知識 ${r.coverage.knowledge}／黃金案例 ${r.coverage.golden}／已執行技能 ${r.coverage.evaluated}／角色案例 ${r.coverage.role_domain_cases??'UNKNOWN'}／角色驗收 ${r.coverage.role_acceptance??'UNKNOWN'}</p><small>${escape(text(r.display_description||''))}</small></div></article>`).join('');
+    if(document.getElementById('capRole')){const select=document.getElementById('capRole');const old=select.value;select.innerHTML=roles.map(r=>`<option value="${r.id}">${escape(r.id+' '+(r.display_name||'專業工程席位')+' · '+r.level)}</option>`).join('');if(old)select.value=old;if(!selectedRole)await loadRole();}
     try{const knowledge=await api('/knowledge');const counts=knowledge.counts_by_source_kind;
-      document.getElementById('capKnowledge').innerHTML=counts?Object.entries(counts).map(([k,v])=>`<span class="chip">${escape(k)} ${escape(v)}</span>`).join(''):'來源分類 UNKNOWN（舊版 API 尚未提供）';
+      document.getElementById('capKnowledge').innerHTML=counts?Object.entries(counts).map(([k,v])=>`<span class="chip">${escape(text(k))} ${escape(v)}</span>`).join(''):'來源分類 UNKNOWN（舊版 API 尚未提供）';
     }catch(e){document.getElementById('capKnowledge').textContent='知識來源 API 無法驗證：'+e.message;}
   }catch(e){document.getElementById('capSync').textContent='能力 API 尚未就緒：'+e.message;}finally{loading=false;}}
-  async function loadRole(){const id=document.getElementById('capRole').value;selectedRole=id;const pack=await api('/roles/'+id);const select=document.getElementById('capSkill');select.innerHTML=pack.required_skills.map(s=>`<option>${escape(s)}</option>`).join('');document.getElementById('capParams').value='';document.getElementById('capOutput').textContent=pack.scope.join('\n');}
+  async function loadRole(){const id=document.getElementById('capRole').value;selectedRole=id;const pack=await api('/roles/'+id);const select=document.getElementById('capSkill');select.innerHTML=pack.required_skills.map(s=>`<option>${escape(s)}</option>`).join('');document.getElementById('capParams').value='';document.getElementById('capOutput').textContent=pack.scope.map(text).join('\n');}
   if(page==='workspace'){
-    const work=document.createElement('div');work.className='panel';work.innerHTML='<h3>執行專業工程能力</h3><p>選擇角色與方法，載入明確標示的合成案例，或貼上自己的 JSON 工程資料。執行會建立 SQLite Task、Workflow、Evidence 與獨立規則審查。</p><label for="capRole">Capability Seat</label><select id="capRole"></select><label for="capSkill">Executable Skill</label><select id="capSkill"></select><label for="capObjective">Engineering Objective</label><input id="capObjective" placeholder="例如：驗證陣列兩通道的延遲與方向估計"><label for="capSource">資料來源</label><select id="capSource"><option value="USER_SUPPLIED_UNVERIFIED">使用者資料（尚未驗證校正）</option><option value="SYNTHETIC">合成 Golden 案例</option></select><label for="capParams">符合 input schema 的 JSON</label><textarea id="capParams" rows="12" spellcheck="false"></textarea><div class="actions"><button type="button" class="btn" id="capFixture">載入合成 Golden 案例</button><button type="button" class="btn" id="capRun">執行本機分析並建立 Evidence</button></div><pre id="capOutput" aria-live="polite"></pre>';
+    const work=document.createElement('div');work.className='panel';work.innerHTML='<h3>執行專業工程能力</h3><p>選擇角色與方法，載入明確標示的合成案例，或貼上自己的 JSON 工程資料。執行會建立 SQLite Task、Workflow、Evidence 與獨立規則審查。</p><label for="capRole">能力席位</label><select id="capRole"></select><label for="capSkill">可執行技能</label><select id="capSkill"></select><label for="capObjective">工程目標</label><input id="capObjective" placeholder="例如：驗證陣列兩通道的延遲與方向估計"><label for="capSource">資料來源</label><select id="capSource"><option value="USER_SUPPLIED_UNVERIFIED">使用者資料（尚未驗證校正）</option><option value="SYNTHETIC">合成 黃金 案例</option></select><label for="capParams">符合 輸入結構描述 的 JSON</label><textarea id="capParams" rows="12" spellcheck="false"></textarea><div class="actions"><button type="button" class="btn" id="capFixture">載入合成 黃金 案例</button><button type="button" class="btn" id="capRun">執行本機分析並建立 Evidence</button></div><div id="capTaught" class="callout" hidden style="margin:9px 0"></div><pre id="capOutput" aria-live="polite"></pre>';
     const form=document.createElement('div');form.className='formgrid';
     work.insertBefore(form,work.querySelector('label'));
     for(const id of ['capRole','capSkill','capSource','capObjective','capParams']){
@@ -36,9 +39,51 @@
     intake.onclick=async()=>{intake.disabled=true;try{const description=document.getElementById('capObjective').value.trim();if(!description)throw Error('請先輸入工程目標');const result=await api('/intake',{description,transducer:'Both',lifecycle:'EVT'});document.getElementById('capOutput').textContent=JSON.stringify(result,null,2);}catch(e){showError(e);}finally{intake.disabled=false;}};
     document.getElementById('capRole').onchange=()=>loadRole().catch(showError);
     document.getElementById('capSkill').onchange=()=>{document.getElementById('capParams').value='';};
-    document.getElementById('capFixture').onclick=async()=>{try{const role=document.getElementById('capRole').value,skill=document.getElementById('capSkill').value;const data=await api('/fixture/'+role+'?skill='+encodeURIComponent(skill));document.getElementById('capParams').value=JSON.stringify(data.fixture.input,null,2);document.getElementById('capSource').value='SYNTHETIC';document.getElementById('capObjective').value=data.fixture.reason;}catch(e){showError(e);}};
-    document.getElementById('capRun').onclick=async()=>{const button=document.getElementById('capRun');button.disabled=true;try{const params=JSON.parse(document.getElementById('capParams').value),objective=document.getElementById('capObjective').value.trim();if(!objective)throw Error('請填寫工程目標');const report=await api('/execute',{role_id:document.getElementById('capRole').value,skill_id:document.getElementById('capSkill').value,params,objective,source_kind:document.getElementById('capSource').value,risk:'R1'});document.getElementById('capOutput').textContent=JSON.stringify({state:report.state,task:report.task_id,workflow:report.workflow_id,evidence:report.evidence_run_id,review:report.review,source:report.source_kind,result:report.numerical_result.values},null,2);await refresh();}catch(e){showError(e);}finally{button.disabled=false;}};
+    document.getElementById('capFixture').onclick=async()=>{try{const role=document.getElementById('capRole').value,skill=document.getElementById('capSkill').value;const data=await api('/fixture/'+role+'?skill='+encodeURIComponent(skill));const fx=data.fixture;document.getElementById('capParams').value=JSON.stringify(fx.input,null,2);document.getElementById('capSource').value='SYNTHETIC';document.getElementById('capObjective').value=fx.reason;renderTaught(fx);}catch(e){showError(e);}};
+    document.getElementById('capRun').onclick=async()=>{const button=document.getElementById('capRun');button.disabled=true;try{const params=JSON.parse(document.getElementById('capParams').value),objective=document.getElementById('capObjective').value.trim();if(!objective)throw Error('請填寫工程目標');const report=await api('/execute',{role_id:document.getElementById('capRole').value,skill_id:document.getElementById('capSkill').value,params,objective,source_kind:document.getElementById('capSource').value,risk:'R1'});document.getElementById('capOutput').textContent=JSON.stringify({state:report.state,task:report.task_id,workflow:report.workflow_id,證據:report.evidence_run_id,review:report.review,source:report.source_kind,result:report.numerical_result.values},null,2);await refresh();}catch(e){showError(e);}finally{button.disabled=false;}};
   }
   function showError(e){document.getElementById('capOutput').textContent='未完成：'+e.message;}
+  function taughtHTML(fx){
+    const checks=(fx.checks||[]).map(c=>`<li><code>${escape(c.path)}</code> 應該 ${c.reduction==='length'?'有':'等於'} <b>${escape(c.expected)}</b>${typeof c.expected==='number'?` (±${escape(c.absolute_tolerance)} ${escape(c.unit||'')})`:''}</li>`).join('');
+    const negative=fx.negative_patch?`<p><b>刻意輸入錯誤試試看：</b>若把 ${escape(Object.keys(fx.negative_patch).join('、'))} 改成 ${escape(Object.values(fx.negative_patch).join('、'))}，本機分析應該要拒絕並回報：<code>${escape(fx.failure_expectation||'')}</code>，而不是硬算出一個看起來正常的答案。</p>`:'';
+    return `<b>這是教學／示範用的合成案例，不是真實工程驗收：</b><p>${escape(text(fx.reason||''))}</p><p><b>預期結果：</b></p><ul style="margin:4px 0 0 18px;padding:0">${checks||'<li>（此案例未定義數值檢查點）</li>'}</ul>${negative}`;
+  }
+  function renderTaught(fx){
+    const panel=document.getElementById('capTaught');if(!panel)return;
+    panel.innerHTML=taughtHTML(fx);
+    panel.hidden=false;
+  }
+
+  if(page==='services'){
+    const rawApi=async path=>{const r=await fetch(path,{cache:'no-store'});const d=await r.json();if(!r.ok)throw Error(d.error||d.detail||r.status);return d};
+    const lib=document.createElement('section');lib.className='section';lib.id='skill-library';
+    lib.innerHTML='<div class="section-title"><div><div class="section-kicker">哈利說的AI軟體必修課</div><h2>技能圖書館</h2></div><span class="pill teal" id="skillLibCount">—</span></div><div class="panel"><input id="skillLibQuery" class="compact" placeholder="搜尋技能，例如 beamforming、laptop" aria-label="搜尋技能" style="margin-bottom:9px;width:100%"><div id="skillLibList" class="list"></div><div id="skillLibTaught" class="callout" hidden style="margin-top:9px"></div></div>';
+    section.parentNode.insertBefore(lib,section.nextSibling);
+    let skills=[],skillZhTw={};
+    function renderSkillLib(q){
+      const query=(q||'').toLowerCase();
+      const filtered=skills.filter(s=>!query||`${s.skill_id} ${s.acceptance||''}`.toLowerCase().includes(query));
+      document.getElementById('skillLibCount').textContent=`${filtered.length}／${skills.length} 項技能`;
+      document.getElementById('skillLibList').innerHTML=filtered.map(s=>{
+        const zh=skillZhTw[s.skill_id];
+        const desc=zh?escape(zh):(s.acceptance?`<span class="pill" title="尚無繁中翻譯，誠實顯示原文">EN</span> ${escape(s.acceptance)}`:'<span class="pill">尚無說明文字</span>');
+        return `<div class="row"><div><div class="row-name">${escape(s.skill_id)}</div><div class="row-meta">${desc}</div></div>${s.role_mappings&&s.role_mappings.length?`<button class="btn" type="button" data-skill-example="${escape(s.skill_id)}" data-skill-role="${escape(s.role_mappings[0])}">查看教學範例</button>`:'<span class="pill">尚無可用範例角色</span>'}</div>`;
+      }).join('')||'<div class="empty">沒有符合的技能</div>';
+    }
+    document.getElementById('skillLibList').addEventListener('click',async e=>{
+      const btn=e.target.closest('[data-skill-example]');if(!btn)return;
+      const panel=document.getElementById('skillLibTaught');
+      panel.hidden=false;panel.textContent='載入教學範例中…';
+      try{
+        const data=await rawApi(`/api/v1/capabilities/fixture/${btn.dataset.skillRole}?skill=${encodeURIComponent(btn.dataset.skillExample)}`);
+        panel.innerHTML=`<b>${escape(btn.dataset.skillExample)}</b>`+taughtHTML(data.fixture);
+      }catch(err){panel.innerHTML=`<b>${escape(btn.dataset.skillExample)}</b><p>此技能目前沒有可重現的教學範例（${escape(err.message)}），誠實顯示為缺少範例，而非假裝已驗證。</p>`}
+    });
+    document.getElementById('skillLibQuery').addEventListener('input',e=>renderSkillLib(e.target.value));
+    Promise.all([rawApi('/api/v1/skills'),fetch('/assets/skills-zh-tw.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}).catch(()=>({}))])
+      .then(([d,zh])=>{skills=d.skills||[];skillZhTw=zh||{};renderSkillLib('')})
+      .catch(e=>{document.getElementById('skillLibList').textContent='技能清單載入失敗：'+e.message});
+  }
+
   refresh();setInterval(refresh,10000);addEventListener('focus',refresh);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh();});
 })();

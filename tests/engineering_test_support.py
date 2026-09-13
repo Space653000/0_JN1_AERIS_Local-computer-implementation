@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from aeris_runtime import audit, controlplane, evidence, reproduction, taskstate, verification, workflow
 from aeris_runtime.config import ROOT
-from aeris_runtime.engineering import factory, harness, role_acceptance
+from aeris_runtime.engineering import factory, harness, l3_award, role_acceptance
 
 
 @contextmanager
@@ -22,6 +22,7 @@ def isolated_engineering_state():
             (verification,'VERIFICATION_ROOT',root/'verification'), (workflow,'WORKFLOW_ROOT',root/'workflows'),
             (reproduction,'REPRO_ROOT',root/'reproduction'), (audit,'AUDIT_DIR',root/'audit'),
             (audit,'AUDIT_FILE',root/'audit/audit.jsonl'), (audit,'LEDGER_PATH',root/'audit/audit.jsonl'),
-            (audit,'LOCK_FILE',root/'audit/.lock')):
+            (audit,'LOCK_FILE',root/'audit/.lock'), (l3_award,'LEDGER_DIR',root/'l3-awards'),
+            (l3_award,'LEDGER_PATH',root/'l3-awards/ledger.jsonl')):
             stack.enter_context(patch.object(module, name, value))
         yield root

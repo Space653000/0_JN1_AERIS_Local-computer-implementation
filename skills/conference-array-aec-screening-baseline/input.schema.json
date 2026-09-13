@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "off_beam_attenuation_db", "max_acceptable_off_beam_attenuation_db", "aec_tail_length_ms", "room_path_length_ms", "min_acceptable_aec_tail_margin_ms"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_CONFERENCE_ARRAY_AEC_SCREEN"},
+    "off_beam_attenuation_db": {"type": "number"}, "max_acceptable_off_beam_attenuation_db": {"type": "number"},
+    "aec_tail_length_ms": {"type": "number"}, "room_path_length_ms": {"type": "number"},
+    "min_acceptable_aec_tail_margin_ms": {"type": "number"}
+  }
+}

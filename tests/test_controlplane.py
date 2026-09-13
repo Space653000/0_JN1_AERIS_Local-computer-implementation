@@ -1,7 +1,10 @@
 import json
+import re
 import tempfile
 import threading
+import time
 import unittest
+import urllib.error
 import urllib.request
 from http.server import ThreadingHTTPServer
 from pathlib import Path
@@ -10,6 +13,7 @@ from unittest.mock import patch
 import aeris_runtime.controlplane as controlplane
 import aeris_runtime.operations as operations
 import aeris_runtime.workflow as workflow
+from aeris_runtime import auth
 
 
 class ControlPlaneTests(unittest.TestCase):
@@ -19,9 +23,12 @@ class ControlPlaneTests(unittest.TestCase):
         self.patches = [
             patch.object(controlplane, "DB_PATH", root / "control.sqlite3"),
             patch.object(workflow, "WORKFLOW_ROOT", root / "workflows"),
+            patch.object(auth, "CREDENTIALS_PATH", root / "auth_credentials.json"),
         ]
         for item in self.patches:
             item.start()
+        auth.set_credentials("owner", "test-owner-password-1")
+        self.addCleanup(auth._sessions.clear)
 
     def tearDown(self):
         for item in reversed(self.patches):
@@ -44,20 +51,174 @@ class ControlPlaneTests(unittest.TestCase):
         self.addCleanup(lambda: (server.shutdown(), server.server_close(), p2.stop(), p1.stop()))
         return server
 
-    def _get_json(self, server, path):
-        with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}{path}", timeout=3) as response:
+    def _session_cookie(self):
+        token = auth.create_session("owner")
+        self.addCleanup(auth.revoke_session, token)
+        return f"{auth.SESSION_COOKIE_NAME}={token}"
+
+    def _get_json(self, server, path, authenticated=True):
+        request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}{path}")
+        if authenticated:
+            request.add_header("Cookie", self._session_cookie())
+        with urllib.request.urlopen(request, timeout=3) as response:
             self.assertEqual(response.status, 200)
             return json.loads(response.read().decode("utf-8"))
 
-    def test_root_is_real_dashboard_not_404(self):
+    def test_ui_pages_have_no_inline_script_blocked_by_csp(self):
+        # controlplane's Content-Security-Policy header sends script-src
+        # 'self' with no 'unsafe-inline'/nonce, so any <script>...</script>
+        # block (as opposed to <script src="...">) is silently blocked by
+        # the browser -- the page renders its static shell forever and never
+        # runs. progress.html shipped exactly this bug (an inline loader that
+        # never executed); guard every served page against it.
+        for path in (controlplane.UI_ROOT).glob("*.html"):
+            text = path.read_text(encoding="utf-8")
+            for match in re.finditer(r"<script(?P<attrs>[^>]*)>(?P<body>[^<]*)</script>", text, re.IGNORECASE):
+                if "src=" not in match.group("attrs") and match.group("body").strip():
+                    self.fail(f"{path.name} has an inline <script> body; CSP script-src 'self' silently blocks it")
+
+    def test_root_is_public_intro_not_dashboard(self):
         server = self._server()
         with urllib.request.urlopen(f"http://127.0.0.1:{server.server_port}/", timeout=3) as response:
             body = response.read().decode("utf-8")
             self.assertEqual(response.status, 200)
+            self.assertEqual(response.headers.get_content_charset(), "utf-8")
+            self.assertIn("AERIS", body)
+            self.assertIn("登入", body)
+
+    def test_dashboard_requires_authentication(self):
+        server = self._server()
+        request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/dashboard")
+        with urllib.request.urlopen(request, timeout=3) as response:
+            # urlopen follows the 302 to /login automatically; assert we
+            # actually landed on the login page, not the real dashboard.
+            self.assertEqual(response.geturl(), f"http://127.0.0.1:{server.server_port}/login")
+            self.assertIn("登入", response.read().decode("utf-8"))
+        api_request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/api/v1/progress")
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(api_request, timeout=3)
+        self.assertEqual(ctx.exception.code, 401)
+
+    def test_dashboard_is_real_dashboard_when_authenticated(self):
+        server = self._server()
+        request = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/dashboard")
+        request.add_header("Cookie", self._session_cookie())
+        with urllib.request.urlopen(request, timeout=3) as response:
+            body = response.read().decode("utf-8")
+            self.assertEqual(response.status, 200)
             self.assertIn("本機聲學工程公司", body)
-            self.assertIn("Deterministic Skills", body)
-            self.assertIn("Standards Registry", body)
+            self.assertIn("確定性 技能", body)
+            self.assertIn("標準 登錄庫", body)
             self.assertIn("/assets/app.js", body)
+
+    def test_granted_user_can_reach_only_permitted_pages(self):
+        server = self._server()
+        auth.grant_user("viewer", "viewer-password-1", ["dashboard"])
+        token = auth.create_session("viewer")
+        self.addCleanup(auth.revoke_session, token)
+        cookie = f"{auth.SESSION_COOKIE_NAME}={token}"
+
+        allowed = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/dashboard", headers={"Cookie": cookie})
+        with urllib.request.urlopen(allowed, timeout=3) as response:
+            self.assertEqual(response.status, 200)
+
+        forbidden = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/workspace", headers={"Cookie": cookie})
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(forbidden, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
+
+    def test_only_owner_can_manage_users(self):
+        server = self._server()
+        auth.grant_user("viewer", "viewer-password-1", ["dashboard"])
+        viewer_token = auth.create_session("viewer")
+        self.addCleanup(auth.revoke_session, viewer_token)
+
+        forbidden = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/api/v1/auth/users",
+                                            headers={"Cookie": f"{auth.SESSION_COOKIE_NAME}={viewer_token}"})
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(forbidden, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
+
+        allowed = urllib.request.Request(f"http://127.0.0.1:{server.server_port}/api/v1/auth/users",
+                                          headers={"Cookie": self._session_cookie()})
+        with urllib.request.urlopen(allowed, timeout=3) as response:
+            data = json.loads(response.read().decode("utf-8"))
+        usernames = {u["username"] for u in data["users"]}
+        self.assertIn("owner", usernames)
+        self.assertIn("viewer", usernames)
+
+    def test_owner_can_grant_and_revoke_a_user_via_api(self):
+        server = self._server()
+        create_request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/auth/users",
+            data=json.dumps({"username": "newhire", "password": "newhire-password-1", "permissions": ["progress"]}).encode(),
+            headers={"Cookie": self._session_cookie(), "Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(create_request, timeout=3) as response:
+            self.assertEqual(response.status, 201)
+        self.assertTrue(auth.verify_credentials("newhire", "newhire-password-1"))
+
+        revoke_request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/auth/users/newhire/revoke",
+            data=b"", headers={"Cookie": self._session_cookie()}, method="POST",
+        )
+        with urllib.request.urlopen(revoke_request, timeout=3) as response:
+            self.assertEqual(response.status, 200)
+        self.assertFalse(auth.verify_credentials("newhire", "newhire-password-1"))
+
+    def test_mutating_api_requires_capabilities_execute_permission(self):
+        server = self._server()
+        auth.grant_user("readonly", "readonly-password-1", ["workspace"])
+        token = auth.create_session("readonly")
+        self.addCleanup(auth.revoke_session, token)
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/projects",
+            data=json.dumps({"name": "Should Be Blocked"}).encode(),
+            headers={"Cookie": f"{auth.SESSION_COOKIE_NAME}={token}", "Content-Type": "application/json"},
+        )
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(request, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
+
+    def test_reverify_trigger_requires_admin_permission(self):
+        server = self._server()
+        auth.grant_user("viewer", "viewer-password-1", ["progress"])
+        token = auth.create_session("viewer")
+        self.addCleanup(auth.revoke_session, token)
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{server.server_port}/api/v1/progress/reverify",
+            data=b"{}", headers={"Cookie": f"{auth.SESSION_COOKIE_NAME}={token}"}, method="POST",
+        )
+        with self.assertRaises(urllib.error.HTTPError) as ctx:
+            urllib.request.urlopen(request, timeout=3)
+        self.assertEqual(ctx.exception.code, 403)
+
+    def test_owner_can_trigger_reverify_and_poll_status(self):
+        from unittest.mock import patch
+        from aeris_runtime import progress_verify
+        server = self._server()
+        with patch.object(progress_verify, "run", return_value={}):
+            request = urllib.request.Request(
+                f"http://127.0.0.1:{server.server_port}/api/v1/progress/reverify",
+                data=b"{}", headers={"Cookie": self._session_cookie()}, method="POST",
+            )
+            with urllib.request.urlopen(request, timeout=3) as response:
+                self.assertEqual(response.status, 202)
+                body = json.loads(response.read().decode("utf-8"))
+                self.assertTrue(body["started"])
+            for _ in range(50):
+                status_request = urllib.request.Request(
+                    f"http://127.0.0.1:{server.server_port}/api/v1/progress/reverify",
+                    headers={"Cookie": self._session_cookie()},
+                )
+                with urllib.request.urlopen(status_request, timeout=3) as response:
+                    status = json.loads(response.read().decode("utf-8"))
+                if not status["running"]:
+                    break
+                time.sleep(0.05)
+            self.assertFalse(status["running"])
+        progress_verify._WEB_TRIGGER_STATE.update(
+            {"running": False, "last_started_at": None, "last_finished_at": None, "last_result": None})
 
     def test_roles_api_returns_100(self):
         server = self._server()
@@ -86,12 +247,17 @@ class ControlPlaneTests(unittest.TestCase):
         server = self._server()
         data = self._get_json(server, "/api/v1/services")
         from aeris_runtime.telemetry import wait_for_service_telemetry
-        self.assertTrue(wait_for_service_telemetry(15))
+        # Collection time scales with the local evidence store's real size
+        # (validate_bundle runs once per sealed RUN- directory, plus a full
+        # audit-ledger hash-chain walk); a large local store can take well
+        # over 15s, so this bound is generous rather than tuned to an
+        # artificially small fixture store.
+        self.assertTrue(wait_for_service_telemetry(90))
         data = self._get_json(server, "/api/v1/services")
         self.assertTrue(data['assessment_complete'],
                         {k:data.get(k) for k in ('state_counts','snapshot_age_s','refresh_in_progress')})
         # Quiesce any follow-up refresh before fixture filesystem patches end.
-        self.assertTrue(wait_for_service_telemetry(15))
+        self.assertTrue(wait_for_service_telemetry(90))
         self.assertEqual(data["planes"], ["CONTROL", "KNOWLEDGE", "EXECUTION", "TRUST", "OPERATIONS"])
         self.assertGreaterEqual(len(data["services"]), 15)
         for service in data["services"]:

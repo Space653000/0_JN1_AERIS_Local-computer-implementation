@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "acoustic-dataset-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/acoustic-dataset-screening-baseline.json",
+  "input_schema": "skills/acoustic-dataset-screening-baseline/input.schema.json", "output_schema": "skills/acoustic-dataset-screening-baseline/output.schema.json",
+  "role_mappings": ["R085"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Declared sample-rate-uniformity/resampling and duplicate-source-count flags against mixed-rate and cross-split-leakage antipatterns; no full ingestion-pipeline audit or Human dataset-release sign-off"
+}

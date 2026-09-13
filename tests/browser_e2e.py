@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import aeris_runtime.controlplane as controlplane
 import aeris_runtime.operations as operations
 
 BROWSER_TIMEOUT_SEC = 35
@@ -128,7 +129,7 @@ def _dump_dom_with_bounded_timeout_retry(browser: str, url: str, route: str) -> 
                 "--disable-component-update",
                 "--disable-sync",
                 "--metrics-recording-only",
-                "--virtual-time-budget=2500",
+                "--virtual-time-budget=4500",
                 f"--user-data-dir={profile}",
                 "--dump-dom",
                 url,
@@ -158,7 +159,18 @@ def run() -> int:
         "runtime_mode": "auto",
         "limits": ["CI_BROWSER_E2E_FIXTURE_NOT_REAL_MACHINE_OPENING"],
     }
-    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None):
+    # This synthetic server's routes now sit behind the login gate added in
+    # commit 5dec098 (see docs/AERIS_ACCESS_CONTROL.md). A raw headless
+    # Chrome --dump-dom navigation has no clean way to attach a session
+    # cookie or the local-tooling supervisor-token header, so this test's
+    # own process bypasses the gate directly -- safe because it only
+    # patches this ephemeral, in-process test server, never the real one.
+    # _has_permission is a separate check from _is_authenticated (added by
+    # the later multi-user/scoped-permission rewrite -- see
+    # docs/AERIS_ACCESS_CONTROL.md) that independently re-resolves the
+    # caller's identity rather than consulting _is_authenticated's mocked
+    # result, so it must be patched too or every route 403s.
+    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None), patch.object(controlplane, "_is_authenticated", return_value=True), patch.object(controlplane, "_has_permission", return_value=True):
         server = ThreadingHTTPServer(("127.0.0.1", 0), operations._Handler)
         server.shutdown_token = "ci-browser-e2e-only"
         thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -166,12 +178,12 @@ def run() -> int:
         try:
             browser = find_browser()
             routes = {
-                "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "Dashboard is a projection, not truth."),
-                "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "Suggested Temporary Engineering Pod"),
-                "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "Five-Plane Architecture"),
-                "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', "Dashboard is a projection, not truth."),
-                "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "Suggested Temporary Engineering Pod"),
-                "/services?theme=light": ('data-page="services"', 'data-theme="light"', "Five-Plane Architecture"),
+                "/dashboard?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', "儀表板是投影，不是真值。"),
+                "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', "建議的臨時工程 Pod"),
+                "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', "五平面架構"),
+                "/dashboard?theme=light": ('data-page="dashboard"', 'data-theme="light"', "儀表板是投影，不是真值。"),
+                "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', "建議的臨時工程 Pod"),
+                "/services?theme=light": ('data-page="services"', 'data-theme="light"', "五平面架構"),
             }
             results = []
             for route, required in routes.items():
@@ -197,21 +209,51 @@ def run() -> int:
             thread.join(timeout=3)
 
 
+def _supervisor_token_headers() -> dict:
+    # Local tooling authenticates via the per-run token operations.py
+    # writes at supervisor startup (see aeris_runtime/auth.py's
+    # SUPERVISOR_TOKEN_PATH) instead of a browser session. Works whenever
+    # base_url is the local machine's own supervisor; a remote target
+    # would need its own token file, which this script doesn't attempt to
+    # fetch.
+    token_path = ROOT / ".aeris" / "state" / ".supervisor-token"
+    if token_path.is_file():
+        try:
+            return {"X-AERIS-Supervisor-Token": token_path.read_text(encoding="utf-8-sig").strip()}
+        except OSError:
+            pass
+    return {}
+
+
 def run_live(base_url: str) -> int:
-    """Render the deployed service and require values produced by its real APIs."""
+    """Render the deployed service and require values produced by its real APIs.
+
+    Limitation: the JSON API calls below authenticate via the local
+    supervisor token, but the headless-Chrome --dump-dom page renders do
+    not attach any session -- there is no Chrome CLI flag for a custom
+    Cookie header on a plain --dump-dom navigation. Since commit 5dec098
+    put every rendered page except / and /login behind the login gate,
+    the DOM-render assertions below will only pass against a server
+    where /dashboard, /workspace, /services are reachable without a
+    session (e.g. a pre-auth-gate build, or once this script is extended
+    to seed a real session cookie into the browser's profile). Not fixed
+    here -- flagged honestly rather than left silently broken.
+    """
     browser = find_browser()
     def live(path):
-        with urllib.request.urlopen(base_url.rstrip('/')+path,timeout=20) as response:
+        request = urllib.request.Request(base_url.rstrip('/')+path, headers=_supervisor_token_headers())
+        with urllib.request.urlopen(request,timeout=20) as response:
             return json.load(response)
+    zh = json.loads((ROOT / "ui" / "web" / "zh-TW.json").read_text(encoding="utf-8"))
     status=live('/api/v1/status'); services=live('/api/v1/services')
-    opening=status['company_opening_state']
+    opening=zh.get(status['company_opening_state'], status['company_opening_state'])
     routes = {
-        "/?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', opening),
+        "/dashboard?theme=dark": ('data-page="dashboard"', 'data-theme="dark"', opening),
         "/workspace?theme=dark": ('data-page="workspace"', 'data-theme="dark"', opening),
-        "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', opening, f"{len(services['services'])} observed services"),
-        "/?theme=light": ('data-page="dashboard"', 'data-theme="light"', opening),
+        "/services?theme=dark": ('data-page="services"', 'data-theme="dark"', opening, f"{len(services['services'])} 項觀測服務"),
+        "/dashboard?theme=light": ('data-page="dashboard"', 'data-theme="light"', opening),
         "/workspace?theme=light": ('data-page="workspace"', 'data-theme="light"', opening),
-        "/services?theme=light": ('data-page="services"', 'data-theme="light"', opening, f"{len(services['services'])} observed services"),
+        "/services?theme=light": ('data-page="services"', 'data-theme="light"', opening, f"{len(services['services'])} 項觀測服務"),
     }
     results = []
     for route, required in routes.items():
@@ -219,7 +261,7 @@ def run_live(base_url: str) -> int:
         knowledge=live('/api/v1/capabilities/knowledge')
         required = (*required, 'id="capability-factory"',
                     f"L2 以上 {matrix['100_role_L2']}/{matrix['total_roles']}",
-                    f"Skills {matrix['total_executable_skills']}", f"Methods {matrix['total_methods']}",
+                    f"技能 {matrix['total_executable_skills']}", f"方法 {matrix['total_methods']}",
                     f"角色領域驗收 {matrix['maturity_counts']['L3']}")
         required=(*required,*(f'{k} {v}' for k,v in knowledge['counts_by_source_kind'].items()))
         if '/workspace' in route:

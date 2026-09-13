@@ -1,0 +1,7 @@
+{
+  "method_id": "test-automation-result-screening-baseline", "version": "1.0.0", "role": "R091", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:test_automation_result_screening_model", "applicability": "Supplied attempt count, final-attempt-passed flag, retry-disclosure flag and explicit-pass-signal flag",
+  "equations": {"retries_disclosed_ok": "attempt_count <= 1 or retries_disclosed", "pass_signal_ok": "explicit_pass_signal_received"},
+  "assumptions": ["Supplied attempt count, disclosure flag and pass-signal flag are exact, not inferred from logs", "A single attempt has no retry to disclose", "This screen evaluates one test result claim only, not the full automation run"],
+  "excluded": ["Root cause analysis of retried failures", "full automation-run resource/timeout budget", "physical/production release authorization"], "golden_tests": "golden/roles/R091/golden.json"
+}

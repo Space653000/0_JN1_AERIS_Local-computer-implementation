@@ -38,7 +38,13 @@ class LiveUiContractTests(unittest.TestCase):
         html = (ROOT / "ui" / "web" / "index.html").read_text(encoding="utf-8")
         js = (ROOT / "ui" / "web" / "app.js").read_text(encoding="utf-8")
         css = (ROOT / "ui" / "web" / "themes.css").read_text(encoding="utf-8")
-        self.assertIn("requestedTheme==='light'?'light':'dark'", html)
+        theme_init = (ROOT / "ui" / "web" / "theme-init.js").read_text(encoding="utf-8")
+        # The theme bootstrap must live in an external file: controlplane's
+        # CSP sends script-src 'self' with no 'unsafe-inline'/nonce, so an
+        # inline <script>...</script> body is silently blocked by the
+        # browser and never runs.
+        self.assertIn('<script src="/assets/theme-init.js"></script>', html)
+        self.assertIn("requestedTheme==='light'?'light':'dark'", theme_init)
         self.assertIn('id="themeToggle"', html)
         self.assertIn("?theme=${currentTheme()}", js)
         self.assertIn('data-theme="light"', css)

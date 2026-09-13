@@ -1,0 +1,27 @@
+{
+  "suite_id": "R095-INCOMING-LOT-SAMPLING-SCREEN-V1", "role_id": "R095", "skill_id": "incoming-lot-sampling-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact one-sided binomial upper bound computed via scipy.stats.beta.ppf(confidence, nonconforming+1, sample_size-nonconforming); no physical incoming inspection was observed.",
+  "scope": "Supplied sample size, observed nonconforming count, declared source kind, confidence and acceptance threshold only",
+  "base_input": {
+    "model": "SUPPLIED_INCOMING_LOT_SAMPLING_SCREEN", "source_kind": "MEASURED_INCOMING_INSPECTION", "sample_size": 32, "observed_nonconforming": 0,
+    "confidence": 0.90, "max_acceptable_lot_fraction_nonconforming": 0.10
+  },
+  "cases": [
+    {"id": "LOT-MEASURED-ZERO-NONCONFORMING-ACCEPT", "kind": "positive", "question": "Does zero nonconforming units in 32 measured samples at 90% confidence clear a 10% acceptance threshold?", "input_overrides": {}, "checks": [
+      {"path": "one_sided_upper_fraction_nonconforming", "expected": 0.06942795907030104, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "assembly_test_variation_separated", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "LOT-CERTIFICATE-ONLY-REJECTED-EVEN-IF-NUMERICALLY-GOOD", "kind": "counter_hypothesis", "question": "Is a supplier certificate correctly rejected as measured conformance even when the same numbers would otherwise pass?", "input_overrides": {"source_kind": "SUPPLIER_CERTIFICATE_ONLY"}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "OBTAIN_MEASURED_INCOMING_INSPECTION_DATA_NOT_A_SUPPLIER_CERTIFICATE", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "LOT-ALL-NONCONFORMING-BOUNDARY", "kind": "boundary", "question": "Does the all-samples-nonconforming edge case (nonconforming == sample_size) return the exact upper bound of 1.0 rather than invoking the beta quantile function?", "input_overrides": {"sample_size": 5, "observed_nonconforming": 5}, "checks": [
+      {"path": "one_sided_upper_fraction_nonconforming", "expected": 1.0, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "LOT-NONCONFORMING-EXCEEDS-SAMPLE-REJECTED", "kind": "negative", "question": "Is a nonconforming count exceeding the sample size rejected rather than silently clipped?", "input_overrides": {"observed_nonconforming": 40}, "expected_error": "ValueError"}
+  ]
+}

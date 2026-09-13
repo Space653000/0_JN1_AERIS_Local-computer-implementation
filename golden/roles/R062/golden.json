@@ -1,0 +1,25 @@
+{
+  "suite_id": "R062-VR-XR-HEADSET-SCREEN-V1", "role_id": "R062", "skill_id": "vr-xr-headset-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact interval comparison and 20*log10 margin computed directly from supplied scalars; no physical headset or wear test was observed.",
+  "scope": "Supplied motion-to-sound latency, strap-rubbing noise, speech reference and declared acceptance thresholds only",
+  "base_input": {
+    "model": "SUPPLIED_VR_XR_HEADSET_SCREEN", "motion_to_sound_latency_ms": 15.0, "max_acceptable_motion_to_sound_latency_ms": 20.0,
+    "strap_rubbing_noise_rms_pa": 0.001, "speech_reference_rms_pa": 0.1, "min_acceptable_strap_rubbing_margin_db": 30.0
+  },
+  "cases": [
+    {"id": "VR-LATENCY-AND-MARGIN-WITHIN-BOUNDS-ACCEPT", "kind": "positive", "question": "Does a low motion-to-sound latency with a healthy strap-rubbing margin clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "strap_rubbing_margin_db", "expected": 40.0, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "VR-EXCESS-LATENCY-DESTABILIZES-SCENE-REJECTED", "kind": "counter_hypothesis", "question": "Is a motion-to-sound latency above the declared bound correctly rejected rather than rounded down?", "input_overrides": {"motion_to_sound_latency_ms": 25.0}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "REDUCE_RENDERER_OR_SPATIALIZATION_LATENCY_OR_RELAX_THE_MOTION_TO_SOUND_BOUND", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "VR-LATENCY-EXACT-BOUND-BOUNDARY", "kind": "boundary", "question": "Does a latency exactly at the declared bound correctly pass the inclusive limit rather than being rejected?", "input_overrides": {"motion_to_sound_latency_ms": 20.0}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "VR-NEGATIVE-SPEECH-REFERENCE-REJECTED", "kind": "negative", "question": "Is a non-positive speech reference level rejected rather than silently accepted?", "input_overrides": {"speech_reference_rms_pa": -1.0}, "expected_error": "ValueError"}
+  ]
+}

@@ -13,7 +13,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
-from .audit import LEDGER_PATH
+from . import audit
+from . import auth
 from .config import ROOT, load_config
 from .expected_runs import assess_all as expected_run_health
 from .knowledge import search as knowledge_search, stats as knowledge_stats
@@ -180,6 +181,162 @@ class ControlStore:
         return {"projects": projects, "tasks": tasks, "active_tasks": active}
 
 
+# Reachable without a signed-in session: the public "intro" page (status/
+# features/blueprint, no live operational data), the login page and its
+# API, and the static assets both of those pages render with. Every other
+# page and /api/v1/* endpoint requires a valid session -- see auth.py and
+# docs/AERIS_ACCESS_CONTROL.md.
+PUBLIC_GET_PATHS = {"/", "/login", "/favicon.ico", "/api/v1/auth/status"}
+PUBLIC_POST_PATHS = {"/api/v1/auth/login"}
+# Only these UI pages get redirected to /login when signed out. Paths
+# outside this set and outside /api/v1/ (notably /health, /status --
+# handled entirely outside this module, in operations.py's _Handler) must
+# fall through untouched: they are not pages this module serves, and a
+# blanket "redirect anything unrecognized" rule previously broke /health,
+# which the launcher scripts poll to detect the server coming up.
+# Each protected page maps to the permission scope that grants it (see
+# auth.GRANTABLE_PERMISSIONS); /admin requires the owner-only "admin"
+# scope, which is never in GRANTABLE_PERMISSIONS and so can never be
+# handed to a granted account.
+PROTECTED_UI_PAGE_PERMISSIONS = {
+    "/dashboard": "dashboard", "/workspace": "workspace", "/services": "services",
+    "/activity": "activity", "/progress": "progress", "/progress-center": "progress",
+    "/admin": "admin",
+}
+# POST-only /api/v1/* prefixes that mutate or execute something (create a
+# task, run a skill, execute a role's capability, ...) require the
+# capabilities_execute permission specifically, not just "logged in" --
+# a granted account can be given read-only page access without also
+# being able to trigger real work. Prefix-matched, most-specific first.
+MUTATING_API_PREFIXES = (
+    "/api/v1/capabilities/", "/api/v1/tasks", "/api/v1/projects", "/api/v1/workflows",
+    "/api/v1/skills/run", "/api/v1/imports", "/api/v1/reproduction/", "/api/v1/pods/plan",
+    "/api/v1/roles/",
+)
+
+
+def _is_public_asset(path: str) -> bool:
+    return path.startswith("/assets/")
+
+
+def _session_token(handler: Any) -> str | None:
+    return auth.parse_cookie(handler.headers.get("Cookie"), auth.SESSION_COOKIE_NAME)
+
+
+def _current_username(handler: Any) -> str | None:
+    """The authenticated username for this request, or a sentinel for
+    local same-machine tooling using the supervisor token (which acts
+    with full/owner-equivalent access -- see auth.py's docstring on why
+    that's not a new trust boundary)."""
+    if auth.verify_supervisor_token(handler.headers.get(auth.SUPERVISOR_TOKEN_HEADER)):
+        return "__local_tooling__"
+    return auth.session_username(_session_token(handler))
+
+
+def _is_authenticated(handler: Any) -> bool:
+    return _current_username(handler) is not None
+
+
+def _has_permission(handler: Any, permission: str) -> bool:
+    username = _current_username(handler)
+    if username is None:
+        return False
+    if username == "__local_tooling__":
+        return True
+    return auth.has_permission(username, permission)
+
+
+def _write_redirect(handler: Any, location: str) -> None:
+    handler.send_response(302)
+    handler.send_header("Location", location)
+    handler.send_header("Content-Length", "0")
+    handler.send_header("Cache-Control", "no-store")
+    handler.end_headers()
+
+
+def _set_session_cookie(handler: Any, token: str) -> None:
+    handler.send_header("Set-Cookie", f"{auth.SESSION_COOKIE_NAME}={token}; HttpOnly; SameSite=Strict; Path=/; Max-Age={auth.SESSION_TTL_S}")
+
+
+def _clear_session_cookie(handler: Any) -> None:
+    handler.send_header("Set-Cookie", f"{auth.SESSION_COOKIE_NAME}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0")
+
+
+def _handle_auth_get(handler: Any, path: str) -> bool:
+    if path == "/api/v1/auth/status":
+        username = _current_username(handler)
+        role, permissions = auth.user_permissions(username) if username and username != "__local_tooling__" else (None, [])
+        _write_json(handler, 200, {
+            "authenticated": username is not None, "credentials_configured": auth.has_credentials(),
+            "username": username if username != "__local_tooling__" else None,
+            "role": role, "permissions": permissions,
+        })
+        return True
+    if path == "/api/v1/auth/users":
+        if not _has_permission(handler, "admin"):
+            _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can manage accounts."})
+            return True
+        _write_json(handler, 200, {"users": auth.list_users(), "grantable_permissions": list(auth.GRANTABLE_PERMISSIONS)})
+        return True
+    return False
+
+
+def _handle_auth_post(handler: Any, path: str, payload: dict[str, Any]) -> bool:
+    if path == "/api/v1/auth/login":
+        username, password = str(payload.get("username", "")), str(payload.get("password", ""))
+        if not auth.has_credentials():
+            _write_json(handler, 503, {"error": "no_credentials_configured", "detail": "Run `python -m aeris_runtime auth set-credentials` locally first."})
+            return True
+        if not auth.verify_credentials(username, password):
+            _write_json(handler, 401, {"error": "invalid_credentials"})
+            return True
+        token = auth.create_session(username.strip())
+        body = json.dumps({"authenticated": True}).encode("utf-8")
+        handler.send_response(200)
+        handler.send_header("Content-Type", "application/json; charset=utf-8")
+        handler.send_header("Content-Length", str(len(body)))
+        handler.send_header("Cache-Control", "no-store")
+        _set_session_cookie(handler, token)
+        handler.end_headers()
+        handler.wfile.write(body)
+        return True
+    if path == "/api/v1/auth/logout":
+        auth.revoke_session(_session_token(handler))
+        body = json.dumps({"authenticated": False}).encode("utf-8")
+        handler.send_response(200)
+        handler.send_header("Content-Type", "application/json; charset=utf-8")
+        handler.send_header("Content-Length", str(len(body)))
+        handler.send_header("Cache-Control", "no-store")
+        _clear_session_cookie(handler)
+        handler.end_headers()
+        handler.wfile.write(body)
+        return True
+    if path == "/api/v1/auth/users":
+        if not _has_permission(handler, "admin"):
+            _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can manage accounts."})
+            return True
+        try:
+            auth.grant_user(str(payload.get("username", "")), str(payload.get("password", "")), list(payload.get("permissions", [])))
+        except ValueError as exc:
+            _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)})
+            return True
+        _write_json(handler, 201, {"users": auth.list_users()})
+        return True
+    if path.startswith("/api/v1/auth/users/") and path.endswith("/revoke"):
+        if not _has_permission(handler, "admin"):
+            _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can manage accounts."})
+            return True
+        username = path[len("/api/v1/auth/users/"):-len("/revoke")]
+        try:
+            auth.revoke_user(username)
+        except ValueError as exc:
+            _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)})
+            return True
+        _write_json(handler, 200, {"users": auth.list_users()})
+        return True
+    return False
+
+
 def _write_json(handler: Any, code: int, payload: Any) -> None:
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     handler.send_response(code)
@@ -199,7 +356,7 @@ def _write_bytes(handler: Any, code: int, body: bytes, content_type: str) -> Non
     handler.send_header("X-Content-Type-Options", "nosniff")
     handler.send_header("X-Frame-Options", "DENY")
     handler.send_header("Referrer-Policy", "no-referrer")
-    handler.send_header("Content-Security-Policy", "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; frame-ancestors 'none'")
+    handler.send_header("Content-Security-Policy", "default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'none'; frame-ancestors 'none'")
     handler.end_headers()
     handler.wfile.write(body)
 
@@ -222,10 +379,18 @@ def _body(handler: Any) -> dict[str, Any]:
 
 
 def _serve_ui(handler: Any, path: str) -> bool:
-    if path in {"/", "/dashboard"}:
+    if path == "/":
+        target = UI_ROOT / "intro.html"
+    elif path == "/login":
+        target = UI_ROOT / "login.html"
+    elif path == "/dashboard":
         target = UI_ROOT / "dashboard.html"
-    elif path in {"/workspace", "/services"}:
+    elif path == "/admin":
+        target = UI_ROOT / "admin.html"
+    elif path in {"/workspace", "/services", "/activity"}:
         target = UI_ROOT / (path.lstrip("/") + ".html")
+    elif path in {"/progress", "/progress-center"}:
+        target = UI_ROOT / "progress.html"
     elif path.startswith("/assets/"):
         rel = path[len("/assets/"):]
         if not rel or "/" in rel or "\\" in rel or ".." in rel:
@@ -246,17 +411,26 @@ def _serve_ui(handler: Any, path: str) -> bool:
     return True
 
 
-def _audit_recent(limit: int = 50) -> list[dict[str, Any]]:
-    if not LEDGER_PATH.exists():
-        return []
-    lines = LEDGER_PATH.read_text(encoding="utf-8-sig", errors="replace").splitlines()[-max(1, min(limit, 200)):]
+def _audit_recent(limit: int = 50, offset: int = 0) -> dict[str, Any]:
+    # Read audit.LEDGER_PATH fresh here rather than importing the name by
+    # value at module load: a bound import copy would not see
+    # patch.object(audit, "LEDGER_PATH", ...) from test isolation.
+    ledger_path = audit.LEDGER_PATH
+    if not ledger_path.exists():
+        return {"records": [], "total": 0}
+    all_lines = ledger_path.read_text(encoding="utf-8-sig", errors="replace").splitlines()
+    total = len(all_lines)
+    limit = max(1, min(limit, 200))
+    offset = max(0, offset)
+    newest_first = list(reversed(all_lines))
+    page = newest_first[offset:offset + limit]
     result = []
-    for line in reversed(lines):
+    for line in page:
         try:
             result.append(json.loads(line))
         except json.JSONDecodeError:
             result.append({"invalid_record": True, "raw": line[:400]})
-    return result
+    return {"records": result, "total": total}
 
 
 def _status(opening: dict[str, Any]) -> dict[str, Any]:
@@ -317,7 +491,28 @@ def _save_import(payload: dict[str, Any]) -> dict[str, Any]:
 
 def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
     from urllib.parse import urlsplit as _split
-    if _split(handler.path).path.startswith("/api/v1/capabilities"):
+    early_path = _split(handler.path).path
+    if _handle_auth_get(handler, early_path):
+        return True
+    authenticated = _is_authenticated(handler)
+    required_permission = PROTECTED_UI_PAGE_PERMISSIONS.get(early_path)
+    if not authenticated and early_path not in PUBLIC_GET_PATHS and not _is_public_asset(early_path):
+        if early_path.startswith("/api/v1/"):
+            _write_json(handler, 401, {"error": "unauthorized", "detail": "Sign in at /login."})
+            return True
+        if required_permission is not None:
+            _write_redirect(handler, "/login")
+            return True
+        # Not a page this module serves (e.g. /health, /status) -- fall
+        # through untouched rather than redirecting an unrelated route.
+    elif authenticated and required_permission is not None and not _has_permission(handler, required_permission):
+        # Signed in, but this account wasn't granted this specific page.
+        # A redirect to /login would just bounce them right back in
+        # (they're already authenticated) -- 403 with a plain message is
+        # the honest response.
+        _write_bytes(handler, 403, f"<h1>403</h1><p>Your account does not have access to this page ({required_permission}).</p>".encode(), "text/html; charset=utf-8")
+        return True
+    if early_path.startswith("/api/v1/capabilities"):
         if urlsplit("http://"+handler.headers.get("Host","")).hostname not in {"localhost","127.0.0.1","::1"}:
             _write_json(handler,403,{"error":"loopback_host_required"}); return True
         from .engineering.api import get
@@ -367,7 +562,20 @@ def handle_get(handler: Any, opening: dict[str, Any]) -> bool:
         elif path == "/api/v1/machine":
             _write_json(handler, 200, machine_detect())
         elif path == "/api/v1/audit":
-            _write_json(handler, 200, {"records": _audit_recent(int((qs.get("limit") or ["50"])[0]))})
+            page = _audit_recent(int((qs.get("limit") or ["50"])[0]), int((qs.get("offset") or ["0"])[0]))
+            _write_json(handler, 200, page)
+        elif path == "/api/v1/audit/verify":
+            from .audit import verify_ledger
+            _write_json(handler, 200, verify_ledger())
+        elif path == "/api/v1/progress":
+            from .progress import current
+            _write_json(handler, 200, current())
+        elif path == "/api/v1/progress/history":
+            from .progress_history import compute_history
+            _write_json(handler, 200, {"points": compute_history()})
+        elif path == "/api/v1/progress/reverify":
+            from . import progress_verify
+            _write_json(handler, 200, progress_verify.web_trigger_status())
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True
@@ -412,6 +620,23 @@ def handle_post(handler: Any) -> bool:
     path = urlsplit(handler.path).path
     if not path.startswith("/api/v1/"):
         return False
+    if path.startswith("/api/v1/auth/"):
+        # _handle_auth_post checks its own permission requirements per
+        # sub-path (login/logout are public; user management requires
+        # "admin") -- routed here as a whole group rather than
+        # enumerating every auth sub-path in PUBLIC_POST_PATHS.
+        has_body = handler.headers.get("Content-Length", "0") not in ("0", "")
+        try:
+            payload = _body(handler) if has_body else {}
+        except ValueError as exc:
+            _write_json(handler, 400, {"error": "bad_request", "detail": str(exc)}); return True
+        return _handle_auth_post(handler, path, payload)
+    if not _is_authenticated(handler):
+        _write_json(handler, 401, {"error": "unauthorized", "detail": "Sign in at /login."})
+        return True
+    if any(path.startswith(prefix) for prefix in MUTATING_API_PREFIXES) and not _has_permission(handler, "capabilities_execute"):
+        _write_json(handler, 403, {"error": "forbidden", "detail": "Your account does not have permission to execute or modify anything (capabilities_execute)."})
+        return True
     if path.startswith("/api/v1/capabilities/"):
         host=handler.headers.get("Host",""); origin=handler.headers.get("Origin")
         if urlsplit("http://"+host).hostname not in {"localhost","127.0.0.1","::1"} or origin and origin!="http://"+host or not handler.headers.get("Content-Type","").lower().startswith("application/json"):
@@ -482,6 +707,17 @@ def handle_post(handler: Any) -> bool:
             _write_json(handler, 200, execute_workflow(path.split("/")[-2], str(payload.get("actor", "Local UI"))))
         elif path.startswith("/api/v1/reproduction/"):
             _write_json(handler, 200, reproduce_run(path.rsplit("/", 1)[-1]))
+        elif path == "/api/v1/progress/reverify":
+            # P2.4: deliberately gated to "admin" specifically, not just
+            # "logged in" or capabilities_execute -- this runs local
+            # checks and writes Evidence files, so only the owner (never
+            # a granted account, however broadly scoped) may trigger it.
+            if not _has_permission(handler, "admin"):
+                _write_json(handler, 403, {"error": "forbidden", "detail": "Only the owner can trigger re-verification."})
+                return True
+            from . import progress_verify
+            started, reason = progress_verify.start_web_triggered_run()
+            _write_json(handler, 202 if started else 409, {"started": started, "detail": reason})
         else:
             _write_json(handler, 404, {"error": "api_not_found"})
         return True

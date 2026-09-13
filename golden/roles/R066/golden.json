@@ -1,0 +1,30 @@
+{
+  "suite_id": "R066-HUMANOID-INTERACTION-SCREEN-V1", "role_id": "R066", "skill_id": "humanoid-interaction-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact 20*log10 margins computed directly from supplied scalars; no physical humanoid platform was observed.",
+  "scope": "Supplied residual self-echo, user interruption, joint noise, speech reference levels and declared acceptance thresholds only",
+  "base_input": {
+    "model": "SUPPLIED_HUMANOID_INTERACTION_SCREEN", "residual_self_echo_rms_pa": 0.001, "user_interruption_rms_pa": 0.1,
+    "min_acceptable_interruption_margin_db": 30.0, "joint_noise_during_tracking_rms_pa": 0.001, "user_speech_reference_rms_pa": 0.1,
+    "min_acceptable_joint_noise_margin_db": 30.0
+  },
+  "cases": [
+    {"id": "HUM-INTERRUPTION-AND-JOINT-NOISE-WITHIN-BOUNDS-ACCEPT", "kind": "positive", "question": "Does a healthy interruption margin and joint-noise margin clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "interruption_margin_db", "expected": 40.0, "absolute_tolerance": 1e-9},
+      {"path": "joint_noise_margin_db", "expected": 40.0, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "HUM-SELF-SPEECH-MASKS-INTERRUPTION-AND-JOINT-NOISE-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are a self-echo-masked interruption and excess joint noise both correctly rejected together, rather than one masking the other?", "input_overrides": {"residual_self_echo_rms_pa": 0.01, "joint_noise_during_tracking_rms_pa": 0.01}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "IMPROVE_AEC_RESIDUAL_SUPPRESSION_OR_LOWER_ROBOT_PLAYBACK_LEVEL_OR_RELAX_THE_MARGIN_TARGET", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "IMPROVE_ACTUATOR_ACOUSTIC_ISOLATION_OR_GATE_VAD_DURING_TRACKING_MOTION_OR_RELAX_THE_MARGIN_TARGET", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "HUM-EXACT-INTERRUPTION-MARGIN-BOUNDARY", "kind": "boundary", "question": "Does an interruption margin exactly at the declared minimum correctly pass the inclusive bound rather than being rejected?", "input_overrides": {"residual_self_echo_rms_pa": 0.0031622776601683794}, "checks": [
+      {"path": "interruption_margin_db", "expected": 30.0, "absolute_tolerance": 1e-6},
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "HUM-NEGATIVE-SPEECH-REFERENCE-REJECTED", "kind": "negative", "question": "Is a non-positive user speech reference level rejected rather than silently accepted?", "input_overrides": {"user_speech_reference_rms_pa": -1.0}, "expected_error": "ValueError"}
+  ]
+}

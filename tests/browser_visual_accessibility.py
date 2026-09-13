@@ -26,16 +26,17 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import aeris_runtime.controlplane as controlplane
 import aeris_runtime.operations as operations
 from tests.browser_e2e import find_browser
 
 VIEWPORT = (1440, 1000)
 ARTIFACT_ROOT = ROOT / ".aeris" / "evidence" / "browser-visual" / "latest"
 ROUTES = (
-    "/?theme=dark&visual_baseline=1",
+    "/dashboard?theme=dark&visual_baseline=1",
     "/workspace?theme=dark&visual_baseline=1",
     "/services?theme=dark&visual_baseline=1",
-    "/?theme=light&visual_baseline=1",
+    "/dashboard?theme=light&visual_baseline=1",
     "/workspace?theme=light&visual_baseline=1",
     "/services?theme=light&visual_baseline=1",
 )
@@ -133,7 +134,13 @@ def run() -> int:
         "runtime_mode": "auto",
         "limits": ["CI_BROWSER_VISUAL_FIXTURE_NOT_REAL_MACHINE_OPENING"],
     }
-    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None):
+    # Same rationale as browser_e2e.py's run(): a raw headless-Chrome
+    # --dump-dom navigation can't attach a session cookie, so this
+    # ephemeral in-process test server bypasses the login gate directly.
+    # _has_permission independently re-resolves the caller's identity
+    # rather than consulting _is_authenticated's mocked result, so it
+    # must be patched too or every route 403s (see browser_e2e.py).
+    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None), patch.object(controlplane, "_is_authenticated", return_value=True), patch.object(controlplane, "_has_permission", return_value=True):
         snapshots = {}
         class SnapshotHandler(operations._Handler):
             def do_GET(self):
@@ -151,13 +158,20 @@ def run() -> int:
             for endpoint in ('status','services','machine','roles','workflows','audit?limit=12',
                              'maturity','standards?q=','projects','tasks','capabilities','capabilities/knowledge','capabilities/roles/R001'):
                 path='/api/v1/'+endpoint
-                with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path, timeout=30) as response:
+                # This test spins up its own fresh in-process server, so
+                # /api/v1/services (TelemetryProjection) and
+                # /api/v1/capabilities (live_matrix) both pay a genuine
+                # cold-start cost here -- scales with the local evidence
+                # store (validate_bundle per sealed RUN- bundle) and can take
+                # well over a minute at this session's evidence volume. 30s
+                # was tuned for a near-empty store; not generous enough now.
+                with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path, timeout=120) as response:
                     value=json.load(response)
                 if endpoint=='services' and not value.get('assessment_complete',True):
                     from aeris_runtime.telemetry import wait_for_service_telemetry
-                    if not wait_for_service_telemetry(15):
+                    if not wait_for_service_telemetry(120):
                         raise AssertionError('service assessment did not complete for visual baseline')
-                    with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path,timeout=3) as response:
+                    with urllib.request.urlopen(f'http://127.0.0.1:{server.server_port}'+path,timeout=10) as response:
                         value=json.load(response)
                     if not value.get('assessment_complete'):
                         raise AssertionError('visual baseline cannot freeze pending/stale service truth')

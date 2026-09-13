@@ -58,7 +58,9 @@ def _single_writer_lock(timeout_sec: float = 5.0) -> Iterator[None]:
                 pass
 
 
-def _last_hash(path: Path = AUDIT_FILE) -> str:
+def _last_hash(path: Path | None = None) -> str:
+    if path is None:
+        path = AUDIT_FILE
     if not path.exists() or path.stat().st_size == 0:
         return "0" * 64
     last = ""
@@ -71,8 +73,14 @@ def _last_hash(path: Path = AUDIT_FILE) -> str:
     return str(json.loads(last).get("record_hash", ""))
 
 
-def append_event(event_type: str, actor: str, payload: dict[str, Any] | None = None, *, path: Path = AUDIT_FILE) -> dict[str, Any]:
+def append_event(event_type: str, actor: str, payload: dict[str, Any] | None = None, *, path: Path | None = None) -> dict[str, Any]:
     """Append one hash-chained event and return the stored record."""
+    if path is None:
+        # A bound `path: Path = AUDIT_FILE` default is captured once at import
+        # time, so patch.object(audit, "AUDIT_FILE", ...) in tests would never
+        # actually redirect the many call sites across the codebase that omit
+        # `path=` -- they would keep writing into the real production ledger.
+        path = AUDIT_FILE
     if not event_type.strip() or not actor.strip():
         raise ValueError("event_type and actor are required")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -95,7 +103,9 @@ def append_event(event_type: str, actor: str, payload: dict[str, Any] | None = N
         return record
 
 
-def verify_ledger(path: Path = AUDIT_FILE) -> dict[str, Any]:
+def verify_ledger(path: Path | None = None) -> dict[str, Any]:
+    if path is None:
+        path = AUDIT_FILE
     if not path.exists():
         return {"valid": True, "records": 0, "last_hash": "0" * 64, "note": "ledger_not_created_yet"}
     expected_prev = "0" * 64

@@ -1,0 +1,26 @@
+{
+  "suite_id": "R078-DOE-MONTE-CARLO-DESIGN-SCREEN-V1", "role_id": "R078", "skill_id": "doe-monte-carlo-design-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact boolean logic against declared design-resolution and claim/validation flags; no physical experiment or simulation was observed.",
+  "scope": "Supplied design resolution and causal-main-effect / model-validity claim flags only",
+  "base_input": {
+    "model": "SUPPLIED_DOE_MONTE_CARLO_DESIGN_SCREEN", "design_resolution": 5, "claimed_causal_main_effects": true, "claimed_model_valid": true, "model_validated_against_independent_data": true
+  },
+  "cases": [
+    {"id": "DOE-RESOLUTION-V-VALIDATED-MODEL-ACCEPT", "kind": "positive", "question": "Does a Resolution V design with a causal claim, plus an independently validated model, clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "monte_carlo_precision_treated_as_validity", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "DOE-RESOLUTION-III-CAUSAL-CLAIM-REJECTED", "kind": "counter_hypothesis", "question": "Is a causal main-effect claim correctly rejected on a Resolution III design, where main effects are aliased with two-factor interactions?", "input_overrides": {"design_resolution": 3}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "USE_A_RESOLUTION_IV_OR_HIGHER_DESIGN_OR_WITHDRAW_THE_CAUSAL_MAIN_EFFECT_CLAIM", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "DOE-RESOLUTION-III-NO-CLAIMS-BOUNDARY", "kind": "boundary", "question": "Does a Resolution III design with no causal or validity claims correctly clear the screen via short-circuit, rather than being rejected purely for a low resolution?", "input_overrides": {"design_resolution": 3, "claimed_causal_main_effects": false, "claimed_model_valid": false, "model_validated_against_independent_data": false}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "DOE-INVALID-RESOLUTION-REJECTED", "kind": "negative", "question": "Is a design resolution outside {III, IV, V} rejected rather than silently accepted?", "input_overrides": {"design_resolution": 2}, "expected_error": "ValueError"}
+  ]
+}

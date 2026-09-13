@@ -1,0 +1,7 @@
+{
+  "method_id": "benchmark-teardown-screening-baseline", "version": "1.0.0", "role": "R086", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:benchmark_teardown_screening_model", "applicability": "Supplied SPL-matched-across-products and topology-claim/validation flags",
+  "equations": {"spl_check": "spl_matched_across_products", "topology_check": "(not topology_visually_inferred) or topology_electrically_validated"},
+  "assumptions": ["Declared SPL-matched flag reflects the actual measurement conditions across all compared products", "A visually inferred topology is assumed unvalidated unless electrical validation is explicitly declared", "This screen evaluates one declared benchmark comparison, not the full product test matrix"],
+  "excluded": ["Full product test-condition matrix", "physical/calibrated instrument measurement", "Human publication sign-off"], "golden_tests": "golden/roles/R086/golden.json"
+}

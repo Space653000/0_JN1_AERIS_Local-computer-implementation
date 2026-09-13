@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "driver_seat_level_db", "rear_seat_level_db", "max_acceptable_seat_level_spread_db", "tuning_validated_under_road_noise"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_AUTOMOTIVE_CABIN_TUNING_SCREEN"},
+    "driver_seat_level_db": {"type": "number"}, "rear_seat_level_db": {"type": "number"},
+    "max_acceptable_seat_level_spread_db": {"type": "number"}, "tuning_validated_under_road_noise": {"type": "boolean"}
+  }
+}

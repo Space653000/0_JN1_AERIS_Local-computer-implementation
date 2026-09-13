@@ -1,0 +1,26 @@
+{
+  "suite_id": "R085-ACOUSTIC-DATASET-SCREEN-V1", "role_id": "R085", "skill_id": "acoustic-dataset-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact boolean-logic and equality comparison against declared scalars; no physical dataset ingestion pipeline was observed.",
+  "scope": "Supplied sample-rate-uniformity/resampling flags and declared duplicate-source count only",
+  "base_input": {
+    "model": "SUPPLIED_ACOUSTIC_DATASET_SCREEN", "sample_rates_uniform": true, "resampling_applied_before_combining": false, "duplicate_source_count_across_splits": 0
+  },
+  "cases": [
+    {"id": "DATA-UNIFORM-RATES-AND-NO-DUPLICATES-ACCEPT", "kind": "positive", "question": "Does a uniform-sample-rate dataset with no cross-split duplicates clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "mixed_rates_silently_combined", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "DATA-MIXED-RATES-AND-DUPLICATE-SOURCES-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are mixed unresampled sample rates and duplicate cross-split sources both correctly rejected together, rather than one masking the other?", "input_overrides": {"sample_rates_uniform": false, "duplicate_source_count_across_splits": 5}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "RESAMPLE_ALL_CHANNELS_TO_A_COMMON_RATE_BEFORE_COMBINING_OR_KEEP_RATES_SEPARATE", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "REMOVE_DUPLICATE_SOURCE_RECORDINGS_FROM_OVERLAPPING_SPLITS_AND_RE_PARTITION", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "DATA-MIXED-RATES-BUT-EXPLICITLY-RESAMPLED-BOUNDARY", "kind": "boundary", "question": "Does an explicitly resampled mixed-rate dataset correctly clear via the resampling branch, rather than mixed rates alone being an automatic rejection?", "input_overrides": {"sample_rates_uniform": false, "resampling_applied_before_combining": true}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "DATA-NEGATIVE-DUPLICATE-COUNT-REJECTED", "kind": "negative", "question": "Is a negative duplicate-source count rejected rather than silently accepted?", "input_overrides": {"duplicate_source_count_across_splits": -1}, "expected_error": "ValueError"}
+  ]
+}

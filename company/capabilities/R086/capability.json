@@ -31,12 +31,14 @@
   "required_skills": [
     "correlation-outliers",
     "engineering-requirements",
-    "repeatability-reproducibility"
+    "repeatability-reproducibility",
+    "benchmark-teardown-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/correlation-outliers.json",
     "methods/engineering/engineering-requirements.json",
-    "methods/engineering/repeatability-reproducibility.json"
+    "methods/engineering/repeatability-reproducibility.json",
+    "methods/roles/benchmark-teardown-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/correlation-outliers.json",
@@ -164,7 +166,9 @@
     "company/capabilities/R086/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260912T074424Z-2fa3c568"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
@@ -174,12 +178,14 @@
     "required_methods": [
       "methods/engineering/correlation-outliers.json",
       "methods/engineering/engineering-requirements.json",
-      "methods/engineering/repeatability-reproducibility.json"
+      "methods/engineering/repeatability-reproducibility.json",
+      "methods/roles/benchmark-teardown-screening-baseline.json"
     ],
     "required_skills": [
       "correlation-outliers",
       "engineering-requirements",
-      "repeatability-reproducibility"
+      "repeatability-reproducibility",
+      "benchmark-teardown-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -195,7 +201,14 @@
       "neighbor_owns": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "benchmark-teardown-screening-baseline",
+      "method": "methods/roles/benchmark-teardown-screening-baseline.json",
+      "suite": "golden/roles/R086/golden.json",
+      "scope": "Declared SPL-matched and topology-claim/validation flags against unmatched-benchmark and visual-topology-as-validated antipatterns; no full product test-condition matrix or Human publication sign-off."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Compare products/teardowns under matched conditions and bounded inference",

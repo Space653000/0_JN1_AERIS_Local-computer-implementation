@@ -1,0 +1,42 @@
+.progress-hero{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.progress-ring-wrap{position:relative;width:132px;height:132px;flex:none}
+.progress-ring{width:132px;height:132px;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:var(--border);stroke-width:10}
+.ring-fill{fill:none;stroke:var(--accent);stroke-width:10;stroke-linecap:round;stroke-dasharray:326.7256;stroke-dashoffset:326.7256;transition:stroke-dashoffset .5s ease,stroke .3s ease}
+.progress-ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.progress-ring-label strong{font-size:26px;font-weight:780;letter-spacing:-.03em;line-height:1}
+.progress-ring-label span{font-size:8.5px;color:var(--muted);margin-top:4px}
+.progress-hero-side{display:flex;flex-direction:column;gap:9px;min-width:240px;flex:1}
+.hero-line{display:flex;align-items:baseline;gap:10px;font-size:11px}
+.hero-line.small{font-size:9px;color:var(--muted)}
+.hero-label{flex:none;width:76px;color:var(--muted);font-size:8.5px;font-weight:650;text-transform:uppercase;letter-spacing:.04em}
+.phase-bars{display:flex;flex-direction:column;gap:10px}
+.phase-bar-row{display:grid;grid-template-columns:56px 1fr 48px;align-items:center;gap:12px}
+.phase-bar-id{font:650 10px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text-2)}
+.phase-bar-track{position:relative;height:14px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border-strong);overflow:hidden}
+.phase-bar-fill{position:absolute;inset:0 auto 0 0;min-width:4px;height:100%;border-radius:999px;transition:width .5s ease,background .3s ease;background:var(--accent)}
+.phase-bar-fill.tier-done{background:var(--green)}
+.phase-bar-fill.tier-mid{background:var(--accent)}
+.phase-bar-fill.tier-low{background:var(--amber)}
+.phase-bar-fill.tier-none{background:var(--rose)}
+.phase-bar-fill.tier-unknown{width:100%!important;background:repeating-linear-gradient(135deg,var(--surface-3) 0 6px,var(--border-strong) 6px 12px);opacity:.7}
+.phase-bar-pct{font-size:10px;font-weight:650;text-align:right;font-variant-numeric:tabular-nums}
+.progress-items{display:flex;flex-direction:column}
+.progress-item{display:grid;grid-template-columns:56px 90px 1fr;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:9.5px}
+.progress-item:last-child{border-bottom:0}
+.progress-item-id{font:650 9.5px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text-2)}
+.progress-item-evidence{color:var(--muted);font-size:8px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.state-badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 8px;font-size:8.5px;font-weight:650;width:fit-content}
+.state-badge.PASS{background:var(--green-soft);color:var(--green)}
+.state-badge.FAIL{background:var(--rose-soft);color:var(--rose)}
+.state-badge.UNKNOWN{background:var(--surface-3);color:var(--muted)}
+.history-chart{display:flex;align-items:flex-end;gap:3px;height:110px;padding-top:8px;overflow-x:auto}
+.history-bar-wrap{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;flex:none;width:14px}
+.history-bar{width:10px;border-radius:3px 3px 0 0;background:var(--accent);transition:height .3s ease,background .3s ease;min-height:2px}
+.history-bar.tier-done{background:var(--green)}
+.history-bar.tier-mid{background:var(--accent)}
+.history-bar.tier-low{background:var(--amber)}
+.history-bar.tier-none{background:var(--rose)}
+.history-empty{color:var(--muted);font-size:10px;padding:8px 0}
+.stale-banner{margin:0 0 12px;padding:9px 13px;border-radius:10px;background:var(--amber-soft);color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 25%,var(--border));font-size:10.5px;line-height:1.5}
+@media(max-width:720px){.progress-item{grid-template-columns:1fr;gap:3px}.progress-hero{flex-direction:column;align-items:flex-start}}

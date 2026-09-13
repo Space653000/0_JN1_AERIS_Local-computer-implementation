@@ -1,0 +1,7 @@
+{
+  "method_id": "vr-xr-headset-screening-baseline", "version": "1.0.0", "role": "R062", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:vr_xr_headset_screening_model", "applicability": "Supplied motion-to-sound latency, strap-rubbing noise level, speech reference level and declared acceptance thresholds",
+  "equations": {"strap_rubbing_margin_db": "20*log10(speech_reference_rms_pa/strap_rubbing_noise_rms_pa)"},
+  "assumptions": ["Declared motion-to-sound latency is the actual end-to-end renderer/spatialization delay, not a tracking-only timestamp", "Declared strap-rubbing and speech reference levels are directly comparable RMS quantities at the same measurement point", "This screen evaluates one declared operating condition, not a full pose/fit distribution"],
+  "excluded": ["Pose-prediction and physical-fit distribution across users", "physical/calibrated instrument measurement", "Human wear-test and production sign-off"], "golden_tests": "golden/roles/R062/golden.json"
+}

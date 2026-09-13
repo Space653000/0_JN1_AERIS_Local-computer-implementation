@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "residual_self_echo_rms_pa", "user_interruption_rms_pa", "min_acceptable_interruption_margin_db", "joint_noise_during_tracking_rms_pa", "user_speech_reference_rms_pa", "min_acceptable_joint_noise_margin_db"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_HUMANOID_INTERACTION_SCREEN"},
+    "residual_self_echo_rms_pa": {"type": "number"}, "user_interruption_rms_pa": {"type": "number"},
+    "min_acceptable_interruption_margin_db": {"type": "number"}, "joint_noise_during_tracking_rms_pa": {"type": "number"},
+    "user_speech_reference_rms_pa": {"type": "number"}, "min_acceptable_joint_noise_margin_db": {"type": "number"}
+  }
+}

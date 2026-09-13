@@ -1,0 +1,7 @@
+{
+  "method_id": "doe-monte-carlo-design-screening-baseline", "version": "1.0.0", "role": "R078", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:doe_monte_carlo_design_screening_model", "applicability": "Supplied design resolution and causal-main-effect / model-validity claim flags",
+  "equations": {"main_effects_claim_ok": "(not claimed_causal_main_effects) or design_resolution >= 4", "model_validity_claim_ok": "(not claimed_model_valid) or model_validated_against_independent_data"},
+  "assumptions": ["Supplied design resolution and claim/validation flags are exact, not inferred from the raw design matrix", "Resolution III designs alias main effects with two-factor interactions; Resolution IV and above do not", "A small Monte-Carlo standard error reflects sampling precision only, never model correctness on its own"],
+  "excluded": ["Design-matrix alias structure verification", "Monte-Carlo simulation execution", "physical/production decision authorization"], "golden_tests": "golden/roles/R078/golden.json"
+}

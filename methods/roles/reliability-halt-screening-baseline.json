@@ -1,0 +1,7 @@
+{
+  "method_id": "reliability-halt-screening-baseline", "version": "1.0.0", "role": "R096", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:reliability_halt_model", "applicability": "Supplied HALT trial count, observed failures, target confidence and acceptance threshold",
+  "equations": {"one_sided_upper_failure_probability": "1.0 if failures==trials else scipy.stats.beta.ppf(confidence, failures+1, trials-failures)"},
+  "assumptions": ["Independent identical Bernoulli trials", "Supplied trial/failure counts are exact, not estimated", "No accelerated-life extrapolation is performed"],
+  "excluded": ["Arrhenius/temperature-acceleration modeling", "physical HALT chamber execution", "field-use stress-profile equivalence", "Human approval"], "golden_tests": "golden/roles/R096/golden.json"
+}

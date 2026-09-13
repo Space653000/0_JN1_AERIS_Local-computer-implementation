@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "planned_stimulus_amplitude", "max_fixture_stimulus_amplitude", "planned_step_duration_s", "max_fixture_step_duration_s", "planned_step_count", "max_cumulative_duration_s"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_INSTRUMENT_STIMULUS_SAFETY_SCREEN"},
+    "planned_stimulus_amplitude": {"type": "number"}, "max_fixture_stimulus_amplitude": {"type": "number"},
+    "planned_step_duration_s": {"type": "number"}, "max_fixture_step_duration_s": {"type": "number"},
+    "planned_step_count": {"type": "integer"}, "max_cumulative_duration_s": {"type": "number"}
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "suite_id": "R083-CODEC-TRANSPORT-SCREEN-V1", "role_id": "R083", "skill_id": "codec-transport-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact subtraction and interval comparison against declared scalars; no physical network or codec was observed.",
+  "scope": "Supplied jitter-buffer size, network jitter, consecutive loss-burst length and declared acceptance thresholds only",
+  "base_input": {
+    "model": "SUPPLIED_CODEC_TRANSPORT_SCREEN", "jitter_buffer_ms": 150.0, "network_jitter_ms": 100.0,
+    "min_acceptable_buffer_margin_ms": 30.0, "max_consecutive_loss_burst_packets": 2, "max_acceptable_loss_burst_packets": 3
+  },
+  "cases": [
+    {"id": "CODEC-BUFFER-MARGIN-AND-BURST-WITHIN-BOUNDS-ACCEPT", "kind": "positive", "question": "Does a healthy jitter-buffer margin with a short loss burst clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "buffer_margin_ms", "expected": 50.0, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "CODEC-BUFFER-REDUCTION-AND-LOSS-BURST-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are an insufficient jitter-buffer margin and a loss burst beyond concealment capability both correctly rejected together, rather than one masking the other?", "input_overrides": {"jitter_buffer_ms": 110.0, "max_consecutive_loss_burst_packets": 5}, "checks": [
+      {"path": "buffer_margin_ms", "expected": 10.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "INCREASE_JITTER_BUFFER_SIZE_OR_REDUCE_NETWORK_JITTER_OR_RELAX_THE_MARGIN_TARGET", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "IMPROVE_LOSS_CONCEALMENT_BURST_HANDLING_OR_REDUCE_NETWORK_BURST_LOSS_OR_RELAX_THE_BURST_TARGET", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "CODEC-EXACT-BUFFER-MARGIN-BOUNDARY", "kind": "boundary", "question": "Does a buffer margin exactly at the declared minimum correctly pass the inclusive bound rather than being rejected?", "input_overrides": {"jitter_buffer_ms": 130.0}, "checks": [
+      {"path": "buffer_margin_ms", "expected": 30.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "CODEC-NEGATIVE-JITTER-BUFFER-REJECTED", "kind": "negative", "question": "Is a negative jitter-buffer size rejected rather than silently accepted?", "input_overrides": {"jitter_buffer_ms": -1.0}, "expected_error": "ValueError"}
+  ]
+}

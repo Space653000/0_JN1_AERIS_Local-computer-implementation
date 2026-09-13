@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "footfall_peak_level_pa", "capture_headroom_pa", "min_acceptable_headroom_margin_db", "body_orientation_deg", "max_acceptable_beam_orientation_tolerance_deg"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_QUADRUPED_CAPTURE_SCREEN"},
+    "footfall_peak_level_pa": {"type": "number"}, "capture_headroom_pa": {"type": "number"},
+    "min_acceptable_headroom_margin_db": {"type": "number"}, "body_orientation_deg": {"type": "number"},
+    "max_acceptable_beam_orientation_tolerance_deg": {"type": "number"}
+  }
+}

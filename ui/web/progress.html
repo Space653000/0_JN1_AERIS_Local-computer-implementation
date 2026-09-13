@@ -1,0 +1,43 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#62c5ba"><title>AERIS — 進度中心</title><link rel="stylesheet" href="/assets/aeris.css"><link rel="stylesheet" href="/assets/capabilities.css"><link rel="stylesheet" href="/assets/progress.css"><script src="/assets/aeris-theme.js"></script><script src="/assets/i18n.js"></script><script src="/assets/logout-button.js" defer></script></head><body data-page="progress">
+<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-mark">A</div><div class="brand-copy"><div class="brand-name">AERIS</div><div class="brand-sub">聲學工程作業系統</div></div></div><div class="sidebar-live"><span class="live-dot"></span><span id="sidebarState">連線中</span></div>
+<div class="nav-group"><div class="nav-label">AERIS</div><nav class="nav"><a href="/dashboard"><span class="nav-icon">◎</span><span class="nav-copy"><b>儀表板</b><small>系統首頁</small></span></a><a href="/workspace"><span class="nav-icon">⌁</span><span class="nav-copy"><b>工作區</b><small>工程工作台</small></span></a><a href="/activity"><span class="nav-icon">↻</span><span class="nav-copy"><b>活動紀錄</b><small>可追溯稽核帳本</small></span></a><a class="active" href="/progress"><span class="nav-icon">▥</span><span class="nav-copy"><b>進度中心</b><small>P0-P6 真實進度</small></span></a></nav></div><div class="nav-group"><div class="nav-label">系統</div><nav class="nav"><a href="/services"><span class="nav-icon">▣</span><span class="nav-copy"><b>服務</b><small>後端服務</small></span></a></nav></div><div class="spacer"></div><div class="sidebar-note">所有百分比來自本機 Runtime 與 Evidence；UNKNOWN 不會被猜成完成。</div></aside>
+<main class="main"><div class="content">
+<header class="topbar"><div><div class="page-title">真實進度中心</div><div class="page-meta">依照藍圖 P0-P6，逐項對照本機 Runtime 與 Evidence</div></div><div class="actions"><span class="status" role="status" aria-live="polite" id="state">載入中</span><button class="btn" id="reverifyBtn" hidden>重新驗證全部項目</button><button class="btn" data-refresh id="refreshBtn">重新整理</button></div></header>
+<div id="staleBanner" class="stale-banner" role="status" aria-live="polite" hidden></div>
+
+<section class="panel">
+  <div class="progress-hero">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" viewBox="0 0 120 120" role="img" aria-label="總體完成度">
+        <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+        <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="52"></circle>
+      </svg>
+      <div class="progress-ring-label"><strong id="overallPercent">—</strong><span>總體完成度</span></div>
+    </div>
+    <div class="progress-hero-side">
+      <div class="hero-line"><span class="hero-label">下一步</span><span id="nextAction">—</span></div>
+      <div class="hero-line"><span class="hero-label">阻礙項</span><span id="blockers">—</span></div>
+      <div class="hero-line"><span class="hero-label">真值狀態</span><span id="truthState" class="pill">—</span></div>
+      <div class="hero-line small"><span class="hero-label">Runtime SHA</span><span id="shaLine">—</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="section-title"><h2>P0–P6 各階段完成度</h2><p>顏色：綠＝已完成、青＝進行中、琥珀＝剛起步、玫瑰＝尚未開始</p></div>
+  <div id="phaseBars" class="phase-bars"></div>
+</section>
+
+<section class="panel">
+  <div class="section-title"><h2>進度歷史趨勢</h2><p>依實際 commit 重建，取每個項目在該次 commit 當下最新的通過紀錄計分；非估計值</p></div>
+  <div id="historyChart" class="history-chart"></div>
+</section>
+
+<section class="panel">
+  <div class="section-title"><h2>P0–P6 細項（54 項）</h2><p id="itemsSummary"></p></div>
+  <div id="items" class="progress-items"></div>
+</section>
+
+</div></main></div>
+<script src="/assets/progress.js"></script>
+</body></html>

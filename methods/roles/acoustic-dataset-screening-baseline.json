@@ -1,0 +1,7 @@
+{
+  "method_id": "acoustic-dataset-screening-baseline", "version": "1.0.0", "role": "R085", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:acoustic_dataset_screening_model", "applicability": "Supplied sample-rate-uniformity/resampling flags and declared duplicate-source count across dataset splits",
+  "equations": {"rate_check": "sample_rates_uniform or resampling_applied_before_combining", "duplicate_check": "duplicate_source_count_across_splits == 0"},
+  "assumptions": ["Declared sample-rate-uniform and resampling flags reflect the actual dataset build pipeline, not an assumption", "Declared duplicate-source count is an exact count across splits, not an estimate", "This screen evaluates one declared dataset build state, not the full ingestion pipeline"],
+  "excluded": ["Full ingestion-pipeline audit", "provenance/license verification", "Human dataset-release sign-off"], "golden_tests": "golden/roles/R085/golden.json"
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "doe-monte-carlo-design-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/doe-monte-carlo-design-screening-baseline.json",
+  "input_schema": "skills/doe-monte-carlo-design-screening-baseline/input.schema.json", "output_schema": "skills/doe-monte-carlo-design-screening-baseline/output.schema.json",
+  "role_mappings": ["R078"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Declared design resolution and causal/model-validity claim flags against confounded-design and Monte-Carlo-precision-as-validity antipatterns; no design-matrix alias verification or physical decision authorization"
+}

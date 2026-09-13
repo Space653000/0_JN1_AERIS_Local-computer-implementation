@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "next-experiment-safety-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/next-experiment-safety-screening-baseline.json",
+  "input_schema": "skills/next-experiment-safety-screening-baseline/input.schema.json", "output_schema": "skills/next-experiment-safety-screening-baseline/output.schema.json",
+  "role_mappings": ["R100"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Proposed next-experiment point against a declared safe region and a minimum new-information distance from prior coverage, from supplied scalars; no point-history search or physical execution authorization"
+}
