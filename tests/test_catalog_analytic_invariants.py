@@ -973,5 +973,35 @@ class DfmeaRankingRpnAndOrderingTests(unittest.TestCase):
         self.assertEqual([m["id"] for m in values["ranked_modes"]], ["B", "C", "A", "D"])
 
 
+class ProcessQualityCapabilityIndexTests(unittest.TestCase):
+    """Pp = (USL-LSL)/(6*sigma) and Ppk = min(USL-mean, mean-LSL)/(3*sigma)
+    are standard Six Sigma process-capability formulas, independently
+    recomputed here with Python's stdlib `statistics` module rather
+    than the implementation's numpy calls. out_of_spec_count is simply
+    a count of observations outside [LSL, USL]. Checked across a
+    well-centered, highly-capable dataset and an off-center dataset
+    with real out-of-spec points."""
+
+    def test_pp_ppk_and_out_of_spec_count_match_stdlib_statistics(self):
+        cases = [
+            ([9.8, 10.1, 9.9, 10.2, 10.0, 9.95, 10.05], 9.0, 11.0),
+            ([4.5, 5.5, 6.0, 3.0, 7.5, 5.0, 8.5, 2.0], 3.0, 7.0),
+        ]
+        for values, lower_limit, upper_limit in cases:
+            with self.subTest(lower_limit=lower_limit, upper_limit=upper_limit):
+                mean = statistics.mean(values)
+                sd = statistics.stdev(values)
+                expected_pp = (upper_limit - lower_limit) / (6 * sd)
+                expected_ppk = min(upper_limit - mean, mean - lower_limit) / (3 * sd)
+                expected_oos = sum(1 for v in values if v < lower_limit or v > upper_limit)
+                params = {"values": values, "lower_limit": lower_limit, "upper_limit": upper_limit}
+                result = catalog.execute("process-quality", params)["values"]
+                self.assertAlmostEqual(result["mean"], mean, places=10)
+                self.assertAlmostEqual(result["sample_sd"], sd, places=10)
+                self.assertAlmostEqual(result["pp"], expected_pp, places=8)
+                self.assertAlmostEqual(result["ppk"], expected_ppk, places=8)
+                self.assertEqual(result["out_of_spec_count"], expected_oos)
+
+
 if __name__ == "__main__":
     unittest.main()
