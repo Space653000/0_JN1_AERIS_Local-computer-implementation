@@ -26,16 +26,17 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import aeris_runtime.controlplane as controlplane
 import aeris_runtime.operations as operations
 from tests.browser_e2e import find_browser
 
 VIEWPORT = (1440, 1000)
 ARTIFACT_ROOT = ROOT / ".aeris" / "evidence" / "browser-visual" / "latest"
 ROUTES = (
-    "/?theme=dark&visual_baseline=1",
+    "/dashboard?theme=dark&visual_baseline=1",
     "/workspace?theme=dark&visual_baseline=1",
     "/services?theme=dark&visual_baseline=1",
-    "/?theme=light&visual_baseline=1",
+    "/dashboard?theme=light&visual_baseline=1",
     "/workspace?theme=light&visual_baseline=1",
     "/services?theme=light&visual_baseline=1",
 )
@@ -133,7 +134,10 @@ def run() -> int:
         "runtime_mode": "auto",
         "limits": ["CI_BROWSER_VISUAL_FIXTURE_NOT_REAL_MACHINE_OPENING"],
     }
-    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None):
+    # Same rationale as browser_e2e.py's run(): a raw headless-Chrome
+    # --dump-dom navigation can't attach a session cookie, so this
+    # ephemeral in-process test server bypasses the login gate directly.
+    with patch.object(operations, "assess_opening", return_value=opening), patch.object(operations, "_write_heartbeat", return_value=None), patch.object(operations, "_read_json", return_value=None), patch.object(controlplane, "_is_authenticated", return_value=True):
         snapshots = {}
         class SnapshotHandler(operations._Handler):
             def do_GET(self):
