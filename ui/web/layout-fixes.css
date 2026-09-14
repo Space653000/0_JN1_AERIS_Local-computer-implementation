@@ -3,7 +3,29 @@
    it is a protected mirror; patch behavior here instead and include
    this file after aeris.css on every page that has the sidebar.
 
-   Bug fixed here: at the phone/narrow-tablet breakpoint (max-width:720px)
+   Site-wide typeface, by request: Traditional Chinese text in
+   Microsoft JhengHei (微軟正黑體), Latin text in Aptos, at every
+   viewport (phone/tablet/laptop). Aptos is listed first specifically
+   so Latin characters render in it -- it has no CJK glyphs, so
+   Chinese text falls through to Microsoft JhengHei automatically in
+   the same run of text, which is the standard way to pair a
+   Latin-only face with a CJK face rather than fighting the browser's
+   per-character font matching. Both are real fonts most Windows
+   installs already have (Aptos ships with recent Office/Windows 11,
+   Microsoft JhengHei with any Traditional Chinese Windows locale);
+   devices without them fall through to the Core's own stack
+   (Noto Sans TC / PingFang TC / system-ui), so phones/tablets that
+   lack these two fonts still render correctly, just not identically.
+   Base size nudged up slightly (13px -> 15px) for comfort per request;
+   line-height opened to match. */
+body {
+  font-family: "Aptos", "Microsoft JhengHei", "Noto Sans TC", "PingFang TC",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* Bug fixed here: at the phone/narrow-tablet breakpoint (max-width:720px)
    the Core CSS sets `.sidebar-utilities{display:none}`, which silently
    removes the ENTIRE utility bar -- dark/light toggle, language switch
    (injected by i18n.js), account management and logout (injected by
