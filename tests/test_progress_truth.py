@@ -130,6 +130,45 @@ class ProgressTruthTests(unittest.TestCase):
             self.assertEqual(item["state"], "PASS")
             self.assertEqual(item["evidence"], observation["evidence_pointer"])
 
+    def test_progress_center_shows_real_100_items_when_only_gate_is_unsigned_acceptance(self):
+        """FAIL_CLOSED has two very different causes: untrustworthy evidence
+        (stale candidate, tampered provenance...) vs. every item already
+        passing with only the separate human acceptance step unsigned. The
+        UI previously blanked every item/phase to UNKNOWN/None for both,
+        making 54/54 real passes look like nothing had been done at all.
+        When the *only* FAIL_CLOSED reason is the unsigned acceptance gate,
+        real per-item and per-phase results must still show through --
+        only overall_percent stays None, since that is genuinely not 100%
+        yet."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "config").mkdir()
+            (root / "config" / "progress_truth.v1.json").write_text(json.dumps(self.contract), encoding="utf-8")
+            evidence = root / ".aeris" / "evidence" / "progress"
+            evidence.mkdir(parents=True)
+            source_sha = "7d5368b83b07f776a800836416f2f39ce45a1ef3"
+            items = {}
+            for item_id in self.ids:
+                (evidence / f"{item_id}.json").write_text('{"real": true}', encoding="utf-8")
+                items[item_id] = record(item_id) | {"evidence_pointer": f".aeris/evidence/progress/{item_id}.json"}
+            (evidence / "PROGRESS_TRUTH.json").write_text(json.dumps({"items": items}), encoding="utf-8")
+            old_root, old_status, old_head = progress.ROOT, progress.supervisor_status, progress._head_sha
+            try:
+                progress.ROOT = root
+                progress.supervisor_status = lambda: {"reachable": True, "implementation_sha": source_sha}
+                progress._head_sha = lambda: source_sha
+                payload = progress.current()
+            finally:
+                progress.ROOT, progress.supervisor_status, progress._head_sha = old_root, old_status, old_head
+            self.assertEqual(payload["truth_state"], "FAIL_CLOSED")
+            self.assertIsNone(payload["overall_percent"])
+            self.assertEqual(payload["phase_percent"]["P0"], 100)
+            self.assertEqual(payload["phase_percent"]["P6"], 100)
+            p06 = next(item for item in payload["items"] if item["id"] == "P0.6")
+            self.assertEqual(p06["state"], "PASS")
+            self.assertEqual(p06["percent"], 100)
+            self.assertEqual(payload["next_action"], {"kind": "awaiting_acceptance"})
+
     def test_p07_progress_center_keeps_missing_evidence_unknown(self):
         """P0.7 must expose absence as UNKNOWN rather than inflate the UI projection."""
         with tempfile.TemporaryDirectory() as tmp:

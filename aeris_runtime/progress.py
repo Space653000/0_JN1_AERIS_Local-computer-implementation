@@ -15,7 +15,7 @@ def _head_sha() -> str | None:
         return None
 
 
-def _next_action(truth_state: str, phase_percent: dict, items: list[dict]) -> dict:
+def _next_action(truth_state: str, phase_percent: dict, items: list[dict], *, acceptance_gate_only: bool = False) -> dict:
     """Name the actual next unfinished item, instead of a stale fixed string.
 
     A prior version of this function only ever distinguished "P0 incomplete"
@@ -29,6 +29,8 @@ def _next_action(truth_state: str, phase_percent: dict, items: list[dict]) -> di
     of an API response baking in one fixed UI language.
     """
     if truth_state == "FAIL_CLOSED":
+        if acceptance_gate_only:
+            return {"kind": "awaiting_acceptance"}
         return {"kind": "fail_closed"}
     for phase in PHASES:
         if phase_percent.get(phase) == 100:
@@ -56,6 +58,20 @@ def current() -> dict:
     if not runtime_aligned:
         evaluation = evaluation.__class__("FAIL_CLOSED", None, {}, {}, tuple((*evaluation.errors, "runtime_candidate_mismatch")))
 
+    # Every item already scoring 100 but the separate, human-only company
+    # acceptance step (p6_comprehensive_acceptance) still unsigned is the
+    # ONE FAIL_CLOSED reason that means the evidence itself is fully
+    # trustworthy -- every other FAIL_CLOSED reason (stale candidate,
+    # malformed contract, score/result conflicts, tampered provenance...)
+    # means the opposite. Collapsing both into one always-blank-everything
+    # branch made 54/54 real passes render as 54 UNKNOWNs and every phase
+    # bar as empty, reading as "nothing is done" when the opposite is
+    # true; the "not 100%" honesty belongs on overall_percent alone
+    # (which evaluate_progress already keeps None here), not smeared onto
+    # every individual item and phase.
+    acceptance_gate_only = runtime_aligned and evaluation.errors == ("p6_acceptance_required_for_100",)
+    show_real_items = evaluation.state != "FAIL_CLOSED" or acceptance_gate_only
+
     items = []
     required = contract["required_items"]
     raw_items = observations.get("items") if isinstance(observations.get("items"), dict) else {}
@@ -63,7 +79,7 @@ def current() -> dict:
         for ident in required[phase]:
             record = raw_items.get(ident) if isinstance(raw_items.get(ident), dict) else {}
             score = evaluation.item_scores.get(ident)
-            state = record.get("result", "UNKNOWN") if score is not None and evaluation.state != "FAIL_CLOSED" else "UNKNOWN"
+            state = record.get("result", "UNKNOWN") if score is not None and show_real_items else "UNKNOWN"
             items.append({
                 "id": ident,
                 "percent": score or 0,
@@ -75,8 +91,8 @@ def current() -> dict:
                 "acceptance_gate": record.get("acceptance_gate") if score is not None else None,
             })
 
-    phase_percent = evaluation.phase_percent if evaluation.state != "FAIL_CLOSED" else {phase: None for phase in PHASES}
-    next_action = _next_action(evaluation.state, phase_percent, items)
+    phase_percent = evaluation.phase_percent if show_real_items else {phase: None for phase in PHASES}
+    next_action = _next_action(evaluation.state, phase_percent, items, acceptance_gate_only=acceptance_gate_only)
     return {
         "schema_version": 2,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),

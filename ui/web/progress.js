@@ -7,6 +7,10 @@ const PHASE_LABELS = {
 const L = (zh, en) => (window.AERIS_LANG === 'en' ? en : zh);
 
 function renderNextAction(nextAction) {
+  if (nextAction.kind === 'awaiting_acceptance') {
+    return L('P0-P6 全部 54 項均已通過；仍差一次人工公司總驗收核准才算 100%（見下方說明）',
+      'All 54 P0-P6 items have passed; only the separate human company-acceptance sign-off is outstanding before this counts as 100% (see below)');
+  }
   if (nextAction.kind === 'fail_closed') {
     return L('修復 runtime/candidate 對齊或無效 Evidence 後重新驗證（見 truth_errors）',
       'Fix the runtime/candidate mismatch or invalid Evidence, then re-verify (see truth_errors)');
@@ -126,8 +130,11 @@ function renderProgressPayload(d) {
   const locale = L('zh-TW', 'en-US');
   document.getElementById('state').textContent =
     L('已更新 ', 'Updated ') + new Date(d.generated_at_utc).toLocaleString(locale);
-  document.getElementById('overallPercent').textContent = d.overall_percent + '%';
-  renderRing(d.overall_percent);
+  const awaitingAcceptance = d.next_action && d.next_action.kind === 'awaiting_acceptance';
+  document.getElementById('overallPercent').textContent =
+    d.overall_percent != null ? d.overall_percent + '%' :
+    awaitingAcceptance ? '100%*' : L('未知', 'Unknown');
+  renderRing(awaitingAcceptance ? 100 : d.overall_percent);
   renderPhaseBars(d.phase_percent);
   document.getElementById('nextAction').textContent = renderNextAction(d.next_action);
   document.getElementById('blockers').textContent = d.blockers.length ? d.blockers.join(L('、', ', ')) : L('無', 'None');
