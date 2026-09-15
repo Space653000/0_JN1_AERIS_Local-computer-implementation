@@ -10,17 +10,70 @@ from .orchestration import route_pod,run_role
 _matrix_lock=threading.Lock()
 _matrix_cache=None
 _matrix_at=0.0
+_matrix_refreshing=False
+# factory.matrix() cost scales with the local evidence store (one
+# validate_bundle per sealed RUN- directory across all 100 roles) and can
+# take well over a minute on a store with 1000+ bundles -- the original
+# design (recompute synchronously, inline, whenever the cache is >2s old)
+# meant nearly every request blocked for the full computation. This mirrors
+# aeris_runtime.telemetry.TelemetryProjection's pattern instead: serve the
+# last-known matrix immediately and refresh it in the background, only
+# blocking the caller on the very first cold-start call when no cache exists
+# yet.
+_MATRIX_REFRESH_AFTER_S=20.0
+
+
+def _decorate(matrix):
+    # Source-of-truth presentation fields keep canonical skill IDs stable.
+    labels={
+        "engineering-requirements":"工程需求分析","lumped-speaker":"集中參數揚聲器分析",
+        "microphone-sensitivity":"麥克風靈敏度分析","free-local-acoustic-baseline":"免費本機聲學基準",
+    }
+    capability_items = matrix.get("capabilities",[])
+    if isinstance(capability_items, dict):
+        capability_items = list(capability_items.values())
+    for item in capability_items:
+        sid=item.get("skill_id") or item.get("id") or item.get("capability")
+        item["display_name"] = labels.get(sid, "本機能力：" + str(sid))
+        item["display_description"] = "可重現的本機分析能力；結果仍須依證據與人工關卡判定。"
+    return matrix
+
+
+def _refresh_matrix():
+    global _matrix_cache,_matrix_at,_matrix_refreshing
+    try:
+        result=_decorate(factory.matrix())
+    except Exception:
+        with _matrix_lock:
+            _matrix_refreshing=False
+        raise
+    with _matrix_lock:
+        _matrix_cache=result; _matrix_at=time.monotonic(); _matrix_refreshing=False
 
 
 def live_matrix():
-    global _matrix_cache,_matrix_at
+    global _matrix_refreshing
     catalog.implementation_digest()
     factory.acceptance_engine_digest()
     with _matrix_lock:
-        if _matrix_cache is None or time.monotonic()-_matrix_at>2:
-            _matrix_cache=factory.matrix(); _matrix_cache["cache_max_age_s"]=2
-            _matrix_at=time.monotonic()
-        return _matrix_cache
+        cache=_matrix_cache
+        age=None if cache is None else time.monotonic()-_matrix_at
+        stale=cache is None or age>=_MATRIX_REFRESH_AFTER_S
+        start_refresh = stale and not _matrix_refreshing
+        if start_refresh:
+            _matrix_refreshing=True
+    if cache is None:
+        # Cold start: nothing to serve yet, so this one call has to wait.
+        _refresh_matrix()
+        with _matrix_lock:
+            return _matrix_cache
+    if start_refresh:
+        threading.Thread(target=_refresh_matrix,daemon=True,name="aeris-matrix-refresh").start()
+    result=dict(cache)
+    result["snapshot_age_s"]=age
+    result["cache_max_age_s"]=_MATRIX_REFRESH_AFTER_S
+    result["refresh_in_progress"]=_matrix_refreshing
+    return result
 
 
 def get(url):

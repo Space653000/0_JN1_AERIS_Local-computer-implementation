@@ -1,0 +1,28 @@
+{
+  "suite_id": "R092-INSTRUMENT-SEQUENCE-SAFETY-SCREEN-V1", "role_id": "R092", "skill_id": "instrument-sequence-safety-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact arithmetic against declared fixture limits; no physical instrument or fixture was observed.",
+  "scope": "Supplied planned stimulus amplitude/duration/step-count and fixture safety limits only",
+  "base_input": {
+    "model": "SUPPLIED_INSTRUMENT_STIMULUS_SAFETY_SCREEN", "planned_stimulus_amplitude": 2.0, "max_fixture_stimulus_amplitude": 5.0,
+    "planned_step_duration_s": 0.5, "max_fixture_step_duration_s": 1.0, "planned_step_count": 10, "max_cumulative_duration_s": 10.0
+  },
+  "cases": [
+    {"id": "SEQ-WITHIN-ALL-LIMITS-ACCEPT", "kind": "positive", "question": "Does a planned sequence within amplitude, step-duration and cumulative-duration limits clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "cumulative_duration_s", "expected": 5.0, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "dry_run_only", "expected": true, "absolute_tolerance": 0},
+      {"path": "physical_execution_performed", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "SEQ-AMPLITUDE-EXCEEDS-FIXTURE-REJECTED", "kind": "counter_hypothesis", "question": "Does a planned amplitude above the fixture's rated limit correctly fail rather than being silently clipped?", "input_overrides": {"planned_stimulus_amplitude": 6.0}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "REDUCE_PLANNED_STIMULUS_AMPLITUDE_OR_USE_A_HIGHER_RATED_FIXTURE", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "SEQ-CUMULATIVE-DURATION-EXACT-BUDGET-BOUNDARY", "kind": "boundary", "question": "Does a cumulative duration exactly equal to the budget correctly pass the inclusive <= limit rather than being rejected?", "input_overrides": {"planned_step_duration_s": 1.0}, "checks": [
+      {"path": "cumulative_duration_s", "expected": 10.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.2.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "SEQ-ZERO-STEP-COUNT-REJECTED", "kind": "negative", "question": "Is a non-positive planned step count rejected rather than silently treated as zero cumulative duration?", "input_overrides": {"planned_step_count": 0}, "expected_error": "ValueError"}
+  ]
+}

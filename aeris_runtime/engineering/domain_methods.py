@@ -162,6 +162,26 @@ from .structural_acoustic import analyze as structural_acoustic_model
 from .room_decay import analyze as room_decay_model
 from .room_correction import analyze as room_correction_model
 from .speaker_digital_transport import analyze as speaker_digital_transport_model
+from .reliability_halt import analyze as reliability_halt_model
+from .factory_eol_capability import analyze as factory_eol_capability_model
+from .instrument_sequence_safety import analyze as instrument_sequence_safety_model
+from .incoming_lot_sampling import analyze as incoming_lot_sampling_model
+from .next_experiment_safety import analyze as next_experiment_safety_model
+from .test_automation_result_screening import analyze as test_automation_result_screening_model
+from .doe_monte_carlo_design_screening import analyze as doe_monte_carlo_design_screening_model
+from .vr_xr_headset_screening import analyze as vr_xr_headset_screening_model
+from .automotive_cabin_tuning_screening import analyze as automotive_cabin_tuning_screening_model
+from .amr_warning_doa_screening import analyze as amr_warning_doa_screening_model
+from .quadruped_capture_screening import analyze as quadruped_capture_screening_model
+from .humanoid_interaction_screening import analyze as humanoid_interaction_screening_model
+from .conference_array_aec_screening import analyze as conference_array_aec_screening_model
+from .directional_mic_array_screening import analyze as directional_mic_array_screening_model
+from .codec_transport_screening import analyze as codec_transport_screening_model
+from .audio_ml_evaluation_screening import analyze as audio_ml_evaluation_screening_model
+from .acoustic_dataset_screening import analyze as acoustic_dataset_screening_model
+from .benchmark_teardown_screening import analyze as benchmark_teardown_screening_model
+from .patent_prior_art_screening import analyze as patent_prior_art_screening_model
+from .research_hypothesis_screening import analyze as research_hypothesis_screening_model
 from .speaker_filter_realization import analyze as speaker_filter_realization_model
 from .microphone_architecture import analyze as microphone_architecture_model
 from .far_field_scenarios import analyze as far_field_scenarios_model
@@ -194,6 +214,26 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'room-decay-spatial-baseline':room_decay_model,
           'room-correction-spatial-baseline':room_correction_model,
           'speaker-digital-transport-baseline':speaker_digital_transport_model,
+          'reliability-halt-screening-baseline':reliability_halt_model,
+          'factory-eol-capability-screening-baseline':factory_eol_capability_model,
+          'instrument-sequence-safety-screening-baseline':instrument_sequence_safety_model,
+          'incoming-lot-sampling-screening-baseline':incoming_lot_sampling_model,
+          'next-experiment-safety-screening-baseline':next_experiment_safety_model,
+          'test-automation-result-screening-baseline':test_automation_result_screening_model,
+          'doe-monte-carlo-design-screening-baseline':doe_monte_carlo_design_screening_model,
+          'vr-xr-headset-screening-baseline':vr_xr_headset_screening_model,
+          'automotive-cabin-tuning-screening-baseline':automotive_cabin_tuning_screening_model,
+          'amr-warning-doa-screening-baseline':amr_warning_doa_screening_model,
+          'quadruped-capture-screening-baseline':quadruped_capture_screening_model,
+          'humanoid-interaction-screening-baseline':humanoid_interaction_screening_model,
+          'conference-array-aec-screening-baseline':conference_array_aec_screening_model,
+          'directional-mic-array-screening-baseline':directional_mic_array_screening_model,
+          'codec-transport-screening-baseline':codec_transport_screening_model,
+          'audio-ml-evaluation-screening-baseline':audio_ml_evaluation_screening_model,
+          'acoustic-dataset-screening-baseline':acoustic_dataset_screening_model,
+          'benchmark-teardown-screening-baseline':benchmark_teardown_screening_model,
+          'patent-prior-art-screening-baseline':patent_prior_art_screening_model,
+          'research-hypothesis-screening-baseline':research_hypothesis_screening_model,
           'speaker-filter-realization-baseline':speaker_filter_realization_model,
           'microphone-architecture-baseline':microphone_architecture_model,
           'microphone-far-field-scenarios-baseline':far_field_scenarios_model,

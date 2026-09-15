@@ -28,11 +28,13 @@
   },
   "required_skills": [
     "engineering-requirements",
-    "experiment-optimization"
+    "experiment-optimization",
+    "test-automation-result-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/engineering-requirements.json",
-    "methods/engineering/experiment-optimization.json"
+    "methods/engineering/experiment-optimization.json",
+    "methods/roles/test-automation-result-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/engineering-requirements.json",
@@ -143,7 +145,9 @@
     "company/capabilities/R091/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260912T074429Z-8c2bb35b"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
@@ -152,11 +156,13 @@
     "question": "Execute deterministic test automation with bounded resource, timeout and evidence contracts",
     "required_methods": [
       "methods/engineering/engineering-requirements.json",
-      "methods/engineering/experiment-optimization.json"
+      "methods/engineering/experiment-optimization.json",
+      "methods/roles/test-automation-result-screening-baseline.json"
     ],
     "required_skills": [
       "engineering-requirements",
-      "experiment-optimization"
+      "experiment-optimization",
+      "test-automation-result-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -172,7 +178,14 @@
       "neighbor_owns": "Set factory EOL decision limits from process capability, gage variation and false-reject cost"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "test-automation-result-screening-baseline",
+      "method": "methods/roles/test-automation-result-screening-baseline.json",
+      "suite": "golden/roles/R091/golden.json",
+      "scope": "Declared attempt count, retry disclosure and explicit pass-signal flags against retry-hiding and process-alive-as-pass antipatterns; no full automation-run resource/timeout budget or physical release authorization."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Execute deterministic test automation with bounded resource, timeout and evidence contracts",

@@ -1,0 +1,7 @@
+{
+  "method_id": "factory-eol-capability-screening-baseline", "version": "1.0.0", "role": "R093", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:factory_eol_capability_model", "applicability": "Supplied process mean/std, spec limits, gage R&R standard deviation, and declared Cpk/%GRR acceptance thresholds",
+  "equations": {"cpk": "min((usl-mean)/(3*std), (mean-lsl)/(3*std))", "grr_percent": "100*gage_std/sqrt(std**2+gage_std**2)"},
+  "assumptions": ["Process output is normally distributed with the supplied mean and standard deviation", "Supplied process/gage standard deviations are exact, not estimated from a specific sample", "Part and gage variation combine in quadrature (AIAG MSA total-variation convention)"],
+  "excluded": ["Full ANOVA gage R&R study from raw part/operator/trial data", "physical measurement-system study execution", "production EOL test-limit authorization", "Human approval"], "golden_tests": "golden/roles/R093/golden.json"
+}

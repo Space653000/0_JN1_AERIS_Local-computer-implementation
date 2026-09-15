@@ -1,0 +1,26 @@
+{
+  "suite_id": "R091-TEST-AUTOMATION-RESULT-SCREEN-V1", "role_id": "R091", "skill_id": "test-automation-result-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact boolean logic against declared attempt/disclosure/signal flags; no physical test harness was observed.",
+  "scope": "Supplied attempt count, final-attempt-passed, retry-disclosure and explicit-pass-signal flags only",
+  "base_input": {
+    "model": "SUPPLIED_TEST_AUTOMATION_RESULT_SCREEN", "attempt_count": 2, "final_attempt_passed": true, "retries_disclosed": true, "explicit_pass_signal_received": true
+  },
+  "cases": [
+    {"id": "RESULT-RETRY-DISCLOSED-AND-EXPLICIT-SIGNAL-ACCEPT", "kind": "positive", "question": "Does an eventual pass with disclosed retries and an explicit pass signal clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "process_alive_treated_as_pass", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "RESULT-HIDDEN-RETRY-REJECTED", "kind": "counter_hypothesis", "question": "Is the identical eventual pass correctly rejected when the same retries are not disclosed?", "input_overrides": {"retries_disclosed": false}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "DISCLOSE_THE_RETRY_COUNT_AND_EACH_FAILED_ATTEMPT_RATHER_THAN_REPORTING_ONLY_THE_FINAL_PASS", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "RESULT-SINGLE-ATTEMPT-NO-EXPLICIT-SIGNAL-BOUNDARY", "kind": "boundary", "question": "Does a single attempt correctly make retry-disclosure moot, while still catching a missing explicit pass signal (process-alive-as-pass)?", "input_overrides": {"attempt_count": 1, "retries_disclosed": false, "explicit_pass_signal_received": false}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "RESULT-ZERO-ATTEMPT-COUNT-REJECTED", "kind": "negative", "question": "Is a non-positive attempt count rejected rather than silently treated as a trivial single attempt?", "input_overrides": {"attempt_count": 0}, "expected_error": "ValueError"}
+  ]
+}

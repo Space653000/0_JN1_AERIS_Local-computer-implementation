@@ -34,13 +34,15 @@
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "directional-mic-array-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/directional-mic-array-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -187,7 +189,9 @@
     "company/capabilities/R068/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260912T074404Z-d5e905bf"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
@@ -247,13 +251,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/directional-mic-array-screening-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "directional-mic-array-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -269,7 +275,14 @@
       "neighbor_owns": "Estimate TDOA/DOA and beamforming feasibility subject to geometry, aliasing and channel calibration"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "directional-mic-array-screening-baseline",
+      "method": "methods/roles/directional-mic-array-screening-baseline.json",
+      "suite": "golden/roles/R068/golden.json",
+      "scope": "Declared sidelobe suppression and unique-DOA-claim/symmetric-geometry flags against alias/ambiguity antipatterns; no full steering-angle coverage matrix or physical instrument measurement."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Set directional microphone aperture, steering and calibration limits against alias and ambiguity",

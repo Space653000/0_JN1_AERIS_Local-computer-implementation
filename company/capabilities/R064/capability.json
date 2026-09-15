@@ -34,13 +34,15 @@
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "amr-warning-doa-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/amr-warning-doa-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -185,7 +187,9 @@
     "company/capabilities/R064/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260912T074402Z-609d84eb"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
@@ -245,13 +249,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/amr-warning-doa-screening-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "amr-warning-doa-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -267,7 +273,14 @@
       "neighbor_owns": "Identify vibration transfer paths and distinguish structural/acoustic NVH contributions"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "amr-warning-doa-screening-baseline",
+      "method": "methods/roles/amr-warning-doa-screening-baseline.json",
+      "suite": "golden/roles/R064/golden.json",
+      "scope": "Declared warning-to-motor-noise margin and DOA-update displacement against declared bounds, from supplied scalars; no full velocity/load coverage matrix or physical instrument measurement."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose AMR warning and interaction capture budgets around drive noise and moving geometry",

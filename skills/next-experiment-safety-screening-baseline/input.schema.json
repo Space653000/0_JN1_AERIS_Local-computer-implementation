@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "proposed_point", "safe_region_min", "safe_region_max", "nearest_previous_point_distance", "min_new_information_distance"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_NEXT_EXPERIMENT_SAFETY_SCREEN"},
+    "proposed_point": {"type": "number"}, "safe_region_min": {"type": "number"}, "safe_region_max": {"type": "number"},
+    "nearest_previous_point_distance": {"type": "number"}, "min_new_information_distance": {"type": "number"}
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "method_id": "research-hypothesis-screening-baseline", "version": "1.0.0", "role": "R088", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:research_hypothesis_screening_model", "applicability": "Supplied replication-claim/independent-replication flags and declared raw-data-availability-disclosure flag",
+  "equations": {"replication_check": "(not replication_claimed) or independent_replication_performed", "disclosure_check": "raw_data_availability_disclosed"},
+  "assumptions": ["Declared independent-replication flag reflects an actual re-run study, not a citation count", "Declared raw-data-disclosure flag reflects an explicit statement, not an assumption from an abstract", "This screen evaluates one declared hypothesis claim, not the full literature review"],
+  "excluded": ["Full literature review and citation-context analysis", "raw-data access verification", "Human peer-review sign-off"], "golden_tests": "golden/roles/R088/golden.json"
+}

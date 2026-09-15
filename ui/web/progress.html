@@ -1,0 +1,88 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#62c5ba"><title>AERIS — 進度中心</title><link rel="stylesheet" href="/assets/aeris.css"><link rel="stylesheet" href="/assets/layout-fixes.css"><link rel="stylesheet" href="/assets/capabilities.css"><link rel="stylesheet" href="/assets/progress.css"><script src="/assets/aeris-theme.js"></script><script src="/assets/i18n.js"></script><script src="/assets/logout-button.js" defer></script></head><body data-page="progress">
+<div class="app"><aside class="sidebar"><div class="brand"><div class="brand-mark">A</div><div class="brand-copy"><div class="brand-name">AERIS</div><div class="brand-sub">聲學工程作業系統</div></div></div><div class="sidebar-live"><span class="live-dot"></span><span id="sidebarState">連線中</span></div>
+<div class="nav-group"><div class="nav-label">AERIS</div><nav class="nav"><a href="/dashboard"><span class="nav-icon">◎</span><span class="nav-copy"><b>儀表板</b><small>系統首頁</small></span></a><a href="/workspace"><span class="nav-icon">⌁</span><span class="nav-copy"><b>工作區</b><small>工程工作台</small></span></a><a href="/activity"><span class="nav-icon">↻</span><span class="nav-copy"><b>活動紀錄</b><small>可追溯稽核帳本</small></span></a><a class="active" href="/progress"><span class="nav-icon">▥</span><span class="nav-copy"><b>進度中心</b><small>P0-P6 真實進度</small></span></a></nav></div><div class="nav-group"><div class="nav-label">系統</div><nav class="nav"><a href="/services"><span class="nav-icon">▣</span><span class="nav-copy"><b>服務</b><small>後端服務</small></span></a></nav></div><div class="spacer"></div><div class="sidebar-note">所有百分比來自本機 Runtime 與 Evidence；UNKNOWN 不會被猜成完成。</div></aside>
+<main class="main"><div class="content">
+<header class="topbar"><div><div class="page-title">真實進度中心</div><div class="page-meta">依照藍圖 P0-P6，逐項對照本機 Runtime 與 Evidence</div></div><div class="actions"><span class="status" role="status" aria-live="polite" id="state">載入中</span><button class="btn" id="reverifyBtn" hidden>重新驗證全部項目</button><button class="btn" data-refresh id="refreshBtn">重新整理</button></div></header>
+<div id="staleBanner" class="stale-banner" role="status" aria-live="polite" hidden></div>
+
+<section class="panel">
+  <div class="progress-hero">
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring" viewBox="0 0 120 120" role="img" aria-label="總體完成度">
+        <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+        <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="52"></circle>
+      </svg>
+      <div class="progress-ring-label"><strong id="overallPercent">—</strong><span>總體完成度</span></div>
+    </div>
+    <div class="progress-hero-side">
+      <div class="hero-line"><span class="hero-label">下一步</span><span id="nextAction">—</span></div>
+      <div class="hero-line"><span class="hero-label">阻礙項</span><span id="blockers">—</span></div>
+      <div class="hero-line"><span class="hero-label">真值狀態</span><span id="truthState" class="pill">—</span></div>
+      <div class="hero-line small"><span class="hero-label">Runtime SHA</span><span id="shaLine">—</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="section-title"><h2>P0–P6 各階段完成度</h2><p>顏色：綠＝已完成、青＝進行中、琥珀＝剛起步、玫瑰＝尚未開始</p></div>
+  <div id="phaseBars" class="phase-bars"></div>
+</section>
+
+<section class="panel">
+  <div class="section-title"><h2>進度歷史趨勢</h2><p>依實際 commit 重建，取每個項目在該次 commit 當下最新的通過紀錄計分；非估計值</p></div>
+  <div id="historyChart" class="history-chart"></div>
+</section>
+
+<section class="panel">
+  <div class="section-title"><h2>P0–P6 細項（54 項）</h2><p id="itemsSummary"></p></div>
+  <div id="items" class="progress-items"></div>
+</section>
+
+<section class="panel">
+  <div class="section-title"><h2>本次工作階段報告</h2><p>人工彙整的文字摘要，方便快速掌握狀況——不是即時真值，正式數字仍以上方為準。彙整於 2026-09-14，commit <code>c2edc80</code>。</p></div>
+
+  <div class="callout" style="margin-bottom:16px">
+    <b>目前狀態：</b>P0–P6 全部 54 個項目個別都已通過，但系統故意不顯示「100%」——還缺一次真正的公司綜合驗收紀錄，不是東西沒做完。詳見下方「只差你」三步驟。
+  </div>
+
+  <h3 style="font-size:14px;margin:18px 0 8px">本次完成事項</h3>
+  <div class="list">
+    <div class="row"><div><div class="row-name">P5.4：42 個共用工程技能獨立驗證測試，100% 覆蓋完成</div><div class="row-meta">每個技能都用獨立推導的公式在多個數值點重新驗證。你已核准以此等效方式視為完成。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">P6.5：正式發布簽章機制，實際建置完成</div><div class="row-meta">雙方簽署驗證引擎、金鑰產生工具、簽章腳本全部就緒並測試通過。人工核准這一步刻意保留給你本人。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">手機／平板選單修復</div><div class="row-meta">窄螢幕下主選單和右側功能列（深淺色、語言切換、登出）曾整個消失，抓到兩個疊加的真實錯誤並修復。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">管理介面新增系統健康總覽，白話化多處英文代碼</div><div class="row-meta">資料庫、審計帳本、Evidence 存放區都有中文說明；原始 curl 範例、UNKNOWN／CHECKING 等狀態代碼也翻成白話中文。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">CI 抓到並修復 2 個真實回歸問題</div><div class="row-meta">瀏覽器自動化測試的權限模擬缺口、螢幕截圖時序競爭條件，兩者都在真實 CI 環境二次確認修復。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">完整測試套件重新驗證：663 項全數通過</div><div class="row-meta">並即時連線驗證與官方藍圖版本沒有偏移。</div></div><span class="pill green">完成</span></div>
+  </div>
+
+  <h3 style="font-size:14px;margin:22px 0 8px">下一步：只差你 3 件事</h3>
+  <p style="color:var(--muted);font-size:13px;margin:0 0 12px">每一件都刻意設計成只能由你本人完成——不是偷懶，是規則上、安全上就不該由 AI 代勞。</p>
+  <div class="list">
+    <div class="row"><div>
+      <div class="row-name">① 產生你自己的簽章金鑰，並核准這次發布</div>
+      <div class="row-meta">AERIS 已經簽好自己的一半，只差你用自己的金鑰簽核准；AI 代簽等於自己審核自己，等於造假核准。</div>
+      <pre style="margin-top:8px;background:var(--surface-2,#101410);border:1px solid var(--border-strong,#263027);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:11.5px;overflow:auto;white-space:pre-wrap;word-break:break-word">python scripts\authority-keygen.py --subject-id "你的名字" --human
+python scripts\prepare-release-attestation.py
+python scripts\mint-g5-approval.py --key-file .aeris\authority\你的名字.key --signer-id 你的名字 --task-id &lt;上一步印出的 task_id&gt;</pre>
+    </div></div>
+    <div class="row"><div>
+      <div class="row-name">② 做一次真正的離線斷網測試</div>
+      <div class="row-meta">需要你實際拔網路線或關閉 Wi-Fi；AI 不會自己動手斷網，怕影響到目前運作中的服務（例如手機遠端連線）。</div>
+      <pre style="margin-top:8px;background:var(--surface-2,#101410);border:1px solid var(--border-strong,#263027);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:11.5px;overflow:auto;white-space:pre-wrap;word-break:break-word">powershell -File scripts\local-acceptance.ps1 -HardOffline</pre>
+    </div></div>
+    <div class="row"><div>
+      <div class="row-name">③ 確認開機自動啟動機制目前狀態</div>
+      <div class="row-meta">上次確認紀錄已過期一週多；重新確認會碰觸 Windows「工作排程器」系統設定，屬於 AI 規則明確禁止自己執行的動作類別。</div>
+      <pre style="margin-top:8px;background:var(--surface-2,#101410);border:1px solid var(--border-strong,#263027);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:11.5px;overflow:auto;white-space:pre-wrap;word-break:break-word">powershell -File scripts\install-unattended-windows.ps1</pre>
+    </div></div>
+  </div>
+
+  <h3 style="font-size:14px;margin:22px 0 8px">已知但與本次無關的問題</h3>
+  <div class="callout" style="border-color:var(--rose);background:var(--rose-soft,rgba(242,114,106,.08))">
+    <b>未修復・待你決定：</b>CI 設定檔呼叫的自動施工腳本 <code>AERIS_AUTOPILOT.ps1 -Mode auto -CISmoke</code> 參數對不上——這支腳本已被改成更強大的「持續自動施工迴圈」，很可能就是驅動這次工作階段本身的機制。沒有動手修，因為改錯可能影響到正在運作的自動化本身；需要你決定 CI 該改成呼叫哪一支腳本，還是乾脆不測這一步。
+  </div>
+</section>
+
+</div></main></div>
+<script src="/assets/progress.js"></script>
+</body></html>

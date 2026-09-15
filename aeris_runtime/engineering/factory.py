@@ -358,7 +358,10 @@ def matrix() -> dict:
         counts[level]+=1
         group=groups.setdefault(role["group"],{"total":0,"L2_or_higher":0,"L3":0})
         group["total"]+=1; group["L2_or_higher"]+=int(level in {"L2","L3","L4"}); group["L3"]+=int(level=="L3")
-        rows.append({**role,"level":level,"skills":skills,"executable_skills":sorted(set(executable)),
+        from ..roles import get_role
+        presentation = get_role(role["id"])
+        rows.append({**role,"display_name":presentation["display_name"],"display_group":presentation["display_group"],
+                      "display_description":presentation["display_description"],"level":level,"skills":skills,"executable_skills":sorted(set(executable)),
                       "evidence":refs,"shared_skill_execution_evidenced":shared_evaluated,'domain_execution':domain_status,
                       'domain_capabilities':domain_status.get('capabilities',[]),
                      "coverage":{"skills":len(skills),"methods":len(pack.get('required_methods',[])),

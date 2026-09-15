@@ -305,6 +305,69 @@ python -m aeris_runtime verify record <task_id> G0_CONTRACT PASS --reviewer revi
 
 AI 不可直接從 `EXECUTED` 跳成 `VERIFIED/APPROVED/RELEASED`。
 
+## 15.1 如何實際呼叫一位工程師（100 位聲學工程師之一）
+
+上面第 15 節是底層的任務/證據 CLI。真正「請其中一位工程師做事」的入口是
+`POST /api/v1/capabilities/execute`（本機伺服器啟動後，`127.0.0.1:8765` 上即可呼叫）。
+下面是一個實際跑過、逐字可重現的範例：請 R095（供應商來料品質工程師）
+對一批麥克風振膜的抽樣資料做允收篩選。
+
+```bash
+curl -s -X POST http://127.0.0.1:8765/api/v1/capabilities/execute \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role_id": "R095",
+    "skill_id": "incoming-lot-sampling-screening-baseline",
+    "objective": "Screen incoming microphone diaphragm lot #4471",
+    "source_kind": "SYNTHETIC",
+    "params": {
+      "model": "SUPPLIED_INCOMING_LOT_SAMPLING_SCREEN",
+      "source_kind": "MEASURED_INCOMING_INSPECTION",
+      "sample_size": 200,
+      "observed_nonconforming": 3,
+      "confidence": 0.95,
+      "max_acceptable_lot_fraction_nonconforming": 0.05
+    }
+  }'
+```
+
+回傳（節錄實際數值，非示意）：
+
+```json
+{
+  "disposition": "BOUNDED_BASELINE_ACCEPT",
+  "values": {
+    "observed_fraction_nonconforming": 0.015,
+    "one_sided_upper_fraction_nonconforming": 0.0383,
+    "max_acceptable_lot_fraction_nonconforming": 0.05
+  },
+  "counter_hypotheses": [
+    "Assembly/test-system variation rather than a true supplier lot shift",
+    "Sampling variation at small sample size rather than a true elevated nonconforming rate"
+  ],
+  "next_discriminating_experiment": "INCREASE_INCOMING_SAMPLE_SIZE_WITH_MEASURED_INSPECTION_AND_SEPARATE_ASSEMBLY_TEST_SYSTEM_VARIATION_STUDY",
+  "physical_measurement_verified": false,
+  "professional_tool_verified": false,
+  "truth": "Calculation completion is not role L3, physical acceptance, or product certification."
+}
+```
+
+重點：
+- `role_id`/`skill_id` 必須落在該角色的 `required_skills` 範圍內，否則直接拒絕
+  （`"requested Skill outside this seat's contracted scope"`），不會靜默改路由。
+- 回傳一定包含 `counter_hypotheses`（可能誤判成因）與
+  `next_discriminating_experiment`（下一個能區分真假因的實驗），這是每個角色
+  技能被要求誠實揭露不確定性的一部分，不是裝飾用欄位。
+- `physical_measurement_verified: false` 誠實標示：這是本機自由基線計算，
+  不等於已用專業儀器/校正流程驗證，也不是產品允收的最終人類核准。
+
+**任何角色、任何技能都能這樣呼叫嗎？** 可以。這個 session 已對全部 100 席、
+共 398 組「角色-技能」組合逐一呼叫 `factory.fixture_for(role_id, skill_id)`
+生成範例輸入並執行，0 個錯誤（見 `docs/AERIS_P4_SKILL_TEACHING.md`）。想先看
+某個角色某個技能的範例輸入長什麼樣，不想真的建任務，可以用唯讀端點：
+`GET /api/v1/capabilities/fixture/{role_id}?skill={skill_id}`（`/services`
+頁面的「能力矩陣」與 `/dashboard` 的 Skills Library 也是走這條路徑展示教學範例）。
+
 ## 16. Knowledge / Public ingress
 
 Local Knowledge 是 self-cleaning SQLite text/FTS baseline，不是完整 professional acoustic corpus。
@@ -353,6 +416,22 @@ cloud/software trust baselines closed
 → optional licensed tool adapters as environments become available
 → signed/attested release + formal Human approval
 ```
+
+## 20.5 存取控制：公開介紹頁 vs. 需登入的操作系統
+
+只有 `/`（公開介紹頁）與 `/login` 對外開放；儀表板、工作區、進度中心、活動紀錄、服務頁與全部
+`/api/v1/*` API 一律需要登入。首次使用請先在本機執行一次：
+
+```bash
+python -m aeris_runtime auth set-credentials
+```
+
+互動式輸入帳號密碼（`getpass`，畫面不回顯，也不會被記錄），僅將加鹽雜湊值存在本機
+`.aeris/state/auth_credentials.json`（已被 `.gitignore` 排除，不會被提交）。這組帳密是**唯一的擁有者**，
+擁有全部權限（包含管理其他帳號）；擁有者可以在 `/admin` 頁面（或 `auth grant-user` CLI 指令）新增授權
+帳號，逐一勾選每個帳號能看到哪些頁面、能不能執行技能／建立任務，被授權的帳號永遠不能取得擁有者權限。
+細節、session 生命週期與目前刻意尚未涵蓋的範圍（例如未來公開對外連線時的正式 HTTPS/反向代理）見
+[`docs/AERIS_ACCESS_CONTROL.md`](docs/AERIS_ACCESS_CONTROL.md)。
 
 ## 21. Persistent Build Phases：換電腦不用重走聊天歷史
 

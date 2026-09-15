@@ -1,0 +1,4 @@
+{
+  "type": "object", "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {"values": {"type": "object", "required": ["design_resolution", "checks", "disposition", "monte_carlo_precision_treated_as_validity"]}, "physical_measurement_verified": {"const": false}}
+}

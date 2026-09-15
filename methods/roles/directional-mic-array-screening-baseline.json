@@ -1,0 +1,7 @@
+{
+  "method_id": "directional-mic-array-screening-baseline", "version": "1.0.0", "role": "R068", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:directional_mic_array_screening_model", "applicability": "Supplied sidelobe suppression, array-geometry-symmetric flag, unique-DOA-claim flag and ambiguity-resolution flag",
+  "equations": {"sidelobe_check": "sidelobe_suppression_db >= min_acceptable_sidelobe_suppression_db", "doa_ambiguity_check": "(not claimed_unique_doa) or (not array_geometry_symmetric) or ambiguity_resolved_by_asymmetry_or_extra_sensor"},
+  "assumptions": ["Declared sidelobe suppression is measured relative to the main lobe across the full pattern, not just near it", "A symmetric array geometry is assumed ambiguous unless an explicit resolution mechanism is declared", "This screen evaluates one declared array configuration, not a full steering-angle coverage matrix"],
+  "excluded": ["Full steering-angle and channel-calibration coverage matrix", "physical/calibrated instrument measurement", "Human production sign-off"], "golden_tests": "golden/roles/R068/golden.json"
+}

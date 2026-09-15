@@ -1,0 +1,4 @@
+{
+  "type": "object", "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {"values": {"type": "object", "required": ["warning_margin_db", "doa_update_displacement_m", "checks", "disposition"]}, "physical_measurement_verified": {"const": false}}
+}

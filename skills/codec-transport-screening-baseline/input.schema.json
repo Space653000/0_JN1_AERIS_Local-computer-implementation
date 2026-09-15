@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "jitter_buffer_ms", "network_jitter_ms", "min_acceptable_buffer_margin_ms", "max_consecutive_loss_burst_packets", "max_acceptable_loss_burst_packets"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_CODEC_TRANSPORT_SCREEN"},
+    "jitter_buffer_ms": {"type": "number"}, "network_jitter_ms": {"type": "number"},
+    "min_acceptable_buffer_margin_ms": {"type": "number"}, "max_consecutive_loss_burst_packets": {"type": "integer"},
+    "max_acceptable_loss_burst_packets": {"type": "integer"}
+  }
+}

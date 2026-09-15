@@ -17,6 +17,8 @@ class UiCoreSsotTests(unittest.TestCase):
         self.assertIn("visibilitychange",js)
         self.assertIn("addEventListener('focus',refresh)",js)
         self.assertIn("location.reload()",js)
+        self.assertIn("new URLSearchParams(location.search)", js)
+        self.assertNotIn("URL搜尋Params", js)
 
     def test_core_assets_are_served_directly_from_read_only_cache(self):
         source=(ROOT/"aeris_runtime"/"controlplane.py").read_text(encoding="utf-8")

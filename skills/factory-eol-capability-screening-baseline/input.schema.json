@@ -1,0 +1,11 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "process_mean", "process_std", "usl", "lsl", "gage_std", "min_acceptable_cpk", "max_acceptable_grr_percent"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_EOL_CAPABILITY_SCREEN"},
+    "process_mean": {"type": "number"}, "process_std": {"type": "number"},
+    "usl": {"type": "number"}, "lsl": {"type": "number"},
+    "gage_std": {"type": "number"},
+    "min_acceptable_cpk": {"type": "number"}, "max_acceptable_grr_percent": {"type": "number"}
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "method_id": "amr-warning-doa-screening-baseline", "version": "1.0.0", "role": "R064", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:amr_warning_doa_screening_model", "applicability": "Supplied warning level, drive-motor noise level, robot velocity, DOA update interval and declared acceptance thresholds",
+  "equations": {"warning_margin_db": "warning_level_db - drive_motor_noise_db", "doa_update_displacement_m": "robot_velocity_m_s * doa_update_interval_s"},
+  "assumptions": ["Declared warning and motor-noise levels are directly comparable at the same measurement reference", "Robot velocity is constant across one DOA update interval", "This screen evaluates one declared operating condition, not a full velocity/load coverage matrix"],
+  "excluded": ["Full velocity/load coverage matrix", "physical/calibrated instrument measurement", "Human production sign-off"], "golden_tests": "golden/roles/R064/golden.json"
+}

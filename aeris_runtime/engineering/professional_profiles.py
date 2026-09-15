@@ -362,6 +362,106 @@ ROLE_DOMAIN_CONTRACTS['R044']=[{
     'method':'methods/roles/microphone-aec-enhancement-domain-review.json',
     'suite':'golden/roles/R044/aec-control.json',
     'scope':'Independent ERLE, near-speech, alignment, drift, double-talk, tail and nonlinear-residual review; no measured echo path or perceptual acceptance.'}]
+ROLE_DOMAIN_CONTRACTS['R096']=[{
+    'skill_id':'reliability-halt-screening-baseline',
+    'method':'methods/roles/reliability-halt-screening-baseline.json',
+    'suite':'golden/roles/R096/golden.json',
+    'scope':'Exact one-sided binomial upper bound on HALT trial/failure counts against a declared acceptance threshold; no accelerated-life extrapolation or physical chamber execution.'}]
+ROLE_DOMAIN_CONTRACTS['R093']=[{
+    'skill_id':'factory-eol-capability-screening-baseline',
+    'method':'methods/roles/factory-eol-capability-screening-baseline.json',
+    'suite':'golden/roles/R093/golden.json',
+    'scope':'Process capability (Cpk) against declared spec limits and percent gage R&R against total variation, from supplied scalars; no ANOVA gage study or physical EOL test-limit authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R092']=[{
+    'skill_id':'instrument-sequence-safety-screening-baseline',
+    'method':'methods/roles/instrument-sequence-safety-screening-baseline.json',
+    'suite':'golden/roles/R092/golden.json',
+    'scope':'Planned stimulus amplitude/duration/step-count against declared fixture safety limits, from supplied scalars; no physical instrument IO or Human execution authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R095']=[{
+    'skill_id':'incoming-lot-sampling-screening-baseline',
+    'method':'methods/roles/incoming-lot-sampling-screening-baseline.json',
+    'suite':'golden/roles/R095/golden.json',
+    'scope':'Exact one-sided binomial upper bound on lot nonconforming fraction against a declared acceptance threshold, gated on measured (not certificate-only) incoming inspection data; no assembly/test-system variation decomposition.'}]
+ROLE_DOMAIN_CONTRACTS['R100']=[{
+    'skill_id':'next-experiment-safety-screening-baseline',
+    'method':'methods/roles/next-experiment-safety-screening-baseline.json',
+    'suite':'golden/roles/R100/golden.json',
+    'scope':'Proposed next-experiment point against a declared safe region and a minimum new-information distance from prior coverage, from supplied scalars; no point-history search or physical execution authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R091']=[{
+    'skill_id':'test-automation-result-screening-baseline',
+    'method':'methods/roles/test-automation-result-screening-baseline.json',
+    'suite':'golden/roles/R091/golden.json',
+    'scope':'Declared attempt count, retry disclosure and explicit pass-signal flags against retry-hiding and process-alive-as-pass antipatterns; no full automation-run resource/timeout budget or physical release authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R078']=[{
+    'skill_id':'doe-monte-carlo-design-screening-baseline',
+    'method':'methods/roles/doe-monte-carlo-design-screening-baseline.json',
+    'suite':'golden/roles/R078/golden.json',
+    'scope':'Declared design resolution and causal/model-validity claim flags against confounded-design and Monte-Carlo-precision-as-validity antipatterns; no design-matrix alias verification or physical decision authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R062']=[{
+    'skill_id':'vr-xr-headset-screening-baseline',
+    'method':'methods/roles/vr-xr-headset-screening-baseline.json',
+    'suite':'golden/roles/R062/golden.json',
+    'scope':'Declared motion-to-sound latency and strap-rubbing noise margin against declared bounds, from supplied scalars; no physical wear-test or Human production sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R063']=[{
+    'skill_id':'automotive-cabin-tuning-screening-baseline',
+    'method':'methods/roles/automotive-cabin-tuning-screening-baseline.json',
+    'suite':'golden/roles/R063/golden.json',
+    'scope':'Declared driver/rear-seat level spread and road-noise validation flag against declared bounds; no full seat/speed coverage matrix or physical in-cabin measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R064']=[{
+    'skill_id':'amr-warning-doa-screening-baseline',
+    'method':'methods/roles/amr-warning-doa-screening-baseline.json',
+    'suite':'golden/roles/R064/golden.json',
+    'scope':'Declared warning-to-motor-noise margin and DOA-update displacement against declared bounds, from supplied scalars; no full velocity/load coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R065']=[{
+    'skill_id':'quadruped-capture-screening-baseline',
+    'method':'methods/roles/quadruped-capture-screening-baseline.json',
+    'suite':'golden/roles/R065/golden.json',
+    'scope':'Declared footfall headroom margin and body-orientation deviation against declared bounds, from supplied scalars; no full gait/orientation coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R066']=[{
+    'skill_id':'humanoid-interaction-screening-baseline',
+    'method':'methods/roles/humanoid-interaction-screening-baseline.json',
+    'suite':'golden/roles/R066/golden.json',
+    'scope':'Declared user-interruption-to-residual-echo margin and joint-noise-to-speech margin against declared bounds, from supplied scalars; no full conversational/motion coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R067']=[{
+    'skill_id':'conference-array-aec-screening-baseline',
+    'method':'methods/roles/conference-array-aec-screening-baseline.json',
+    'suite':'golden/roles/R067/golden.json',
+    'scope':'Declared off-beam attenuation and AEC-tail-to-room-path margin against declared bounds, from supplied scalars; no full room/talker coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R068']=[{
+    'skill_id':'directional-mic-array-screening-baseline',
+    'method':'methods/roles/directional-mic-array-screening-baseline.json',
+    'suite':'golden/roles/R068/golden.json',
+    'scope':'Declared sidelobe suppression and unique-DOA-claim/symmetric-geometry flags against alias/ambiguity antipatterns; no full steering-angle coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R083']=[{
+    'skill_id':'codec-transport-screening-baseline',
+    'method':'methods/roles/codec-transport-screening-baseline.json',
+    'suite':'golden/roles/R083/golden.json',
+    'scope':'Declared jitter-buffer margin and consecutive-loss-burst length against declared bounds, from supplied scalars; no full network-condition coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R084']=[{
+    'skill_id':'audio-ml-evaluation-screening-baseline',
+    'method':'methods/roles/audio-ml-evaluation-screening-baseline.json',
+    'suite':'golden/roles/R084/golden.json',
+    'scope':'Declared train/test overlap count and production-robustness-claim/validation flags against leakage and synthetic-as-robust antipatterns; no full dataset provenance audit or Human model-release sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R085']=[{
+    'skill_id':'acoustic-dataset-screening-baseline',
+    'method':'methods/roles/acoustic-dataset-screening-baseline.json',
+    'suite':'golden/roles/R085/golden.json',
+    'scope':'Declared sample-rate-uniformity/resampling and duplicate-source-count flags against mixed-rate and cross-split-leakage antipatterns; no full ingestion-pipeline audit or Human dataset-release sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R086']=[{
+    'skill_id':'benchmark-teardown-screening-baseline',
+    'method':'methods/roles/benchmark-teardown-screening-baseline.json',
+    'suite':'golden/roles/R086/golden.json',
+    'scope':'Declared SPL-matched and topology-claim/validation flags against unmatched-benchmark and visual-topology-as-validated antipatterns; no full product test-condition matrix or Human publication sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R087']=[{
+    'skill_id':'patent-prior-art-screening-baseline',
+    'method':'methods/roles/patent-prior-art-screening-baseline.json',
+    'suite':'golden/roles/R087/golden.json',
+    'scope':'Declared novelty-verdict/claim-element-mapping and date-type-used flags against keyword-similarity-as-novelty and priority/publication-date-confusion antipatterns; no full claim chart or Human legal sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R088']=[{
+    'skill_id':'research-hypothesis-screening-baseline',
+    'method':'methods/roles/research-hypothesis-screening-baseline.json',
+    'suite':'golden/roles/R088/golden.json',
+    'scope':'Declared replication-claim/independent-replication and raw-data-disclosure flags against citation-as-replication and hidden-raw-data antipatterns; no full literature review or Human peer-review sign-off.'}]
 
 
 def standards_families(value):

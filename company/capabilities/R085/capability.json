@@ -28,11 +28,13 @@
   },
   "required_skills": [
     "requirement-traceability",
-    "provenance-research"
+    "provenance-research",
+    "acoustic-dataset-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/provenance-research.json"
+    "methods/engineering/provenance-research.json",
+    "methods/roles/acoustic-dataset-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/requirement-traceability.json",
@@ -143,7 +145,9 @@
     "company/capabilities/R085/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260912T074424Z-b51b51b3"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
@@ -152,11 +156,13 @@
     "question": "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",
     "required_methods": [
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/provenance-research.json"
+      "methods/engineering/provenance-research.json",
+      "methods/roles/acoustic-dataset-screening-baseline.json"
     ],
     "required_skills": [
       "requirement-traceability",
-      "provenance-research"
+      "provenance-research",
+      "acoustic-dataset-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -172,7 +178,14 @@
       "neighbor_owns": "Maintain requirement-test-evidence and configuration links across revisions"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "acoustic-dataset-screening-baseline",
+      "method": "methods/roles/acoustic-dataset-screening-baseline.json",
+      "suite": "golden/roles/R085/golden.json",
+      "scope": "Declared sample-rate-uniformity/resampling and duplicate-source-count flags against mixed-rate and cross-split-leakage antipatterns; no full ingestion-pipeline audit or Human dataset-release sign-off."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Preserve acoustic dataset schema, units, provenance and leakage-free partitions",

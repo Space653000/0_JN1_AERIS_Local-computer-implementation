@@ -85,3 +85,6 @@ echo "PASS: real-machine application acceptance. Report: $REPORT"
 if [ "$NETWORK_STATE" = 'NOT_TESTED' ]; then
   echo 'NOTE: Hard offline network isolation is NOT verified. Disconnect/block external network and rerun: AERIS_HARD_OFFLINE=1 bash scripts/local-acceptance.sh'
 fi
+
+echo '=== P2.5: refreshing P0/P1 Progress Truth Evidence (informational; does not gate this script) ==='
+"$PY" -m aeris_runtime.progress_verify || echo 'WARNING: progress_verify reported one or more FAIL/UNKNOWN items (e.g. P0.7/P1.3 need the local supervisor running); see .aeris/evidence/progress/PROGRESS_TRUTH.json for exactly which.'

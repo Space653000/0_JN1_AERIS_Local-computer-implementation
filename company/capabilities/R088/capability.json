@@ -31,12 +31,14 @@
   "required_skills": [
     "factorial-doe",
     "experiment-optimization",
-    "provenance-research"
+    "provenance-research",
+    "research-hypothesis-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/factorial-doe.json",
     "methods/engineering/experiment-optimization.json",
-    "methods/engineering/provenance-research.json"
+    "methods/engineering/provenance-research.json",
+    "methods/roles/research-hypothesis-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/factorial-doe.json",
@@ -164,7 +166,9 @@
     "company/capabilities/R088/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260912T074425Z-576b894b"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
@@ -174,12 +178,14 @@
     "required_methods": [
       "methods/engineering/factorial-doe.json",
       "methods/engineering/experiment-optimization.json",
-      "methods/engineering/provenance-research.json"
+      "methods/engineering/provenance-research.json",
+      "methods/roles/research-hypothesis-screening-baseline.json"
     ],
     "required_skills": [
       "factorial-doe",
       "experiment-optimization",
-      "provenance-research"
+      "provenance-research",
+      "research-hypothesis-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -195,7 +201,14 @@
       "neighbor_owns": "Separate source authority, standards applicability and research hypotheses before reuse"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "research-hypothesis-screening-baseline",
+      "method": "methods/roles/research-hypothesis-screening-baseline.json",
+      "suite": "golden/roles/R088/golden.json",
+      "scope": "Declared replication-claim/independent-replication and raw-data-disclosure flags against citation-as-replication and hidden-raw-data antipatterns; no full literature review or Human peer-review sign-off."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Test acoustic research hypotheses against reproducible sources and discriminating experiments",
