@@ -1,5 +1,21 @@
-param([int]$Port=8765)
+﻿param([int]$Port=8765)
 $ErrorActionPreference='Stop'
+
+# This file's own Chinese text was rendering as garbage ("蝑?敺垢隡箸??")
+# on this machine: Windows PowerShell 5.1 has no BOM to tell it this .ps1
+# is UTF-8, so on a Traditional-Chinese Windows install (console codepage
+# 950/Big5) it silently reads these string literals as Big5 bytes instead
+# -- corrupting them before Write-Host ever runs. Saving this file with a
+# UTF-8 BOM fixes that half; this half fixes the other: the console's own
+# output codepage, plus the encoding used to decode the child python.exe
+# process's stdout (progress_verify / aeris_launch_checklist.py also print
+# Chinese), so every layer agrees on UTF-8 instead of silently disagreeing.
+try {
+  [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+  $OutputEncoding = [System.Text.Encoding]::UTF8
+} catch {}
+$env:PYTHONUTF8 = '1'
+$env:PYTHONIOENCODING = 'utf-8'
 $Root=Split-Path -Parent $MyInvocation.MyCommand.Path
 $Python=Join-Path $Root '.venv\Scripts\python.exe'
 if(-not (Test-Path $Python)){
@@ -86,7 +102,27 @@ try {
       }
       if ($tunnelUrl) {
         Write-Host "目前隧道網址（每次重啟會改變）/ Current tunnel URL (rotates on every restart): $tunnelUrl" -ForegroundColor Yellow
-        Write-Host '若此網址與 outputs/aeris-public-site/index.html 的登入連結不同，記得重新部署 / If this differs from the deployed public page, redeploy it.' -ForegroundColor Yellow
+
+        # Push the new URL to the public page's own backend (worker.js
+        # at outputs/aeris-public-site) so https://aeris.space653000.workers.dev/login
+        # always redirects to whichever tunnel is live right now --
+        # nobody has to notice the old one died or manually redeploy
+        # the page again. Best-effort: the public page still works
+        # (with the previous URL on file) if this fails for any reason.
+        try {
+          $tokenPath = Join-Path $Root '.aeris\state\.tunnel-update-token'
+          if (Test-Path $tokenPath) {
+            $updateToken = (Get-Content $tokenPath -Raw -Encoding UTF8).Trim()
+            $body = @{ url = $tunnelUrl } | ConvertTo-Json -Compress
+            Invoke-RestMethod -Uri 'https://aeris.space653000.workers.dev/api/tunnel-url' -Method Post `
+              -Headers @{ Authorization = "Bearer $updateToken" } -ContentType 'application/json' -Body $body -TimeoutSec 10 | Out-Null
+            Write-Host '已自動更新 https://aeris.space653000.workers.dev/login，外部連結會自動導向這個新網址 / Public login link auto-updated to point at this new URL.' -ForegroundColor Yellow
+          } else {
+            Write-Warning "找不到 $tokenPath，略過自動更新公開頁面（不影響本機系統）/ Token file not found, skipped updating the public page (does not affect the local system)."
+          }
+        } catch {
+          Write-Warning "自動更新公開頁面失敗，略過（不影響本機系統）/ Failed to auto-update the public page, skipped (does not affect the local system): $($_.Exception.Message)"
+        }
       } else {
         Write-Warning 'Cloudflare Tunnel 已啟動但尚未取得網址，請稍後執行 scripts\aeris_tunnel_status.ps1 查看 / Tunnel started but URL not yet available -- check scripts\aeris_tunnel_status.ps1 shortly.'
       }

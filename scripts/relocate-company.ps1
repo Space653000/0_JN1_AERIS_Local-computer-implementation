@@ -1,4 +1,4 @@
-param([ValidateSet('auto','offline','local','cloud')][string]$Mode = 'auto')
+﻿param([ValidateSet('auto','offline','local','cloud')][string]$Mode = 'auto')
 $ErrorActionPreference = 'Stop'
 $Root = Split-Path -Parent $PSScriptRoot
 Write-Host 'AERIS Portable Company Relocation — Windows'
