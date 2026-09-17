@@ -51,10 +51,13 @@ away.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import re
+import sys
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 
 from ..audit import append_event
 from ..config import ROOT, load_config
@@ -284,3 +287,75 @@ def plan_and_execute(
         "plan_id": plan_id, "objective": objective, "project_id": project_id,
         "steps": steps, "decisions": decisions, "stop_reason": stop_reason,
     }
+
+
+def _print_skill_list() -> None:
+    """`--list-skills`: the only way to discover a real, currently-valid
+    initial_skill_id and its required_inputs without reading source code
+    -- this planner refuses any skill_id it can't find here (see
+    plan_and_execute's guard clause), so this listing is always accurate,
+    never a stale hand-written doc."""
+    index = domain_skill_index()
+    for skill_id in sorted(index):
+        data = index[skill_id]
+        print(f"{skill_id}  (role={data['role_id']})")
+        print(f"  說明 / scope: {data['scope']}")
+        print(f"  必要輸入欄位 / required_inputs: {', '.join(data['required_inputs'])}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="AERIS multi-step planner: run one role-specific domain skill, "
+                    "let the local model decide whether a neighboring skill should run next.")
+    parser.add_argument("--list-skills", action="store_true",
+                        help="列出所有可用技能與必要輸入欄位，不執行任何東西 / list all usable skills and their required inputs, execute nothing")
+    parser.add_argument("--objective", help="這次調查的目標，一句話描述 / one-sentence objective for this investigation")
+    parser.add_argument("--initial-skill-id", help="第一步要跑的技能 ID（用 --list-skills 查）/ the first skill to run (see --list-skills)")
+    parser.add_argument("--params-file", help="JSON 檔路徑，格式 {skill_id: {參數...}} / path to a JSON file shaped {skill_id: {params...}}")
+    parser.add_argument("--risk", default="R0", choices=["R0", "R1"])
+    parser.add_argument("--max-steps", type=int, default=5)
+    parser.add_argument("--transducer", default="Both", choices=["Speaker", "Microphone", "Both"])
+    parser.add_argument("--lifecycle", default="EVT",
+                        choices=["Concept", "Architecture", "Prototype", "EVT", "DVT", "PVT", "MP", "Field", "Field Return"])
+    parser.add_argument("--product", default="")
+    args = parser.parse_args()
+
+    if args.list_skills:
+        _print_skill_list()
+        return 0
+
+    if not args.objective or not args.initial_skill_id or not args.params_file:
+        parser.error("--objective, --initial-skill-id and --params-file are all required unless --list-skills is given")
+
+    try:
+        available_params = json.loads(Path(args.params_file).read_text(encoding="utf-8-sig"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"無法讀取 --params-file / could not read --params-file: {exc}")
+        return 1
+    if not isinstance(available_params, dict):
+        print("--params-file 內容必須是一個 JSON 物件 {skill_id: {...}} / --params-file must be a JSON object {skill_id: {...}}")
+        return 1
+
+    try:
+        result = plan_and_execute(
+            args.objective, initial_skill_id=args.initial_skill_id, available_params=available_params,
+            risk=args.risk, transducer=args.transducer, lifecycle=args.lifecycle, product=args.product,
+            max_steps=args.max_steps,
+        )
+    except ValueError as exc:
+        print(f"執行前被擋下 / rejected before execution: {exc}")
+        return 1
+
+    print(f"plan_id: {result['plan_id']}")
+    for i, step in enumerate(result["steps"], 1):
+        skill = step["numerical_result"]["skill_id"]
+        print(f"[步驟 {i}] {skill}  state={step['state']}  evidence_run_id={step['evidence_run_id']}")
+    for decision in result["decisions"]:
+        print(f"  決策 / decision: {decision['decision']} -> {decision.get('next_skill_id')}  ({decision['reason']})")
+    print(f"停止原因 / stop_reason: {result['stop_reason']}")
+    print(f"完整紀錄 / full record: {PLAN_EVIDENCE_DIR / (result['plan_id'] + '.json')}")
+    return 0 if result["stop_reason"] in {"planner_stopped", "max_steps_reached"} else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
