@@ -22,25 +22,29 @@
     "gcc-phat-tdoa": "skills/gcc-phat-tdoa/input.schema.json",
     "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
     "latency-budget": "skills/latency-budget/input.schema.json",
-    "room-correction-spatial-domain-review": "skills/room-correction-spatial-domain-review/input.schema.json"
+    "room-correction-spatial-domain-review": "skills/room-correction-spatial-domain-review/input.schema.json",
+    "binaural-itd-spherical-head-baseline": "skills/binaural-itd-spherical-head-baseline/input.schema.json"
   },
   "outputs": {
     "gcc-phat-tdoa": "skills/gcc-phat-tdoa/output.schema.json",
     "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
     "latency-budget": "skills/latency-budget/output.schema.json",
-    "room-correction-spatial-domain-review": "skills/room-correction-spatial-domain-review/output.schema.json"
+    "room-correction-spatial-domain-review": "skills/room-correction-spatial-domain-review/output.schema.json",
+    "binaural-itd-spherical-head-baseline": "skills/binaural-itd-spherical-head-baseline/output.schema.json"
   },
   "required_skills": [
     "gcc-phat-tdoa",
     "linear-array-pattern",
     "latency-budget",
-    "room-correction-spatial-domain-review"
+    "room-correction-spatial-domain-review",
+    "binaural-itd-spherical-head-baseline"
   ],
   "required_methods": [
     "methods/engineering/gcc-phat-tdoa.json",
     "methods/engineering/linear-array-pattern.json",
     "methods/engineering/latency-budget.json",
-    "methods/roles/room-correction-spatial-domain-review.json"
+    "methods/roles/room-correction-spatial-domain-review.json",
+    "methods/roles/binaural-itd-spherical-head-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/gcc-phat-tdoa.json",
@@ -169,7 +173,7 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260917T142437Z-238ca205"
+    ".aeris\\evidence\\RUN-20260917T143328Z-99279e1e"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
@@ -180,13 +184,15 @@
       "methods/engineering/gcc-phat-tdoa.json",
       "methods/engineering/linear-array-pattern.json",
       "methods/engineering/latency-budget.json",
-      "methods/roles/room-correction-spatial-domain-review.json"
+      "methods/roles/room-correction-spatial-domain-review.json",
+      "methods/roles/binaural-itd-spherical-head-baseline.json"
     ],
     "required_skills": [
       "gcc-phat-tdoa",
       "linear-array-pattern",
       "latency-budget",
-      "room-correction-spatial-domain-review"
+      "room-correction-spatial-domain-review",
+      "binaural-itd-spherical-head-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -208,6 +214,12 @@
       "method": "methods/roles/room-correction-spatial-domain-review.json",
       "suite": "golden/roles/R071/golden.json",
       "scope": "Independent multi-position room-correction and spatial assertion review; no HRTF, complex-response, realized-filter or physical acceptance."
+    },
+    {
+      "skill_id": "binaural-itd-spherical-head-baseline",
+      "method": "methods/roles/binaural-itd-spherical-head-baseline.json",
+      "suite": "golden/roles/R071/binaural-itd.json",
+      "scope": "Bounded spherical-head ITD sanity baseline for a claimed HRTF/rendering ITD at a single azimuth; not individualized HRTF measurement."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -228,7 +240,8 @@
       "gcc-phat-tdoa": "skills/gcc-phat-tdoa/input.schema.json",
       "linear-array-pattern": "skills/linear-array-pattern/input.schema.json",
       "latency-budget": "skills/latency-budget/input.schema.json",
-      "room-correction-spatial-domain-review": "skills/room-correction-spatial-domain-review/input.schema.json"
+      "room-correction-spatial-domain-review": "skills/room-correction-spatial-domain-review/input.schema.json",
+      "binaural-itd-spherical-head-baseline": "skills/binaural-itd-spherical-head-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -244,7 +257,8 @@
       "gcc-phat-tdoa": "skills/gcc-phat-tdoa/output.schema.json",
       "linear-array-pattern": "skills/linear-array-pattern/output.schema.json",
       "latency-budget": "skills/latency-budget/output.schema.json",
-      "room-correction-spatial-domain-review": "skills/room-correction-spatial-domain-review/output.schema.json"
+      "room-correction-spatial-domain-review": "skills/room-correction-spatial-domain-review/output.schema.json",
+      "binaural-itd-spherical-head-baseline": "skills/binaural-itd-spherical-head-baseline/output.schema.json"
     }
   },
   "report_sections": [

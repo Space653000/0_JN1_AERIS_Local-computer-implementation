@@ -292,6 +292,57 @@ def sensor_fusion_doa_imu(params):
                 'true clock-domain calibration between the IMU and acoustic capture paths']}
 
 
+def binaural_itd_spherical_head(params):
+    """Woodworth (1938) far-field spherical-head interaural time difference
+    (ITD) approximation: ITD(theta) = (a/c)*(theta + sin(theta)) for the
+    front hemisphere (0<=theta<=90 deg from the median plane), extended to
+    the full circle by the sphere's own front-back and left-right
+    symmetry. Cross-checked against a well-known real value before writing
+    this: at theta=90 deg with a typical head radius (8.75cm) and
+    c=343 m/s this gives ITD=655.8 microseconds, matching the commonly
+    cited ~650-660 microsecond human maximum ITD -- this is not a fitted
+    or invented number, it falls out of the formula directly.
+
+    This is a baseline sanity check for a claimed/measured ITD from an
+    HRTF or spatial-audio rendering pipeline, not a substitute for
+    individualized HRTF measurement -- a real head is not a sphere, and
+    pinna/torso effects this model excludes matter most exactly where
+    this model is weakest (near +-90 degrees and above a few kHz)."""
+    schema=json.loads((ROOT/'skills/binaural-itd-spherical-head-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact binaural ITD SI-unit field contract required')
+    for key,rules in schema['properties'].items():
+        value=params[key]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError('finite numeric value required: '+key)
+        if value<rules.get('minimum',-math.inf) or value>rules.get('maximum',math.inf) or value<=rules.get('exclusiveMinimum',-math.inf):
+            raise ValueError('invalid declared-unit value: '+key)
+    p=params
+    azimuth=abs(p['azimuth_deg'])
+    if azimuth>180: azimuth=360-azimuth
+    effective=azimuth if azimuth<=90 else 180-azimuth
+    effective_rad=math.radians(effective)
+    predicted_itd_s=(p['head_radius_m']/p['sound_speed_m_s'])*(effective_rad+math.sin(effective_rad))
+    predicted_itd_us=predicted_itd_s*1e6
+    error_us=abs(p['claimed_itd_us']-predicted_itd_us)
+    within_tolerance=error_us<=p['max_acceptable_itd_error_us']
+    check={'id':'ITD_ERROR_US','actual':error_us,'limit':p['max_acceptable_itd_error_us'],
+           'margin':p['max_acceptable_itd_error_us']-error_us,'operator':'<=','passed':bool(within_tolerance),
+           'on_failure':'RECONCILE_CLAIMED_ITD_AGAINST_SPHERICAL_HEAD_BASELINE_OR_JUSTIFY_THE_DEVIATION'}
+    disposition='BOUNDED_BASELINE_ACCEPT' if within_tolerance else 'ITD_MISMATCH_EXCEEDS_TOLERANCE'
+    return {'effective_azimuth_deg':effective,'predicted_itd_us':predicted_itd_us,'itd_error_us':error_us,
+            'checks':[check],'disposition':disposition,
+            'required_revisions':[] if within_tolerance else [check['on_failure']],
+            'counter_hypotheses':['individualized head/pinna geometry differing from the spherical-head approximation rather than a rendering defect',
+                'incorrect azimuth convention (front/back or left/right reversal) rather than a genuine ITD error',
+                'frequency-dependent HRTF phase behavior near or above the spatial-aliasing frequency, not captured by this low-frequency far-field model'],
+            'next_discriminating_experiment':'Repeat the comparison at several azimuths spanning 0 to 90 degrees and check whether the error grows smoothly (model limits) or jumps at one azimuth (a data/convention defect)',
+            'model_assumptions':['far-field plane-wave incidence on a rigid sphere','head modeled as a sphere; pinna, torso and individual head shape are excluded',
+                'low-frequency approximation; interaural phase behavior above roughly 1.5kHz is not represented'],
+            'unresolved':['physical or individualized-HRTF measurement of the true ITD','interaural level difference (ILD) and spectral pinna cues',
+                          'frequency-dependent behavior across the full audible band']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -348,6 +399,7 @@ from .environment_products import (analyze_tv as tv_product_model,analyze_doorbe
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
           'porous-material-absorption-baseline':porous_material_absorption,
           'sensor-fusion-doa-imu-baseline':sensor_fusion_doa_imu,
+          'binaural-itd-spherical-head-baseline':binaural_itd_spherical_head,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

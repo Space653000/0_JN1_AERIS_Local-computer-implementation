@@ -287,6 +287,9 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS['R061']={
 # ordered list is authored source truth; aggregate maturity must never hide a
 # missing member or let one shared receipt qualify its neighbors.
 ROLE_DOMAIN_CONTRACTS={role:[contract] for role,contract in _SINGLE_ROLE_DOMAIN_CONTRACTS.items()}
+ROLE_DOMAIN_CONTRACTS['R071'].append({
+    'skill_id':'binaural-itd-spherical-head-baseline','method':'methods/roles/binaural-itd-spherical-head-baseline.json',
+    'suite':'golden/roles/R071/binaural-itd.json','scope':'Bounded spherical-head ITD sanity baseline for a claimed HRTF/rendering ITD at a single azimuth; not individualized HRTF measurement.'})
 ROLE_DOMAIN_CONTRACTS['R072'].append({
     'skill_id':'tablet-orientation-case-table-domain-review','method':'methods/roles/tablet-orientation-case-table-domain-review.json',
     'suite':'golden/roles/R072/tablet.json','scope':'Independent tablet orientation/case/table assertion review; no measured transfer, case population, speech quality or Human approval.'})

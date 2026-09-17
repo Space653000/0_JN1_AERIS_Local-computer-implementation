@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "binaural-itd-spherical-head-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/binaural-itd-spherical-head-baseline.json",
+  "input_schema": "skills/binaural-itd-spherical-head-baseline/input.schema.json",
+  "output_schema": "skills/binaural-itd-spherical-head-baseline/output.schema.json",
+  "role_mappings": ["R071"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded spherical-head ITD sanity baseline from the Woodworth (1938) far-field approximation; not individualized HRTF measurement"
+}
