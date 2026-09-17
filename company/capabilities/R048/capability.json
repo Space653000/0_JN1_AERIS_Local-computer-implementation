@@ -190,10 +190,9 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260916T143225Z-56b7bae3"
+    ".aeris\\evidence\\RUN-20260917T100944Z-6e0bdb80"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "sealed miniature dynamic/BA driver",
     "microphone_topology_considerations": "feedforward, feedback and voice microphones",

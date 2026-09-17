@@ -21,12 +21,14 @@
   "inputs": {
     "factorial-doe": "skills/factorial-doe/input.schema.json",
     "monte-carlo": "skills/monte-carlo/input.schema.json",
-    "correlation-outliers": "skills/correlation-outliers/input.schema.json"
+    "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+    "doe-monte-carlo-design-screening-baseline": "skills/doe-monte-carlo-design-screening-baseline/input.schema.json"
   },
   "outputs": {
     "factorial-doe": "skills/factorial-doe/output.schema.json",
     "monte-carlo": "skills/monte-carlo/output.schema.json",
-    "correlation-outliers": "skills/correlation-outliers/output.schema.json"
+    "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+    "doe-monte-carlo-design-screening-baseline": "skills/doe-monte-carlo-design-screening-baseline/output.schema.json"
   },
   "required_skills": [
     "factorial-doe",
@@ -167,10 +169,9 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260916T143233Z-427ce8db"
+    ".aeris\\evidence\\RUN-20260917T100952Z-f02007b3"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R078-DOMAIN-DECISION",
@@ -226,7 +227,8 @@
     "calculation_schemas": {
       "factorial-doe": "skills/factorial-doe/input.schema.json",
       "monte-carlo": "skills/monte-carlo/input.schema.json",
-      "correlation-outliers": "skills/correlation-outliers/input.schema.json"
+      "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+      "doe-monte-carlo-design-screening-baseline": "skills/doe-monte-carlo-design-screening-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -241,7 +243,8 @@
     "calculation_schemas": {
       "factorial-doe": "skills/factorial-doe/output.schema.json",
       "monte-carlo": "skills/monte-carlo/output.schema.json",
-      "correlation-outliers": "skills/correlation-outliers/output.schema.json"
+      "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+      "doe-monte-carlo-design-screening-baseline": "skills/doe-monte-carlo-design-screening-baseline/output.schema.json"
     }
   },
   "report_sections": [

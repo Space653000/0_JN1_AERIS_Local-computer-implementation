@@ -192,10 +192,9 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260916T143228Z-6606dd3b"
+    ".aeris\\evidence\\RUN-20260917T100947Z-ecfc4ba7"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "product_architecture": {
     "speaker_topology_considerations": "down/back-firing thin display drivers",
     "microphone_topology_considerations": "optional bezel voice array",

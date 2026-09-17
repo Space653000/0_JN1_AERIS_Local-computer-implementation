@@ -311,6 +311,9 @@ ROLE_DOMAIN_CONTRACTS['R073'].append({
 ROLE_DOMAIN_CONTRACTS['R074']=[{
     'skill_id':'doorbell-weather-intercom-domain-review','method':'methods/roles/doorbell-weather-intercom-domain-review.json',
     'suite':'golden/roles/R074/doorbell.json','scope':'Independent doorbell wet-mesh/wind/intercom assertion review; no weather population, outdoor product or Human approval.'}]
+ROLE_DOMAIN_CONTRACTS['R074'].append({
+    'skill_id':'porous-material-absorption-baseline','method':'methods/roles/porous-material-absorption-baseline.json',
+    'suite':'golden/roles/R074/porous-material.json','scope':'Bounded normal-incidence absorption estimate for a rigid-backed homogeneous porous layer from the Delany-Bazley empirical model; not physical impedance-tube qualification.'})
 ROLE_DOMAIN_CONTRACTS['R075'].append({
     'skill_id':'appliance-motor-notification-voice-domain-review','method':'methods/roles/appliance-motor-notification-voice-domain-review.json',
     'suite':'golden/roles/R075/appliance.json','scope':'Independent appliance motor/duty/voice assertion review; no thermal lifetime, command usability or Human approval.'})

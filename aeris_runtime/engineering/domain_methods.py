@@ -1,6 +1,7 @@
 """Role-specific engineering decisions, separate from shared Skill Goldens."""
 from __future__ import annotations
 
+import cmath
 import hashlib
 import inspect
 import json
@@ -144,6 +145,78 @@ def speaker_power_distortion(params):
                           'physical reliability, lifetime and qualified Human acceptance']}
 
 
+def porous_material_absorption(params):
+    """Delany-Bazley (1970) empirical porous-absorber model: normalized
+    frequency parameter -> complex characteristic impedance and propagation
+    constant -> rigid-backed surface impedance -> normal-incidence
+    absorption coefficient. Surface impedance uses the general lossy
+    transmission-line form Zs=Zc*coth(gamma*d) (gamma is fully complex
+    here, not purely imaginary) -- the simpler -j*Zc*cot(kd) textbook form
+    only holds for a lossless line and silently produces a negative-real
+    (unphysical) surface impedance if used here; verified against this
+    exact failure mode while building this skill.
+
+    The empirical fit is itself only published as valid for
+    0.01<=X<=1.0, and even inside that range can still return an
+    absorption coefficient outside [0,1] for thin/low-frequency
+    combinations (a known model limitation, not a bug) -- both boundaries
+    are surfaced as an honest disposition rather than clamped."""
+    schema=json.loads((ROOT/'skills/porous-material-absorption-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact porous-material absorption SI-unit field contract required')
+    for key,rules in schema['properties'].items():
+        value=params[key]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError('finite numeric value required: '+key)
+        if value<rules.get('minimum',-math.inf) or value>rules.get('maximum',math.inf) or value<=rules.get('exclusiveMinimum',-math.inf):
+            raise ValueError('invalid declared-unit value: '+key)
+    p=params
+    X=p['air_density_kg_m3']*p['frequency_hz']/p['flow_resistivity_pa_s_m2']
+    z0=p['air_density_kg_m3']*p['sound_speed_m_s']
+    zc=z0*(1+0.0571*X**-0.754-1j*0.087*X**-0.732)
+    omega=2*math.pi*p['frequency_hz']
+    gamma=(omega/p['sound_speed_m_s'])*(0.0978*X**-0.700+1j*(1+0.189*X**-0.595))
+    zs=zc/cmath.tanh(gamma*p['thickness_m'])
+    reflection=(zs-z0)/(zs+z0)
+    alpha=1-abs(reflection)**2
+    applicable=0.01<=X<=1.0
+    physical=0.0<=alpha<=1.0
+    target_met=applicable and physical and alpha>=p['minimum_target_absorption']
+    check={'id':'ABSORPTION_COEFFICIENT','actual':alpha,'limit':p['minimum_target_absorption'],
+           'margin':alpha-p['minimum_target_absorption'],'operator':'>=','passed':bool(target_met),
+           'on_failure':'INCREASE_THICKNESS_OR_LOWER_FLOW_RESISTIVITY'}
+    if not applicable:
+        disposition='MODEL_OUTSIDE_VALIDATED_RANGE'
+        required_revisions=['SELECT_MATERIAL_OR_FREQUENCY_WITHIN_DELANY_BAZLEY_X_RANGE_0P01_TO_1P0']
+        experiment='Re-measure flow resistivity or select a thicker/denser sample so the normalized frequency parameter falls within 0.01-1.0'
+    elif not physical:
+        disposition='MODEL_RESULT_NONPHYSICAL_AT_THIS_THICKNESS_FREQUENCY'
+        required_revisions=['INCREASE_SAMPLE_THICKNESS_OR_VERIFY_WITH_MEASURED_IMPEDANCE_TUBE_DATA']
+        experiment='Measure normal-incidence absorption in an impedance tube at this exact thickness/frequency; the empirical fit is known to be unreliable here'
+    elif target_met:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+        experiment='Measure normal-incidence absorption in an impedance tube at the same thickness and frequency to confirm the empirical prediction'
+    else:
+        disposition='TARGET_NOT_MET'
+        required_revisions=['INCREASE_THICKNESS_OR_LOWER_FLOW_RESISTIVITY']
+        experiment='Re-run at increased thickness or with a lower-flow-resistivity material and compare predicted absorption against the same target'
+    return {'normalized_frequency_parameter':X,'model_applicable':applicable,
+            'characteristic_impedance_real':zc.real,'characteristic_impedance_imag':zc.imag,
+            'propagation_constant_real':gamma.real,'propagation_constant_imag':gamma.imag,
+            'surface_impedance_real':zs.real,'surface_impedance_imag':zs.imag,
+            'absorption_coefficient':alpha,'checks':[check],'disposition':disposition,
+            'required_revisions':required_revisions,
+            'counter_hypotheses':['edge or frame leakage inflating apparent absorption rather than the bulk material itself',
+                'airspace or non-rigid backing assumed as sealed-rigid, biasing surface impedance',
+                'measured flow resistivity differs from the datasheet nominal value used here'],
+            'next_discriminating_experiment':experiment,
+            'model_assumptions':['Delany-Bazley (1970) empirical fit, normal-incidence plane wave',
+                'homogeneous, isotropic bulk material','rigid, sealed backing with no airspace',
+                'general lossy transmission-line surface impedance Zs=Zc*coth(gamma*d)'],
+            'unresolved':['measured/physical impedance-tube verification','oblique-incidence or diffuse-field (random-incidence) absorption',
+                          'airspace-backed configuration']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -198,6 +271,7 @@ from .environment_products import (analyze_tv as tv_product_model,analyze_doorbe
                                    analyze_appliance as appliance_product_model,analyze_open_ear as open_ear_product_model)
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
+          'porous-material-absorption-baseline':porous_material_absorption,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

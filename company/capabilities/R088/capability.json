@@ -21,12 +21,14 @@
   "inputs": {
     "factorial-doe": "skills/factorial-doe/input.schema.json",
     "experiment-optimization": "skills/experiment-optimization/input.schema.json",
-    "provenance-research": "skills/provenance-research/input.schema.json"
+    "provenance-research": "skills/provenance-research/input.schema.json",
+    "research-hypothesis-screening-baseline": "skills/research-hypothesis-screening-baseline/input.schema.json"
   },
   "outputs": {
     "factorial-doe": "skills/factorial-doe/output.schema.json",
     "experiment-optimization": "skills/experiment-optimization/output.schema.json",
-    "provenance-research": "skills/provenance-research/output.schema.json"
+    "provenance-research": "skills/provenance-research/output.schema.json",
+    "research-hypothesis-screening-baseline": "skills/research-hypothesis-screening-baseline/output.schema.json"
   },
   "required_skills": [
     "factorial-doe",
@@ -167,10 +169,9 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260916T143237Z-e6078f3d"
+    ".aeris\\evidence\\RUN-20260917T100956Z-b2ea2cea"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R088-DOMAIN-DECISION",
@@ -226,7 +227,8 @@
     "calculation_schemas": {
       "factorial-doe": "skills/factorial-doe/input.schema.json",
       "experiment-optimization": "skills/experiment-optimization/input.schema.json",
-      "provenance-research": "skills/provenance-research/input.schema.json"
+      "provenance-research": "skills/provenance-research/input.schema.json",
+      "research-hypothesis-screening-baseline": "skills/research-hypothesis-screening-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -241,7 +243,8 @@
     "calculation_schemas": {
       "factorial-doe": "skills/factorial-doe/output.schema.json",
       "experiment-optimization": "skills/experiment-optimization/output.schema.json",
-      "provenance-research": "skills/provenance-research/output.schema.json"
+      "provenance-research": "skills/provenance-research/output.schema.json",
+      "research-hypothesis-screening-baseline": "skills/research-hypothesis-screening-baseline/output.schema.json"
     }
   },
   "report_sections": [

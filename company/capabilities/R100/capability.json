@@ -21,12 +21,14 @@
   "inputs": {
     "experiment-optimization": "skills/experiment-optimization/input.schema.json",
     "factorial-doe": "skills/factorial-doe/input.schema.json",
-    "monte-carlo": "skills/monte-carlo/input.schema.json"
+    "monte-carlo": "skills/monte-carlo/input.schema.json",
+    "next-experiment-safety-screening-baseline": "skills/next-experiment-safety-screening-baseline/input.schema.json"
   },
   "outputs": {
     "experiment-optimization": "skills/experiment-optimization/output.schema.json",
     "factorial-doe": "skills/factorial-doe/output.schema.json",
-    "monte-carlo": "skills/monte-carlo/output.schema.json"
+    "monte-carlo": "skills/monte-carlo/output.schema.json",
+    "next-experiment-safety-screening-baseline": "skills/next-experiment-safety-screening-baseline/output.schema.json"
   },
   "required_skills": [
     "experiment-optimization",
@@ -167,10 +169,9 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260916T143241Z-403a4b61"
+    ".aeris\\evidence\\RUN-20260917T101000Z-f0b5ea1d"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R100-DOMAIN-DECISION",
@@ -226,7 +227,8 @@
     "calculation_schemas": {
       "experiment-optimization": "skills/experiment-optimization/input.schema.json",
       "factorial-doe": "skills/factorial-doe/input.schema.json",
-      "monte-carlo": "skills/monte-carlo/input.schema.json"
+      "monte-carlo": "skills/monte-carlo/input.schema.json",
+      "next-experiment-safety-screening-baseline": "skills/next-experiment-safety-screening-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -241,7 +243,8 @@
     "calculation_schemas": {
       "experiment-optimization": "skills/experiment-optimization/output.schema.json",
       "factorial-doe": "skills/factorial-doe/output.schema.json",
-      "monte-carlo": "skills/monte-carlo/output.schema.json"
+      "monte-carlo": "skills/monte-carlo/output.schema.json",
+      "next-experiment-safety-screening-baseline": "skills/next-experiment-safety-screening-baseline/output.schema.json"
     }
   },
   "report_sections": [

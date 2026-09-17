@@ -20,11 +20,13 @@
   ],
   "inputs": {
     "process-quality": "skills/process-quality/input.schema.json",
-    "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+    "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json",
+    "incoming-lot-sampling-screening-baseline": "skills/incoming-lot-sampling-screening-baseline/input.schema.json"
   },
   "outputs": {
     "process-quality": "skills/process-quality/output.schema.json",
-    "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+    "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json",
+    "incoming-lot-sampling-screening-baseline": "skills/incoming-lot-sampling-screening-baseline/output.schema.json"
   },
   "required_skills": [
     "process-quality",
@@ -146,10 +148,9 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260916T143239Z-8e55a9ac"
+    ".aeris\\evidence\\RUN-20260917T100958Z-bd115f99"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R095-DOMAIN-DECISION",
@@ -202,7 +203,8 @@
     ],
     "calculation_schemas": {
       "process-quality": "skills/process-quality/input.schema.json",
-      "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json",
+      "incoming-lot-sampling-screening-baseline": "skills/incoming-lot-sampling-screening-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -216,7 +218,8 @@
     ],
     "calculation_schemas": {
       "process-quality": "skills/process-quality/output.schema.json",
-      "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json",
+      "incoming-lot-sampling-screening-baseline": "skills/incoming-lot-sampling-screening-baseline/output.schema.json"
     }
   },
   "report_sections": [

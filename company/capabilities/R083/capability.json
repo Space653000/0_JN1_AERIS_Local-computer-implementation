@@ -20,11 +20,13 @@
   ],
   "inputs": {
     "latency-budget": "skills/latency-budget/input.schema.json",
-    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json"
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+    "codec-transport-screening-baseline": "skills/codec-transport-screening-baseline/input.schema.json"
   },
   "outputs": {
     "latency-budget": "skills/latency-budget/output.schema.json",
-    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json"
+    "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+    "codec-transport-screening-baseline": "skills/codec-transport-screening-baseline/output.schema.json"
   },
   "required_skills": [
     "latency-budget",
@@ -146,10 +148,9 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260916T143235Z-ff356230"
+    ".aeris\\evidence\\RUN-20260917T100954Z-81ac16c9"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R083-DOMAIN-DECISION",
@@ -202,7 +203,8 @@
     ],
     "calculation_schemas": {
       "latency-budget": "skills/latency-budget/input.schema.json",
-      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json"
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/input.schema.json",
+      "codec-transport-screening-baseline": "skills/codec-transport-screening-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -216,7 +218,8 @@
     ],
     "calculation_schemas": {
       "latency-budget": "skills/latency-budget/output.schema.json",
-      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json"
+      "enhancement-aec-metrics": "skills/enhancement-aec-metrics/output.schema.json",
+      "codec-transport-screening-baseline": "skills/codec-transport-screening-baseline/output.schema.json"
     }
   },
   "report_sections": [
