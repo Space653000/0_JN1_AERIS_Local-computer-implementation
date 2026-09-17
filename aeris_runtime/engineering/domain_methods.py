@@ -217,6 +217,81 @@ def porous_material_absorption(params):
                           'airspace-backed configuration']}
 
 
+def sensor_fusion_doa_imu(params):
+    """Inverse-variance circular fusion of an IMU-derived heading and an
+    acoustic DOA estimate of the same true angle. Two well-established,
+    independently-verifiable pieces, composed for this specific problem
+    rather than one borrowed exotic model: (1) inverse-variance weighting
+    is the standard minimum-variance linear combination of two
+    independent noisy estimates (the same scalar Kalman-filter measurement
+    update / GUM combined-uncertainty formula used elsewhere in this
+    codebase); (2) the weighted circular mean (via unit-vector sum then
+    atan2) is the standard way to average angles without a naive average
+    breaking down across the 0/360 wrap boundary. Neither number is
+    invented -- both are checked by hand against a plain non-circular
+    weighted average for a nominal case with a small angular difference,
+    where the two must nearly agree.
+
+    A circular disagreement near 180 degrees is *not* auto-corrected --
+    it is flagged as a possible frame-convention sign error (this role's
+    own stated failure mode) instead of being fused into a number that
+    happens to average two disagreeing sources into a false-confident
+    middle. That is a real, current limitation of this baseline, not
+    something masked."""
+    schema=json.loads((ROOT/'skills/sensor-fusion-doa-imu-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact sensor-fusion SI-unit field contract required')
+    for key,rules in schema['properties'].items():
+        value=params[key]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError('finite numeric value required: '+key)
+        if value<rules.get('minimum',-math.inf) or value>rules.get('maximum',math.inf) or value<=rules.get('exclusiveMinimum',-math.inf):
+            raise ValueError('invalid declared-unit value: '+key)
+    p=params
+    timestamp_skew=abs(p['imu_timestamp_s']-p['acoustic_timestamp_s'])
+    w1=1/p['imu_heading_std_deg']**2; w2=1/p['acoustic_doa_std_deg']**2
+    a1=math.radians(p['imu_heading_deg']); a2=math.radians(p['acoustic_doa_deg'])
+    wx=w1*math.cos(a1)+w2*math.cos(a2); wy=w1*math.sin(a1)+w2*math.sin(a2)
+    fused_heading=math.degrees(math.atan2(wy,wx))
+    fused_std=math.sqrt(1/(w1+w2))
+    circular_disagreement=math.degrees(math.atan2(math.sin(a1-a2),math.cos(a1-a2)))
+    frame_reversal_suspected=abs(abs(circular_disagreement)-180)<=30
+    timestamp_ok=timestamp_skew<=p['max_acceptable_timestamp_skew_s']
+    precision_ok=fused_std<=p['max_acceptable_fused_std_deg']
+    checks=[{'id':'TIMESTAMP_SKEW_S','actual':timestamp_skew,'limit':p['max_acceptable_timestamp_skew_s'],
+             'margin':p['max_acceptable_timestamp_skew_s']-timestamp_skew,'operator':'<=','passed':bool(timestamp_ok),
+             'on_failure':'RESYNCHRONIZE_IMU_AND_ACOUSTIC_CAPTURE_CLOCKS'},
+            {'id':'FUSED_HEADING_STD_DEG','actual':fused_std,'limit':p['max_acceptable_fused_std_deg'],
+             'margin':p['max_acceptable_fused_std_deg']-fused_std,'operator':'<=','passed':bool(precision_ok),
+             'on_failure':'IMPROVE_IMU_OR_ACOUSTIC_DOA_PRECISION_BEFORE_FUSING'}]
+    if frame_reversal_suspected:
+        disposition='POSSIBLE_FRAME_CONVENTION_REVERSAL'
+        required_revisions=['CONFIRM_IMU_AND_ACOUSTIC_HEADING_SHARE_THE_SAME_SIGN_CONVENTION_BEFORE_TRUSTING_THIS_FUSION']
+        experiment='Physically rotate the device a known amount and confirm both IMU and acoustic DOA report consistent-sign changes'
+    elif not timestamp_ok:
+        disposition='EXCESSIVE_TIMESTAMP_SKEW'; required_revisions=[checks[0]['on_failure']]
+        experiment='Repeat capture with hardware-synchronized IMU and acoustic timestamps, then re-fuse'
+    elif not precision_ok:
+        disposition='FUSED_UNCERTAINTY_EXCEEDS_TARGET'; required_revisions=[checks[1]['on_failure']]
+        experiment='Repeat fusion across a short static sequence and confirm the fused heading standard deviation matches the predicted value here'
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+        experiment='Repeat fusion across a short static sequence and confirm the fused heading standard deviation matches the predicted value here'
+    return {'timestamp_skew_s':timestamp_skew,'fused_heading_deg':fused_heading,'fused_heading_std_deg':fused_std,
+            'circular_disagreement_deg':circular_disagreement,'frame_reversal_suspected':frame_reversal_suspected,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['sensor mounting/alignment offset rather than a true frame-convention sign error',
+                'clock jitter rather than genuine angular motion between the two timestamps',
+                'acoustic multipath or front-back ambiguity biasing the DOA estimate rather than IMU drift'],
+            'next_discriminating_experiment':experiment,
+            'model_assumptions':['both angles already expressed in the same coordinate convention; only a near-180-degree disagreement is screened as a possible sign error, not corrected automatically',
+                'inverse-variance circular fusion is valid while both angular standard uncertainties stay well inside the small-angle regime',
+                'the IMU and acoustic estimates are conditionally independent measurements of the same true heading'],
+            'unresolved':['physical bench verification of the fused heading against a ground-truth reference',
+                'non-Gaussian or multimodal DOA error (e.g. front-back ambiguity) not represented by a single standard deviation',
+                'true clock-domain calibration between the IMU and acoustic capture paths']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -272,6 +347,7 @@ from .environment_products import (analyze_tv as tv_product_model,analyze_doorbe
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
           'porous-material-absorption-baseline':porous_material_absorption,
+          'sensor-fusion-doa-imu-baseline':sensor_fusion_doa_imu,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

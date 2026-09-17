@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["skill_id", "version", "result", "values", "input_sha256", "implementation_sha256"],
+  "properties": {
+    "skill_id": {"const": "sensor-fusion-doa-imu-baseline"},
+    "version": {"type": "string"},
+    "result": {"const": "PASS"},
+    "input_sha256": {"type": "string"},
+    "implementation_sha256": {"type": "string"},
+    "values": {
+      "type": "object",
+      "required": [
+        "timestamp_skew_s", "fused_heading_deg", "fused_heading_std_deg",
+        "circular_disagreement_deg", "frame_reversal_suspected", "checks", "disposition",
+        "required_revisions", "counter_hypotheses", "next_discriminating_experiment",
+        "model_assumptions", "unresolved"
+      ],
+      "properties": {
+        "timestamp_skew_s": {"type": "number"},
+        "fused_heading_deg": {"type": "number"},
+        "fused_heading_std_deg": {"type": "number"},
+        "circular_disagreement_deg": {"type": "number"},
+        "frame_reversal_suspected": {"type": "boolean"},
+        "checks": {"type": "array"},
+        "disposition": {"type": "string"},
+        "required_revisions": {"type": "array"},
+        "counter_hypotheses": {"type": "array"},
+        "next_discriminating_experiment": {"type": "string"},
+        "model_assumptions": {"type": "array"},
+        "unresolved": {"type": "array"}
+      }
+    }
+  }
+}

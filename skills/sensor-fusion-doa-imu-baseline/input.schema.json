@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "imu_heading_deg",
+    "imu_heading_std_deg",
+    "imu_timestamp_s",
+    "acoustic_doa_deg",
+    "acoustic_doa_std_deg",
+    "acoustic_timestamp_s",
+    "max_acceptable_timestamp_skew_s",
+    "max_acceptable_fused_std_deg"
+  ],
+  "properties": {
+    "imu_heading_deg": {"type": "number", "minimum": -360, "maximum": 360},
+    "imu_heading_std_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 90},
+    "imu_timestamp_s": {"type": "number", "minimum": 0, "maximum": 1000000000},
+    "acoustic_doa_deg": {"type": "number", "minimum": -360, "maximum": 360},
+    "acoustic_doa_std_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 90},
+    "acoustic_timestamp_s": {"type": "number", "minimum": 0, "maximum": 1000000000},
+    "max_acceptable_timestamp_skew_s": {"type": "number", "minimum": 0, "maximum": 10},
+    "max_acceptable_fused_std_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 90}
+  }
+}

@@ -320,6 +320,9 @@ ROLE_DOMAIN_CONTRACTS['R075'].append({
 ROLE_DOMAIN_CONTRACTS['R080']=[{
     'skill_id':'ar-open-ear-leakage-tracking-wind-domain-review','method':'methods/roles/ar-open-ear-leakage-tracking-wind-domain-review.json',
     'suite':'golden/roles/R080/ar-open-ear.json','scope':'Independent open-ear leakage/tracking/wind assertion review; no privacy field, listener population or Human approval.'}]
+ROLE_DOMAIN_CONTRACTS['R080'].append({
+    'skill_id':'sensor-fusion-doa-imu-baseline','method':'methods/roles/sensor-fusion-doa-imu-baseline.json',
+    'suite':'golden/roles/R080/sensor-fusion.json','scope':'Bounded inverse-variance circular fusion of an IMU heading and an acoustic DOA estimate; not physical bench-verified sensor fusion.'})
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',
