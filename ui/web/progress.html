@@ -39,20 +39,26 @@
 </section>
 
 <section class="panel">
-  <div class="section-title"><h2>本次工作階段報告</h2><p>人工彙整的文字摘要，方便快速掌握狀況——不是即時真值，正式數字仍以上方為準。彙整於 2026-09-14，commit <code>c2edc80</code>。</p></div>
+  <div class="section-title"><h2>本次工作階段報告</h2><p>人工彙整的文字摘要，方便快速掌握狀況——不是即時真值，正式數字仍以上方為準。彙整於 2026-09-17，commit <code>c045666</code>。完整版（含全部 54 項即時狀態表）另有一份圖文報告，可向管理者索取連結。</p></div>
 
   <div class="callout" style="margin-bottom:16px">
     <b>目前狀態：</b>P0–P6 全部 54 個項目個別都已通過，但系統故意不顯示「100%」——還缺一次真正的公司綜合驗收紀錄，不是東西沒做完。詳見下方「只差你」三步驟。
   </div>
 
-  <h3 style="font-size:14px;margin:18px 0 8px">本次完成事項</h3>
+  <h3 style="font-size:14px;margin:18px 0 8px">本次工作階段完成事項（8 個 commit）</h3>
   <div class="list">
-    <div class="row"><div><div class="row-name">P5.4：42 個共用工程技能獨立驗證測試，100% 覆蓋完成</div><div class="row-meta">每個技能都用獨立推導的公式在多個數值點重新驗證。你已核准以此等效方式視為完成。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">P6.5：正式發布簽章機制，實際建置完成</div><div class="row-meta">雙方簽署驗證引擎、金鑰產生工具、簽章腳本全部就緒並測試通過。人工核准這一步刻意保留給你本人。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">手機／平板選單修復</div><div class="row-meta">窄螢幕下主選單和右側功能列（深淺色、語言切換、登出）曾整個消失，抓到兩個疊加的真實錯誤並修復。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">管理介面新增系統健康總覽，白話化多處英文代碼</div><div class="row-meta">資料庫、審計帳本、Evidence 存放區都有中文說明；原始 curl 範例、UNKNOWN／CHECKING 等狀態代碼也翻成白話中文。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">CI 抓到並修復 2 個真實回歸問題</div><div class="row-meta">瀏覽器自動化測試的權限模擬缺口、螢幕截圖時序競爭條件，兩者都在真實 CI 環境二次確認修復。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">完整測試套件重新驗證：663 項全數通過</div><div class="row-meta">並即時連線驗證與官方藍圖版本沒有偏移。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">修好 AERIS_START.ps1 全部中文顯示成亂碼的問題，並讓手機書籤自動更新</div><div class="row-meta">PowerShell 讀取無 BOM 的 UTF-8 檔案誤判編碼所致；同時讓啟動流程自動把新的 Cloudflare 隧道網址回報給公開頁面，不用再手動更新。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">進度中心不再把「全部通過、只差人工核准」誤顯示成「什麼都沒做」</div><div class="row-meta">找到並修好一個把兩種完全不同情況（證據不可信 vs. 只差最後簽核）混在一起處理的邏輯錯誤，這正是你多次回報「怎麼看起來都沒進度」的根因。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">啟動點檢腳本同一個問題一併修正</div><div class="row-meta">全部真的通過時，AERIS_START.ps1 不會再誤印「有項目未通過」的警告。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">新增 Order Validator：AERIS 與 Voice-Agent 前台的真正對接點</div><div class="row-meta">驗證 ORDER.md 格式與工程師編號真實性，已在上線當天處理過一筆 Voice-Agent 產生的真實案件。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">抓到並修好「100 位工程師技能全部失效」的真實回歸</div><div class="row-meta">一次程式更新讓全部 100 位角色先前封存的技能驗證證據悄悄失效而沒有警示；已重新驗證，93 位恢復 L2。</div></div><span class="pill green">完成</span></div>
+    <div class="row"><div><div class="row-name">新增「多步驟規劃層」：AI 能自己決定下一步該找哪位工程師接手</div><div class="row-meta">執行一個真實技能、看真實結果，再自主判斷下一步。真跑起來後修正了兩個設計錯誤（技能範圍選錯、提示詞過大讓模型失控），已用真實兩步驟鏈連續驗證三次成功，並補上指令列介面讓你自己能操作。</div></div><span class="pill green">完成</span></div>
+  </div>
+
+  <h3 style="font-size:14px;margin:22px 0 8px">交辦中、尚未完成的兩個大工程</h3>
+  <div class="list">
+    <div class="row"><div><div class="row-name">① 技能深度：讓每位工程師更強、更不重複</div><div class="row-meta">已查證現況並找到 4 個有真實工程公式依據的候選角色（R074 材料、R039 麥克風孔道、R029 網罩、R041 風噪模型），規劃中。</div></div><span class="pill amber">進行中</span></div>
+    <div class="row"><div><div class="row-name">② 真實零件知識庫：讓 AI 能選出真實喇叭／麥克風／結構</div><div class="row-meta">已查證沒有現成真實資料庫；三條路徑（手動核實／即時上網／付費 API）都需要你先決定，尚未開始。</div></div><span class="pill rose">待決定</span></div>
   </div>
 
   <h3 style="font-size:14px;margin:22px 0 8px">下一步：只差你 3 件事</h3>
