@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#62c5ba"><title>AERIS — 進度中心</title><link rel="stylesheet" href="/assets/aeris.css"><link rel="stylesheet" href="/assets/layout-fixes.css"><link rel="stylesheet" href="/assets/capabilities.css"><link rel="stylesheet" href="/assets/progress.css"><script src="/assets/aeris-theme.js"></script><script src="/assets/i18n.js"></script><script src="/assets/logout-button.js" defer></script></head><body data-page="progress">
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#62c5ba"><title>AERIS — 進度中心</title><link rel="stylesheet" href="/assets/aeris.css"><link rel="stylesheet" href="/assets/layout-fixes.css"><link rel="stylesheet" href="/assets/capabilities.css"><link rel="stylesheet" href="/assets/progress.css"><link rel="stylesheet" href="/assets/session-report.css"><script src="/assets/aeris-theme.js"></script><script src="/assets/i18n.js"></script><script src="/assets/logout-button.js" defer></script></head><body data-page="progress">
 <div class="app"><aside class="sidebar"><div class="brand"><div class="brand-mark">A</div><div class="brand-copy"><div class="brand-name">AERIS</div><div class="brand-sub">聲學工程作業系統</div></div></div><div class="sidebar-live"><span class="live-dot"></span><span id="sidebarState">連線中</span></div>
 <div class="nav-group"><div class="nav-label">AERIS</div><nav class="nav"><a href="/dashboard"><span class="nav-icon">◎</span><span class="nav-copy"><b>儀表板</b><small>系統首頁</small></span></a><a href="/workspace"><span class="nav-icon">⌁</span><span class="nav-copy"><b>工作區</b><small>工程工作台</small></span></a><a href="/activity"><span class="nav-icon">↻</span><span class="nav-copy"><b>活動紀錄</b><small>可追溯稽核帳本</small></span></a><a class="active" href="/progress"><span class="nav-icon">▥</span><span class="nav-copy"><b>進度中心</b><small>P0-P6 真實進度</small></span></a></nav></div><div class="nav-group"><div class="nav-label">系統</div><nav class="nav"><a href="/services"><span class="nav-icon">▣</span><span class="nav-copy"><b>服務</b><small>後端服務</small></span></a></nav></div><div class="spacer"></div><div class="sidebar-note">所有百分比來自本機 Runtime 與 Evidence；UNKNOWN 不會被猜成完成。</div></aside>
 <main class="main"><div class="content">
@@ -45,47 +45,64 @@
     <b>目前狀態：</b>P0–P6 全部 54 個項目個別都已通過，但系統故意不顯示「100%」——還缺一次真正的公司綜合驗收紀錄，不是東西沒做完。詳見下方「只差你」三步驟。
   </div>
 
-  <h3 style="font-size:14px;margin:18px 0 8px">本次工作階段完成事項（8 個 commit）</h3>
-  <div class="list">
-    <div class="row"><div><div class="row-name">修好 AERIS_START.ps1 全部中文顯示成亂碼的問題，並讓手機書籤自動更新</div><div class="row-meta">PowerShell 讀取無 BOM 的 UTF-8 檔案誤判編碼所致；同時讓啟動流程自動把新的 Cloudflare 隧道網址回報給公開頁面，不用再手動更新。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">進度中心不再把「全部通過、只差人工核准」誤顯示成「什麼都沒做」</div><div class="row-meta">找到並修好一個把兩種完全不同情況（證據不可信 vs. 只差最後簽核）混在一起處理的邏輯錯誤，這正是你多次回報「怎麼看起來都沒進度」的根因。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">啟動點檢腳本同一個問題一併修正</div><div class="row-meta">全部真的通過時，AERIS_START.ps1 不會再誤印「有項目未通過」的警告。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">新增 Order Validator：AERIS 與 Voice-Agent 前台的真正對接點</div><div class="row-meta">驗證 ORDER.md 格式與工程師編號真實性，已在上線當天處理過一筆 Voice-Agent 產生的真實案件。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">抓到並修好「100 位工程師技能全部失效」的真實回歸</div><div class="row-meta">一次程式更新讓全部 100 位角色先前封存的技能驗證證據悄悄失效而沒有警示；已重新驗證，93 位恢復 L2。</div></div><span class="pill green">完成</span></div>
-    <div class="row"><div><div class="row-name">新增「多步驟規劃層」：AI 能自己決定下一步該找哪位工程師接手</div><div class="row-meta">執行一個真實技能、看真實結果，再自主判斷下一步。真跑起來後修正了兩個設計錯誤（技能範圍選錯、提示詞過大讓模型失控），已用真實兩步驟鏈連續驗證三次成功，並補上指令列介面讓你自己能操作。</div></div><span class="pill green">完成</span></div>
+  <div class="sr-eyebrow">本次工作階段完成事項 · 8 個 commit</div>
+  <div class="sr-done">
+    <div class="sr-done-item"><div class="sr-check">✓</div><div><h4>修好 AERIS_START.ps1 全部中文顯示成亂碼的問題，並讓手機書籤自動更新</h4><p>PowerShell 讀取無 BOM 的 UTF-8 檔案誤判編碼所致；同時讓啟動流程自動把新的 Cloudflare 隧道網址回報給公開頁面，不用再手動更新。</p></div><span class="pill green">完成</span></div>
+    <div class="sr-done-item"><div class="sr-check">✓</div><div><h4>進度中心不再把「全部通過、只差人工核准」誤顯示成「什麼都沒做」</h4><p>找到並修好一個把兩種完全不同情況（證據不可信 vs. 只差最後簽核）混在一起處理的邏輯錯誤，這正是你多次回報「怎麼看起來都沒進度」的根因。</p></div><span class="pill green">完成</span></div>
+    <div class="sr-done-item"><div class="sr-check">✓</div><div><h4>啟動點檢腳本同一個問題一併修正</h4><p>全部真的通過時，AERIS_START.ps1 不會再誤印「有項目未通過」的警告。</p></div><span class="pill green">完成</span></div>
+    <div class="sr-done-item"><div class="sr-check">✓</div><div><h4>新增 Order Validator：AERIS 與 Voice-Agent 前台的真正對接點</h4><p>驗證 ORDER.md 格式與工程師編號真實性，已在上線當天處理過一筆 Voice-Agent 產生的真實案件。</p></div><span class="pill green">完成</span></div>
+    <div class="sr-done-item"><div class="sr-check">✓</div><div><h4>抓到並修好「100 位工程師技能全部失效」的真實回歸</h4><p>一次程式更新讓全部 100 位角色先前封存的技能驗證證據悄悄失效而沒有警示；已重新驗證，93 位恢復 L2。</p></div><span class="pill green">完成</span></div>
+    <div class="sr-done-item"><div class="sr-check">✓</div><div><h4>新增「多步驟規劃層」：AI 能自己決定下一步該找哪位工程師接手</h4><p>執行一個真實技能、看真實結果，再自主判斷下一步。真跑起來後修正了兩個設計錯誤（技能範圍選錯、提示詞過大讓模型失控），已用真實兩步驟鏈連續驗證三次成功，並補上指令列介面讓你自己能操作。</p></div><span class="pill green">完成</span></div>
   </div>
 
-  <h3 style="font-size:14px;margin:22px 0 8px">交辦中、尚未完成的兩個大工程</h3>
-  <div class="list">
-    <div class="row"><div><div class="row-name">① 技能深度：讓每位工程師更強、更不重複</div><div class="row-meta">已查證現況並找到 4 個有真實工程公式依據的候選角色（R074 材料、R039 麥克風孔道、R029 網罩、R041 風噪模型），規劃中。</div></div><span class="pill amber">進行中</span></div>
-    <div class="row"><div><div class="row-name">② 真實零件知識庫：讓 AI 能選出真實喇叭／麥克風／結構</div><div class="row-meta">已查證沒有現成真實資料庫；三條路徑（手動核實／即時上網／付費 API）都需要你先決定，尚未開始。</div></div><span class="pill rose">待決定</span></div>
+  <div class="sr-eyebrow" style="margin-top:22px">交辦中、尚未完成的兩個大工程</div>
+  <div class="sr-pending">
+    <div class="sr-pending-card">
+      <h4>① 技能深度：讓每位工程師更強、更不重複 <span class="pill amber">進行中</span></h4>
+      <p>已查證現況並找到 4 個有真實工程公式依據的候選角色，規劃中。</p>
+      <div class="sr-chip-row">
+        <span class="sr-chip">R074 材料 → Delany-Bazley 吸音模型</span>
+        <span class="sr-chip">R039 麥克風孔道 → Zwikker-Kosten 熱黏滯模型</span>
+        <span class="sr-chip">R029 網罩 → Ingard/Rayleigh 阻抗模型</span>
+        <span class="sr-chip">R041 風噪 → Corcos 紊流邊界層模型</span>
+      </div>
+    </div>
+    <div class="sr-pending-card">
+      <h4>② 真實零件知識庫：讓 AI 能選出真實喇叭／麥克風／結構 <span class="pill rose">待你決定</span></h4>
+      <p>已查證沒有現成真實資料庫；手動核實／即時上網／付費 API 三條路徑，都需要你先決定，尚未開始。</p>
+    </div>
   </div>
 
-  <h3 style="font-size:14px;margin:22px 0 8px">下一步：只差你 3 件事</h3>
-  <p style="color:var(--muted);font-size:13px;margin:0 0 12px">每一件都刻意設計成只能由你本人完成——不是偷懶，是規則上、安全上就不該由 AI 代勞。</p>
-  <div class="list">
-    <div class="row"><div>
-      <div class="row-name">① 產生你自己的簽章金鑰，並核准這次發布</div>
-      <div class="row-meta">AERIS 已經簽好自己的一半，只差你用自己的金鑰簽核准；AI 代簽等於自己審核自己，等於造假核准。</div>
-      <pre style="margin-top:8px;background:var(--surface-2,#101410);border:1px solid var(--border-strong,#263027);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:11.5px;overflow:auto;white-space:pre-wrap;word-break:break-word">python scripts\authority-keygen.py --subject-id "你的名字" --human
+  <div class="sr-eyebrow" style="margin-top:22px">下一步：只差你 3 件事</div>
+  <p style="color:var(--muted);font-size:12.5px;margin:0 0 12px">每一件都刻意設計成只能由你本人完成——不是偷懶，是規則上、安全上就不該由 AI 代勞。</p>
+  <div class="sr-steps">
+    <div class="sr-step">
+      <h4>產生你自己的簽章金鑰，並核准這次發布</h4>
+      <p class="sr-why">AERIS 已經簽好自己的一半，只差你用自己的金鑰簽核准；AI 代簽等於自己審核自己，等於造假核准。</p>
+      <pre>python scripts\authority-keygen.py --subject-id "你的名字" --human
 python scripts\prepare-release-attestation.py
 python scripts\mint-g5-approval.py --key-file .aeris\authority\你的名字.key --signer-id 你的名字 --task-id &lt;上一步印出的 task_id&gt;</pre>
-    </div></div>
-    <div class="row"><div>
-      <div class="row-name">② 做一次真正的離線斷網測試</div>
-      <div class="row-meta">需要你實際拔網路線或關閉 Wi-Fi；AI 不會自己動手斷網，怕影響到目前運作中的服務（例如手機遠端連線）。</div>
-      <pre style="margin-top:8px;background:var(--surface-2,#101410);border:1px solid var(--border-strong,#263027);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:11.5px;overflow:auto;white-space:pre-wrap;word-break:break-word">powershell -File scripts\local-acceptance.ps1 -HardOffline</pre>
-    </div></div>
-    <div class="row"><div>
-      <div class="row-name">③ 確認開機自動啟動機制目前狀態</div>
-      <div class="row-meta">上次確認紀錄已過期一週多；重新確認會碰觸 Windows「工作排程器」系統設定，屬於 AI 規則明確禁止自己執行的動作類別。</div>
-      <pre style="margin-top:8px;background:var(--surface-2,#101410);border:1px solid var(--border-strong,#263027);border-radius:8px;padding:10px 12px;font-family:Consolas,monospace;font-size:11.5px;overflow:auto;white-space:pre-wrap;word-break:break-word">powershell -File scripts\install-unattended-windows.ps1</pre>
-    </div></div>
+      <div class="sr-whynot">為什麼我不能代做：AI 簽了等於自己審核自己，等於造假核准。</div>
+    </div>
+    <div class="sr-step">
+      <h4>做一次真正的離線斷網測試</h4>
+      <p class="sr-why">需要你實際拔網路線或關閉 Wi-Fi；AI 不會自己動手斷網，怕影響到目前運作中的服務（例如手機遠端連線）。</p>
+      <pre>powershell -File scripts\local-acceptance.ps1 -HardOffline</pre>
+      <div class="sr-whynot">為什麼我不能代做：這需要你本人實際操作硬體/網路開關。</div>
+    </div>
+    <div class="sr-step">
+      <h4>確認開機自動啟動機制目前狀態</h4>
+      <p class="sr-why">上次確認紀錄已過期一週多；重新確認會碰觸 Windows「工作排程器」系統設定，屬於 AI 規則明確禁止自己執行的動作類別。</p>
+      <pre>powershell -File scripts\install-unattended-windows.ps1</pre>
+      <div class="sr-whynot">為什麼我不能代做：這會碰觸系統層級設定，屬於我的規則明確禁止自己執行的動作類別。</div>
+    </div>
   </div>
 
-  <h3 style="font-size:14px;margin:22px 0 8px">已知但與本次無關的問題</h3>
-  <div class="callout" style="border-color:var(--rose);background:var(--rose-soft,rgba(242,114,106,.08))">
-    <b>未修復・待你決定：</b>CI 設定檔呼叫的自動施工腳本 <code>AERIS_AUTOPILOT.ps1 -Mode auto -CISmoke</code> 參數對不上——這支腳本已被改成更強大的「持續自動施工迴圈」，很可能就是驅動這次工作階段本身的機制。沒有動手修，因為改錯可能影響到正在運作的自動化本身；需要你決定 CI 該改成呼叫哪一支腳本，還是乾脆不測這一步。
+  <div class="sr-eyebrow" style="margin-top:22px">已知但與本次無關的問題</div>
+  <div class="sr-issue">
+    <h4>未修復・待你決定：CI 設定檔呼叫的自動施工腳本，參數對不上</h4>
+    <p>雲端測試裡有一步呼叫 <code>AERIS_AUTOPILOT.ps1 -Mode auto -CISmoke</code>，但這支腳本已被改成更強大的「持續自動施工迴圈」，很可能就是驅動這次工作階段本身的機制。</p>
+    <p class="sr-muted">沒有動手修，因為改錯可能影響到正在運作的自動化本身；需要你決定 CI 該改成呼叫哪一支腳本，還是乾脆不測這一步。</p>
   </div>
 </section>
 
