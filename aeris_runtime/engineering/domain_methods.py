@@ -1416,6 +1416,212 @@ def fft_frequency_resolution_budget(params):
             'unresolved':['the windowing function actually applied, which changes effective resolution beyond this rectangular-window baseline','actual sample-rate drift during acquisition']}
 
 
+def patent_term_expiration(params):
+    """US utility patent term (35 U.S.C. 154(a)(2)): 20 years from the
+    earliest claimed filing date, excluding Patent Term Adjustment (PTA)
+    or Patent Term Extension (PTE) -- a bounded, disclosed simplification
+    (real expiration can differ from this baseline by any PTA/PTE granted
+    during prosecution). Standard, well-established statutory rule, used
+    here to check a claimed expiration date against this baseline
+    calculation before treating any patent as expired or in-force.
+    Hand-verified before use: filing 2010-05-15 + 20y -> 2030-05-15;
+    filing 2000-02-29 (leap day) + 19y -> 2019-02-28 (2019 is not a leap
+    year, so the nearest valid calendar date is used)."""
+    schema=json.loads((ROOT/'skills/patent-term-expiration-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact patent-term field contract required')
+    from datetime import date
+    filing_date_iso=params['filing_date_iso']
+    if not isinstance(filing_date_iso,str):
+        raise ValueError('filing_date_iso must be a string in YYYY-MM-DD format')
+    try:
+        year_str,month_str,day_str=filing_date_iso.split('-')
+        filing=date(int(year_str),int(month_str),int(day_str))
+    except (ValueError,TypeError):
+        raise ValueError('filing_date_iso must be a valid YYYY-MM-DD calendar date')
+    term_years=params['term_years']
+    rules=schema['properties']['term_years']
+    if isinstance(term_years,bool) or not isinstance(term_years,int) or term_years<rules['minimum'] or term_years>rules['maximum']:
+        raise ValueError('term_years must be a bounded positive integer')
+    claimed_expiration_iso=params['claimed_expiration_date_iso']
+    if not isinstance(claimed_expiration_iso,str):
+        raise ValueError('claimed_expiration_date_iso must be a string in YYYY-MM-DD format')
+    try:
+        cy,cm,cd=claimed_expiration_iso.split('-')
+        claimed_expiration=date(int(cy),int(cm),int(cd))
+    except (ValueError,TypeError):
+        raise ValueError('claimed_expiration_date_iso must be a valid YYYY-MM-DD calendar date')
+    try:
+        baseline_expiration=date(filing.year+term_years,filing.month,filing.day)
+    except ValueError:
+        baseline_expiration=date(filing.year+term_years,filing.month,28)
+    matches_baseline=bool(claimed_expiration==baseline_expiration)
+    difference_days=(claimed_expiration-baseline_expiration).days
+    checks=[{'id':'CLAIMED_EXPIRATION_MATCHES_BASELINE','actual':claimed_expiration.isoformat(),'limit':baseline_expiration.isoformat(),
+             'margin':difference_days,'operator':'==','passed':matches_baseline,
+             'on_failure':'RECONCILE_WITH_ANY_PATENT_TERM_ADJUSTMENT_OR_EXTENSION_GRANTED_DURING_PROSECUTION'}]
+    if not matches_baseline:
+        disposition='CLAIMED_EXPIRATION_DEVIATES_FROM_STATUTORY_BASELINE'
+        required_revisions=['VERIFY_WHETHER_PATENT_TERM_ADJUSTMENT_OR_EXTENSION_EXPLAINS_THE_DEVIATION']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'baseline_expiration_date_iso':baseline_expiration.isoformat(),'difference_days':difference_days,
+            'matches_baseline':matches_baseline,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['a granted Patent Term Adjustment (PTA) for USPTO prosecution delay legitimately extends the real expiration beyond this 20-year baseline',
+                'a granted Patent Term Extension (PTE) for regulatory review delay (e.g. FDA approval) legitimately extends the real expiration',
+                'a terminal disclaimer filed during prosecution legitimately shortens the real expiration below this baseline'],
+            'next_discriminating_experiment':'Check the USPTO patent term calculator or the official file history for any PTA/PTE grant or terminal disclaimer that would explain a deviation from this baseline' if not matches_baseline else 'Confirm no later terminal disclaimer or PTA/PTE grant changes the expiration after this baseline check',
+            'model_assumptions':['a standard 20-year utility patent term from the earliest claimed filing date','no Patent Term Adjustment, Patent Term Extension, or terminal disclaimer applied'],
+            'unresolved':['whether any PTA/PTE was granted during prosecution','whether a terminal disclaimer was filed','design vs. utility vs. plant patent term differences not modeled here']}
+
+
+def requirement_traceability_coverage(params):
+    """Requirement-to-test traceability coverage ratio:
+    coverage_percent=100*covered_requirements/total_requirements.
+    Standard, widely-used requirements-engineering metric (e.g. DO-178C-
+    style traceability audits), used to check whether a declared
+    coverage level meets a minimum acceptance threshold before treating
+    a requirement set as adequately verified. Hand-verified before use:
+    85/100 covered -> 85.0%; 40/100 covered -> 40.0%."""
+    schema=json.loads((ROOT/'skills/requirement-traceability-coverage-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact requirement-traceability field contract required')
+    rules=schema['properties']
+    total=params['total_requirements']
+    total_bound=rules['total_requirements']
+    if isinstance(total,bool) or not isinstance(total,int) or total<total_bound['minimum'] or total>total_bound['maximum']:
+        raise ValueError('total_requirements must be a bounded positive integer')
+    covered=params['covered_requirements']
+    if isinstance(covered,bool) or not isinstance(covered,int) or covered<0 or covered>total:
+        raise ValueError('covered_requirements must be a non-negative integer no greater than total_requirements')
+    min_coverage_percent=params['minimum_acceptable_coverage_percent']
+    min_bound=rules['minimum_acceptable_coverage_percent']
+    if isinstance(min_coverage_percent,bool) or not isinstance(min_coverage_percent,(float,int)) or not math.isfinite(min_coverage_percent) \
+            or min_coverage_percent<min_bound['minimum'] or min_coverage_percent>min_bound['maximum']:
+        raise ValueError('minimum_acceptable_coverage_percent must be a finite value between 0 and 100')
+    coverage_percent=100.0*covered/total
+    meets_minimum=bool(coverage_percent>=min_coverage_percent)
+    uncovered_count=total-covered
+    checks=[{'id':'COVERAGE_MEETS_MINIMUM','actual':coverage_percent,'limit':min_coverage_percent,
+             'margin':coverage_percent-min_coverage_percent,'operator':'>=','passed':meets_minimum,
+             'on_failure':'ADD_TEST_LINKS_FOR_UNCOVERED_REQUIREMENTS_BEFORE_RELEASE'}]
+    if not meets_minimum:
+        disposition='COVERAGE_BELOW_MINIMUM_ACCEPTABLE'
+        required_revisions=['ADD_TRACEABILITY_LINKS_FOR_THE_REMAINING_UNCOVERED_REQUIREMENTS']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'coverage_percent':coverage_percent,'uncovered_count':uncovered_count,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['a requirement is marked "covered" by a test link that exists but does not actually exercise the requirement (a superficial or stale link)',
+                'the total requirement count itself is incomplete (undocumented or recently added requirements not yet counted)',
+                'coverage counts a test that currently fails as "covered," conflating traceability existence with verification success'],
+            'next_discriminating_experiment':'Audit a sample of "covered" links to confirm the linked test actually exercises the claimed requirement and currently passes' if meets_minimum else 'Identify which uncovered requirements are highest-risk and prioritize adding their test links first',
+            'model_assumptions':['each declared traceability link genuinely and correctly connects a requirement to a test that exercises it','the total requirement count is complete and current','a passing test link, not just an existing one, is what "covered" means'],
+            'unresolved':['whether covered links are stale or superficial rather than genuinely verifying','completeness of the total requirement count','whether covered requirements have currently-passing (not just existing) test links']}
+
+
+def fmea_risk_priority_number(params):
+    """FMEA (Failure Mode and Effects Analysis) Risk Priority Number:
+    RPN=Severity*Occurrence*Detection, each rated on a declared 1-10
+    scale. Standard, foundational reliability-engineering method (AIAG-
+    VDA FMEA handbook), used here to rank a failure mode's priority and
+    check it against a declared maximum acceptable RPN before deciding
+    whether the DFMEA needs a corrective action. Hand-verified before
+    use: S=8,O=5,D=3 -> RPN=120; S=10,O=10,D=10 -> RPN=1000 (the
+    maximum possible on the standard 1-10 scale)."""
+    schema=json.loads((ROOT/'skills/fmea-risk-priority-number-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact FMEA RPN field contract required')
+    rules=schema['properties']
+    def _rating(name):
+        value=params[name]; bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,int) or value<bound['minimum'] or value>bound['maximum']:
+            raise ValueError(f'{name} must be a bounded integer rating from 1 to 10')
+        return value
+    severity=_rating('severity_rating')
+    occurrence=_rating('occurrence_rating')
+    detection=_rating('detection_rating')
+    max_acceptable_rpn=params['maximum_acceptable_rpn']
+    max_bound=rules['maximum_acceptable_rpn']
+    if isinstance(max_acceptable_rpn,bool) or not isinstance(max_acceptable_rpn,int) or max_acceptable_rpn<max_bound['minimum'] or max_acceptable_rpn>max_bound['maximum']:
+        raise ValueError('maximum_acceptable_rpn must be a bounded positive integer')
+    rpn=severity*occurrence*detection
+    within_acceptable_rpn=bool(rpn<=max_acceptable_rpn)
+    checks=[{'id':'RPN_WITHIN_ACCEPTABLE_LIMIT','actual':rpn,'limit':max_acceptable_rpn,'margin':max_acceptable_rpn-rpn,
+             'operator':'<=','passed':within_acceptable_rpn,'on_failure':'DEFINE_A_CORRECTIVE_ACTION_TO_REDUCE_SEVERITY_OCCURRENCE_OR_DETECTION_RATING'}]
+    if not within_acceptable_rpn:
+        disposition='RPN_EXCEEDS_ACCEPTABLE_LIMIT'
+        required_revisions=['DEFINE_AND_TRACK_A_CORRECTIVE_ACTION_BEFORE_CLOSING_THIS_FAILURE_MODE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'rpn':rpn,'within_acceptable_rpn':within_acceptable_rpn,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the three ratings were assigned by a single reviewer without cross-functional team consensus, a known source of RPN inconsistency',
+                'a high severity rating combined with low occurrence/detection can produce a deceptively low RPN despite representing an unacceptable safety risk (RPN alone can mask severity-critical failure modes)',
+                'the detection rating assumes the current control method\'s real-world effectiveness matches its rated value, which may not hold in practice'],
+            'next_discriminating_experiment':'Convene a cross-functional review to confirm consensus on all three ratings, and separately flag any high-severity failure mode regardless of its overall RPN' if within_acceptable_rpn else 'Identify which single rating (severity, occurrence, or detection) most cost-effectively reduces RPN if lowered by improved design or controls',
+            'model_assumptions':['each rating (severity, occurrence, detection) was assigned consistently against the same 1-10 scale definition','RPN alone is being used only as a sorting/prioritization aid, not the sole release-approval criterion'],
+            'unresolved':['whether ratings reflect cross-functional team consensus or a single assessor\'s judgment','whether a high-severity, low-RPN failure mode has been separately flagged regardless of overall RPN']}
+
+
+def uncertainty_effective_degrees_of_freedom(params):
+    """Welch-Satterthwaite effective degrees of freedom (GUM Annex G):
+    nu_eff = uc^4 / sum(ui^4/nu_i), combining each uncertainty
+    component's own degrees of freedom (from its sample size or Type B
+    characterization) into an effective degrees of freedom for the
+    combined uncertainty -- needed to look up the correct Student's-t
+    coverage factor for a target confidence level when sample sizes are
+    small, rather than assuming the large-sample k=2 approximation is
+    always valid. Standard GUM-Annex-G metrology method, distinct from
+    (and a refinement of) simple RSS combination. Hand-verified before
+    use: components (u=0.1,dof=10), (u=0.2,dof=5), (u=0.05,dof=60) ->
+    nu_eff=8.3496."""
+    schema=json.loads((ROOT/'skills/uncertainty-effective-degrees-of-freedom-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Welch-Satterthwaite field contract required')
+    components=params.get('uncertainty_components')
+    degrees_of_freedom=params.get('component_degrees_of_freedom')
+    rules=schema['properties']['uncertainty_components']
+    if not isinstance(components,list) or not rules['minItems']<=len(components)<=rules['maxItems']:
+        raise ValueError('bounded uncertainty-component list required')
+    if not isinstance(degrees_of_freedom,list) or len(degrees_of_freedom)!=len(components):
+        raise ValueError('component_degrees_of_freedom must align one-to-one with uncertainty_components')
+    for value in components:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<=0 or value>rules['items']['maximum']:
+            raise ValueError('each uncertainty component must be a finite, positive, bounded value')
+    dof_rules=schema['properties']['component_degrees_of_freedom']['items']
+    for value in degrees_of_freedom:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<=0 or value>dof_rules['maximum']:
+            raise ValueError('each component degrees of freedom must be a finite, positive, bounded value')
+    target_confidence_level=params['target_confidence_level']
+    confidence_bound=schema['properties']['target_confidence_level']
+    if isinstance(target_confidence_level,bool) or not isinstance(target_confidence_level,(float,int)) or not math.isfinite(target_confidence_level) \
+            or target_confidence_level<=confidence_bound['exclusiveMinimum'] or target_confidence_level>=confidence_bound['exclusiveMaximum']:
+        raise ValueError('target_confidence_level must be a finite value strictly between 0 and 1')
+    combined_standard_uncertainty=math.sqrt(sum(u*u for u in components))
+    denominator=sum((u**4)/dof for u,dof in zip(components,degrees_of_freedom))
+    effective_dof=(combined_standard_uncertainty**4)/denominator
+    small_sample_regime=bool(effective_dof<30)
+    checks=[{'id':'EFFECTIVE_DOF_COMPUTED','actual':effective_dof,'limit':30,'margin':30-effective_dof,
+             'operator':'<','passed':small_sample_regime,
+             'on_failure':'LARGE_EFFECTIVE_DOF_MEANS_THE_K_EQUALS_2_NORMAL_APPROXIMATION_IS_ALREADY_ADEQUATE'}]
+    if small_sample_regime:
+        disposition='SMALL_SAMPLE_REGIME_USE_STUDENT_T_COVERAGE_FACTOR'
+        required_revisions=['LOOK_UP_THE_STUDENTS_T_COVERAGE_FACTOR_AT_THIS_EFFECTIVE_DOF_INSTEAD_OF_ASSUMING_K_EQUALS_2']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'combined_standard_uncertainty':combined_standard_uncertainty,'effective_degrees_of_freedom':effective_dof,
+            'small_sample_regime':small_sample_regime,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['a component\'s declared degrees of freedom is itself a rough estimate (e.g. an assumed rather than measured Type B distribution shape), propagating that uncertainty into the effective dof',
+                'the components are not fully independent, an assumption Welch-Satterthwaite (like simple RSS) also requires',
+                'a declared very high degrees of freedom for a Type B component (e.g. assumed infinite) may overstate confidence in that component\'s characterization'],
+            'next_discriminating_experiment':'Look up the Student\'s-t coverage factor at this effective degrees of freedom and target confidence level, and compare the resulting expanded uncertainty against the simple k=2 approximation',
+            'model_assumptions':['each uncertainty component is independent','each component\'s declared degrees of freedom accurately reflects its own characterization (sample size for Type A, assumed distribution confidence for Type B)'],
+            'unresolved':['whether declared Type B degrees of freedom accurately reflect true characterization confidence','whether all components are genuinely independent']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -1493,6 +1699,10 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'bonferroni-significance-correction-baseline':bonferroni_significance_correction,
           'test-automation-runtime-budget-baseline':test_automation_runtime_budget,
           'fft-frequency-resolution-budget-baseline':fft_frequency_resolution_budget,
+          'patent-term-expiration-baseline':patent_term_expiration,
+          'requirement-traceability-coverage-baseline':requirement_traceability_coverage,
+          'fmea-risk-priority-number-baseline':fmea_risk_priority_number,
+          'uncertainty-effective-degrees-of-freedom-baseline':uncertainty_effective_degrees_of_freedom,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

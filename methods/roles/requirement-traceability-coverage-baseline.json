@@ -1,0 +1,14 @@
+{
+  "method_id":"requirement-traceability-coverage-baseline", "version":"1.0.0", "role":"R097",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:requirement_traceability_coverage",
+  "applicability":"Requirement-to-test traceability coverage percentage against a declared minimum acceptance threshold",
+  "equations":{
+    "coverage_percent":"100*covered_requirements/total_requirements"
+  },
+  "assumptions":["each declared traceability link genuinely and correctly connects a requirement to a test that exercises it","the total requirement count is complete and current"],
+  "excluded":["audit of link quality/staleness","verification that covered tests currently pass"],
+  "uncertainty":"Standard, widely-used requirements-engineering coverage metric; hand-verified before use (85/100 -> 85.0%; 40/100 -> 40.0%).",
+  "limits_policy":"Coverage below the declared minimum is flagged rather than accepted.",
+  "golden_tests":"tests/test_requirement_traceability_coverage_domain.py"
+}

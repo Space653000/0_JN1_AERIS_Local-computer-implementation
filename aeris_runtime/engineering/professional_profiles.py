@@ -350,6 +350,15 @@ ROLE_DOMAIN_CONTRACTS['R070'].append({
 ROLE_DOMAIN_CONTRACTS['R079'].append({
     'skill_id':'measurement-uncertainty-budget-baseline','method':'methods/roles/measurement-uncertainty-budget-baseline.json',
     'suite':'golden/roles/R079/measurement-uncertainty-budget.json','scope':'Bounded GUM-style combined and expanded measurement uncertainty from declared independent standard-uncertainty components; not an empirically validated gage R&R study.'})
+ROLE_DOMAIN_CONTRACTS['R079'].append({
+    'skill_id':'uncertainty-effective-degrees-of-freedom-baseline','method':'methods/roles/uncertainty-effective-degrees-of-freedom-baseline.json',
+    'suite':'golden/roles/R079/uncertainty-effective-degrees-of-freedom.json','scope':'Bounded Welch-Satterthwaite effective degrees of freedom (GUM Annex G) from declared uncertainty components and their own degrees of freedom; not a Student\'s-t coverage-factor lookup itself.'})
+ROLE_DOMAIN_CONTRACTS['R097'].append({
+    'skill_id':'requirement-traceability-coverage-baseline','method':'methods/roles/requirement-traceability-coverage-baseline.json',
+    'suite':'golden/roles/R097/requirement-traceability-coverage.json','scope':'Bounded requirement-to-test traceability coverage percentage against a declared minimum threshold; not an audit of link quality or test-pass status.'})
+ROLE_DOMAIN_CONTRACTS['R098'].append({
+    'skill_id':'fmea-risk-priority-number-baseline','method':'methods/roles/fmea-risk-priority-number-baseline.json',
+    'suite':'golden/roles/R098/fmea-risk-priority-number.json','scope':'Bounded FMEA Risk Priority Number (Severity x Occurrence x Detection) against a declared maximum acceptable value; not a cross-functional team consensus verification.'})
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',
@@ -523,6 +532,9 @@ ROLE_DOMAIN_CONTRACTS['R087']=[{
     'method':'methods/roles/patent-prior-art-screening-baseline.json',
     'suite':'golden/roles/R087/golden.json',
     'scope':'Declared novelty-verdict/claim-element-mapping and date-type-used flags against keyword-similarity-as-novelty and priority/publication-date-confusion antipatterns; no full claim chart or Human legal sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R087'].append({
+    'skill_id':'patent-term-expiration-baseline','method':'methods/roles/patent-term-expiration-baseline.json',
+    'suite':'golden/roles/R087/patent-term-expiration.json','scope':'Bounded 20-year statutory utility-patent-term baseline expiration date, checked against a claimed expiration; not a Patent Term Adjustment/Extension calculation or legal opinion.'})
 ROLE_DOMAIN_CONTRACTS['R088']=[{
     'skill_id':'research-hypothesis-screening-baseline',
     'method':'methods/roles/research-hypothesis-screening-baseline.json',

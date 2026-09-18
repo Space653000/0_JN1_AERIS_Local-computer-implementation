@@ -126,5 +126,9 @@
   "adc-quantization-snr-baseline": "依理想 N 位元 ADC 量化雜訊公式計算理論訊噪比（SNR）與有效位元數（ENOB），判定宣告的量測 SINAD 是否超過該位元深度的物理理論上限；不含雜訊塑形／過取樣轉換器模型",
   "bonferroni-significance-correction-baseline": "以 Bonferroni 多重比較校正，依宣告的假設檢定數量調整顯著水準門檻，判定宣稱的顯著 p 值在校正後是否仍然成立；不含完整文獻回顧",
   "test-automation-runtime-budget-baseline": "以中央極限定理，依宣告的單測試平均耗時與標準差、測試數量計算整套測試的總耗時分佈與統計依據的逾時建議值，並對照可接受的逾時上限判定是否可行；不含真實 CI 執行環境的實測分佈",
-  "fft-frequency-resolution-budget-baseline": "以 FFT 頻率解析度關係式（頻率解析度＝取樣率／取樣點數），檢查規劃中的儀器擷取記錄長度是否達到目標頻率解析度，於實際執行擷取序列前先行驗證；不含視窗函數效應或已執行的儀器量測"
+  "fft-frequency-resolution-budget-baseline": "以 FFT 頻率解析度關係式（頻率解析度＝取樣率／取樣點數），檢查規劃中的儀器擷取記錄長度是否達到目標頻率解析度，於實際執行擷取序列前先行驗證；不含視窗函數效應或已執行的儀器量測",
+  "patent-term-expiration-baseline": "依美國專利法 20 年專利權期限規定，從申請日推算基準到期日，並對照宣稱的到期日判定是否吻合；不含專利期限調整（PTA）／延展（PTE）計算或法律意見",
+  "requirement-traceability-coverage-baseline": "計算需求對測試的追溯覆蓋率百分比，並對照最低可接受覆蓋率門檻判定是否合格；不含追溯連結品質稽核或測試是否通過的驗證",
+  "fmea-risk-priority-number-baseline": "以 FMEA 風險優先數（RPN＝嚴重度×發生度×偵測度）判定失效模式是否超過宣告的可接受上限；不含跨部門團隊共識的驗證",
+  "uncertainty-effective-degrees-of-freedom-baseline": "以 Welch-Satterthwaite 公式（GUM 附錄 G）計算合成不確定度的有效自由度，判定是否應改用 t 分布涵蓋因子而非大樣本 k=2 近似值；不含 t 分布涵蓋因子本身的查表"
 }

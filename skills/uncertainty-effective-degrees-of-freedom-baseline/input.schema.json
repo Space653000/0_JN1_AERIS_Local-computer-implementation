@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["uncertainty_components", "component_degrees_of_freedom", "target_confidence_level"],
+  "properties": {
+    "uncertainty_components": {
+      "type": "array", "minItems": 1, "maxItems": 20,
+      "items": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000}
+    },
+    "component_degrees_of_freedom": {
+      "type": "array", "minItems": 1, "maxItems": 20,
+      "items": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000000}
+    },
+    "target_confidence_level": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1}
+  }
+}
