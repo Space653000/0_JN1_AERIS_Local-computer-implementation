@@ -1,0 +1,23 @@
+{
+  "suite_id":"R092-FFT-FREQUENCY-RESOLUTION-BUDGET-DOMAIN-V1", "role_id":"R092",
+  "skill_id":"fft-frequency-resolution-budget-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard, foundational DSP frequency-resolution relationship (delta_f=fs/N); independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded FFT frequency-resolution planning check; not an executed instrument measurement or windowing-aware model.",
+  "base_input":{
+    "sample_rate_hz":48000,"planned_record_samples":4096,"target_frequency_resolution_hz":20
+  },
+  "cases":[
+    {"id":"RESOLUTION-MEETS-LOOSE-TARGET","kind":"positive","question":"Does a 4096-sample record at 48kHz achieve at least 20 Hz resolution?","input_overrides":{},
+     "checks":[{"path":"actual_resolution_hz","expected":11.71875,"absolute_tolerance":0.000001},
+               {"path":"meets_target","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"RESOLUTION-FAILS-TIGHT-TARGET","kind":"boundary","question":"Does the same record fail to achieve a much tighter 1 Hz target resolution?","input_overrides":{"target_frequency_resolution_hz":1},
+     "checks":[{"path":"actual_resolution_hz","expected":11.71875,"absolute_tolerance":0.000001},
+               {"path":"minimum_record_length_for_target_s","expected":1.0,"absolute_tolerance":0.000001},
+               {"path":"meets_target","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"PLANNED_RECORD_TOO_SHORT_FOR_TARGET_RESOLUTION","absolute_tolerance":0}]},
+    {"id":"RESOLUTION-INVALID-SINGLE-SAMPLE-REJECTED","kind":"negative","question":"Must a record of only 1 sample be rejected as structurally insufficient for any FFT?","input_overrides":{"planned_record_samples":1},"expected_error":"ValueError"},
+    {"id":"RESOLUTION-DOUBLING-SAMPLES-HALVES-DELTA-F","kind":"counter_hypothesis","question":"Does doubling the planned record length halve the frequency resolution figure, confirming the model's own inverse relationship rather than an arbitrary scaling?","input_overrides":{"planned_record_samples":8192},
+     "checks":[{"path":"actual_resolution_hz","expected":5.859375,"absolute_tolerance":0.000001}]}
+  ]
+}

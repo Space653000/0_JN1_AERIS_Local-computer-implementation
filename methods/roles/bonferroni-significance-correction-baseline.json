@@ -1,0 +1,14 @@
+{
+  "method_id":"bonferroni-significance-correction-baseline", "version":"1.0.0", "role":"R088",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:bonferroni_significance_correction",
+  "applicability":"Bonferroni multiple-comparisons correction checking whether a claimed significant p-value survives correction for the declared number of hypotheses tested",
+  "equations":{
+    "adjusted_alpha":"alpha/n_hypotheses"
+  },
+  "assumptions":["the declared number of hypotheses tested reflects the true number of comparisons made","Bonferroni's conservative family-wise error control is the appropriate standard"],
+  "excluded":["less conservative correction procedures (Benjamini-Hochberg)","detection of undisclosed exploratory analyses"],
+  "uncertainty":"Standard textbook multiple-testing correction (Bonferroni 1936); hand-verified before use (alpha=0.05,n=1 -> 0.05; alpha=0.05,n=20 -> 0.0025).",
+  "limits_policy":"A p-value that fails the adjusted threshold is flagged as not significant after correction rather than accepted.",
+  "golden_tests":"tests/test_bonferroni_significance_correction_domain.py"
+}

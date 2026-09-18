@@ -416,6 +416,9 @@ ROLE_DOMAIN_CONTRACTS['R092']=[{
     'method':'methods/roles/instrument-sequence-safety-screening-baseline.json',
     'suite':'golden/roles/R092/golden.json',
     'scope':'Planned stimulus amplitude/duration/step-count against declared fixture safety limits, from supplied scalars; no physical instrument IO or Human execution authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R092'].append({
+    'skill_id':'fft-frequency-resolution-budget-baseline','method':'methods/roles/fft-frequency-resolution-budget-baseline.json',
+    'suite':'golden/roles/R092/fft-frequency-resolution-budget.json','scope':'Bounded FFT frequency-resolution planning check for a planned instrument acquisition record; not an executed instrument measurement or windowing-aware model.'})
 ROLE_DOMAIN_CONTRACTS['R095']=[{
     'skill_id':'incoming-lot-sampling-screening-baseline',
     'method':'methods/roles/incoming-lot-sampling-screening-baseline.json',
@@ -437,6 +440,9 @@ ROLE_DOMAIN_CONTRACTS['R091']=[{
     'method':'methods/roles/test-automation-result-screening-baseline.json',
     'suite':'golden/roles/R091/golden.json',
     'scope':'Declared attempt count, retry disclosure and explicit pass-signal flags against retry-hiding and process-alive-as-pass antipatterns; no full automation-run resource/timeout budget or physical release authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R091'].append({
+    'skill_id':'test-automation-runtime-budget-baseline','method':'methods/roles/test-automation-runtime-budget-baseline.json',
+    'suite':'golden/roles/R091/test-automation-runtime-budget.json','scope':'Bounded CLT-based aggregate test-suite runtime timeout budget from declared per-test mean/std duration; not a measured real-CI runtime distribution.'})
 ROLE_DOMAIN_CONTRACTS['R078']=[{
     'skill_id':'doe-monte-carlo-design-screening-baseline',
     'method':'methods/roles/doe-monte-carlo-design-screening-baseline.json',
@@ -522,6 +528,9 @@ ROLE_DOMAIN_CONTRACTS['R088']=[{
     'method':'methods/roles/research-hypothesis-screening-baseline.json',
     'suite':'golden/roles/R088/golden.json',
     'scope':'Declared replication-claim/independent-replication and raw-data-disclosure flags against citation-as-replication and hidden-raw-data antipatterns; no full literature review or Human peer-review sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R088'].append({
+    'skill_id':'bonferroni-significance-correction-baseline','method':'methods/roles/bonferroni-significance-correction-baseline.json',
+    'suite':'golden/roles/R088/bonferroni-significance-correction.json','scope':'Bounded Bonferroni multiple-comparisons correction checking whether a claimed significant p-value survives correction for the declared number of hypotheses tested; not a full literature review.'})
 
 
 def standards_families(value):

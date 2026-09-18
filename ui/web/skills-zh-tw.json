@@ -123,5 +123,8 @@
   "process-capability-cpk-baseline": "依宣告的規格上下限與製程平均值／標準差計算製程能力指數 Cpk，判定是否達到最低可接受值；不含管制圖對製程穩定性的實證驗證",
   "acceptance-sampling-oc-probability-baseline": "以二項式允收抽樣操作特性（OC）曲線，依樣本數、允收數與假設不良率計算允收機率，判定抽樣計畫在該不良率下是否可靠；不含完整生產者／消費者風險研究",
   "ucb1-next-experiment-bound-baseline": "以 UCB1 信賴上界演算法，依觀測平均報酬與試驗次數計算候選下一實驗的探索加分與總分，並以獨立評估的風險關卡布林值強制把關，分數不得凌駕風控；不含風險關卡本身的評估",
-  "adc-quantization-snr-baseline": "依理想 N 位元 ADC 量化雜訊公式計算理論訊噪比（SNR）與有效位元數（ENOB），判定宣告的量測 SINAD 是否超過該位元深度的物理理論上限；不含雜訊塑形／過取樣轉換器模型"
+  "adc-quantization-snr-baseline": "依理想 N 位元 ADC 量化雜訊公式計算理論訊噪比（SNR）與有效位元數（ENOB），判定宣告的量測 SINAD 是否超過該位元深度的物理理論上限；不含雜訊塑形／過取樣轉換器模型",
+  "bonferroni-significance-correction-baseline": "以 Bonferroni 多重比較校正，依宣告的假設檢定數量調整顯著水準門檻，判定宣稱的顯著 p 值在校正後是否仍然成立；不含完整文獻回顧",
+  "test-automation-runtime-budget-baseline": "以中央極限定理，依宣告的單測試平均耗時與標準差、測試數量計算整套測試的總耗時分佈與統計依據的逾時建議值，並對照可接受的逾時上限判定是否可行；不含真實 CI 執行環境的實測分佈",
+  "fft-frequency-resolution-budget-baseline": "以 FFT 頻率解析度關係式（頻率解析度＝取樣率／取樣點數），檢查規劃中的儀器擷取記錄長度是否達到目標頻率解析度，於實際執行擷取序列前先行驗證；不含視窗函數效應或已執行的儀器量測"
 }

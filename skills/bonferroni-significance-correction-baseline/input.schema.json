@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["family_wise_alpha", "number_of_hypotheses_tested", "claimed_p_value"],
+  "properties": {
+    "family_wise_alpha": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+    "number_of_hypotheses_tested": {"type": "integer", "minimum": 1, "maximum": 1000000},
+    "claimed_p_value": {"type": "number", "minimum": 0, "exclusiveMaximum": 1}
+  }
+}

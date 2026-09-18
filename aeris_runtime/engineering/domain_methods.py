@@ -1251,6 +1251,171 @@ def adc_quantization_snr(params):
             'unresolved':['whether the converter uses noise-shaping/oversampling not accounted for by this simple formula','whether the claimed SINAD reflects actual measured performance or a datasheet best case']}
 
 
+def bonferroni_significance_correction(params):
+    """Bonferroni multiple-comparisons correction: when testing
+    n_hypotheses simultaneously, the per-comparison significance
+    threshold must shrink to alpha_adjusted=alpha/n_hypotheses to hold
+    the family-wise error rate at the declared alpha. Standard textbook
+    multiple-testing correction (Bonferroni 1936), used here to check
+    whether a claimed significant result in acoustic research literature
+    actually survives correction for how many hypotheses/comparisons
+    were tested -- directly targets the 'citation count treated as
+    replication' / uncorrected-multiple-comparisons antipattern this
+    role's mission warns against. Hand-verified before use: alpha=0.05,
+    n=1 -> adjusted=0.05 (no correction needed); alpha=0.05, n=20 ->
+    adjusted=0.0025 (20x stricter)."""
+    schema=json.loads((ROOT/'skills/bonferroni-significance-correction-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Bonferroni-correction field contract required')
+    rules=schema['properties']
+    alpha=params['family_wise_alpha']
+    alpha_bound=rules['family_wise_alpha']
+    if isinstance(alpha,bool) or not isinstance(alpha,(float,int)) or not math.isfinite(alpha) \
+            or alpha<=alpha_bound['exclusiveMinimum'] or alpha>=alpha_bound['exclusiveMaximum']:
+        raise ValueError('family_wise_alpha must be a finite value strictly between 0 and 1')
+    n_hypotheses=params['number_of_hypotheses_tested']
+    n_bound=rules['number_of_hypotheses_tested']
+    if isinstance(n_hypotheses,bool) or not isinstance(n_hypotheses,int) or n_hypotheses<n_bound['minimum'] or n_hypotheses>n_bound['maximum']:
+        raise ValueError('number_of_hypotheses_tested must be a bounded positive integer')
+    claimed_p_value=params['claimed_p_value']
+    p_bound=rules['claimed_p_value']
+    if isinstance(claimed_p_value,bool) or not isinstance(claimed_p_value,(float,int)) or not math.isfinite(claimed_p_value) \
+            or claimed_p_value<p_bound['minimum'] or claimed_p_value>=p_bound['exclusiveMaximum']:
+        raise ValueError('claimed_p_value must be a finite value in [0,1)')
+    adjusted_alpha=alpha/n_hypotheses
+    survives_correction=bool(claimed_p_value<=adjusted_alpha)
+    checks=[{'id':'P_VALUE_SURVIVES_BONFERRONI_CORRECTION','actual':claimed_p_value,'limit':adjusted_alpha,
+             'margin':adjusted_alpha-claimed_p_value,'operator':'<=','passed':survives_correction,
+             'on_failure':'TREAT_THE_RESULT_AS_NOT_SIGNIFICANT_AFTER_CORRECTING_FOR_MULTIPLE_COMPARISONS'}]
+    if not survives_correction:
+        disposition='RESULT_NOT_SIGNIFICANT_AFTER_MULTIPLE_COMPARISONS_CORRECTION'
+        required_revisions=['DO_NOT_PRESENT_THIS_RESULT_AS_SIGNIFICANT_WITHOUT_ADDITIONAL_INDEPENDENT_REPLICATION']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'adjusted_alpha':adjusted_alpha,'survives_correction':survives_correction,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['Bonferroni is deliberately conservative; a result that fails it may still be a real effect that a less conservative correction (e.g. Benjamini-Hochberg) would retain',
+                'the declared number of hypotheses tested understates the true number of comparisons actually explored (e.g. undisclosed exploratory analyses)',
+                'the claimed p-value was computed from a test whose assumptions do not hold, making the correction moot regardless of the threshold'],
+            'next_discriminating_experiment':'Pre-register a single confirmatory hypothesis and test it on independent data to avoid the multiple-comparisons problem entirely' if survives_correction else 'Identify the full set of comparisons actually explored (including unreported ones) before deciding whether any correction is even meaningful',
+            'model_assumptions':['the declared number of hypotheses tested reflects the true number of comparisons made','Bonferroni\'s conservative family-wise error control is the appropriate standard for this claim'],
+            'unresolved':['whether the declared hypothesis count reflects all comparisons actually explored, including unreported ones','whether a less conservative correction procedure would be more appropriate for this specific claim']}
+
+
+def test_automation_runtime_budget(params):
+    """Central-limit-theorem aggregate test-suite runtime budget: for
+    n_tests independent tests each with mean duration mean_s and standard
+    deviation std_s, the SUM's mean is n*mean_s and its standard
+    deviation is std_s*sqrt(n) (variances of independent random
+    variables add). A k-sigma margin above the mean gives a statistically
+    grounded timeout, rather than an arbitrarily padded guess -- directly
+    fills the gap this role's own existing skill explicitly discloses
+    ('no full automation-run resource/timeout budget'). Hand-verified
+    before use: mean=2s, std=0.5s, n=100, k=3 -> total_mean=200s,
+    total_std=5s, timeout=215s."""
+    schema=json.loads((ROOT/'skills/test-automation-runtime-budget-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact test-automation runtime-budget field contract required')
+    rules=schema['properties']
+    mean_s=params['mean_test_duration_s']
+    mean_bound=rules['mean_test_duration_s']
+    if isinstance(mean_s,bool) or not isinstance(mean_s,(float,int)) or not math.isfinite(mean_s) \
+            or mean_s<=mean_bound['exclusiveMinimum'] or mean_s>mean_bound['maximum']:
+        raise ValueError('mean_test_duration_s must be a finite, positive, bounded value')
+    std_s=params['std_test_duration_s']
+    std_bound=rules['std_test_duration_s']
+    if isinstance(std_s,bool) or not isinstance(std_s,(float,int)) or not math.isfinite(std_s) \
+            or std_s<0 or std_s>std_bound['maximum']:
+        raise ValueError('std_test_duration_s must be a finite, non-negative, bounded value')
+    n_tests=params['number_of_tests']
+    n_bound=rules['number_of_tests']
+    if isinstance(n_tests,bool) or not isinstance(n_tests,int) or n_tests<n_bound['minimum'] or n_tests>n_bound['maximum']:
+        raise ValueError('number_of_tests must be a bounded positive integer')
+    sigma_margin=params['sigma_margin']
+    sigma_bound=rules['sigma_margin']
+    if isinstance(sigma_margin,bool) or not isinstance(sigma_margin,(float,int)) or not math.isfinite(sigma_margin) \
+            or sigma_margin<sigma_bound['minimum'] or sigma_margin>sigma_bound['maximum']:
+        raise ValueError('sigma_margin must be a finite, bounded value')
+    max_allowed_timeout_s=params['maximum_allowed_timeout_s']
+    max_bound=rules['maximum_allowed_timeout_s']
+    if isinstance(max_allowed_timeout_s,bool) or not isinstance(max_allowed_timeout_s,(float,int)) or not math.isfinite(max_allowed_timeout_s) \
+            or max_allowed_timeout_s<=max_bound['exclusiveMinimum'] or max_allowed_timeout_s>max_bound['maximum']:
+        raise ValueError('maximum_allowed_timeout_s must be a finite, positive, bounded value')
+    total_mean_s=mean_s*n_tests
+    total_std_s=std_s*math.sqrt(n_tests)
+    recommended_timeout_s=total_mean_s+sigma_margin*total_std_s
+    within_budget=bool(recommended_timeout_s<=max_allowed_timeout_s)
+    checks=[{'id':'RECOMMENDED_TIMEOUT_WITHIN_BUDGET','actual':recommended_timeout_s,'limit':max_allowed_timeout_s,
+             'margin':max_allowed_timeout_s-recommended_timeout_s,'operator':'<=','passed':within_budget,
+             'on_failure':'INCREASE_ALLOWED_TIMEOUT_OR_PARALLELIZE_OR_REDUCE_TEST_COUNT'}]
+    if not within_budget:
+        disposition='RECOMMENDED_TIMEOUT_EXCEEDS_ALLOWED_BUDGET'
+        required_revisions=['REDUCE_TEST_COUNT_OR_PARALLELIZE_OR_NEGOTIATE_A_LARGER_TIMEOUT_BUDGET']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'total_mean_s':total_mean_s,'total_std_s':total_std_s,'recommended_timeout_s':recommended_timeout_s,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['individual test durations are not actually independent (e.g. shared fixture warm-up or resource contention), so the sqrt(n) variance-summation assumption understates real variability',
+                'the declared mean/std were measured under different load conditions (e.g. an idle CI runner) than the real execution environment',
+                'test durations are heavy-tailed rather than approximately normal, so a k-sigma margin underestimates the true tail risk of an occasional very slow run'],
+            'next_discriminating_experiment':'Run the full suite repeatedly under real CI conditions and compare the actual total-runtime distribution against this predicted mean/std' if within_budget else 'Identify whether parallelizing tests or trimming the slowest tests more effectively restores the timeout budget',
+            'model_assumptions':['individual test durations are independent random variables','test durations are approximately normally distributed at the aggregate (sum) level, consistent with the Central Limit Theorem','declared mean/std reflect the real execution environment'],
+            'unresolved':['whether individual test durations are truly independent or share resource contention','whether test durations are heavy-tailed rather than approximately normal','whether declared mean/std reflect the actual CI execution environment']}
+
+
+def fft_frequency_resolution_budget(params):
+    """FFT/DFT frequency-resolution relationship: for a record of N
+    samples at sample rate fs, frequency bin resolution is
+    delta_f=fs/N, equivalently the minimum record length needed for a
+    target resolution is record_length_s=1/delta_f_target. Standard,
+    foundational DSP relationship (uncertainty-principle-consistent
+    time/frequency tradeoff), used here to verify a planned instrument
+    acquisition sequence's record length actually achieves its required
+    frequency resolution before running it -- a bounded, non-physical
+    acquisition-planning check distinct from executing the instrument
+    itself. Hand-verified before use: fs=48000 Hz, N=4096 ->
+    delta_f=11.71875 Hz; a 1 Hz target resolution needs a 1 s record."""
+    schema=json.loads((ROOT/'skills/fft-frequency-resolution-budget-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact FFT frequency-resolution field contract required')
+    rules=schema['properties']
+    sample_rate_hz=params['sample_rate_hz']
+    sr_bound=rules['sample_rate_hz']
+    if isinstance(sample_rate_hz,bool) or not isinstance(sample_rate_hz,(float,int)) or not math.isfinite(sample_rate_hz) \
+            or sample_rate_hz<=sr_bound['exclusiveMinimum'] or sample_rate_hz>sr_bound['maximum']:
+        raise ValueError('sample_rate_hz must be a finite, positive, bounded Hz value')
+    n_samples=params['planned_record_samples']
+    n_bound=rules['planned_record_samples']
+    if isinstance(n_samples,bool) or not isinstance(n_samples,int) or n_samples<n_bound['minimum'] or n_samples>n_bound['maximum']:
+        raise ValueError('planned_record_samples must be a bounded positive integer')
+    target_resolution_hz=params['target_frequency_resolution_hz']
+    target_bound=rules['target_frequency_resolution_hz']
+    if isinstance(target_resolution_hz,bool) or not isinstance(target_resolution_hz,(float,int)) or not math.isfinite(target_resolution_hz) \
+            or target_resolution_hz<=target_bound['exclusiveMinimum'] or target_resolution_hz>target_bound['maximum']:
+        raise ValueError('target_frequency_resolution_hz must be a finite, positive, bounded Hz value')
+    actual_resolution_hz=sample_rate_hz/n_samples
+    record_length_s=n_samples/sample_rate_hz
+    minimum_record_length_for_target_s=1.0/target_resolution_hz
+    meets_target=bool(actual_resolution_hz<=target_resolution_hz)
+    checks=[{'id':'RESOLUTION_MEETS_TARGET','actual':actual_resolution_hz,'limit':target_resolution_hz,
+             'margin':target_resolution_hz-actual_resolution_hz,'operator':'<=','passed':meets_target,
+             'on_failure':'INCREASE_RECORD_LENGTH_OR_SAMPLE_COUNT_TO_REACH_THE_TARGET_RESOLUTION'}]
+    if not meets_target:
+        disposition='PLANNED_RECORD_TOO_SHORT_FOR_TARGET_RESOLUTION'
+        required_revisions=['INCREASE_PLANNED_RECORD_SAMPLES_OR_RECORD_LENGTH_BEFORE_RUNNING_THE_SEQUENCE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'actual_resolution_hz':actual_resolution_hz,'record_length_s':record_length_s,
+            'minimum_record_length_for_target_s':minimum_record_length_for_target_s,'meets_target':meets_target,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['a window function (Hann, Blackman, etc.) will be applied before the FFT, which broadens the effective resolution beyond the plain rectangular-window fs/N figure',
+                'the instrument\'s actual sample rate under real acquisition conditions drifts from the declared nominal fs, changing the true achieved resolution',
+                'zero-padding will be used to interpolate the spectrum, which improves apparent bin spacing but does not improve true frequency resolution'],
+            'next_discriminating_experiment':'Acquire a real record at the planned settings and verify two closely-spaced known tones are actually resolved as separate peaks' if meets_target else 'Recompute the minimum record length needed for the target resolution and verify it fits the acquisition time budget',
+            'model_assumptions':['a plain rectangular window (no windowing function applied) for the resolution calculation','the actual sample rate matches the declared nominal value with negligible drift during acquisition'],
+            'unresolved':['the windowing function actually applied, which changes effective resolution beyond this rectangular-window baseline','actual sample-rate drift during acquisition']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -1325,6 +1490,9 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'acceptance-sampling-oc-probability-baseline':acceptance_sampling_oc_probability,
           'ucb1-next-experiment-bound-baseline':ucb1_next_experiment_bound,
           'adc-quantization-snr-baseline':adc_quantization_snr,
+          'bonferroni-significance-correction-baseline':bonferroni_significance_correction,
+          'test-automation-runtime-budget-baseline':test_automation_runtime_budget,
+          'fft-frequency-resolution-budget-baseline':fft_frequency_resolution_budget,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

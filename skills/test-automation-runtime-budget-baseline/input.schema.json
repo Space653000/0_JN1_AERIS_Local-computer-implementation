@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mean_test_duration_s", "std_test_duration_s", "number_of_tests", "sigma_margin", "maximum_allowed_timeout_s"],
+  "properties": {
+    "mean_test_duration_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 3600},
+    "std_test_duration_s": {"type": "number", "minimum": 0, "maximum": 3600},
+    "number_of_tests": {"type": "integer", "minimum": 1, "maximum": 1000000},
+    "sigma_margin": {"type": "number", "minimum": 0, "maximum": 10},
+    "maximum_allowed_timeout_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 604800}
+  }
+}

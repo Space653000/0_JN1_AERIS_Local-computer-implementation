@@ -1,0 +1,24 @@
+{
+  "suite_id":"R091-TEST-AUTOMATION-RUNTIME-BUDGET-DOMAIN-V1", "role_id":"R091",
+  "skill_id":"test-automation-runtime-budget-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Central Limit Theorem application (variance of independent random variables adds), standard textbook statistics; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded CLT-based aggregate test-suite runtime timeout budget; not a measured real-CI runtime distribution.",
+  "base_input":{
+    "mean_test_duration_s":2,"std_test_duration_s":0.5,"number_of_tests":100,"sigma_margin":3.0,"maximum_allowed_timeout_s":300
+  },
+  "cases":[
+    {"id":"RUNTIME-BUDGET-WITHIN-ALLOWED-TIMEOUT","kind":"positive","question":"Does the 3-sigma recommended timeout for 100 tests fit within a generous 300s budget?","input_overrides":{},
+     "checks":[{"path":"total_mean_s","expected":200,"absolute_tolerance":0.000001},
+               {"path":"total_std_s","expected":5.0,"absolute_tolerance":0.000001},
+               {"path":"recommended_timeout_s","expected":215.0,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"RUNTIME-BUDGET-EXCEEDS-TIGHT-TIMEOUT","kind":"boundary","question":"With the same suite but a tight 210s allowed budget, is the shortfall flagged?","input_overrides":{"maximum_allowed_timeout_s":210},
+     "checks":[{"path":"recommended_timeout_s","expected":215.0,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"RECOMMENDED_TIMEOUT_EXCEEDS_ALLOWED_BUDGET","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"RUNTIME-BUDGET-INVALID-ZERO-MEAN-REJECTED","kind":"negative","question":"Must a non-positive mean test duration be rejected rather than producing a meaningless zero budget?","input_overrides":{"mean_test_duration_s":0},"expected_error":"ValueError"},
+    {"id":"RUNTIME-BUDGET-STD-SCALES-WITH-SQRT-N","kind":"counter_hypothesis","question":"When the test count quadruples from 100 to 400, does the aggregate standard deviation exactly double (sqrt(4)=2), confirming the model's own CLT scaling law rather than a linear or unscaled result?","input_overrides":{"number_of_tests":400},
+     "checks":[{"path":"total_std_s","expected":10.0,"absolute_tolerance":0.000001},
+               {"path":"total_mean_s","expected":800,"absolute_tolerance":0.000001}]}
+  ]
+}
