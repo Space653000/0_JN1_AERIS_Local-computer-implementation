@@ -1,0 +1,15 @@
+{
+  "method_id":"erb-auditory-filter-bandwidth-baseline", "version":"1.0.0", "role":"R069",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:erb_auditory_filter_bandwidth",
+  "applicability":"Equivalent Rectangular Bandwidth auditory-filter width and ERB-rate scale position for a claimed critical bandwidth at a given center frequency",
+  "equations":{
+    "erb_hz":"24.7*(4.37*f_kHz+1)",
+    "erb_rate":"21.4*log10(4.37*f_kHz+1)"
+  },
+  "assumptions":["the auditory filter is well-approximated by the Glasberg & Moore (1990) roex-based ERB fit","the claimed bandwidth was derived under conditions comparable to the standard notched-noise paradigm"],
+  "excluded":["listener subjective preference, annoyance or discomfort judgments","individual listener variability in auditory filter width"],
+  "uncertainty":"Standard, widely-cited psychoacoustic model; hand-verified before use (ERB(1000 Hz)=132.639 Hz, matching the commonly cited ~132 Hz figure). Fitted range documented as roughly 100 Hz-10 kHz.",
+  "limits_policy":"Model applicability flagged outside the documented 100 Hz-10 kHz fitted range rather than silently trusted.",
+  "golden_tests":"tests/test_erb_auditory_filter_domain.py"
+}

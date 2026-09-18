@@ -1,0 +1,24 @@
+{
+  "suite_id":"R069-ERB-AUDITORY-FILTER-DOMAIN-V1", "role_id":"R069",
+  "skill_id":"erb-auditory-filter-bandwidth-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Glasberg & Moore (1990) ERB auditory-filter model, independently hand-verified before implementation against the commonly cited ~132 Hz ERB figure at 1 kHz; not copied from any shared Skill fixture.",
+  "scope":"Bounded auditory-filter (critical) bandwidth prediction checked against a declared claim; not a listener preference, discomfort or annoyance judgment.",
+  "base_input":{
+    "center_frequency_hz":1000.0,"claimed_erb_hz":132.639,"max_acceptable_error_hz":1.0
+  },
+  "cases":[
+    {"id":"ERB-NOMINAL-1KHZ","kind":"positive","question":"Does a claimed critical bandwidth matching the ERB model at 1 kHz pass within tight tolerance?","input_overrides":{},
+     "checks":[{"path":"predicted_erb_hz","expected":132.639,"absolute_tolerance":0.000001},
+               {"path":"predicted_erb_rate","expected":15.621449713970488,"absolute_tolerance":0.000001},
+               {"path":"model_applicable","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ERB-OUTSIDE-FITTED-RANGE","kind":"boundary","question":"Below the model's documented 100 Hz-10 kHz fitted range, is the result flagged as outside applicability rather than silently trusted?","input_overrides":{"center_frequency_hz":50.0,"claimed_erb_hz":40.0,"max_acceptable_error_hz":5.0},
+     "checks":[{"path":"model_applicable","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"MODEL_OUTSIDE_FITTED_RANGE","absolute_tolerance":0}]},
+    {"id":"ERB-INVALID-NONPOSITIVE-FREQUENCY-REJECTED","kind":"negative","question":"Must a non-positive center frequency be rejected rather than silently used?","input_overrides":{"center_frequency_hz":0.0},"expected_error":"ValueError"},
+    {"id":"ERB-CLAIMED-VALUE-DEVIATES","kind":"counter_hypothesis","question":"When a claimed bandwidth deviates well beyond tolerance from the ERB prediction, is that flagged rather than silently accepted as a real listener effect?","input_overrides":{"claimed_erb_hz":200.0,"max_acceptable_error_hz":5.0},
+     "checks":[{"path":"error_hz","expected":67.36099999999999,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"CLAIMED_BANDWIDTH_DEVIATES_FROM_ERB_MODEL","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]}
+  ]
+}

@@ -332,6 +332,12 @@ ROLE_DOMAIN_CONTRACTS['R077'].append({
 ROLE_DOMAIN_CONTRACTS['R082'].append({
     'skill_id':'audio-clock-drift-buffer-margin-baseline','method':'methods/roles/audio-clock-drift-buffer-margin-baseline.json',
     'suite':'golden/roles/R082/clock-drift.json','scope':'Bounded digital-audio clock-drift buffer-margin check between two clock domains from declared ppm frequency errors; not measured real-hardware clock behavior or continuous-ASRC verification.'})
+ROLE_DOMAIN_CONTRACTS['R069'].append({
+    'skill_id':'erb-auditory-filter-bandwidth-baseline','method':'methods/roles/erb-auditory-filter-bandwidth-baseline.json',
+    'suite':'golden/roles/R069/erb-auditory-filter.json','scope':'Bounded Equivalent Rectangular Bandwidth (Glasberg & Moore 1990) auditory-filter prediction checked against a declared critical-bandwidth claim; not a listener preference or discomfort judgment.'})
+ROLE_DOMAIN_CONTRACTS['R076'].append({
+    'skill_id':'thermal-noise-floor-baseline','method':'methods/roles/thermal-noise-floor-baseline.json',
+    'suite':'golden/roles/R076/thermal-noise-floor.json','scope':'Bounded Johnson-Nyquist thermal noise floor from declared resistance/temperature/bandwidth, checked as a physical lower bound against a claimed measured noise floor; not a full EMI/ground-loop diagnosis.'})
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',

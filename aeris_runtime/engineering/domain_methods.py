@@ -455,6 +455,129 @@ def audio_clock_drift_buffer_margin(params):
                           'temperature or aging dependence of the actual clock error']}
 
 
+def erb_auditory_filter_bandwidth(params):
+    """Equivalent Rectangular Bandwidth (ERB) auditory filter model,
+    Glasberg & Moore (1990): ERB(f)=24.7*(4.37*f_kHz+1); ERB-rate (the
+    Cams/ERB-number place on the auditory frequency scale)
+    =21.4*log10(4.37*f_kHz+1). A standard, widely-cited psychoacoustic
+    model of auditory-filter bandwidth, distinct from a listener's
+    subjective loudness/annoyance preference -- checked here against a
+    declared measured or claimed critical-bandwidth value. Hand-verified
+    before use: ERB(1000 Hz)=132.639 Hz, matching the commonly cited
+    ~132 Hz figure at 1 kHz in the auditory-modeling literature. Fitted
+    range is documented as roughly 100 Hz-10 kHz; outside that the model
+    is flagged rather than silently trusted."""
+    schema=json.loads((ROOT/'skills/erb-auditory-filter-bandwidth-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact ERB SI-unit field contract required')
+    rules=schema['properties']
+    freq=params['center_frequency_hz']
+    freq_bound=rules['center_frequency_hz']
+    if isinstance(freq,bool) or not isinstance(freq,(float,int)) or not math.isfinite(freq) \
+            or freq<=freq_bound['exclusiveMinimum'] or freq>freq_bound['maximum']:
+        raise ValueError('center_frequency_hz must be a finite, positive, bounded Hz value')
+    claimed=params['claimed_erb_hz']
+    claimed_bound=rules['claimed_erb_hz']
+    if isinstance(claimed,bool) or not isinstance(claimed,(float,int)) or not math.isfinite(claimed) \
+            or claimed<=claimed_bound['exclusiveMinimum'] or claimed>claimed_bound['maximum']:
+        raise ValueError('claimed_erb_hz must be a finite, positive, bounded Hz value')
+    max_error=params['max_acceptable_error_hz']
+    max_error_bound=rules['max_acceptable_error_hz']
+    if isinstance(max_error,bool) or not isinstance(max_error,(float,int)) or not math.isfinite(max_error) \
+            or max_error<=max_error_bound['exclusiveMinimum'] or max_error>max_error_bound['maximum']:
+        raise ValueError('max_acceptable_error_hz must be a finite, positive, bounded Hz value')
+    freq_khz=freq/1000.0
+    predicted_erb_hz=24.7*(4.37*freq_khz+1)
+    predicted_erb_rate=21.4*math.log10(4.37*freq_khz+1)
+    model_applicable=bool(100.0<=freq<=10000.0)
+    error_hz=abs(claimed-predicted_erb_hz)
+    within_tolerance=bool(error_hz<=max_error)
+    checks=[{'id':'ERB_MATCHES_MODEL','actual':error_hz,'limit':max_error,'margin':max_error-error_hz,
+             'operator':'<=','passed':within_tolerance,'on_failure':'RECONCILE_CLAIMED_CRITICAL_BANDWIDTH_WITH_ERB_MODEL_OR_LISTENER_TEST'}]
+    if not model_applicable:
+        disposition='MODEL_OUTSIDE_FITTED_RANGE'
+        required_revisions=['CONFIRM_ERB_MODEL_APPLICABILITY_OUTSIDE_100HZ_10KHZ_BEFORE_RELYING_ON_IT']
+    elif not within_tolerance:
+        disposition='CLAIMED_BANDWIDTH_DEVIATES_FROM_ERB_MODEL'
+        required_revisions=['VERIFY_WHETHER_DEVIATION_REFLECTS_A_REAL_LISTENER_EFFECT_OR_A_MEASUREMENT_ERROR']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'predicted_erb_hz':predicted_erb_hz,'predicted_erb_rate':predicted_erb_rate,
+            'model_applicable':model_applicable,'error_hz':error_hz,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the claimed bandwidth reflects a genuine measured psychoacoustic effect (e.g. off-frequency listening or individual variability) rather than an error',
+                'the reference stimulus or masking paradigm used to derive the claimed value differs from the notched-noise paradigm the ERB model was fitted on',
+                'the claimed value is itself a rounded or approximated figure rather than a directly measured critical bandwidth'],
+            'next_discriminating_experiment':'Re-derive the critical bandwidth from a notched-noise masking measurement at this exact center frequency and compare directly to the ERB prediction' if not within_tolerance else 'Repeat at a second, well-separated frequency to confirm the model tracks bandwidth growth correctly across frequency, not just at one point',
+            'model_assumptions':['the auditory filter is well-approximated by the Glasberg & Moore (1990) roex-based ERB fit','the claimed bandwidth was derived under conditions comparable to the standard notched-noise paradigm'],
+            'unresolved':['individual listener variability in auditory filter width','whether the claimed value came from a calibrated psychoacoustic measurement or a secondary/approximate source']}
+
+
+def thermal_noise_floor(params):
+    """Johnson-Nyquist thermal noise voltage: Vrms=sqrt(4*k*T*R*BW),
+    k=1.380649e-23 J/K (exact SI-defined Boltzmann constant). Standard
+    textbook physics, not a fitted or acoustic-specific model -- gives the
+    theoretical noise-floor MINIMUM a real resistor/bandwidth/temperature
+    combination can ever produce, which any claimed measured system noise
+    floor must sit at or above; a claim below it is a physical
+    impossibility (wrong reference, wrong bandwidth, or a measurement
+    error), not evidence of an unusually quiet circuit. The gap between a
+    claimed floor and this minimum is the headroom available for real
+    EMI/ground/clock coupling before it would show up above the
+    irreducible thermal floor. Hand-verified before use: R=10 kOhm,
+    T=298.15 K, BW=20 kHz -> Vrms=1814.7 nV, matching the commonly cited
+    ~1.8 uV RMS figure for a 10 kOhm resistor over the audio band."""
+    schema=json.loads((ROOT/'skills/thermal-noise-floor-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact thermal-noise SI-unit field contract required')
+    rules=schema['properties']
+    resistance=params['resistance_ohm']
+    resistance_bound=rules['resistance_ohm']
+    if isinstance(resistance,bool) or not isinstance(resistance,(float,int)) or not math.isfinite(resistance) \
+            or resistance<=resistance_bound['exclusiveMinimum'] or resistance>resistance_bound['maximum']:
+        raise ValueError('resistance_ohm must be a finite, positive, bounded Ohm value')
+    temperature_c=params['temperature_c']
+    temperature_bound=rules['temperature_c']
+    if isinstance(temperature_c,bool) or not isinstance(temperature_c,(float,int)) or not math.isfinite(temperature_c) \
+            or temperature_c<temperature_bound['minimum'] or temperature_c>temperature_bound['maximum']:
+        raise ValueError('temperature_c must be a finite, bounded Celsius value')
+    bandwidth=params['bandwidth_hz']
+    bandwidth_bound=rules['bandwidth_hz']
+    if isinstance(bandwidth,bool) or not isinstance(bandwidth,(float,int)) or not math.isfinite(bandwidth) \
+            or bandwidth<=bandwidth_bound['exclusiveMinimum'] or bandwidth>bandwidth_bound['maximum']:
+        raise ValueError('bandwidth_hz must be a finite, positive, bounded Hz value')
+    claimed_v=params['claimed_noise_floor_v_rms']
+    claimed_bound=rules['claimed_noise_floor_v_rms']
+    if isinstance(claimed_v,bool) or not isinstance(claimed_v,(float,int)) or not math.isfinite(claimed_v) \
+            or claimed_v<=claimed_bound['exclusiveMinimum'] or claimed_v>claimed_bound['maximum']:
+        raise ValueError('claimed_noise_floor_v_rms must be a finite, positive, bounded volt value')
+    k=1.380649e-23
+    temperature_k=temperature_c+273.15
+    thermal_floor_v_rms=math.sqrt(4*k*temperature_k*resistance*bandwidth)
+    physically_consistent=bool(claimed_v>=thermal_floor_v_rms)
+    excess_v_rms=claimed_v-thermal_floor_v_rms
+    checks=[{'id':'CLAIMED_FLOOR_AT_OR_ABOVE_THERMAL_MINIMUM','actual':claimed_v,'limit':thermal_floor_v_rms,
+             'margin':excess_v_rms,'operator':'>=','passed':physically_consistent,
+             'on_failure':'CHECK_REFERENCE_BANDWIDTH_TEMPERATURE_OR_RESISTANCE_USED_FOR_THE_CLAIMED_FIGURE'}]
+    if not physically_consistent:
+        disposition='CLAIMED_NOISE_BELOW_THERMAL_FLOOR_IMPOSSIBLE'
+        required_revisions=['RECONCILE_CLAIMED_NOISE_FLOOR_WITH_THE_DECLARED_RESISTANCE_TEMPERATURE_AND_BANDWIDTH_BEFORE_TRUSTING_IT']
+    elif excess_v_rms/thermal_floor_v_rms>1.0:
+        disposition='EXCESS_NOISE_LIKELY_NON_THERMAL_SOURCE'
+        required_revisions=['INVESTIGATE_EMI_GROUND_LOOP_OR_CLOCK_COUPLING_AS_THE_DOMINANT_NOISE_CONTRIBUTOR']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'thermal_floor_v_rms':thermal_floor_v_rms,'excess_v_rms':excess_v_rms,
+            'physically_consistent':physically_consistent,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the claimed figure uses a different reference bandwidth or termination than declared here, making a direct comparison invalid',
+                'the excess noise above thermal is dominated by active-component (op-amp/ADC) noise rather than EMI or ground coupling',
+                'the claimed value was measured with an unweighted or differently-weighted bandwidth (e.g. A-weighted) than the flat bandwidth assumed here'],
+            'next_discriminating_experiment':'Terminate the input with the same resistance in a shielded enclosure and re-measure the noise floor in isolation from the rest of the signal chain to separate thermal from EMI/ground contributions' if physically_consistent else 'Re-derive the claimed noise figure from its original measurement bandwidth and reference before comparing again',
+            'model_assumptions':['ideal resistor thermal noise only (no excess/flicker noise from real components)','a flat (unweighted) measurement bandwidth matching the declared value','room-temperature approximation is not assumed -- the declared temperature is used directly'],
+            'unresolved':['contribution of active-component noise (op-amp, ADC) beyond the passive thermal floor','whether the claimed measurement bandwidth and weighting match the declared flat bandwidth']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -514,6 +637,8 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'binaural-itd-spherical-head-baseline':binaural_itd_spherical_head,
           'tolerance-stack-rss-baseline':tolerance_stack_rss,
           'audio-clock-drift-buffer-margin-baseline':audio_clock_drift_buffer_margin,
+          'erb-auditory-filter-bandwidth-baseline':erb_auditory_filter_bandwidth,
+          'thermal-noise-floor-baseline':thermal_noise_floor,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

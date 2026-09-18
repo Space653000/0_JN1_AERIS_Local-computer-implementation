@@ -108,5 +108,7 @@
   "sensor-fusion-doa-imu-baseline": "以逆變異數加權與圓周平均，融合 IMU 頭部方位與聲學到達方向（DOA）估測值，並標示接近 180 度反向時可能的座標系翻轉；不含實體台架驗證的感測器融合",
   "binaural-itd-spherical-head-baseline": "以 Woodworth（1938）球頭模型，依方位角預測雙耳時間差（ITD），並對照宣告值判定是否落在容許誤差內；不含個人化 HRTF 量測",
   "tolerance-stack-rss-baseline": "計算獨立公差貢獻者的最壞情況（算術和）與均方根（RSS）尺寸公差堆疊，並標示「最壞情況未過但 RSS 通過」這類真實的中間結果；不含量測製程能力（Cpk）或實體組裝樣本驗證",
-  "audio-clock-drift-buffer-margin-baseline": "以 ppm（百萬分之一）時脈誤差定義，計算兩個音訊時脈網域之間的累積取樣飄移，並對照緩衝區半滿容限判定是否會在下次重新同步前溢位／欠位；不含實體硬體時脈量測"
+  "audio-clock-drift-buffer-margin-baseline": "以 ppm（百萬分之一）時脈誤差定義，計算兩個音訊時脈網域之間的累積取樣飄移，並對照緩衝區半滿容限判定是否會在下次重新同步前溢位／欠位；不含實體硬體時脈量測",
+  "erb-auditory-filter-bandwidth-baseline": "以 Glasberg 與 Moore（1990）等效矩形頻寬（ERB）模型，依中心頻率預測聽覺濾波器頻寬與 ERB-rate 位置，並對照宣告的臨界頻寬值判定是否吻合；不含聽者主觀偏好或不適感判斷",
+  "thermal-noise-floor-baseline": "以強森-奈奎斯特（Johnson-Nyquist）熱雜訊公式，依電阻、溫度與量測頻寬計算理論雜訊底噪下限，並判定宣告的量測雜訊值是否符合物理下限；不含完整電磁干擾／接地迴路根因診斷"
 }
