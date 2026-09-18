@@ -1,0 +1,15 @@
+{
+  "method_id":"measurement-uncertainty-budget-baseline", "version":"1.0.0", "role":"R079",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:measurement_uncertainty_budget",
+  "applicability":"GUM-style combined and expanded measurement uncertainty from declared independent standard-uncertainty components",
+  "equations":{
+    "combined_standard_uncertainty":"sqrt(sum(ui^2))",
+    "expanded_uncertainty":"k*uc"
+  },
+  "assumptions":["each declared uncertainty component is already expressed as a standard uncertainty, not already expanded","the components are independent random variables combined in quadrature","a coverage factor of k=2 approximates 95% coverage for a normal distribution"],
+  "excluded":["Type A vs Type B decomposition","empirical gage R&R or interlaboratory comparison validation"],
+  "uncertainty":"Standard textbook metrology (GUM); hand-verified before use (components [0.1,0.2,0.05], k=2 -> uc=0.229128..., U=0.458257...).",
+  "limits_policy":"Expanded uncertainty exceeding the declared budget is flagged rather than accepted.",
+  "golden_tests":"tests/test_measurement_uncertainty_budget_domain.py"
+}

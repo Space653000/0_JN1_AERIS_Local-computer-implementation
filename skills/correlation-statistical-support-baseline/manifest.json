@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "correlation-statistical-support-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/correlation-statistical-support-baseline.json",
+  "input_schema": "skills/correlation-statistical-support-baseline/input.schema.json",
+  "output_schema": "skills/correlation-statistical-support-baseline/output.schema.json",
+  "role_mappings": ["R070"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded Fisher r-to-z confidence interval checking whether a claimed metric-to-MOS correlation is statistically distinguishable from zero at the declared sample size; not a computed MOS prediction itself"
+}

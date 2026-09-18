@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["encode_delay_ms", "packetization_delay_ms", "network_one_way_delay_ms", "jitter_buffer_delay_ms", "decode_delay_ms", "output_buffer_delay_ms"],
+  "properties": {
+    "encode_delay_ms": {"type": "number", "minimum": 0, "maximum": 1000},
+    "packetization_delay_ms": {"type": "number", "minimum": 0, "maximum": 1000},
+    "network_one_way_delay_ms": {"type": "number", "minimum": 0, "maximum": 2000},
+    "jitter_buffer_delay_ms": {"type": "number", "minimum": 0, "maximum": 1000},
+    "decode_delay_ms": {"type": "number", "minimum": 0, "maximum": 1000},
+    "output_buffer_delay_ms": {"type": "number", "minimum": 0, "maximum": 1000}
+  }
+}

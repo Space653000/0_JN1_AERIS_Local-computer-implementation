@@ -578,6 +578,212 @@ def thermal_noise_floor(params):
             'unresolved':['contribution of active-component noise (op-amp, ADC) beyond the passive thermal floor','whether the claimed measurement bandwidth and weighting match the declared flat bandwidth']}
 
 
+def correlation_statistical_support(params):
+    """Fisher r-to-z transformation confidence interval for a claimed
+    Pearson correlation between an objective metric and subjective MOS:
+    z=atanh(r), SE_z=1/sqrt(n-3), 95% CI in z-space then transformed back
+    via tanh. Standard textbook inferential statistics (Fisher 1921), used
+    here to check whether a claimed metric-to-MOS correlation is even
+    statistically distinguishable from zero at the declared sample size --
+    directly on this role's mission of avoiding unsupported MOS-prediction
+    claims, without computing MOS itself. Hand-verified before use: r=0.85,
+    n=30 gives a 95% CI of about (0.706, 0.927) (excludes zero, supported);
+    r=0.3, n=10 gives about (-0.406, 0.782) (includes zero, NOT
+    statistically supported at that sample size)."""
+    schema=json.loads((ROOT/'skills/correlation-statistical-support-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact correlation-support field contract required')
+    rules=schema['properties']
+    r=params['claimed_correlation_r']
+    r_bound=rules['claimed_correlation_r']
+    if isinstance(r,bool) or not isinstance(r,(float,int)) or not math.isfinite(r) \
+            or r<=r_bound['exclusiveMinimum'] or r>=r_bound['exclusiveMaximum']:
+        raise ValueError('claimed_correlation_r must be a finite value strictly between -1 and 1')
+    n=params['sample_size']
+    n_bound=rules['sample_size']
+    if isinstance(n,bool) or not isinstance(n,int) or n<n_bound['minimum'] or n>n_bound['maximum']:
+        raise ValueError('sample_size must be a bounded integer of at least 4')
+    z_crit=1.959963984540054
+    z=math.atanh(r)
+    se_z=1/math.sqrt(n-3)
+    lo_z=z-z_crit*se_z; hi_z=z+z_crit*se_z
+    lo_r=math.tanh(lo_z); hi_r=math.tanh(hi_z)
+    statistically_supported=bool(lo_r>0 or hi_r<0)
+    checks=[{'id':'CONFIDENCE_INTERVAL_EXCLUDES_ZERO','actual':r,'limit':0.0,'margin':min(abs(lo_r),abs(hi_r)) if statistically_supported else 0.0,
+             'operator':'!=','passed':statistically_supported,'on_failure':'INCREASE_SAMPLE_SIZE_OR_TREAT_CORRELATION_AS_UNSUPPORTED'}]
+    if not statistically_supported:
+        disposition='CORRELATION_NOT_STATISTICALLY_SUPPORTED_AT_THIS_SAMPLE_SIZE'
+        required_revisions=['COLLECT_MORE_SAMPLES_BEFORE_CLAIMING_THIS_METRIC_PREDICTS_MOS']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'fisher_z':z,'standard_error_z':se_z,'ci95_low_r':lo_r,'ci95_high_r':hi_r,
+            'statistically_supported':statistically_supported,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the underlying relationship is genuinely nonlinear, so a Pearson correlation understates a real predictive relationship',
+                'the sample was not drawn independently (e.g. repeated measures on the same few stimuli), violating the independence assumption this interval relies on',
+                'the claimed r is itself rounded or estimated rather than computed directly from the raw paired data'],
+            'next_discriminating_experiment':'Collect additional independent stimulus/MOS pairs and recompute the interval; report whether it now excludes zero' if not statistically_supported else 'Validate on a held-out set of stimuli not used to originally estimate the correlation, to rule out overfitting to this sample',
+            'model_assumptions':['the paired metric/MOS observations are independent and identically distributed','the underlying relationship is approximately linear (Pearson correlation, not a nonlinear association measure)'],
+            'unresolved':['whether the sample was independently collected or contains repeated-measures structure','possible nonlinear relationship not captured by a linear correlation coefficient']}
+
+
+def measurement_uncertainty_budget(params):
+    """GUM-style (Guide to the Expression of Uncertainty in Measurement)
+    combined and expanded uncertainty: combined standard uncertainty
+    uc=sqrt(sum(ui^2)) treats declared component uncertainties as
+    independent and combines them in quadrature (root-sum-square);
+    expanded uncertainty U=k*uc with a declared coverage factor k
+    (k=2 approximates ~95% coverage for a normal distribution). Standard
+    textbook metrology, not a fitted or acoustic-specific model.
+    Hand-verified before use: components [0.1,0.2,0.05], k=2 ->
+    uc=0.229128..., U=0.458257...."""
+    schema=json.loads((ROOT/'skills/measurement-uncertainty-budget-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact uncertainty-budget field contract required')
+    components=params.get('uncertainty_components')
+    rules=schema['properties']['uncertainty_components']
+    if not isinstance(components,list) or not rules['minItems']<=len(components)<=rules['maxItems']:
+        raise ValueError('bounded uncertainty-component list required')
+    for value in components:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<=0 or value>rules['items']['maximum']:
+            raise ValueError('each uncertainty component must be a finite, positive, bounded value')
+    k=params['coverage_factor']
+    k_bound=schema['properties']['coverage_factor']
+    if isinstance(k,bool) or not isinstance(k,(float,int)) or not math.isfinite(k) or k<k_bound['minimum'] or k>k_bound['maximum']:
+        raise ValueError('coverage_factor must be a finite, bounded value')
+    max_expanded=params['maximum_acceptable_expanded_uncertainty']
+    max_bound=schema['properties']['maximum_acceptable_expanded_uncertainty']
+    if isinstance(max_expanded,bool) or not isinstance(max_expanded,(float,int)) or not math.isfinite(max_expanded) \
+            or max_expanded<=max_bound['exclusiveMinimum'] or max_expanded>max_bound['maximum']:
+        raise ValueError('maximum_acceptable_expanded_uncertainty must be a finite, positive, bounded value')
+    combined_standard_uncertainty=math.sqrt(sum(u*u for u in components))
+    expanded_uncertainty=k*combined_standard_uncertainty
+    within_budget=bool(expanded_uncertainty<=max_expanded)
+    checks=[{'id':'EXPANDED_UNCERTAINTY_WITHIN_BUDGET','actual':expanded_uncertainty,'limit':max_expanded,
+             'margin':max_expanded-expanded_uncertainty,'operator':'<=','passed':within_budget,
+             'on_failure':'REDUCE_DOMINANT_UNCERTAINTY_COMPONENT_OR_LOWER_COVERAGE_FACTOR_WITH_JUSTIFICATION'}]
+    if not within_budget:
+        disposition='EXPANDED_UNCERTAINTY_EXCEEDS_BUDGET'
+        required_revisions=['IDENTIFY_AND_REDUCE_THE_DOMINANT_UNCERTAINTY_COMPONENT_BEFORE_RELEASE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'combined_standard_uncertainty':combined_standard_uncertainty,'expanded_uncertainty':expanded_uncertainty,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the declared components are not actually statistically independent (shared calibration reference or correlated systematic effects), making RSS combination understate the true uncertainty',
+                'a component was itself declared as an expanded (not standard) uncertainty, double-counting the coverage factor',
+                'the true distribution is non-normal (e.g. rectangular for a Type B bound), making the k=2 approximate-95%-coverage assumption inexact'],
+            'next_discriminating_experiment':'Perform a gage R&R or interlaboratory comparison to empirically verify the combined uncertainty against a real repeated-measurement spread' if within_budget else 'Identify which single component dominates the sum of squares and investigate reducing or better characterizing it first',
+            'model_assumptions':['each declared uncertainty component is already expressed as a standard uncertainty (1-sigma-equivalent), not already expanded','the components are independent random variables, combined in quadrature','a coverage factor of k=2 approximates 95% coverage for a normal distribution'],
+            'unresolved':['whether the declared components are truly statistically independent','empirical validation via gage R&R or interlaboratory comparison','whether any component distribution is significantly non-normal']}
+
+
+def audio_path_latency_budget(params):
+    """End-to-end real-time audio path latency budget: simple additive sum
+    of encode, packetization, network, jitter-buffer, decode and output-
+    buffer delays, checked against the ITU-T G.114 recommended maximum
+    one-way transmission time for acceptable conversational quality
+    (commonly cited as 150 ms one-way before echo/talker-overlap
+    perceptibly degrades). Plain arithmetic, not a codec-specific or
+    fitted model. Hand-verified before use: 20+20+40+60+5+10=155 ms,
+    exceeding the 150 ms ITU-T G.114 guideline by 5 ms."""
+    schema=json.loads((ROOT/'skills/audio-path-latency-budget-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact latency-budget field contract required')
+    rules=schema['properties']
+    components={}
+    for name in ('encode_delay_ms','packetization_delay_ms','network_one_way_delay_ms','jitter_buffer_delay_ms','decode_delay_ms','output_buffer_delay_ms'):
+        value=params[name]
+        bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) \
+                or value<bound['minimum'] or value>bound['maximum']:
+            raise ValueError(f'{name} must be a finite, non-negative, bounded millisecond value')
+        components[name]=value
+    total_one_way_ms=sum(components.values())
+    itu_t_g114_threshold_ms=150.0
+    within_recommendation=bool(total_one_way_ms<=itu_t_g114_threshold_ms)
+    checks=[{'id':'ONE_WAY_LATENCY_WITHIN_ITU_T_G114','actual':total_one_way_ms,'limit':itu_t_g114_threshold_ms,
+             'margin':itu_t_g114_threshold_ms-total_one_way_ms,'operator':'<=','passed':within_recommendation,
+             'on_failure':'REDUCE_JITTER_BUFFER_OR_NETWORK_DELAY_OR_ACCEPT_DEGRADED_CONVERSATIONAL_QUALITY'}]
+    if not within_recommendation:
+        disposition='LATENCY_EXCEEDS_ITU_T_G114_RECOMMENDATION'
+        required_revisions=['IDENTIFY_AND_REDUCE_THE_DOMINANT_LATENCY_CONTRIBUTOR_BEFORE_RELEASE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'total_one_way_latency_ms':total_one_way_ms,'itu_t_g114_threshold_ms':itu_t_g114_threshold_ms,
+            'component_breakdown_ms':components,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the declared jitter-buffer delay is a fixed nominal value rather than the real adaptive value under actual network conditions, understating true worst-case latency',
+                'the 150 ms ITU-T G.114 figure is a general conversational-quality guideline, not a hard requirement for this specific application (e.g. one-directional media streaming has no such constraint)',
+                'round-trip (not one-way) latency is the actually relevant quantity for this use case, which this one-way budget does not directly address'],
+            'next_discriminating_experiment':'Measure the real end-to-end latency on the actual device/network path (e.g. via a loopback timestamp test) and compare against this budgeted estimate' if within_recommendation else 'Identify which single stage (encode, network, jitter buffer, decode) dominates the total and target that stage for reduction first',
+            'model_assumptions':['each stage delay is a fixed, declared value rather than a measured statistical distribution','the components are additive with no overlap or pipelining between stages','one-way (not round-trip) latency is the relevant quantity for the ITU-T G.114 comparison'],
+            'unresolved':['real measured end-to-end latency under actual network conditions','whether the application context (conversational vs. one-directional) makes the ITU-T G.114 threshold applicable at all']}
+
+
+def doe_two_sample_size(params):
+    """Standard two-sample mean-comparison sample-size formula (normal
+    approximation): n=2*(z_alpha/2+z_beta)^2*sigma^2/delta^2, where
+    z_alpha/2 and z_beta are standard-normal quantiles for the declared
+    two-sided significance level and statistical power. Standard textbook
+    experimental-design statistics, not a fitted or acoustic-specific
+    model. Hand-verified before use: sigma=5, delta=2, alpha=0.05,
+    power=0.8 -> z_alpha/2=1.959964, z_beta=0.841621, n=98.11 (round up to
+    99 per sample)."""
+    from statistics import NormalDist
+    schema=json.loads((ROOT/'skills/doe-two-sample-size-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact DOE sample-size field contract required')
+    rules=schema['properties']
+    sigma=params['assumed_standard_deviation']
+    sigma_bound=rules['assumed_standard_deviation']
+    if isinstance(sigma,bool) or not isinstance(sigma,(float,int)) or not math.isfinite(sigma) \
+            or sigma<=sigma_bound['exclusiveMinimum'] or sigma>sigma_bound['maximum']:
+        raise ValueError('assumed_standard_deviation must be a finite, positive, bounded value')
+    delta=params['minimum_detectable_difference']
+    delta_bound=rules['minimum_detectable_difference']
+    if isinstance(delta,bool) or not isinstance(delta,(float,int)) or not math.isfinite(delta) \
+            or delta<=delta_bound['exclusiveMinimum'] or delta>delta_bound['maximum']:
+        raise ValueError('minimum_detectable_difference must be a finite, positive, bounded value')
+    alpha=params['significance_level_alpha']
+    alpha_bound=rules['significance_level_alpha']
+    if isinstance(alpha,bool) or not isinstance(alpha,(float,int)) or not math.isfinite(alpha) \
+            or alpha<=alpha_bound['exclusiveMinimum'] or alpha>=alpha_bound['exclusiveMaximum']:
+        raise ValueError('significance_level_alpha must be a finite value strictly between 0 and 1')
+    power=params['statistical_power']
+    power_bound=rules['statistical_power']
+    if isinstance(power,bool) or not isinstance(power,(float,int)) or not math.isfinite(power) \
+            or power<=power_bound['exclusiveMinimum'] or power>=power_bound['exclusiveMaximum']:
+        raise ValueError('statistical_power must be a finite value strictly between 0 and 1')
+    max_affordable_n=params['maximum_affordable_sample_size_per_group']
+    max_n_bound=rules['maximum_affordable_sample_size_per_group']
+    if isinstance(max_affordable_n,bool) or not isinstance(max_affordable_n,int) \
+            or max_affordable_n<max_n_bound['minimum'] or max_affordable_n>max_n_bound['maximum']:
+        raise ValueError('maximum_affordable_sample_size_per_group must be a bounded positive integer')
+    dist=NormalDist()
+    z_alpha=dist.inv_cdf(1-alpha/2)
+    z_beta=dist.inv_cdf(power)
+    required_n_exact=2*((z_alpha+z_beta)**2)*(sigma**2)/(delta**2)
+    required_n_per_group=math.ceil(required_n_exact)
+    affordable=bool(required_n_per_group<=max_affordable_n)
+    checks=[{'id':'REQUIRED_SAMPLE_SIZE_WITHIN_BUDGET','actual':required_n_per_group,'limit':max_affordable_n,
+             'margin':max_affordable_n-required_n_per_group,'operator':'<=','passed':affordable,
+             'on_failure':'INCREASE_SAMPLE_BUDGET_OR_ACCEPT_A_LARGER_MINIMUM_DETECTABLE_DIFFERENCE_OR_LOWER_POWER'}]
+    if not affordable:
+        disposition='REQUIRED_SAMPLE_SIZE_EXCEEDS_BUDGET'
+        required_revisions=['RELAX_MINIMUM_DETECTABLE_DIFFERENCE_OR_POWER_OR_INCREASE_SAMPLE_BUDGET_BEFORE_RUNNING_THE_EXPERIMENT']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'z_alpha_half':z_alpha,'z_beta':z_beta,'required_n_per_group_exact':required_n_exact,
+            'required_n_per_group':required_n_per_group,'affordable':affordable,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the assumed standard deviation is a guess or a pooled figure from a different population, so the true required sample size could be substantially larger or smaller',
+                'the actual comparison will use a non-normal test (e.g. a rank-based test) whose required sample size differs from this normal-approximation formula',
+                'unequal variance or unequal group sizes between the two arms would change the required sample size from this equal-variance, equal-n formula'],
+            'next_discriminating_experiment':'Run a small pilot study to obtain a real estimate of the standard deviation before committing to the full experiment sample size' if affordable else 'Reduce scope (a larger acceptable minimum detectable difference or lower required power) or negotiate a larger sample budget',
+            'model_assumptions':['approximately normally distributed outcome in both groups','equal variance and equal sample size assumed in both groups','the declared standard deviation is a reasonable prior estimate, not a guess with unknown error'],
+            'unresolved':['whether the assumed standard deviation reflects the true population variability','whether the planned statistical test will actually be this normal-approximation two-sample comparison']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -639,6 +845,10 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'audio-clock-drift-buffer-margin-baseline':audio_clock_drift_buffer_margin,
           'erb-auditory-filter-bandwidth-baseline':erb_auditory_filter_bandwidth,
           'thermal-noise-floor-baseline':thermal_noise_floor,
+          'correlation-statistical-support-baseline':correlation_statistical_support,
+          'measurement-uncertainty-budget-baseline':measurement_uncertainty_budget,
+          'audio-path-latency-budget-baseline':audio_path_latency_budget,
+          'doe-two-sample-size-baseline':doe_two_sample_size,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "audio-path-latency-budget-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/audio-path-latency-budget-baseline.json",
+  "input_schema": "skills/audio-path-latency-budget-baseline/input.schema.json",
+  "output_schema": "skills/audio-path-latency-budget-baseline/output.schema.json",
+  "role_mappings": ["R083"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded additive one-way audio latency budget checked against the ITU-T G.114 recommended 150 ms conversational-quality threshold; not a measured end-to-end latency on real hardware/network"
+}

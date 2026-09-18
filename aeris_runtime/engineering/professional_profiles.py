@@ -338,6 +338,12 @@ ROLE_DOMAIN_CONTRACTS['R069'].append({
 ROLE_DOMAIN_CONTRACTS['R076'].append({
     'skill_id':'thermal-noise-floor-baseline','method':'methods/roles/thermal-noise-floor-baseline.json',
     'suite':'golden/roles/R076/thermal-noise-floor.json','scope':'Bounded Johnson-Nyquist thermal noise floor from declared resistance/temperature/bandwidth, checked as a physical lower bound against a claimed measured noise floor; not a full EMI/ground-loop diagnosis.'})
+ROLE_DOMAIN_CONTRACTS['R070'].append({
+    'skill_id':'correlation-statistical-support-baseline','method':'methods/roles/correlation-statistical-support-baseline.json',
+    'suite':'golden/roles/R070/correlation-statistical-support.json','scope':'Bounded Fisher r-to-z confidence interval checking whether a claimed metric-to-MOS correlation is statistically distinguishable from zero at the declared sample size; not a computed MOS prediction itself.'})
+ROLE_DOMAIN_CONTRACTS['R079'].append({
+    'skill_id':'measurement-uncertainty-budget-baseline','method':'methods/roles/measurement-uncertainty-budget-baseline.json',
+    'suite':'golden/roles/R079/measurement-uncertainty-budget.json','scope':'Bounded GUM-style combined and expanded measurement uncertainty from declared independent standard-uncertainty components; not an empirically validated gage R&R study.'})
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',
@@ -418,6 +424,9 @@ ROLE_DOMAIN_CONTRACTS['R078']=[{
     'method':'methods/roles/doe-monte-carlo-design-screening-baseline.json',
     'suite':'golden/roles/R078/golden.json',
     'scope':'Declared design resolution and causal/model-validity claim flags against confounded-design and Monte-Carlo-precision-as-validity antipatterns; no design-matrix alias verification or physical decision authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R078'].append({
+    'skill_id':'doe-two-sample-size-baseline','method':'methods/roles/doe-two-sample-size-baseline.json',
+    'suite':'golden/roles/R078/doe-two-sample-size.json','scope':'Bounded normal-approximation two-sample mean-comparison sample-size calculation from declared effect size, variance, significance and power; not a pilot-validated experimental design.'})
 ROLE_DOMAIN_CONTRACTS['R062']=[{
     'skill_id':'vr-xr-headset-screening-baseline',
     'method':'methods/roles/vr-xr-headset-screening-baseline.json',
@@ -458,6 +467,9 @@ ROLE_DOMAIN_CONTRACTS['R083']=[{
     'method':'methods/roles/codec-transport-screening-baseline.json',
     'suite':'golden/roles/R083/golden.json',
     'scope':'Declared jitter-buffer margin and consecutive-loss-burst length against declared bounds, from supplied scalars; no full network-condition coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R083'].append({
+    'skill_id':'audio-path-latency-budget-baseline','method':'methods/roles/audio-path-latency-budget-baseline.json',
+    'suite':'golden/roles/R083/audio-path-latency-budget.json','scope':'Bounded additive one-way audio latency budget checked against the ITU-T G.114 recommended 150 ms conversational-quality threshold; not a measured end-to-end latency on real hardware/network.'})
 ROLE_DOMAIN_CONTRACTS['R084']=[{
     'skill_id':'audio-ml-evaluation-screening-baseline',
     'method':'methods/roles/audio-ml-evaluation-screening-baseline.json',
