@@ -57,13 +57,85 @@ urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:$Port/api/v1/cap
 "@ 2>$null
 } catch {}
 
-Write-Host '重新驗證全公司工程進度（確保點檢表反映真實狀態）/ Refreshing full company progress Evidence...' -ForegroundColor Cyan
-& $Python -m aeris_runtime.progress_verify
-$verifyExit = $LASTEXITCODE
+# Runs one Python step as a real child process with redirected output and
+# prints a "still working" heartbeat dot every 5s while it runs, instead of
+# leaving the console silent and looking frozen for the several minutes a
+# cold-cache full re-verification across 100 roles can legitimately take.
+# UTF-8 (BOM-less) is forced on the redirected streams so this machine's
+# Traditional-Chinese console codepage never mangles the captured Chinese
+# text, matching the [Console]::OutputEncoding fix at the top of this file.
+function Invoke-WithHeartbeat {
+  param([string[]]$ArgumentList)
+  $psi = New-Object System.Diagnostics.ProcessStartInfo
+  $psi.FileName = $Python
+  foreach ($a in $ArgumentList) { $psi.ArgumentList.Add($a) }
+  $psi.RedirectStandardOutput = $true
+  $psi.RedirectStandardError = $true
+  $psi.StandardOutputEncoding = [System.Text.UTF8Encoding]::new($false)
+  $psi.StandardErrorEncoding = [System.Text.UTF8Encoding]::new($false)
+  $psi.UseShellExecute = $false
+  $proc = [System.Diagnostics.Process]::Start($psi)
+  $elapsed = 0
+  while (-not $proc.HasExited) {
+    Start-Sleep -Seconds 5
+    $elapsed += 5
+    Write-Host -NoNewline "." -ForegroundColor DarkGray
+    if ($elapsed % 60 -eq 0) { Write-Host " (${elapsed}s)" -ForegroundColor DarkGray -NoNewline; Write-Host '' }
+  }
+  Write-Host ''
+  $stdout = $proc.StandardOutput.ReadToEnd()
+  $stderr = $proc.StandardError.ReadToEnd()
+  if ($stdout) { Write-Host $stdout }
+  if ($stderr) { Write-Host $stderr -ForegroundColor Yellow }
+  return $proc.ExitCode
+}
+
+Write-Host '重新驗證全公司工程進度（確保點檢表反映真實狀態，冷啟動時可能需要數分鐘，屬正常現象）/ Refreshing full company progress Evidence (a cold-cache run across 100 roles can legitimately take several minutes)...' -ForegroundColor Cyan
+# Trigger the re-verification INSIDE the already-running server via its own
+# admin API (/api/v1/progress/reverify) instead of spawning a second,
+# separate `python -m aeris_runtime.progress_verify` process. Running both
+# at once was found to deadlock: two independent OS processes both doing
+# heavy file-based Evidence/audit-ledger reads and writes against the same
+# files, with no cross-process lock protecting them (progress_verify.py's
+# own _WEB_TRIGGER_LOCK only guards against two triggers within the SAME
+# process/server). One real run hung for over an hour instead of the
+# expected few minutes. The server already exposes exactly this
+# single-flight, same-process trigger for its own Progress Center UI --
+# reusing it here removes the second process instead of just working
+# around its symptom.
+$verifyExit = 1
+try {
+  $tokenPath = Join-Path $Root '.aeris\state\.supervisor-token'
+  $headers = @{}
+  if (Test-Path $tokenPath) { $headers['X-AERIS-Supervisor-Token'] = (Get-Content $tokenPath -Raw -Encoding UTF8).Trim() }
+  $trigger = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/api/v1/progress/reverify" -Method Post -Headers $headers -ContentType 'application/json' -Body '{}' -TimeoutSec 10
+  if (-not $trigger.started -and $trigger.detail -notlike '*already running*') {
+    Write-Warning "重新驗證未能啟動 / Re-verification did not start: $($trigger.detail)"
+  }
+  $elapsed = 0
+  $deadline = 600
+  do {
+    Start-Sleep -Seconds 5
+    $elapsed += 5
+    Write-Host -NoNewline "." -ForegroundColor DarkGray
+    if ($elapsed % 60 -eq 0) { Write-Host " (${elapsed}s)" }
+    $status = Invoke-RestMethod -Uri "http://127.0.0.1:$Port/api/v1/progress/reverify" -Headers $headers -TimeoutSec 10
+  } while ($status.running -and $elapsed -lt $deadline)
+  Write-Host ''
+  if ($status.running) {
+    Write-Warning "重新驗證超過 ${deadline}s 仍未完成，略過等待 / Re-verification still running after ${deadline}s, giving up waiting on it (does not block the rest of startup)."
+  } elseif ($status.last_result) {
+    Write-Host "重新驗證完成：$($status.last_result) / Re-verification finished: $($status.last_result)" -ForegroundColor Cyan
+    $verifyExit = 0
+  } else {
+    Write-Warning '重新驗證狀態不明（伺服器可能在等待期間重啟過）/ Re-verification outcome unknown (the server may have restarted while waiting).'
+  }
+} catch {
+  Write-Warning "無法透過 API 觸發重新驗證，改用點檢表既有結果 / Could not trigger re-verification via the API, falling back to the checklist's own existing result: $($_.Exception.Message)"
+}
 
 Write-Host ''
-& $Python (Join-Path $Root 'scripts\aeris_launch_checklist.py') "$Port"
-$checklistExit = $LASTEXITCODE
+$checklistExit = Invoke-WithHeartbeat -ArgumentList @((Join-Path $Root 'scripts\aeris_launch_checklist.py'), "$Port")
 
 if ($checklistExit -eq 0) {
   Write-Host ''
