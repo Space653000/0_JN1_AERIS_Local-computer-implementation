@@ -1204,6 +1204,53 @@ def ucb1_next_experiment_bound(params):
             'unresolved':['whether the reward distribution is genuinely stationary','whether the risk gate remains valid between evaluation and actual execution']}
 
 
+def adc_quantization_snr(params):
+    """ADC quantization noise floor: ideal N-bit ADC SNR (dB) =
+    6.02*N + 1.76 (the standard quantization-noise derivation assuming a
+    full-scale sinusoidal input and uniform quantization error). Given a
+    measured/claimed SINAD, effective number of bits
+    ENOB = (SINAD-1.76)/6.02. Standard, foundational data-converter
+    theory, used here to separate declared bit depth from actual
+    effective resolution -- a claimed ENOB above the ideal N-bit SNR is
+    a red flag, not a better-than-ideal converter. Hand-verified before
+    use: 16-bit ideal SNR=98.08 dB (matches the commonly cited ~98 dB
+    figure for 16-bit digital audio); 24-bit ideal SNR=146.24 dB
+    (matches the commonly cited theoretical maximum for 24-bit audio)."""
+    schema=json.loads((ROOT/'skills/adc-quantization-snr-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact ADC quantization-SNR field contract required')
+    rules=schema['properties']
+    bit_depth=params['bit_depth']
+    bit_bound=rules['bit_depth']
+    if isinstance(bit_depth,bool) or not isinstance(bit_depth,int) or bit_depth<bit_bound['minimum'] or bit_depth>bit_bound['maximum']:
+        raise ValueError('bit_depth must be a bounded positive integer')
+    claimed_sinad_db=params['claimed_sinad_db']
+    sinad_bound=rules['claimed_sinad_db']
+    if isinstance(claimed_sinad_db,bool) or not isinstance(claimed_sinad_db,(float,int)) or not math.isfinite(claimed_sinad_db) \
+            or claimed_sinad_db<sinad_bound['minimum'] or claimed_sinad_db>sinad_bound['maximum']:
+        raise ValueError('claimed_sinad_db must be a finite, bounded value')
+    ideal_snr_db=6.02*bit_depth+1.76
+    effective_number_of_bits=(claimed_sinad_db-1.76)/6.02
+    physically_consistent=bool(claimed_sinad_db<=ideal_snr_db)
+    checks=[{'id':'CLAIMED_SINAD_AT_OR_BELOW_IDEAL_SNR','actual':claimed_sinad_db,'limit':ideal_snr_db,
+             'margin':ideal_snr_db-claimed_sinad_db,'operator':'<=','passed':physically_consistent,
+             'on_failure':'CLAIMED_SINAD_EXCEEDS_THE_IDEAL_QUANTIZATION_LIMIT_FOR_THIS_BIT_DEPTH_CHECK_MEASUREMENT_REFERENCE'}]
+    if not physically_consistent:
+        disposition='CLAIMED_SINAD_EXCEEDS_IDEAL_QUANTIZATION_LIMIT'
+        required_revisions=['RECONCILE_CLAIMED_SINAD_WITH_DECLARED_BIT_DEPTH_OR_VERIFY_MEASUREMENT_REFERENCE_BEFORE_TRUSTING_IT']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'ideal_snr_db':ideal_snr_db,'effective_number_of_bits':effective_number_of_bits,
+            'physically_consistent':physically_consistent,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the claimed SINAD uses a different measurement bandwidth or weighting than the flat, full-scale assumption behind the ideal formula, making direct comparison invalid',
+                'the converter uses noise-shaping/oversampling (e.g. a PDM/sigma-delta ADC), which trades bandwidth for in-band SNR beyond what a simple Nyquist-rate quantization formula predicts',
+                'the claimed figure is a datasheet best-case number rather than the actual achieved performance in this specific application circuit'],
+            'next_discriminating_experiment':'Measure the actual SINAD on the assembled circuit with a calibrated full-scale sinusoidal input and compare against both the ideal limit and the datasheet claim' if physically_consistent else 'Verify whether the converter uses noise-shaping/oversampling that legitimately explains an apparent excess over the simple quantization formula',
+            'model_assumptions':['a full-scale sinusoidal input signal (the standard reference condition for the 6.02N+1.76 formula)','uniform (non-noise-shaped) quantization error, no oversampling/noise-shaping applied','the claimed SINAD and declared bit depth were measured under comparable conditions'],
+            'unresolved':['whether the converter uses noise-shaping/oversampling not accounted for by this simple formula','whether the claimed SINAD reflects actual measured performance or a datasheet best case']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -1277,6 +1324,7 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'process-capability-cpk-baseline':process_capability_cpk,
           'acceptance-sampling-oc-probability-baseline':acceptance_sampling_oc_probability,
           'ucb1-next-experiment-bound-baseline':ucb1_next_experiment_bound,
+          'adc-quantization-snr-baseline':adc_quantization_snr,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

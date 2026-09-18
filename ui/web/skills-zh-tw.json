@@ -122,5 +122,6 @@
   "wilson-score-accuracy-interval-baseline": "以 Wilson score 信賴區間計算宣告的分類準確率在該測試集大小下的 95% 信賴區間，判定該準確率宣稱是否有統計支持；不含模型泛化能力或部署分布的保證",
   "process-capability-cpk-baseline": "依宣告的規格上下限與製程平均值／標準差計算製程能力指數 Cpk，判定是否達到最低可接受值；不含管制圖對製程穩定性的實證驗證",
   "acceptance-sampling-oc-probability-baseline": "以二項式允收抽樣操作特性（OC）曲線，依樣本數、允收數與假設不良率計算允收機率，判定抽樣計畫在該不良率下是否可靠；不含完整生產者／消費者風險研究",
-  "ucb1-next-experiment-bound-baseline": "以 UCB1 信賴上界演算法，依觀測平均報酬與試驗次數計算候選下一實驗的探索加分與總分，並以獨立評估的風險關卡布林值強制把關，分數不得凌駕風控；不含風險關卡本身的評估"
+  "ucb1-next-experiment-bound-baseline": "以 UCB1 信賴上界演算法，依觀測平均報酬與試驗次數計算候選下一實驗的探索加分與總分，並以獨立評估的風險關卡布林值強制把關，分數不得凌駕風控；不含風險關卡本身的評估",
+  "adc-quantization-snr-baseline": "依理想 N 位元 ADC 量化雜訊公式計算理論訊噪比（SNR）與有效位元數（ENOB），判定宣告的量測 SINAD 是否超過該位元深度的物理理論上限；不含雜訊塑形／過取樣轉換器模型"
 }

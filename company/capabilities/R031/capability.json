@@ -22,25 +22,29 @@
     "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
     "spectral-analysis": "skills/spectral-analysis/input.schema.json",
     "latency-budget": "skills/latency-budget/input.schema.json",
-    "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/input.schema.json"
+    "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/input.schema.json",
+    "adc-quantization-snr-baseline": "skills/adc-quantization-snr-baseline/input.schema.json"
   },
   "outputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
     "spectral-analysis": "skills/spectral-analysis/output.schema.json",
     "latency-budget": "skills/latency-budget/output.schema.json",
-    "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/output.schema.json"
+    "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/output.schema.json",
+    "adc-quantization-snr-baseline": "skills/adc-quantization-snr-baseline/output.schema.json"
   },
   "required_skills": [
     "circuit-noise-budget",
     "spectral-analysis",
     "latency-budget",
-    "microphone-capture-clock-domain-review"
+    "microphone-capture-clock-domain-review",
+    "adc-quantization-snr-baseline"
   ],
   "required_methods": [
     "methods/engineering/circuit-noise-budget.json",
     "methods/engineering/spectral-analysis.json",
     "methods/engineering/latency-budget.json",
-    "methods/roles/microphone-capture-clock-domain-review.json"
+    "methods/roles/microphone-capture-clock-domain-review.json",
+    "methods/roles/adc-quantization-snr-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/circuit-noise-budget.json",
@@ -169,7 +173,7 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260918T095708Z-ce29ebad"
+    ".aeris\\evidence\\RUN-20260918T122641Z-4e9f55b5"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
@@ -181,13 +185,15 @@
       "methods/engineering/circuit-noise-budget.json",
       "methods/engineering/spectral-analysis.json",
       "methods/engineering/latency-budget.json",
-      "methods/roles/microphone-capture-clock-domain-review.json"
+      "methods/roles/microphone-capture-clock-domain-review.json",
+      "methods/roles/adc-quantization-snr-baseline.json"
     ],
     "required_skills": [
       "circuit-noise-budget",
       "spectral-analysis",
       "latency-budget",
-      "microphone-capture-clock-domain-review"
+      "microphone-capture-clock-domain-review",
+      "adc-quantization-snr-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -209,6 +215,12 @@
       "method": "methods/roles/microphone-capture-clock-domain-review.json",
       "suite": "golden/roles/R031/golden.json",
       "scope": "Independent timing/counter/rate interval contract review on an unverified shared reference; no ADC ENOB, PDM filtering or whole-role L3."
+    },
+    {
+      "skill_id": "adc-quantization-snr-baseline",
+      "method": "methods/roles/adc-quantization-snr-baseline.json",
+      "suite": "golden/roles/R031/adc-quantization-snr.json",
+      "scope": "Bounded ideal ADC quantization SNR/ENOB check separating declared bit depth from a claimed effective resolution; not a noise-shaping/oversampling-aware model."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -229,7 +241,8 @@
       "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
       "spectral-analysis": "skills/spectral-analysis/input.schema.json",
       "latency-budget": "skills/latency-budget/input.schema.json",
-      "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/input.schema.json"
+      "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/input.schema.json",
+      "adc-quantization-snr-baseline": "skills/adc-quantization-snr-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -245,7 +258,8 @@
       "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
       "spectral-analysis": "skills/spectral-analysis/output.schema.json",
       "latency-budget": "skills/latency-budget/output.schema.json",
-      "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/output.schema.json"
+      "microphone-capture-clock-domain-review": "skills/microphone-capture-clock-domain-review/output.schema.json",
+      "adc-quantization-snr-baseline": "skills/adc-quantization-snr-baseline/output.schema.json"
     }
   },
   "report_sections": [
