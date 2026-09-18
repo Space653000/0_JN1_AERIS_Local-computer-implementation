@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "nyquist-sampling-check-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/nyquist-sampling-check-baseline.json",
+  "input_schema": "skills/nyquist-sampling-check-baseline/input.schema.json",
+  "output_schema": "skills/nyquist-sampling-check-baseline/output.schema.json",
+  "role_mappings": ["R085"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded Shannon-Nyquist sampling-rate criterion check for a declared dataset sample rate and maximum signal frequency; not a spectral measurement of actual aliasing"
+}

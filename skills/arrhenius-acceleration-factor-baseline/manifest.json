@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "arrhenius-acceleration-factor-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/arrhenius-acceleration-factor-baseline.json",
+  "input_schema": "skills/arrhenius-acceleration-factor-baseline/input.schema.json",
+  "output_schema": "skills/arrhenius-acceleration-factor-baseline/output.schema.json",
+  "role_mappings": ["R096"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded Arrhenius reliability acceleration factor from a declared activation energy and use/stress temperatures; not an empirically fitted activation energy or a validated failure-mechanism confirmation"
+}

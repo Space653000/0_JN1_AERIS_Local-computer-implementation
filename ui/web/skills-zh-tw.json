@@ -114,5 +114,9 @@
   "correlation-statistical-support-baseline": "以 Fisher r-to-z 轉換計算宣告的客觀指標與 MOS 相關係數之 95% 信賴區間，判定該相關性在宣告樣本數下是否具統計顯著性；不含 MOS 預測本身",
   "measurement-uncertainty-budget-baseline": "依國際量測不確定度指南（GUM）計算獨立不確定度分量的合成標準不確定度（均方根）與擴充不確定度，並對照宣告預算判定是否合格；不含實測量具重複性與再現性（Gage R&R）研究",
   "audio-path-latency-budget-baseline": "加總編碼、封包化、網路、抖動緩衝、解碼與輸出緩衝各階段延遲，對照 ITU-T G.114 建議的 150 毫秒單向對話品質門檻判定是否合格；不含實體硬體／網路實測延遲",
-  "doe-two-sample-size-baseline": "以標準常態近似公式，依假設標準差、最小可偵測差異、顯著水準與檢定力計算兩樣本比較所需的每組樣本數，並對照可負擔樣本數上限判定是否可行；不含前導試驗驗證"
+  "doe-two-sample-size-baseline": "以標準常態近似公式，依假設標準差、最小可偵測差異、顯著水準與檢定力計算兩樣本比較所需的每組樣本數，並對照可負擔樣本數上限判定是否可行；不含前導試驗驗證",
+  "rf-link-budget-friis-baseline": "以 Friis 自由空間傳輸方程式，依發射功率、天線增益、頻率與距離計算自由空間路徑損耗與接收功率，判定無線音訊連線是否在宣告的接收靈敏度之上仍有餘裕；不含協定認證或實際環境電波量測",
+  "nyquist-sampling-check-baseline": "以夏農-奈奎斯特取樣定理，檢查宣告的取樣率是否至少為最大訊號頻率的兩倍，判定是否有混疊風險；不含實際頻譜混疊量測",
+  "measurement-difference-significance-baseline": "以 z 分數計算兩個獨立量測值（各附不確定度）之差異是否具統計顯著性，避免把量測雜訊誤判為真實產品差異；不含比對條件是否對齊的驗證",
+  "arrhenius-acceleration-factor-baseline": "以 Arrhenius 可靠度加速因子公式，依宣告的活化能與使用／應力溫度計算加速壽命測試對應的等效使用時數；不含活化能的實驗擬合或失效機制驗證"
 }

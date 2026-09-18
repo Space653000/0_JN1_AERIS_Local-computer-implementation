@@ -1,0 +1,20 @@
+{
+  "suite_id":"R096-ARRHENIUS-ACCELERATION-FACTOR-DOMAIN-V1", "role_id":"R096",
+  "skill_id":"arrhenius-acceleration-factor-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Arrhenius reliability acceleration-factor model, standard textbook reliability engineering; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded Arrhenius acceleration factor from a declared activation energy and use/stress temperatures; not an empirically fitted activation energy or failure-mechanism confirmation.",
+  "base_input":{
+    "activation_energy_ev":0.7,"use_temperature_c":25,"stress_temperature_c":85,"test_duration_hours":1000
+  },
+  "cases":[
+    {"id":"ARRHENIUS-NOMINAL-0.7EV-60C-DELTA","kind":"positive","question":"For a common 0.7 eV activation energy and a 60C stress delta, does the acceleration factor match the independently hand-verified value?","input_overrides":{},
+     "checks":[{"path":"acceleration_factor","expected":95.99784604708066,"absolute_tolerance":0.000001},
+               {"path":"equivalent_use_hours","expected":95997.84604708066,"absolute_tolerance":0.0001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ARRHENIUS-HIGHER-STRESS-LARGER-AF","kind":"boundary","question":"With a higher stress temperature (125C instead of 85C), does the acceleration factor grow substantially, correctly reflecting the model's own exponential temperature sensitivity?","input_overrides":{"stress_temperature_c":125},
+     "checks":[{"path":"acceleration_factor","expected":937.253649051674,"absolute_tolerance":0.0001}]},
+    {"id":"ARRHENIUS-INVALID-STRESS-NOT-ABOVE-USE-REJECTED","kind":"negative","question":"Must a stress temperature at or below the use temperature be rejected as an invalid accelerated-test configuration?","input_overrides":{"stress_temperature_c":25},"expected_error":"ValueError"},
+    {"id":"ARRHENIUS-ZERO-DELTA-GIVES-UNITY-AF","kind":"counter_hypothesis","question":"As the stress temperature approaches the use temperature (minimal but valid delta), does the acceleration factor approach 1 (no acceleration), confirming the model's own limiting behavior?","input_overrides":{"stress_temperature_c":25.01},
+     "checks":[{"path":"checks.0.passed","expected":true,"absolute_tolerance":0}]}
+  ]
+}

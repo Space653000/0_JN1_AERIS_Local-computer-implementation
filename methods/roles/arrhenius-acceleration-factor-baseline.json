@@ -1,0 +1,14 @@
+{
+  "method_id":"arrhenius-acceleration-factor-baseline", "version":"1.0.0", "role":"R096",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:arrhenius_acceleration_factor",
+  "applicability":"Arrhenius reliability acceleration factor from a declared activation energy and use/stress temperatures, for accelerated life test duration translation",
+  "equations":{
+    "acceleration_factor":"exp((Ea/k)*(1/T_use_K - 1/T_stress_K))"
+  },
+  "assumptions":["a single, thermally-activated failure mechanism with constant activation energy across the tested temperature range","the declared activation energy accurately represents the dominant failure mechanism"],
+  "excluded":["empirical fitting of the activation energy","non-thermal failure modes (mechanical fatigue, humidity)"],
+  "uncertainty":"Standard textbook reliability-engineering model; hand-verified before use (Ea=0.7 eV, use=25C, stress=85C -> AF=95.998).",
+  "limits_policy":"A declared stress temperature at or below the use temperature is rejected as an invalid accelerated-test configuration.",
+  "golden_tests":"tests/test_arrhenius_acceleration_factor_domain.py"
+}

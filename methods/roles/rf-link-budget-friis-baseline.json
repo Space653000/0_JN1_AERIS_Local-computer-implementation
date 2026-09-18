@@ -1,0 +1,15 @@
+{
+  "method_id":"rf-link-budget-friis-baseline", "version":"1.0.0", "role":"R081",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:rf_link_budget_friis",
+  "applicability":"Friis free-space RF link budget checking whether a wireless audio link closes with adequate margin above a declared receiver sensitivity at a given distance",
+  "equations":{
+    "fspl_db":"20*log10(4*pi*d/lambda)",
+    "received_power_dbm":"Pt+Gt+Gr-FSPL"
+  },
+  "assumptions":["free-space propagation with no multipath, obstruction or body-worn attenuation","ideal antenna orientation for the declared gains"],
+  "excluded":["real-environment path loss (multipath, obstruction, body-worn attenuation)","protocol certification claims"],
+  "uncertainty":"Standard textbook RF engineering (Friis 1946); hand-verified before use (2.4 GHz, 4 dBm tx, 0 dBi antennas, 10 m -> Pr=-56.05 dBm).",
+  "limits_policy":"A link that does not close above the declared receiver sensitivity is flagged rather than assumed to work.",
+  "golden_tests":"tests/test_rf_link_budget_friis_domain.py"
+}

@@ -338,6 +338,9 @@ ROLE_DOMAIN_CONTRACTS['R069'].append({
 ROLE_DOMAIN_CONTRACTS['R076'].append({
     'skill_id':'thermal-noise-floor-baseline','method':'methods/roles/thermal-noise-floor-baseline.json',
     'suite':'golden/roles/R076/thermal-noise-floor.json','scope':'Bounded Johnson-Nyquist thermal noise floor from declared resistance/temperature/bandwidth, checked as a physical lower bound against a claimed measured noise floor; not a full EMI/ground-loop diagnosis.'})
+ROLE_DOMAIN_CONTRACTS['R081'].append({
+    'skill_id':'rf-link-budget-friis-baseline','method':'methods/roles/rf-link-budget-friis-baseline.json',
+    'suite':'golden/roles/R081/rf-link-budget.json','scope':'Bounded Friis free-space RF link budget checking whether a wireless audio link closes with adequate margin above a declared receiver sensitivity; not a protocol certification or real-environment RF measurement.'})
 ROLE_DOMAIN_CONTRACTS['R070'].append({
     'skill_id':'correlation-statistical-support-baseline','method':'methods/roles/correlation-statistical-support-baseline.json',
     'suite':'golden/roles/R070/correlation-statistical-support.json','scope':'Bounded Fisher r-to-z confidence interval checking whether a claimed metric-to-MOS correlation is statistically distinguishable from zero at the declared sample size; not a computed MOS prediction itself.'})
@@ -394,6 +397,9 @@ ROLE_DOMAIN_CONTRACTS['R096']=[{
     'method':'methods/roles/reliability-halt-screening-baseline.json',
     'suite':'golden/roles/R096/golden.json',
     'scope':'Exact one-sided binomial upper bound on HALT trial/failure counts against a declared acceptance threshold; no accelerated-life extrapolation or physical chamber execution.'}]
+ROLE_DOMAIN_CONTRACTS['R096'].append({
+    'skill_id':'arrhenius-acceleration-factor-baseline','method':'methods/roles/arrhenius-acceleration-factor-baseline.json',
+    'suite':'golden/roles/R096/arrhenius-acceleration-factor.json','scope':'Bounded Arrhenius reliability acceleration factor from a declared activation energy and use/stress temperatures; not an empirically fitted activation energy or a validated failure-mechanism confirmation.'})
 ROLE_DOMAIN_CONTRACTS['R093']=[{
     'skill_id':'factory-eol-capability-screening-baseline',
     'method':'methods/roles/factory-eol-capability-screening-baseline.json',
@@ -480,11 +486,17 @@ ROLE_DOMAIN_CONTRACTS['R085']=[{
     'method':'methods/roles/acoustic-dataset-screening-baseline.json',
     'suite':'golden/roles/R085/golden.json',
     'scope':'Declared sample-rate-uniformity/resampling and duplicate-source-count flags against mixed-rate and cross-split-leakage antipatterns; no full ingestion-pipeline audit or Human dataset-release sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R085'].append({
+    'skill_id':'nyquist-sampling-check-baseline','method':'methods/roles/nyquist-sampling-check-baseline.json',
+    'suite':'golden/roles/R085/nyquist-sampling-check.json','scope':'Bounded Shannon-Nyquist sampling-rate criterion check for a declared dataset sample rate and maximum signal frequency; not a spectral measurement of actual aliasing.'})
 ROLE_DOMAIN_CONTRACTS['R086']=[{
     'skill_id':'benchmark-teardown-screening-baseline',
     'method':'methods/roles/benchmark-teardown-screening-baseline.json',
     'suite':'golden/roles/R086/golden.json',
     'scope':'Declared SPL-matched and topology-claim/validation flags against unmatched-benchmark and visual-topology-as-validated antipatterns; no full product test-condition matrix or Human publication sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R086'].append({
+    'skill_id':'measurement-difference-significance-baseline','method':'methods/roles/measurement-difference-significance-baseline.json',
+    'suite':'golden/roles/R086/measurement-difference-significance.json','scope':'Bounded z-score significance check for two independent measurements with declared uncertainty; not a matched-conditions guarantee or a full statistical study.'})
 ROLE_DOMAIN_CONTRACTS['R087']=[{
     'skill_id':'patent-prior-art-screening-baseline',
     'method':'methods/roles/patent-prior-art-screening-baseline.json',

@@ -784,6 +784,217 @@ def doe_two_sample_size(params):
             'unresolved':['whether the assumed standard deviation reflects the true population variability','whether the planned statistical test will actually be this normal-approximation two-sample comparison']}
 
 
+def rf_link_budget_friis(params):
+    """Friis free-space transmission equation for RF link budget:
+    Pr(dBm) = Pt(dBm) + Gt(dBi) + Gr(dBi) - FSPL(dB), where
+    FSPL(dB) = 20*log10(4*pi*d/lambda) and lambda = c/f. Standard
+    textbook RF engineering (Friis 1946), used here to check whether a
+    wireless audio link (e.g. Bluetooth/LE Audio) closes with adequate
+    margin above a declared receiver sensitivity at a given distance --
+    not a protocol-specific latency/buffering claim. Hand-verified before
+    use: 2.4 GHz, 4 dBm tx, 0 dBi antennas, 10 m -> Pr=-56.05 dBm."""
+    schema=json.loads((ROOT/'skills/rf-link-budget-friis-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Friis link-budget field contract required')
+    rules=schema['properties']
+    def _bounded(name):
+        value=params[name]; bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError(f'{name} must be a finite numeric value')
+        if 'exclusiveMinimum' in bound and value<=bound['exclusiveMinimum']:
+            raise ValueError(f'{name} must exceed {bound["exclusiveMinimum"]}')
+        if 'minimum' in bound and value<bound['minimum']:
+            raise ValueError(f'{name} must be at least {bound["minimum"]}')
+        if 'maximum' in bound and value>bound['maximum']:
+            raise ValueError(f'{name} exceeds bounded range')
+        return value
+    tx_power_dbm=_bounded('tx_power_dbm')
+    tx_gain_dbi=_bounded('tx_gain_dbi')
+    rx_gain_dbi=_bounded('rx_gain_dbi')
+    freq_hz=_bounded('frequency_hz')
+    distance_m=_bounded('distance_m')
+    rx_sensitivity_dbm=_bounded('rx_sensitivity_dbm')
+    c=299792458.0
+    wavelength_m=c/freq_hz
+    fspl_db=20*math.log10(4*math.pi*distance_m/wavelength_m)
+    received_power_dbm=tx_power_dbm+tx_gain_dbi+rx_gain_dbi-fspl_db
+    link_margin_db=received_power_dbm-rx_sensitivity_dbm
+    link_closes=bool(link_margin_db>=0)
+    checks=[{'id':'LINK_MARGIN_NON_NEGATIVE','actual':received_power_dbm,'limit':rx_sensitivity_dbm,
+             'margin':link_margin_db,'operator':'>=','passed':link_closes,
+             'on_failure':'REDUCE_DISTANCE_OR_INCREASE_TX_POWER_OR_ANTENNA_GAIN_OR_ACCEPT_LINK_DOES_NOT_CLOSE'}]
+    if not link_closes:
+        disposition='LINK_DOES_NOT_CLOSE_AT_THIS_DISTANCE'
+        required_revisions=['REDUCE_DISTANCE_OR_INCREASE_LINK_BUDGET_BEFORE_RELYING_ON_THIS_RANGE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'free_space_path_loss_db':fspl_db,'received_power_dbm':received_power_dbm,
+            'link_margin_db':link_margin_db,'link_closes':link_closes,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the real environment has multipath, obstructions or body-worn attenuation, so free-space path loss understates the true loss',
+                'the declared receiver sensitivity is a best-case datasheet figure rather than the sensitivity actually achieved in this product\'s real RF front end',
+                'the declared antenna gains assume ideal orientation, while real device orientation reduces effective gain'],
+            'next_discriminating_experiment':'Measure real RSSI at this distance in the actual deployment environment and compare against this free-space prediction' if link_closes else 'Identify whether reducing distance, increasing transmit power, or improving antenna gain most cost-effectively restores link margin',
+            'model_assumptions':['free-space propagation with no multipath, obstruction or body-worn attenuation','ideal antenna orientation for the declared gains','the declared receiver sensitivity reflects real achievable performance'],
+            'unresolved':['real-environment path loss beyond free space (multipath, obstruction, body-worn attenuation)','whether the declared receiver sensitivity matches this product\'s actual RF front end']}
+
+
+def nyquist_sampling_check(params):
+    """Shannon-Nyquist sampling theorem check: a signal containing energy
+    up to max_signal_frequency_hz requires a sample rate of at least
+    2*max_signal_frequency_hz to avoid aliasing. Standard textbook signal-
+    processing theorem (Nyquist 1928, Shannon 1949), used here to check a
+    declared dataset's sample rate against its declared maximum signal
+    content before trusting the dataset schema. Hand-verified before use:
+    fs=44100 Hz, fmax=20000 Hz -> Nyquist frequency=22050 Hz, satisfied;
+    fs=8000 Hz, fmax=20000 Hz -> Nyquist frequency=4000 Hz, violated."""
+    schema=json.loads((ROOT/'skills/nyquist-sampling-check-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Nyquist sampling field contract required')
+    rules=schema['properties']
+    sample_rate=params['sample_rate_hz']
+    sr_bound=rules['sample_rate_hz']
+    if isinstance(sample_rate,bool) or not isinstance(sample_rate,(float,int)) or not math.isfinite(sample_rate) \
+            or sample_rate<=sr_bound['exclusiveMinimum'] or sample_rate>sr_bound['maximum']:
+        raise ValueError('sample_rate_hz must be a finite, positive, bounded Hz value')
+    max_freq=params['max_signal_frequency_hz']
+    freq_bound=rules['max_signal_frequency_hz']
+    if isinstance(max_freq,bool) or not isinstance(max_freq,(float,int)) or not math.isfinite(max_freq) \
+            or max_freq<=freq_bound['exclusiveMinimum'] or max_freq>freq_bound['maximum']:
+        raise ValueError('max_signal_frequency_hz must be a finite, positive, bounded Hz value')
+    nyquist_frequency_hz=sample_rate/2.0
+    satisfies_nyquist=bool(max_freq<=nyquist_frequency_hz)
+    aliasing_margin_hz=nyquist_frequency_hz-max_freq
+    checks=[{'id':'MAX_FREQUENCY_WITHIN_NYQUIST_LIMIT','actual':max_freq,'limit':nyquist_frequency_hz,
+             'margin':aliasing_margin_hz,'operator':'<=','passed':satisfies_nyquist,
+             'on_failure':'INCREASE_SAMPLE_RATE_OR_LOW_PASS_FILTER_BEFORE_SAMPLING_OR_DISCARD_ALIASED_DATA'}]
+    if not satisfies_nyquist:
+        disposition='ALIASING_RISK_NYQUIST_CRITERION_VIOLATED'
+        required_revisions=['VERIFY_ANTI_ALIASING_FILTER_WAS_APPLIED_OR_RE_ACQUIRE_AT_A_HIGHER_SAMPLE_RATE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'nyquist_frequency_hz':nyquist_frequency_hz,'aliasing_margin_hz':aliasing_margin_hz,
+            'satisfies_nyquist':satisfies_nyquist,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['an anti-aliasing low-pass filter was applied before sampling, so energy above the declared max frequency was already removed and no aliasing actually occurred',
+                'the declared max_signal_frequency_hz is an assumption rather than a measured bandwidth of the real source signal',
+                'the dataset was resampled from a higher original rate, so the effective bandwidth may already be band-limited below what the raw source suggests'],
+            'next_discriminating_experiment':'Inspect the spectrum of a sample recording for energy folded back below the Nyquist frequency, which would confirm real aliasing occurred' if not satisfies_nyquist else 'Confirm via spectral analysis that no significant energy exists near the Nyquist frequency, validating the declared bandwidth assumption',
+            'model_assumptions':['the declared max_signal_frequency_hz accurately bounds the real signal content','no anti-aliasing filter assumption is made either way -- it must be separately confirmed'],
+            'unresolved':['whether an anti-aliasing filter was actually applied before sampling','whether the declared maximum signal frequency was measured or assumed']}
+
+
+def measurement_difference_significance(params):
+    """Two-independent-measurement significance z-score: given two
+    measured values each with their own standard uncertainty,
+    z=(x1-x2)/sqrt(u1^2+u2^2). A |z|>=2 is the conventional threshold for
+    treating a difference as distinguishable from measurement noise
+    (approximately 95% confidence under a normal-error assumption).
+    Standard statistical hypothesis-testing arithmetic (an application of
+    uncertainty propagation), not a fitted or acoustic-specific model.
+    Hand-verified before use: x1=85.0,u1=0.5,x2=83.0,u2=0.5 -> z=2.828
+    (significant); x1=85.0,u1=2.0,x2=84.0,u2=2.0 -> z=0.354 (not
+    significant)."""
+    schema=json.loads((ROOT/'skills/measurement-difference-significance-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact measurement-difference field contract required')
+    rules=schema['properties']
+    def _bounded(name,*,positive_only=False):
+        value=params[name]; bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError(f'{name} must be a finite numeric value')
+        if positive_only and value<=bound['exclusiveMinimum']:
+            raise ValueError(f'{name} must be positive')
+        if 'maximum' in bound and abs(value)>bound['maximum']:
+            raise ValueError(f'{name} exceeds bounded range')
+        return value
+    x1=_bounded('measurement_1')
+    u1=_bounded('uncertainty_1',positive_only=True)
+    x2=_bounded('measurement_2')
+    u2=_bounded('uncertainty_2',positive_only=True)
+    z_threshold=params['significance_z_threshold']
+    z_bound=rules['significance_z_threshold']
+    if isinstance(z_threshold,bool) or not isinstance(z_threshold,(float,int)) or not math.isfinite(z_threshold) \
+            or z_threshold<=z_bound['exclusiveMinimum'] or z_threshold>z_bound['maximum']:
+        raise ValueError('significance_z_threshold must be a finite, positive, bounded value')
+    difference=x1-x2
+    combined_se=math.sqrt(u1*u1+u2*u2)
+    z_score=difference/combined_se
+    statistically_significant=bool(abs(z_score)>=z_threshold)
+    checks=[{'id':'ABSOLUTE_Z_SCORE_MEETS_THRESHOLD','actual':abs(z_score),'limit':z_threshold,
+             'margin':abs(z_score)-z_threshold,'operator':'>=','passed':statistically_significant,
+             'on_failure':'TREAT_DIFFERENCE_AS_WITHIN_MEASUREMENT_NOISE_NOT_A_REAL_PRODUCT_DIFFERENCE'}]
+    if statistically_significant:
+        disposition='DIFFERENCE_STATISTICALLY_SIGNIFICANT'; required_revisions=[]
+    else:
+        disposition='DIFFERENCE_WITHIN_MEASUREMENT_NOISE'
+        required_revisions=['DO_NOT_CLAIM_A_REAL_PRODUCT_DIFFERENCE_WITHOUT_ADDITIONAL_SAMPLES_OR_LOWER_UNCERTAINTY']
+    return {'difference':difference,'combined_standard_error':combined_se,'z_score':z_score,
+            'statistically_significant':statistically_significant,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the two measurements were not taken under matched conditions (different units, fixtures or environments), confounding a real product difference with a systematic offset',
+                'the declared uncertainties understate the true measurement variability (e.g. from a single sample rather than repeated measurements)',
+                'a genuine but small difference exists that this comparison lacks the precision to detect (a non-significant result is not proof of equivalence)'],
+            'next_discriminating_experiment':'Repeat both measurements under matched conditions with multiple samples to obtain a tighter, empirically-grounded uncertainty estimate' if not statistically_significant else 'Verify the two measurements were taken under genuinely matched conditions before attributing the difference to the product rather than the test setup',
+            'model_assumptions':['each measurement uncertainty is an independent, approximately normal standard error','the two measurements were taken under otherwise matched conditions'],
+            'unresolved':['whether the measurements were taken under truly matched conditions','whether the declared uncertainties reflect real repeated-measurement variability or a single-sample estimate']}
+
+
+def arrhenius_acceleration_factor(params):
+    """Arrhenius reliability acceleration factor: AF=exp((Ea/k)*(1/T_use -
+    1/T_stress)), with Boltzmann constant k=8.617333262e-5 eV/K and
+    temperatures in Kelvin. Standard textbook reliability-engineering
+    model (accelerated life testing), used to translate a stress-
+    temperature test duration into an estimated equivalent use-condition
+    duration for a declared activation energy. Hand-verified before use:
+    Ea=0.7 eV, T_use=25C, T_stress=85C -> AF=95.998 (matching the
+    commonly cited order-of-magnitude for this activation energy and
+    delta-T in electronics reliability literature)."""
+    schema=json.loads((ROOT/'skills/arrhenius-acceleration-factor-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Arrhenius acceleration-factor field contract required')
+    rules=schema['properties']
+    ea_ev=params['activation_energy_ev']
+    ea_bound=rules['activation_energy_ev']
+    if isinstance(ea_ev,bool) or not isinstance(ea_ev,(float,int)) or not math.isfinite(ea_ev) \
+            or ea_ev<=ea_bound['exclusiveMinimum'] or ea_ev>ea_bound['maximum']:
+        raise ValueError('activation_energy_ev must be a finite, positive, bounded eV value')
+    t_use_c=params['use_temperature_c']
+    t_use_bound=rules['use_temperature_c']
+    if isinstance(t_use_c,bool) or not isinstance(t_use_c,(float,int)) or not math.isfinite(t_use_c) \
+            or t_use_c<t_use_bound['minimum'] or t_use_c>t_use_bound['maximum']:
+        raise ValueError('use_temperature_c must be a finite, bounded Celsius value')
+    t_stress_c=params['stress_temperature_c']
+    t_stress_bound=rules['stress_temperature_c']
+    if isinstance(t_stress_c,bool) or not isinstance(t_stress_c,(float,int)) or not math.isfinite(t_stress_c) \
+            or t_stress_c<t_stress_bound['minimum'] or t_stress_c>t_stress_bound['maximum']:
+        raise ValueError('stress_temperature_c must be a finite, bounded Celsius value')
+    if t_stress_c<=t_use_c:
+        raise ValueError('stress_temperature_c must exceed use_temperature_c for an accelerated test')
+    test_duration_h=params['test_duration_hours']
+    duration_bound=rules['test_duration_hours']
+    if isinstance(test_duration_h,bool) or not isinstance(test_duration_h,(float,int)) or not math.isfinite(test_duration_h) \
+            or test_duration_h<=duration_bound['exclusiveMinimum'] or test_duration_h>duration_bound['maximum']:
+        raise ValueError('test_duration_hours must be a finite, positive, bounded hour value')
+    k_ev_per_kelvin=8.617333262e-5
+    t_use_k=t_use_c+273.15
+    t_stress_k=t_stress_c+273.15
+    acceleration_factor=math.exp((ea_ev/k_ev_per_kelvin)*(1.0/t_use_k-1.0/t_stress_k))
+    equivalent_use_hours=test_duration_h*acceleration_factor
+    checks=[{'id':'ACCELERATION_FACTOR_POSITIVE_AND_FINITE','actual':acceleration_factor,'limit':1.0,
+             'margin':acceleration_factor-1.0,'operator':'>=','passed':bool(acceleration_factor>=1.0),
+             'on_failure':'STRESS_TEMPERATURE_MUST_EXCEED_USE_TEMPERATURE_FOR_A_VALID_ACCELERATION_FACTOR'}]
+    disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'acceleration_factor':acceleration_factor,'equivalent_use_hours':equivalent_use_hours,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the declared activation energy is a literature value for a different failure mechanism than the one actually dominant in this product',
+                'the failure mechanism is not purely thermally activated (e.g. involves mechanical fatigue or humidity), making the single-mechanism Arrhenius model inapplicable',
+                'the stress temperature exceeds a threshold where a different (non-Arrhenius) failure mode takes over, invalidating extrapolation from the stress condition'],
+            'next_discriminating_experiment':'Run tests at two or more stress temperatures and fit the activation energy empirically, then compare against the declared literature value',
+            'model_assumptions':['a single, thermally-activated failure mechanism with constant activation energy across the tested temperature range','the declared activation energy accurately represents this product\'s dominant failure mechanism'],
+            'unresolved':['whether the declared activation energy matches this product\'s actual dominant failure mechanism','whether a non-thermal failure mode becomes dominant at the stress temperature']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -849,6 +1060,10 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'measurement-uncertainty-budget-baseline':measurement_uncertainty_budget,
           'audio-path-latency-budget-baseline':audio_path_latency_budget,
           'doe-two-sample-size-baseline':doe_two_sample_size,
+          'rf-link-budget-friis-baseline':rf_link_budget_friis,
+          'nyquist-sampling-check-baseline':nyquist_sampling_check,
+          'measurement-difference-significance-baseline':measurement_difference_significance,
+          'arrhenius-acceleration-factor-baseline':arrhenius_acceleration_factor,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,
