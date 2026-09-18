@@ -21,22 +21,26 @@
   "inputs": {
     "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
     "monte-carlo": "skills/monte-carlo/input.schema.json",
-    "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/input.schema.json"
+    "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/input.schema.json",
+    "tolerance-stack-rss-baseline": "skills/tolerance-stack-rss-baseline/input.schema.json"
   },
   "outputs": {
     "leakage-tolerance": "skills/leakage-tolerance/output.schema.json",
     "monte-carlo": "skills/monte-carlo/output.schema.json",
-    "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/output.schema.json"
+    "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/output.schema.json",
+    "tolerance-stack-rss-baseline": "skills/tolerance-stack-rss-baseline/output.schema.json"
   },
   "required_skills": [
     "leakage-tolerance",
     "monte-carlo",
-    "smartphone-port-mesh-echo-domain-review"
+    "smartphone-port-mesh-echo-domain-review",
+    "tolerance-stack-rss-baseline"
   ],
   "required_methods": [
     "methods/engineering/leakage-tolerance.json",
     "methods/engineering/monte-carlo.json",
-    "methods/roles/smartphone-port-mesh-echo-domain-review.json"
+    "methods/roles/smartphone-port-mesh-echo-domain-review.json",
+    "methods/roles/tolerance-stack-rss-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/leakage-tolerance.json",
@@ -148,7 +152,7 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260917T143330Z-d14f8f11"
+    ".aeris\\evidence\\RUN-20260918T001853Z-4c90de85"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
@@ -158,12 +162,14 @@
     "required_methods": [
       "methods/engineering/leakage-tolerance.json",
       "methods/engineering/monte-carlo.json",
-      "methods/roles/smartphone-port-mesh-echo-domain-review.json"
+      "methods/roles/smartphone-port-mesh-echo-domain-review.json",
+      "methods/roles/tolerance-stack-rss-baseline.json"
     ],
     "required_skills": [
       "leakage-tolerance",
       "monte-carlo",
-      "smartphone-port-mesh-echo-domain-review"
+      "smartphone-port-mesh-echo-domain-review",
+      "tolerance-stack-rss-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -185,6 +191,12 @@
       "method": "methods/roles/smartphone-port-mesh-echo-domain-review.json",
       "suite": "golden/roles/R077/smartphone.json",
       "scope": "Independent smartphone port/mesh/echo budget assertion review; no physical transfer, AEC, user-population or Human approval."
+    },
+    {
+      "skill_id": "tolerance-stack-rss-baseline",
+      "method": "methods/roles/tolerance-stack-rss-baseline.json",
+      "suite": "golden/roles/R077/tolerance-stack.json",
+      "scope": "Bounded worst-case and RSS dimensional tolerance stack-up from declared contributor tolerances; not measured process capability or physical assembled-sample verification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -204,7 +216,8 @@
     "calculation_schemas": {
       "leakage-tolerance": "skills/leakage-tolerance/input.schema.json",
       "monte-carlo": "skills/monte-carlo/input.schema.json",
-      "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/input.schema.json"
+      "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/input.schema.json",
+      "tolerance-stack-rss-baseline": "skills/tolerance-stack-rss-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -219,7 +232,8 @@
     "calculation_schemas": {
       "leakage-tolerance": "skills/leakage-tolerance/output.schema.json",
       "monte-carlo": "skills/monte-carlo/output.schema.json",
-      "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/output.schema.json"
+      "smartphone-port-mesh-echo-domain-review": "skills/smartphone-port-mesh-echo-domain-review/output.schema.json",
+      "tolerance-stack-rss-baseline": "skills/tolerance-stack-rss-baseline/output.schema.json"
     }
   },
   "report_sections": [

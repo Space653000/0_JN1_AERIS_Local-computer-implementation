@@ -343,6 +343,118 @@ def binaural_itd_spherical_head(params):
                           'frequency-dependent behavior across the full audible band']}
 
 
+def tolerance_stack_rss(params):
+    """Standard statistical dimensional-tolerance stack-up: worst-case
+    (arithmetic sum, assumes every contributor sits at its extreme
+    simultaneously) versus RSS/root-sum-square (assumes independent,
+    normally-distributed contributors) -- textbook GD&T/tolerance-analysis
+    method, sanity-checked against the classic 3-4-5 triangle
+    (sqrt(3^2+4^2)=5) before writing this. The real engineering value is
+    the DISCRIMINATION between the two: a stack that fails worst-case but
+    passes RSS is a common, real, defensible middle ground (assuming the
+    contributors really are independent), not a rounding artifact -- it
+    gets its own disposition rather than being collapsed into a single
+    pass/fail."""
+    schema=json.loads((ROOT/'skills/tolerance-stack-rss-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact tolerance-stack SI-unit field contract required')
+    contributors=params.get('contributor_tolerances_mm')
+    rules=schema['properties']['contributor_tolerances_mm']
+    if not isinstance(contributors,list) or not rules['minItems']<=len(contributors)<=rules['maxItems']:
+        raise ValueError('bounded contributor tolerance list required')
+    for value in contributors:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<=0 or value>rules['items']['maximum']:
+            raise ValueError('each contributor tolerance must be a finite, positive, bounded mm value')
+    limit=params['maximum_acceptable_gap_mm']
+    if isinstance(limit,bool) or not isinstance(limit,(float,int)) or not math.isfinite(limit) or limit<=0:
+        raise ValueError('maximum_acceptable_gap_mm must be a finite positive value')
+    worst_case=sum(contributors)
+    rss=math.sqrt(sum(t*t for t in contributors))
+    worst_case_ok=worst_case<=limit; rss_ok=rss<=limit
+    checks=[{'id':'WORST_CASE_STACK_MM','actual':worst_case,'limit':limit,'margin':limit-worst_case,
+             'operator':'<=','passed':bool(worst_case_ok),'on_failure':'REDUCE_CONTRIBUTOR_TOLERANCES_OR_COUNT'},
+            {'id':'RSS_STACK_MM','actual':rss,'limit':limit,'margin':limit-rss,
+             'operator':'<=','passed':bool(rss_ok),'on_failure':'REDUCE_CONTRIBUTOR_TOLERANCES_OR_VERIFY_INDEPENDENCE'}]
+    if not rss_ok:
+        disposition='TOLERANCE_STACK_EXCEEDS_SPEC_EVEN_STATISTICALLY'
+        required_revisions=['REDUCE_CONTRIBUTOR_TOLERANCES_OR_COUNT_BEFORE_RELEASE']
+    elif not worst_case_ok:
+        disposition='WITHIN_STATISTICAL_RSS_BUT_NOT_WORST_CASE'
+        required_revisions=['CONFIRM_CONTRIBUTORS_ARE_STATISTICALLY_INDEPENDENT_BEFORE_RELYING_ON_RSS']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'worst_case_stack_mm':worst_case,'rss_stack_mm':rss,'checks':checks,'disposition':disposition,
+            'required_revisions':required_revisions,
+            'counter_hypotheses':['contributors are not actually statistically independent (shared datum or correlated process step) rather than genuinely independent',
+                'declared values are specification limits rather than measured process capability (Cpk), overstating the true spread the RSS assumption expects',
+                'a non-normal or skewed contributor distribution rather than the assumed near-normal spread'],
+            'next_discriminating_experiment':'Measure the actual assembled-gap distribution across a real production sample and compare its standard deviation against the RSS prediction' if rss_ok else 'Identify which contributor(s) dominate the sum of squares and tighten those first',
+            'model_assumptions':['contributor tolerances are independent random variables, not a worst-case guarantee','a near-normal distribution for each contributor, consistent with the RSS combination rule','no correlation from a shared datum, fixture, or process step across contributors'],
+            'unresolved':['measured process capability (Cpk) for each contributor','physical assembled-sample verification of the combined distribution',
+                          'correlation between contributors from a shared manufacturing datum']}
+
+
+def audio_clock_drift_buffer_margin(params):
+    """Digital-audio clock-drift buffer-margin baseline: given two audio
+    clock domains' frequency error in ppm (parts-per-million -- a standard
+    definition, error_hz/nominal_hz*1e6) and a shared-buffer resync
+    interval, computes the accumulated sample drift and whether it
+    exceeds the buffer's half-full margin before the next resync/ASRC
+    correction. This is direct arithmetic from the ppm definition itself
+    (drift_samples_per_s = sample_rate_hz * |ppm_a-ppm_b| * 1e-6), not a
+    fitted or externally-sourced model -- hand-verified before writing
+    this (e.g. 48000 Hz, 100 ppm relative error -> 4.8 samples/s drift)."""
+    schema=json.loads((ROOT/'skills/audio-clock-drift-buffer-margin-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact clock-drift SI-unit field contract required')
+    rules=schema['properties']
+    sample_rate=params['nominal_sample_rate_hz']
+    sample_rate_bound=rules['nominal_sample_rate_hz']
+    if isinstance(sample_rate,bool) or not isinstance(sample_rate,(float,int)) or not math.isfinite(sample_rate) \
+            or sample_rate<=sample_rate_bound['exclusiveMinimum'] or sample_rate>sample_rate_bound['maximum']:
+        raise ValueError('nominal_sample_rate_hz must be a finite, positive, bounded Hz value')
+    source_ppm=params['source_clock_ppm_error']
+    sink_ppm=params['sink_clock_ppm_error']
+    for name,value in (('source_clock_ppm_error',source_ppm),('sink_clock_ppm_error',sink_ppm)):
+        bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or abs(value)>bound['maximum']:
+            raise ValueError(f'{name} must be a finite, bounded ppm value')
+    buffer_samples=params['buffer_size_samples']
+    if isinstance(buffer_samples,bool) or not isinstance(buffer_samples,int) or buffer_samples<=0 or buffer_samples>rules['buffer_size_samples']['maximum']:
+        raise ValueError('buffer_size_samples must be a positive bounded integer')
+    resync_s=params['resync_interval_s']
+    resync_bound=rules['resync_interval_s']
+    if isinstance(resync_s,bool) or not isinstance(resync_s,(float,int)) or not math.isfinite(resync_s) \
+            or resync_s<=resync_bound['exclusiveMinimum'] or resync_s>resync_bound['maximum']:
+        raise ValueError('resync_interval_s must be a finite, positive, bounded second value')
+    relative_ppm=abs(source_ppm-sink_ppm)
+    drift_rate_samples_per_s=sample_rate*relative_ppm*1e-6
+    accumulated_drift_samples=drift_rate_samples_per_s*resync_s
+    half_buffer_samples=buffer_samples/2
+    margin_samples=half_buffer_samples-accumulated_drift_samples
+    time_to_exhaust_half_buffer_s=(half_buffer_samples/drift_rate_samples_per_s) if drift_rate_samples_per_s>0 else None
+    margin_ok=bool(margin_samples>=0)
+    checks=[{'id':'HALF_BUFFER_MARGIN_SAMPLES','actual':accumulated_drift_samples,'limit':half_buffer_samples,
+             'margin':margin_samples,'operator':'<=','passed':margin_ok,
+             'on_failure':'SHORTEN_RESYNC_INTERVAL_OR_ENABLE_ASRC_OR_INCREASE_BUFFER'}]
+    if not margin_ok:
+        disposition='BUFFER_MARGIN_EXCEEDED_BEFORE_RESYNC'
+        required_revisions=['SHORTEN_RESYNC_INTERVAL_OR_ENABLE_CONTINUOUS_ASRC_OR_INCREASE_BUFFER_SIZE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'relative_ppm_error':relative_ppm,'drift_rate_samples_per_s':drift_rate_samples_per_s,
+            'accumulated_drift_samples':accumulated_drift_samples,'margin_samples':margin_samples,
+            'time_to_exhaust_half_buffer_s':time_to_exhaust_half_buffer_s,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the two clocks are not actually free-running at their nominal ppm error but already share a hardware sync/PLL, making the assumed independent drift too pessimistic',
+                'real clock error is not constant ppm but temperature- or aging-dependent, so the drift rate itself varies over the resync interval rather than staying fixed',
+                'the OS/driver already runs continuous small-step resampling (ASRC) rather than a single hard resync at the end of the interval, understating the true available margin'],
+            'next_discriminating_experiment':'Measure the real sample-count drift between the two clock domains over one full resync interval on the actual hardware/driver stack and compare against this prediction' if margin_ok else 'Identify whether the source or sink clock dominates the ppm error and correct or recalibrate that one first',
+            'model_assumptions':['each clock domain has a constant, independent ppm frequency error over the resync interval','no continuous ASRC/resampling correction between resyncs','the buffer nominally sits half-full, so drift in either direction consumes the same half-buffer margin'],
+            'unresolved':['measured real-hardware clock ppm error for the specific source/sink pair','whether the platform already performs continuous ASRC rather than periodic resync',
+                          'temperature or aging dependence of the actual clock error']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -400,6 +512,8 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'porous-material-absorption-baseline':porous_material_absorption,
           'sensor-fusion-doa-imu-baseline':sensor_fusion_doa_imu,
           'binaural-itd-spherical-head-baseline':binaural_itd_spherical_head,
+          'tolerance-stack-rss-baseline':tolerance_stack_rss,
+          'audio-clock-drift-buffer-margin-baseline':audio_clock_drift_buffer_margin,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

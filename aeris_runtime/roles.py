@@ -47,25 +47,38 @@ _GROUP_ZH = {
     "Distinguished Experts": "特聘領域專家",
     "Engineering Ops": "工程營運團隊",
 }
-_NAME_ZH = {
-    "Chief Acoustic Architect": "首席聲學架構師",
-    "Speaker Engineering Director": "揚聲器工程總監",
-    "Microphone Engineering Director": "麥克風工程總監",
-    "Product Audio System Architect": "產品音訊系統架構師",
-    "Patent / Prior-Art Intelligence Engineer": "專利與先前技術情報工程師",
-    "International Standards & Regulation Engineer": "國際標準與法規工程師",
-    "AEC / Echo Control Engineer": "AEC／回音控制工程師",
-    "Beamforming / DOA Engineer": "波束成形／DOA 工程師",
-    "Speaker Measurement Engineer": "揚聲器量測工程師",
-    "Microphone Measurement Engineer": "麥克風量測工程師",
-}
+_ROLE_ZH_PATH = ROOT / "company" / "organization" / "roles_zh_tw.json"
+
+
+def _role_zh_table() -> dict[str, dict[str, str]]:
+    cached = getattr(_role_zh_table, "_cache", None)
+    if cached is not None:
+        return cached
+    table = json.loads(_ROLE_ZH_PATH.read_text(encoding="utf-8-sig"))["roles"]
+    _role_zh_table._cache = table  # type: ignore[attr-defined]
+    return table
+
 
 def _display_fields(role_id: int, name: str, group: str) -> dict[str, str]:
-    """Authoritative zh-TW presentation fields; canonical IDs/names remain unchanged."""
+    """Authoritative zh-TW presentation fields; canonical IDs/names remain unchanged.
+
+    display_name/display_description are real per-role translations sourced
+    from company/organization/roles_zh_tw.json (each role's own mission),
+    not a generic templated placeholder -- falls back honestly (English name,
+    UNKNOWN mission) only for a role_id missing from that table, rather than
+    inventing a plausible-looking Chinese sentence.
+    """
+    entry = _role_zh_table().get(f"R{role_id:03d}")
+    if entry:
+        return {
+            "display_name": entry["name_zh"],
+            "display_group": _GROUP_ZH.get(group, group),
+            "display_description": entry["mission_zh"],
+        }
     return {
-        "display_name": _NAME_ZH.get(name, f"角色 {role_id:03d} 專業工程席位"),
+        "display_name": name,
         "display_group": _GROUP_ZH.get(group, group),
-        "display_description": f"{_GROUP_ZH.get(group, group)}第 {role_id:03d} 席，負責本機工程分析、證據追溯與獨立審查。",
+        "display_description": "UNKNOWN（尚無此角色的繁體中文職能翻譯，未捏造內容）",
     }
 
 

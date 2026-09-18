@@ -326,6 +326,12 @@ ROLE_DOMAIN_CONTRACTS['R080']=[{
 ROLE_DOMAIN_CONTRACTS['R080'].append({
     'skill_id':'sensor-fusion-doa-imu-baseline','method':'methods/roles/sensor-fusion-doa-imu-baseline.json',
     'suite':'golden/roles/R080/sensor-fusion.json','scope':'Bounded inverse-variance circular fusion of an IMU heading and an acoustic DOA estimate; not physical bench-verified sensor fusion.'})
+ROLE_DOMAIN_CONTRACTS['R077'].append({
+    'skill_id':'tolerance-stack-rss-baseline','method':'methods/roles/tolerance-stack-rss-baseline.json',
+    'suite':'golden/roles/R077/tolerance-stack.json','scope':'Bounded worst-case and RSS dimensional tolerance stack-up from declared contributor tolerances; not measured process capability or physical assembled-sample verification.'})
+ROLE_DOMAIN_CONTRACTS['R082'].append({
+    'skill_id':'audio-clock-drift-buffer-margin-baseline','method':'methods/roles/audio-clock-drift-buffer-margin-baseline.json',
+    'suite':'golden/roles/R082/clock-drift.json','scope':'Bounded digital-audio clock-drift buffer-margin check between two clock domains from declared ppm frequency errors; not measured real-hardware clock behavior or continuous-ASRC verification.'})
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',

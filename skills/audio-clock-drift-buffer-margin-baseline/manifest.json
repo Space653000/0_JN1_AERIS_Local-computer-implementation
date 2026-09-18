@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "audio-clock-drift-buffer-margin-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/audio-clock-drift-buffer-margin-baseline.json",
+  "input_schema": "skills/audio-clock-drift-buffer-margin-baseline/input.schema.json",
+  "output_schema": "skills/audio-clock-drift-buffer-margin-baseline/output.schema.json",
+  "role_mappings": ["R082"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded digital-audio clock-drift accumulation and buffer-margin check between two clock domains from declared ppm frequency errors; not measured real-hardware clock behavior or continuous-ASRC verification"
+}

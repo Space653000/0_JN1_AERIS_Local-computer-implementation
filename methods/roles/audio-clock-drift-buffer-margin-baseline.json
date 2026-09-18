@@ -1,0 +1,17 @@
+{
+  "method_id":"audio-clock-drift-buffer-margin-baseline", "version":"1.0.0", "role":"R082",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:audio_clock_drift_buffer_margin",
+  "applicability":"Digital-audio clock-drift buffer-margin check between two independent clock domains sharing a fixed-size buffer with periodic resync",
+  "equations":{
+    "relative_ppm_error":"abs(ppm_source - ppm_sink)",
+    "drift_rate_samples_per_s":"sample_rate_hz * relative_ppm_error * 1e-6",
+    "accumulated_drift_samples":"drift_rate_samples_per_s * resync_interval_s",
+    "margin_samples":"buffer_size_samples/2 - accumulated_drift_samples"
+  },
+  "assumptions":["each clock domain has a constant, independent ppm frequency error over the resync interval","no continuous ASRC/resampling correction between resyncs","buffer nominally sits half-full so drift in either direction consumes the same half-buffer margin"],
+  "excluded":["measured real-hardware clock ppm error","temperature or aging-dependent ppm drift","continuous ASRC systems that never hit a hard resync boundary"],
+  "uncertainty":"Direct arithmetic from the standard ppm (parts-per-million frequency error) definition, not a fitted or externally-sourced coefficient; hand-verified before use (e.g. 48000 Hz at 100 ppm relative error -> 4.8 samples/s).",
+  "limits_policy":"Explicit caller-declared buffer size and resync interval, not a presumed platform default.",
+  "golden_tests":"tests/test_audio_clock_drift_domain.py"
+}

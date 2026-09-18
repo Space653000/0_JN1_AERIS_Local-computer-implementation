@@ -21,22 +21,26 @@
   "inputs": {
     "latency-budget": "skills/latency-budget/input.schema.json",
     "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-    "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/input.schema.json"
+    "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/input.schema.json",
+    "audio-clock-drift-buffer-margin-baseline": "skills/audio-clock-drift-buffer-margin-baseline/input.schema.json"
   },
   "outputs": {
     "latency-budget": "skills/latency-budget/output.schema.json",
     "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-    "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/output.schema.json"
+    "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/output.schema.json",
+    "audio-clock-drift-buffer-margin-baseline": "skills/audio-clock-drift-buffer-margin-baseline/output.schema.json"
   },
   "required_skills": [
     "latency-budget",
     "transfer-coherence",
-    "gaming-communication-latency-domain-review"
+    "gaming-communication-latency-domain-review",
+    "audio-clock-drift-buffer-margin-baseline"
   ],
   "required_methods": [
     "methods/engineering/latency-budget.json",
     "methods/engineering/transfer-coherence.json",
-    "methods/roles/gaming-communication-latency-domain-review.json"
+    "methods/roles/gaming-communication-latency-domain-review.json",
+    "methods/roles/audio-clock-drift-buffer-margin-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/latency-budget.json",
@@ -148,7 +152,7 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260917T143333Z-826b3b89"
+    ".aeris\\evidence\\RUN-20260918T001855Z-6a91d1c9"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
@@ -158,12 +162,14 @@
     "required_methods": [
       "methods/engineering/latency-budget.json",
       "methods/engineering/transfer-coherence.json",
-      "methods/roles/gaming-communication-latency-domain-review.json"
+      "methods/roles/gaming-communication-latency-domain-review.json",
+      "methods/roles/audio-clock-drift-buffer-margin-baseline.json"
     ],
     "required_skills": [
       "latency-budget",
       "transfer-coherence",
-      "gaming-communication-latency-domain-review"
+      "gaming-communication-latency-domain-review",
+      "audio-clock-drift-buffer-margin-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -185,6 +191,12 @@
       "method": "methods/roles/gaming-communication-latency-domain-review.json",
       "suite": "golden/roles/R082/gaming-headset.json",
       "scope": "Independent gaming communication budget assertion review; no codec/network, OS-driver, speech-quality or Human approval."
+    },
+    {
+      "skill_id": "audio-clock-drift-buffer-margin-baseline",
+      "method": "methods/roles/audio-clock-drift-buffer-margin-baseline.json",
+      "suite": "golden/roles/R082/clock-drift.json",
+      "scope": "Bounded digital-audio clock-drift buffer-margin check between two clock domains from declared ppm frequency errors; not measured real-hardware clock behavior or continuous-ASRC verification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -204,7 +216,8 @@
     "calculation_schemas": {
       "latency-budget": "skills/latency-budget/input.schema.json",
       "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-      "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/input.schema.json"
+      "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/input.schema.json",
+      "audio-clock-drift-buffer-margin-baseline": "skills/audio-clock-drift-buffer-margin-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -219,7 +232,8 @@
     "calculation_schemas": {
       "latency-budget": "skills/latency-budget/output.schema.json",
       "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-      "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/output.schema.json"
+      "gaming-communication-latency-domain-review": "skills/gaming-communication-latency-domain-review/output.schema.json",
+      "audio-clock-drift-buffer-margin-baseline": "skills/audio-clock-drift-buffer-margin-baseline/output.schema.json"
     }
   },
   "report_sections": [
