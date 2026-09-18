@@ -118,5 +118,9 @@
   "rf-link-budget-friis-baseline": "以 Friis 自由空間傳輸方程式，依發射功率、天線增益、頻率與距離計算自由空間路徑損耗與接收功率，判定無線音訊連線是否在宣告的接收靈敏度之上仍有餘裕；不含協定認證或實際環境電波量測",
   "nyquist-sampling-check-baseline": "以夏農-奈奎斯特取樣定理，檢查宣告的取樣率是否至少為最大訊號頻率的兩倍，判定是否有混疊風險；不含實際頻譜混疊量測",
   "measurement-difference-significance-baseline": "以 z 分數計算兩個獨立量測值（各附不確定度）之差異是否具統計顯著性，避免把量測雜訊誤判為真實產品差異；不含比對條件是否對齊的驗證",
-  "arrhenius-acceleration-factor-baseline": "以 Arrhenius 可靠度加速因子公式，依宣告的活化能與使用／應力溫度計算加速壽命測試對應的等效使用時數；不含活化能的實驗擬合或失效機制驗證"
+  "arrhenius-acceleration-factor-baseline": "以 Arrhenius 可靠度加速因子公式，依宣告的活化能與使用／應力溫度計算加速壽命測試對應的等效使用時數；不含活化能的實驗擬合或失效機制驗證",
+  "wilson-score-accuracy-interval-baseline": "以 Wilson score 信賴區間計算宣告的分類準確率在該測試集大小下的 95% 信賴區間，判定該準確率宣稱是否有統計支持；不含模型泛化能力或部署分布的保證",
+  "process-capability-cpk-baseline": "依宣告的規格上下限與製程平均值／標準差計算製程能力指數 Cpk，判定是否達到最低可接受值；不含管制圖對製程穩定性的實證驗證",
+  "acceptance-sampling-oc-probability-baseline": "以二項式允收抽樣操作特性（OC）曲線，依樣本數、允收數與假設不良率計算允收機率，判定抽樣計畫在該不良率下是否可靠；不含完整生產者／消費者風險研究",
+  "ucb1-next-experiment-bound-baseline": "以 UCB1 信賴上界演算法，依觀測平均報酬與試驗次數計算候選下一實驗的探索加分與總分，並以獨立評估的風險關卡布林值強制把關，分數不得凌駕風控；不含風險關卡本身的評估"
 }

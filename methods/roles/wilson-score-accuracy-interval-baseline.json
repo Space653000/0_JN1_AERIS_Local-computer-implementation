@@ -1,0 +1,15 @@
+{
+  "method_id":"wilson-score-accuracy-interval-baseline", "version":"1.0.0", "role":"R084",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:wilson_score_accuracy_interval",
+  "applicability":"Wilson score confidence interval checking whether a claimed classification accuracy is statistically supported by the declared test-set size",
+  "equations":{
+    "wilson_center":"(phat+z^2/(2n))/(1+z^2/n)",
+    "wilson_margin":"(z/(1+z^2/n))*sqrt(phat*(1-phat)/n+z^2/(4n^2))"
+  },
+  "assumptions":["test samples are independent and identically distributed","the test set is representative of the real deployment distribution"],
+  "excluded":["generalization to unseen deployment distributions","detection of data leakage between training/model-selection and test"],
+  "uncertainty":"Standard textbook inferential statistics (Wilson 1927); hand-verified before use (95/100 -> CI approx (0.888,0.978); 9/10 -> CI approx (0.596,0.982)).",
+  "limits_policy":"An accuracy claim whose interval lower bound falls below the declared minimum is flagged as unsupported rather than accepted.",
+  "golden_tests":"tests/test_wilson_score_accuracy_interval_domain.py"
+}

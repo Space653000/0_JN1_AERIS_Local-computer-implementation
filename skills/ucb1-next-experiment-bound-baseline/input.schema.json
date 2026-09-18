@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["observed_mean_reward", "total_trials_across_all_arms", "this_arm_trials", "risk_gate_passed"],
+  "properties": {
+    "observed_mean_reward": {"type": "number", "minimum": -1000000, "maximum": 1000000},
+    "total_trials_across_all_arms": {"type": "integer", "minimum": 2, "maximum": 100000000},
+    "this_arm_trials": {"type": "integer", "minimum": 1, "maximum": 100000000},
+    "risk_gate_passed": {"type": "boolean"}
+  }
+}

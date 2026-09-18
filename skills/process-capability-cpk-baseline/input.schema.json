@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["upper_spec_limit", "lower_spec_limit", "process_mean", "process_sigma", "minimum_acceptable_cpk"],
+  "properties": {
+    "upper_spec_limit": {"type": "number", "minimum": -1000000, "maximum": 1000000},
+    "lower_spec_limit": {"type": "number", "minimum": -1000000, "maximum": 1000000},
+    "process_mean": {"type": "number", "minimum": -1000000, "maximum": 1000000},
+    "process_sigma": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000},
+    "minimum_acceptable_cpk": {"type": "number", "exclusiveMinimum": 0, "maximum": 10}
+  }
+}

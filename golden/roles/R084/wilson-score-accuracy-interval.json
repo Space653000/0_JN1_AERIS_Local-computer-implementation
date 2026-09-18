@@ -1,0 +1,23 @@
+{
+  "suite_id":"R084-WILSON-SCORE-ACCURACY-INTERVAL-DOMAIN-V1", "role_id":"R084",
+  "skill_id":"wilson-score-accuracy-interval-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Wilson (1927) score confidence interval, standard textbook inferential statistics; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded statistical-support check for a claimed classification accuracy; not a generalization or deployment-distribution guarantee.",
+  "base_input":{
+    "correct_predictions":95,"total_predictions":100,"minimum_acceptable_lower_bound":0.85
+  },
+  "cases":[
+    {"id":"ACCURACY-95-OF-100-SUPPORTED","kind":"positive","question":"Does 95/100 accuracy produce a confidence interval whose lower bound clears an 0.85 minimum?","input_overrides":{},
+     "checks":[{"path":"point_accuracy","expected":0.95,"absolute_tolerance":0.000001},
+               {"path":"ci95_low","expected":0.8882495307680808,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ACCURACY-9-OF-10-SMALL-N-UNSUPPORTED","kind":"boundary","question":"Does the same 90% point accuracy from only 10 samples fail to clear the same 0.85 minimum, correctly reflecting that small test sets cannot support tight claims?","input_overrides":{"correct_predictions":9,"total_predictions":10},
+     "checks":[{"path":"ci95_low","expected":0.5958499732047615,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"ACCURACY_CLAIM_NOT_SUPPORTED_AT_THIS_TEST_SET_SIZE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"ACCURACY-INVALID-MORE-CORRECT-THAN-TOTAL-REJECTED","kind":"negative","question":"Must a claimed correct-prediction count exceeding the total be rejected rather than silently used?","input_overrides":{"correct_predictions":101},"expected_error":"ValueError"},
+    {"id":"ACCURACY-LARGER-N-NARROWS-INTERVAL","kind":"counter_hypothesis","question":"At the identical 95% point accuracy, does a much larger test set narrow the confidence interval, discriminating a genuine sample-size effect from noise?","input_overrides":{"correct_predictions":950,"total_predictions":1000},
+     "checks":[{"path":"point_accuracy","expected":0.95,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]}
+  ]
+}

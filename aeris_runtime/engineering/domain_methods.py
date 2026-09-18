@@ -995,6 +995,215 @@ def arrhenius_acceleration_factor(params):
             'unresolved':['whether the declared activation energy matches this product\'s actual dominant failure mechanism','whether a non-thermal failure mode becomes dominant at the stress temperature']}
 
 
+def wilson_score_accuracy_interval(params):
+    """Wilson score confidence interval for a binomial proportion
+    (Wilson 1927): given k successes out of n trials, computes a 95% CI
+    that behaves correctly near 0/1 (unlike the naive normal-
+    approximation interval). Used here to check whether a claimed ML
+    classification accuracy is well-supported by the declared test-set
+    size, rather than accepting training-set fit alone. Standard
+    textbook inferential statistics. Hand-verified before use: 95/100 ->
+    CI approx (0.888,0.978); 9/10 (same 90% point accuracy, far smaller
+    n) -> CI approx (0.596,0.982), a much wider interval showing the
+    small test set cannot support as tight a claim."""
+    schema=json.loads((ROOT/'skills/wilson-score-accuracy-interval-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Wilson-score field contract required')
+    rules=schema['properties']
+    successes=params['correct_predictions']
+    n=params['total_predictions']
+    if isinstance(n,bool) or not isinstance(n,int) or n<rules['total_predictions']['minimum'] or n>rules['total_predictions']['maximum']:
+        raise ValueError('total_predictions must be a bounded positive integer')
+    if isinstance(successes,bool) or not isinstance(successes,int) or successes<0 or successes>n:
+        raise ValueError('correct_predictions must be a non-negative integer no greater than total_predictions')
+    min_lower_bound=params['minimum_acceptable_lower_bound']
+    bound=rules['minimum_acceptable_lower_bound']
+    if isinstance(min_lower_bound,bool) or not isinstance(min_lower_bound,(float,int)) or not math.isfinite(min_lower_bound) \
+            or min_lower_bound<bound['minimum'] or min_lower_bound>bound['maximum']:
+        raise ValueError('minimum_acceptable_lower_bound must be a finite value between 0 and 1')
+    z=1.959963984540054
+    phat=successes/n
+    denom=1+z*z/n
+    center=(phat+z*z/(2*n))/denom
+    margin=(z/denom)*math.sqrt(phat*(1-phat)/n+z*z/(4*n*n))
+    ci_low=max(0.0,center-margin); ci_high=min(1.0,center+margin)
+    meets_bound=bool(ci_low>=min_lower_bound)
+    checks=[{'id':'CI_LOWER_BOUND_MEETS_MINIMUM','actual':ci_low,'limit':min_lower_bound,'margin':ci_low-min_lower_bound,
+             'operator':'>=','passed':meets_bound,'on_failure':'COLLECT_A_LARGER_TEST_SET_OR_LOWER_THE_ACCURACY_CLAIM'}]
+    if not meets_bound:
+        disposition='ACCURACY_CLAIM_NOT_SUPPORTED_AT_THIS_TEST_SET_SIZE'
+        required_revisions=['COLLECT_MORE_TEST_SAMPLES_BEFORE_CLAIMING_THIS_ACCURACY_LEVEL']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'point_accuracy':phat,'ci95_low':ci_low,'ci95_high':ci_high,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the test set is not representative of real deployment conditions, so a supported interval on this set still overstates real-world accuracy',
+                'the test samples are not independent (e.g. correlated frames from the same recording), making the binomial independence assumption invalid and the interval too narrow',
+                'the reported successes/total come from the same data used for model selection, contaminating the estimate with selection bias'],
+            'next_discriminating_experiment':'Evaluate on an additional, held-out test set collected independently to confirm the interval holds' if meets_bound else 'Collect additional independent test samples to narrow the confidence interval before relying on this accuracy claim',
+            'model_assumptions':['test samples are independent and identically distributed','the test set is representative of the real deployment distribution','no data leakage between training/model-selection and this test set'],
+            'unresolved':['whether the test set is truly representative of deployment conditions','whether test samples are independent or correlated','whether model selection used this same test set']}
+
+
+def process_capability_cpk(params):
+    """Process Capability Index Cpk: Cpu=(USL-mean)/(3*sigma),
+    Cpl=(mean-LSL)/(3*sigma), Cpk=min(Cpu,Cpl). Standard textbook
+    statistical process control (SPC), used to set factory EOL decision
+    limits from declared process mean/spread against specification
+    limits -- Cpk (unlike Cp) correctly penalizes an off-center process.
+    Hand-verified before use: USL=10,LSL=0,mean=5,sigma=1 -> centered,
+    Cpu=Cpl=Cpk=1.667; USL=10,LSL=0,mean=8,sigma=1 -> off-center,
+    Cpu=0.667, Cpl=2.667, Cpk=0.667 (the constraining side)."""
+    schema=json.loads((ROOT/'skills/process-capability-cpk-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Cpk field contract required')
+    rules=schema['properties']
+    usl=params['upper_spec_limit']
+    lsl=params['lower_spec_limit']
+    mean=params['process_mean']
+    sigma=params['process_sigma']
+    min_cpk=params['minimum_acceptable_cpk']
+    for name,value in (('upper_spec_limit',usl),('lower_spec_limit',lsl),('process_mean',mean)):
+        bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) \
+                or value<bound['minimum'] or value>bound['maximum']:
+            raise ValueError(f'{name} must be a finite, bounded value')
+    sigma_bound=rules['process_sigma']
+    if isinstance(sigma,bool) or not isinstance(sigma,(float,int)) or not math.isfinite(sigma) \
+            or sigma<=sigma_bound['exclusiveMinimum'] or sigma>sigma_bound['maximum']:
+        raise ValueError('process_sigma must be a finite, positive, bounded value')
+    if usl<=lsl:
+        raise ValueError('upper_spec_limit must exceed lower_spec_limit')
+    min_cpk_bound=rules['minimum_acceptable_cpk']
+    if isinstance(min_cpk,bool) or not isinstance(min_cpk,(float,int)) or not math.isfinite(min_cpk) \
+            or min_cpk<=min_cpk_bound['exclusiveMinimum'] or min_cpk>min_cpk_bound['maximum']:
+        raise ValueError('minimum_acceptable_cpk must be a finite, positive, bounded value')
+    cpu=(usl-mean)/(3*sigma)
+    cpl=(mean-lsl)/(3*sigma)
+    cpk=min(cpu,cpl)
+    meets_minimum=bool(cpk>=min_cpk)
+    checks=[{'id':'CPK_MEETS_MINIMUM','actual':cpk,'limit':min_cpk,'margin':cpk-min_cpk,
+             'operator':'>=','passed':meets_minimum,'on_failure':'RECENTER_PROCESS_OR_REDUCE_VARIATION_BEFORE_RELEASE'}]
+    if not meets_minimum:
+        disposition='CPK_BELOW_MINIMUM_ACCEPTABLE'
+        required_revisions=['RECENTER_THE_PROCESS_TOWARD_THE_CONSTRAINING_SPEC_LIMIT_OR_REDUCE_PROCESS_VARIATION']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'cpu':cpu,'cpl':cpl,'cpk':cpk,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the declared process mean and sigma are estimated from too small a sample to be a reliable characterization of the true process',
+                'the process distribution is significantly non-normal, making the 3-sigma-based Cpk interpretation (and its implied defect rate) inaccurate',
+                'the process is not currently in statistical control (special-cause variation present), so a single static Cpk snapshot does not represent ongoing capability'],
+            'next_discriminating_experiment':'Collect a larger, time-ordered sample and run a control chart to confirm the process is in statistical control before trusting this Cpk' if meets_minimum else 'Identify whether centering the process or reducing variation more cost-effectively restores the required Cpk',
+            'model_assumptions':['the process output is approximately normally distributed','the declared mean and sigma are representative of the true, stable process','the process is in a state of statistical control'],
+            'unresolved':['whether the process is currently in statistical control','whether the underlying distribution is significantly non-normal','sample size backing the declared mean and sigma estimates']}
+
+
+def acceptance_sampling_oc_probability(params):
+    """Binomial acceptance-sampling operating-characteristic (OC) curve
+    point: given a sample size n, acceptance number c (accept the lot if
+    c or fewer defects are found), and an assumed true lot defect rate p,
+    computes the probability of accepting the lot,
+    P(accept)=sum_{k=0}^{c} C(n,k)*p^k*(1-p)^(n-k). Standard textbook
+    acceptance-sampling statistics (binomial distribution), used to check
+    supplier incoming-inspection risk at a declared defect rate. Hand-
+    verified before use: n=50,c=1,p=0.01 -> P(accept)=0.9106 (good lots
+    usually pass); n=50,c=1,p=0.05 -> P(accept)=0.2794 (bad lots usually
+    caught)."""
+    schema=json.loads((ROOT/'skills/acceptance-sampling-oc-probability-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact acceptance-sampling field contract required')
+    rules=schema['properties']
+    n=params['sample_size']
+    n_bound=rules['sample_size']
+    if isinstance(n,bool) or not isinstance(n,int) or n<n_bound['minimum'] or n>n_bound['maximum']:
+        raise ValueError('sample_size must be a bounded positive integer')
+    c=params['acceptance_number']
+    c_bound=rules['acceptance_number']
+    if isinstance(c,bool) or not isinstance(c,int) or c<c_bound['minimum'] or c>n:
+        raise ValueError('acceptance_number must be a non-negative integer no greater than sample_size')
+    p=params['assumed_defect_rate']
+    p_bound=rules['assumed_defect_rate']
+    if isinstance(p,bool) or not isinstance(p,(float,int)) or not math.isfinite(p) \
+            or p<p_bound['minimum'] or p>p_bound['maximum']:
+        raise ValueError('assumed_defect_rate must be a finite value between 0 and 1')
+    min_acceptable_probability=params['minimum_acceptable_probability_of_acceptance']
+    min_bound=rules['minimum_acceptable_probability_of_acceptance']
+    if isinstance(min_acceptable_probability,bool) or not isinstance(min_acceptable_probability,(float,int)) or not math.isfinite(min_acceptable_probability) \
+            or min_acceptable_probability<min_bound['minimum'] or min_acceptable_probability>min_bound['maximum']:
+        raise ValueError('minimum_acceptable_probability_of_acceptance must be a finite value between 0 and 1')
+    probability_of_acceptance=sum(math.comb(n,k)*(p**k)*((1-p)**(n-k)) for k in range(c+1))
+    meets_minimum=bool(probability_of_acceptance>=min_acceptable_probability)
+    checks=[{'id':'ACCEPTANCE_PROBABILITY_MEETS_MINIMUM','actual':probability_of_acceptance,'limit':min_acceptable_probability,
+             'margin':probability_of_acceptance-min_acceptable_probability,'operator':'>=','passed':meets_minimum,
+             'on_failure':'TIGHTEN_ACCEPTANCE_NUMBER_OR_INCREASE_SAMPLE_SIZE_OR_ACCEPT_HIGHER_CONSUMER_RISK'}]
+    if not meets_minimum:
+        disposition='SAMPLING_PLAN_REJECTS_TOO_OFTEN_AT_THIS_DEFECT_RATE'
+        required_revisions=['RENEGOTIATE_SAMPLING_PLAN_PARAMETERS_WITH_SUPPLIER_BEFORE_RELYING_ON_IT']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'probability_of_acceptance':probability_of_acceptance,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the assumed defect rate is a guess rather than a value backed by real historical lot data from this supplier',
+                'defects within a lot are not independent (e.g. clustered by production batch), violating the binomial independence assumption',
+                'the sampling plan\'s risk was evaluated at only one assumed defect rate, when the real question is the full OC curve across a range of plausible rates'],
+            'next_discriminating_experiment':'Evaluate the full OC curve across a range of plausible defect rates, not just the single assumed value, to understand producer\'s and consumer\'s risk jointly' if meets_minimum else 'Identify whether increasing sample size or loosening the acceptance number more cost-effectively restores the required acceptance probability',
+            'model_assumptions':['defects occur independently within the lot at the assumed constant rate','the lot is effectively infinite relative to the sample (binomial, not hypergeometric, approximation)'],
+            'unresolved':['whether the assumed defect rate reflects real historical supplier performance','whether defects are independent or clustered within lots','producer\'s and consumer\'s risk across the full OC curve, not just this one point']}
+
+
+def ucb1_next_experiment_bound(params):
+    """UCB1 (Upper Confidence Bound) arm-selection score (Auer, Cesa-
+    Bianchi & Fischer 2002): score=mean_reward + c*sqrt(ln(total_trials)/
+    arm_trials), with the standard exploration constant c=sqrt(2).
+    Standard textbook multi-armed-bandit algorithm, used to rank a
+    candidate next experiment by combining its observed mean outcome with
+    an exploration bonus that shrinks as more trials accumulate on that
+    arm -- balances exploiting known-good options against exploring
+    under-sampled ones, without overriding any separately-imposed risk
+    gate. Hand-verified before use: mean=0.5, total=100, arm_trials=10 ->
+    score=1.4597; same mean, arm_trials=50 -> score=0.9292 (lower
+    exploration bonus with more trials on that arm)."""
+    schema=json.loads((ROOT/'skills/ucb1-next-experiment-bound-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact UCB1 field contract required')
+    rules=schema['properties']
+    mean_reward=params['observed_mean_reward']
+    mean_bound=rules['observed_mean_reward']
+    if isinstance(mean_reward,bool) or not isinstance(mean_reward,(float,int)) or not math.isfinite(mean_reward) \
+            or mean_reward<mean_bound['minimum'] or mean_reward>mean_bound['maximum']:
+        raise ValueError('observed_mean_reward must be a finite, bounded value')
+    total_trials=params['total_trials_across_all_arms']
+    total_bound=rules['total_trials_across_all_arms']
+    if isinstance(total_trials,bool) or not isinstance(total_trials,int) or total_trials<total_bound['minimum'] or total_trials>total_bound['maximum']:
+        raise ValueError('total_trials_across_all_arms must be a bounded positive integer')
+    arm_trials=params['this_arm_trials']
+    arm_bound=rules['this_arm_trials']
+    if isinstance(arm_trials,bool) or not isinstance(arm_trials,int) or arm_trials<arm_bound['minimum'] or arm_trials>total_trials:
+        raise ValueError('this_arm_trials must be a positive integer no greater than total_trials_across_all_arms')
+    risk_gate_passed=params['risk_gate_passed']
+    if not isinstance(risk_gate_passed,bool):
+        raise ValueError('risk_gate_passed must be a boolean')
+    exploration_constant=math.sqrt(2)
+    exploration_bonus=exploration_constant*math.sqrt(math.log(total_trials)/arm_trials)
+    ucb_score=mean_reward+exploration_bonus
+    checks=[{'id':'RISK_GATE_PASSED_BEFORE_SELECTION','actual':risk_gate_passed,'limit':True,'margin':0,
+             'operator':'==','passed':bool(risk_gate_passed),'on_failure':'DO_NOT_SELECT_THIS_EXPERIMENT_REGARDLESS_OF_UCB_SCORE'}]
+    if not risk_gate_passed:
+        disposition='EXPERIMENT_BLOCKED_BY_RISK_GATE_REGARDLESS_OF_UCB_SCORE'
+        required_revisions=['DO_NOT_SELECT_THIS_ARM_UNTIL_THE_RISK_GATE_IS_SEPARATELY_CLEARED']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'exploration_bonus':exploration_bonus,'ucb_score':ucb_score,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the reward distribution is non-stationary (changes over time), violating UCB1\'s assumption of a fixed underlying reward distribution per arm',
+                'the observed mean reward is based on very few trials and may not reflect the arm\'s true long-run performance',
+                'a passed risk gate at evaluation time does not guarantee the experiment remains safe if conditions change before it actually runs'],
+            'next_discriminating_experiment':'Compare this UCB score against the other candidate arms\' UCB scores to confirm this one is genuinely the highest-priority next experiment' if risk_gate_passed else 'Do not proceed with this arm; address the risk-gate failure before reconsidering it',
+            'model_assumptions':['a stationary (non-changing over time) reward distribution per arm','the risk gate result is still valid at the moment the experiment is actually executed','trial counts are accurate and not double-counted'],
+            'unresolved':['whether the reward distribution is genuinely stationary','whether the risk gate remains valid between evaluation and actual execution']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -1064,6 +1273,10 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'nyquist-sampling-check-baseline':nyquist_sampling_check,
           'measurement-difference-significance-baseline':measurement_difference_significance,
           'arrhenius-acceleration-factor-baseline':arrhenius_acceleration_factor,
+          'wilson-score-accuracy-interval-baseline':wilson_score_accuracy_interval,
+          'process-capability-cpk-baseline':process_capability_cpk,
+          'acceptance-sampling-oc-probability-baseline':acceptance_sampling_oc_probability,
+          'ucb1-next-experiment-bound-baseline':ucb1_next_experiment_bound,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

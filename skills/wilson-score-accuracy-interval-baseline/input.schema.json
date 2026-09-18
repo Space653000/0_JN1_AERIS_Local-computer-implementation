@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["correct_predictions", "total_predictions", "minimum_acceptable_lower_bound"],
+  "properties": {
+    "correct_predictions": {"type": "integer", "minimum": 0, "maximum": 10000000},
+    "total_predictions": {"type": "integer", "minimum": 1, "maximum": 10000000},
+    "minimum_acceptable_lower_bound": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}

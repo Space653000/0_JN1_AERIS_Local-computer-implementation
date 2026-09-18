@@ -1,0 +1,21 @@
+{
+  "suite_id":"R095-ACCEPTANCE-SAMPLING-OC-PROBABILITY-DOMAIN-V1", "role_id":"R095",
+  "skill_id":"acceptance-sampling-oc-probability-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard textbook binomial acceptance-sampling OC-curve formula; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded acceptance-sampling probability at a single declared defect rate; not a full producer/consumer risk study.",
+  "base_input":{
+    "sample_size":50,"acceptance_number":1,"assumed_defect_rate":0.01,"minimum_acceptable_probability_of_acceptance":0.9
+  },
+  "cases":[
+    {"id":"OC-GOOD-LOT-USUALLY-ACCEPTED","kind":"positive","question":"At a low 1% true defect rate, does the n=50,c=1 sampling plan accept the lot with high probability?","input_overrides":{},
+     "checks":[{"path":"probability_of_acceptance","expected":0.9105646869039689,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"OC-BAD-LOT-USUALLY-REJECTED","kind":"boundary","question":"At a higher 5% true defect rate, does the same plan's acceptance probability drop well below the 0.9 minimum, correctly discriminating bad lots?","input_overrides":{"assumed_defect_rate":0.05},
+     "checks":[{"path":"probability_of_acceptance","expected":0.27943175232069517,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"SAMPLING_PLAN_REJECTS_TOO_OFTEN_AT_THIS_DEFECT_RATE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"OC-INVALID-ACCEPTANCE-NUMBER-EXCEEDS-SAMPLE-REJECTED","kind":"negative","question":"Must an acceptance number greater than the sample size be rejected as structurally invalid?","input_overrides":{"acceptance_number":60},"expected_error":"ValueError"},
+    {"id":"OC-ZERO-DEFECT-RATE-GIVES-CERTAIN-ACCEPTANCE","kind":"counter_hypothesis","question":"At an assumed defect rate of exactly zero, does the model correctly predict certain acceptance (probability 1), its own trivial self-consistency check?","input_overrides":{"assumed_defect_rate":0.0},
+     "checks":[{"path":"probability_of_acceptance","expected":1.0,"absolute_tolerance":0.000001}]}
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "suite_id":"R100-UCB1-NEXT-EXPERIMENT-BOUND-DOMAIN-V1", "role_id":"R100",
+  "skill_id":"ucb1-next-experiment-bound-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"UCB1 multi-armed-bandit algorithm (Auer, Cesa-Bianchi & Fischer 2002), standard textbook reinforcement learning; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded UCB1 score for ranking a candidate next experiment, gated by a separately-evaluated risk-gate flag; not an override of risk authority.",
+  "base_input":{
+    "observed_mean_reward":0.5,"total_trials_across_all_arms":100,"this_arm_trials":10,"risk_gate_passed":true
+  },
+  "cases":[
+    {"id":"UCB-UNDERSAMPLED-ARM-HIGH-BONUS","kind":"positive","question":"For an arm with relatively few trials, does the UCB score include a substantial exploration bonus above the raw mean?","input_overrides":{},
+     "checks":[{"path":"exploration_bonus","expected":0.9597051824376164,"absolute_tolerance":0.000001},
+               {"path":"ucb_score","expected":1.4597051824376164,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"UCB-WELL-SAMPLED-ARM-LOWER-BONUS","kind":"boundary","question":"For the same mean reward but far more trials on this arm, does the exploration bonus shrink, correctly reflecting reduced uncertainty?","input_overrides":{"this_arm_trials":50},
+     "checks":[{"path":"exploration_bonus","expected":0.4291932052578695,"absolute_tolerance":0.000001},
+               {"path":"ucb_score","expected":0.9291932052578695,"absolute_tolerance":0.000001}]},
+    {"id":"UCB-INVALID-ARM-TRIALS-EXCEEDS-TOTAL-REJECTED","kind":"negative","question":"Must an arm trial count exceeding the total trial count be rejected as structurally impossible?","input_overrides":{"this_arm_trials":200},"expected_error":"ValueError"},
+    {"id":"UCB-FAILED-RISK-GATE-BLOCKS-REGARDLESS-OF-SCORE","kind":"counter_hypothesis","question":"Even with a high UCB score, does a failed risk gate block the experiment outright, confirming the score never overrides risk authority?","input_overrides":{"risk_gate_passed":false},
+     "checks":[{"path":"ucb_score","expected":1.4597051824376164,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"EXPERIMENT_BLOCKED_BY_RISK_GATE_REGARDLESS_OF_UCB_SCORE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]}
+  ]
+}

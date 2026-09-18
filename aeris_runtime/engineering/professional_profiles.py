@@ -405,6 +405,9 @@ ROLE_DOMAIN_CONTRACTS['R093']=[{
     'method':'methods/roles/factory-eol-capability-screening-baseline.json',
     'suite':'golden/roles/R093/golden.json',
     'scope':'Process capability (Cpk) against declared spec limits and percent gage R&R against total variation, from supplied scalars; no ANOVA gage study or physical EOL test-limit authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R093'].append({
+    'skill_id':'process-capability-cpk-baseline','method':'methods/roles/process-capability-cpk-baseline.json',
+    'suite':'golden/roles/R093/process-capability-cpk.json','scope':'Bounded process capability index (Cpk) from declared spec limits and process mean/sigma; not an empirical control-chart validation of statistical control.'})
 ROLE_DOMAIN_CONTRACTS['R092']=[{
     'skill_id':'instrument-sequence-safety-screening-baseline',
     'method':'methods/roles/instrument-sequence-safety-screening-baseline.json',
@@ -415,11 +418,17 @@ ROLE_DOMAIN_CONTRACTS['R095']=[{
     'method':'methods/roles/incoming-lot-sampling-screening-baseline.json',
     'suite':'golden/roles/R095/golden.json',
     'scope':'Exact one-sided binomial upper bound on lot nonconforming fraction against a declared acceptance threshold, gated on measured (not certificate-only) incoming inspection data; no assembly/test-system variation decomposition.'}]
+ROLE_DOMAIN_CONTRACTS['R095'].append({
+    'skill_id':'acceptance-sampling-oc-probability-baseline','method':'methods/roles/acceptance-sampling-oc-probability-baseline.json',
+    'suite':'golden/roles/R095/acceptance-sampling-oc-probability.json','scope':'Bounded binomial acceptance-sampling operating-characteristic probability at a single declared defect rate; not a full producer/consumer risk study or supplier-history-backed defect-rate estimate.'})
 ROLE_DOMAIN_CONTRACTS['R100']=[{
     'skill_id':'next-experiment-safety-screening-baseline',
     'method':'methods/roles/next-experiment-safety-screening-baseline.json',
     'suite':'golden/roles/R100/golden.json',
     'scope':'Proposed next-experiment point against a declared safe region and a minimum new-information distance from prior coverage, from supplied scalars; no point-history search or physical execution authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R100'].append({
+    'skill_id':'ucb1-next-experiment-bound-baseline','method':'methods/roles/ucb1-next-experiment-bound-baseline.json',
+    'suite':'golden/roles/R100/ucb1-next-experiment-bound.json','scope':'Bounded UCB1 upper-confidence-bound score for ranking a candidate next experiment, gated by a separately-evaluated risk-gate flag; not an override of any risk authority.'})
 ROLE_DOMAIN_CONTRACTS['R091']=[{
     'skill_id':'test-automation-result-screening-baseline',
     'method':'methods/roles/test-automation-result-screening-baseline.json',
@@ -481,6 +490,9 @@ ROLE_DOMAIN_CONTRACTS['R084']=[{
     'method':'methods/roles/audio-ml-evaluation-screening-baseline.json',
     'suite':'golden/roles/R084/golden.json',
     'scope':'Declared train/test overlap count and production-robustness-claim/validation flags against leakage and synthetic-as-robust antipatterns; no full dataset provenance audit or Human model-release sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R084'].append({
+    'skill_id':'wilson-score-accuracy-interval-baseline','method':'methods/roles/wilson-score-accuracy-interval-baseline.json',
+    'suite':'golden/roles/R084/wilson-score-accuracy-interval.json','scope':'Bounded Wilson score confidence interval checking whether a claimed classification accuracy is statistically supported by the declared test-set size; not a generalization or deployment-distribution guarantee.'})
 ROLE_DOMAIN_CONTRACTS['R085']=[{
     'skill_id':'acoustic-dataset-screening-baseline',
     'method':'methods/roles/acoustic-dataset-screening-baseline.json',
