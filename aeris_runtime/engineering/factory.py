@@ -180,7 +180,8 @@ def materialize() -> dict:
               "regression_cases":[f"golden/engineering/{definitions[s]['suite']}/{s}/regression.json" for s in skills],
               "task_templates":[{"role_id":role["id"],"skill_id":s,"inputs":f"skills/{s}/input.schema.json","risk":"R1","required_evidence":"sealed numerical run"} for s in skills],
               "report_templates":[f"company/capabilities/{role['id']}/report-template.md"],
-              "current_maturity_level":"L1","maturity_evidence":[],"canonical_core_sha":read(ROOT/"core.lock.json")["baseline_sha"]}
+              "current_maturity_level":"L1","maturity_evidence":[],"canonical_core_sha":read(ROOT/"core.lock.json")["baseline_sha"],
+              "source_generation_core_sha":read(ROOT/"core.lock.json")["baseline_sha"]}
         if role["group"]=="Product Chiefs": pack["product_architecture"]=product_profile(i-44)
         from .professional_profiles import enrich_pack
         pack=enrich_pack(pack)

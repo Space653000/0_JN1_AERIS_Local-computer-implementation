@@ -193,9 +193,10 @@
   ],
   "current_maturity_level": "L1",
   "maturity_evidence": [
-    ".aeris\\evidence\\RUN-20260918T001848Z-d1cf3620"
+    ".aeris\\evidence\\RUN-20260918T015351Z-4d52e4ce"
   ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "product_architecture": {
     "speaker_topology_considerations": "cabin multiway speakers",
     "microphone_topology_considerations": "headliner/cabin hands-free array",
