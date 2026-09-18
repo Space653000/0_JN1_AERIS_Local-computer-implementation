@@ -1622,6 +1622,96 @@ def uncertainty_effective_degrees_of_freedom(params):
             'unresolved':['whether declared Type B degrees of freedom accurately reflect true characterization confidence','whether all components are genuinely independent']}
 
 
+def directivity_beamwidth(params):
+    """-6 dB (or declared threshold) beamwidth from a supplied horizontal
+    polar measurement: finds the two angles either side of on-axis where
+    the level first drops by the declared threshold below the on-axis
+    reference (linear interpolation between the nearest measured
+    points), and reports their angular span. A standard, widely-used
+    loudspeaker/microphone-array directivity specification (found on
+    essentially every commercial datasheet), distinct from raw polar-
+    sample bounds screening -- this actually computes the beamwidth
+    figure rather than validating supplied array bounds. Hand-verified
+    before use with a synthetic symmetric cosine-like pattern (on-axis
+    90 dB, -6 dB points at +/-54.545 degrees) -> beamwidth=109.09
+    degrees."""
+    schema=json.loads((ROOT/'skills/directivity-beamwidth-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact directivity-beamwidth field contract required')
+    rules=schema['properties']
+    angles=params.get('angles_deg')
+    levels=params.get('levels_db')
+    angle_rules=rules['angles_deg']
+    if not isinstance(angles,list) or not angle_rules['minItems']<=len(angles)<=angle_rules['maxItems']:
+        raise ValueError('bounded angle list required')
+    if not isinstance(levels,list) or len(levels)!=len(angles):
+        raise ValueError('levels_db must align one-to-one with angles_deg')
+    for value in angles:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<-180 or value>180:
+            raise ValueError('each angle must be a finite value in [-180,180] degrees')
+    for value in levels:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or abs(value)>300:
+            raise ValueError('each level must be a finite, bounded dB value')
+    if len(set(angles))!=len(angles):
+        raise ValueError('angles_deg must not contain duplicate angles')
+    on_axis_db=params['on_axis_reference_db']
+    on_axis_bound=rules['on_axis_reference_db']
+    if isinstance(on_axis_db,bool) or not isinstance(on_axis_db,(float,int)) or not math.isfinite(on_axis_db) \
+            or on_axis_db<on_axis_bound['minimum'] or on_axis_db>on_axis_bound['maximum']:
+        raise ValueError('on_axis_reference_db must be a finite, bounded dB value')
+    threshold_db=params['threshold_db']
+    threshold_bound=rules['threshold_db']
+    if isinstance(threshold_db,bool) or not isinstance(threshold_db,(float,int)) or not math.isfinite(threshold_db) \
+            or threshold_db<=threshold_bound['exclusiveMinimum'] or threshold_db>threshold_bound['maximum']:
+        raise ValueError('threshold_db must be a finite, positive, bounded dB value')
+    max_acceptable_beamwidth_deg=params['maximum_acceptable_beamwidth_deg']
+    max_bw_bound=rules['maximum_acceptable_beamwidth_deg']
+    if isinstance(max_acceptable_beamwidth_deg,bool) or not isinstance(max_acceptable_beamwidth_deg,(float,int)) or not math.isfinite(max_acceptable_beamwidth_deg) \
+            or max_acceptable_beamwidth_deg<=max_bw_bound['exclusiveMinimum'] or max_acceptable_beamwidth_deg>max_bw_bound['maximum']:
+        raise ValueError('maximum_acceptable_beamwidth_deg must be a finite, positive, bounded value')
+    target_db=on_axis_db-threshold_db
+    points=sorted(zip(angles,levels))
+    def _crossing(side_positive):
+        for i in range(len(points)-1):
+            a1,l1=points[i]; a2,l2=points[i+1]
+            if side_positive:
+                if a1<0 or a2<0: continue
+                if (l1>=target_db>=l2) or (l1<=target_db<=l2):
+                    if l1==l2: continue
+                    frac=(l1-target_db)/(l1-l2)
+                    return a1+frac*(a2-a1)
+            else:
+                if a1>0 or a2>0: continue
+                if (l1>=target_db>=l2) or (l1<=target_db<=l2):
+                    if l1==l2: continue
+                    frac=(l1-target_db)/(l1-l2)
+                    return a1+frac*(a2-a1)
+        return None
+    positive_crossing=_crossing(True)
+    negative_crossing=_crossing(False)
+    if positive_crossing is None or negative_crossing is None:
+        raise ValueError('measured polar data does not bracket the threshold crossing on both sides of on-axis')
+    beamwidth_deg=positive_crossing-negative_crossing
+    within_target=bool(beamwidth_deg<=max_acceptable_beamwidth_deg)
+    checks=[{'id':'BEAMWIDTH_WITHIN_TARGET','actual':beamwidth_deg,'limit':max_acceptable_beamwidth_deg,
+             'margin':max_acceptable_beamwidth_deg-beamwidth_deg,'operator':'<=','passed':within_target,
+             'on_failure':'NARROW_THE_PATTERN_OR_ACCEPT_A_WIDER_COVERAGE_TARGET'}]
+    if not within_target:
+        disposition='BEAMWIDTH_EXCEEDS_TARGET'
+        required_revisions=['REVISE_ACOUSTIC_DESIGN_OR_RELAX_THE_COVERAGE_TARGET_BEFORE_RELEASE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'negative_crossing_deg':negative_crossing,'positive_crossing_deg':positive_crossing,
+            'beamwidth_deg':beamwidth_deg,'within_target':within_target,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the measured pattern is asymmetric (e.g. baffle diffraction or an off-center capsule), so a single beamwidth figure hides which side is actually narrower',
+                'the angular sampling is too coarse near the crossing points, so linear interpolation understates or overstates the true -N dB angle',
+                'the on-axis reference itself is contaminated by a narrow resonance peak rather than representing the true broadband on-axis level'],
+            'next_discriminating_experiment':'Re-measure with finer angular resolution near the crossing points to confirm the interpolated beamwidth against directly measured angles' if within_target else 'Identify whether the pattern can be narrowed (e.g. waveguide, array shading) or whether the coverage target itself should be relaxed',
+            'model_assumptions':['the supplied polar samples are absolute (not peak-normalized) levels at a consistent measurement distance and reference','linear interpolation between adjacent measured angles approximates the true continuous pattern','a single horizontal-plane cut represents the relevant coverage (no vertical-plane asymmetry assumed)'],
+            'unresolved':['whether the pattern is symmetric or the beamwidth differs meaningfully side-to-side','angular sampling density near the actual crossing points','vertical-plane directivity not captured by this horizontal-only measurement']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -1703,6 +1793,7 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'requirement-traceability-coverage-baseline':requirement_traceability_coverage,
           'fmea-risk-priority-number-baseline':fmea_risk_priority_number,
           'uncertainty-effective-degrees-of-freedom-baseline':uncertainty_effective_degrees_of_freedom,
+          'directivity-beamwidth-baseline':directivity_beamwidth,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,

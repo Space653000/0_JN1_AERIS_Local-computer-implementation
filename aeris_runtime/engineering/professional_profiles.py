@@ -341,6 +341,9 @@ ROLE_DOMAIN_CONTRACTS['R076'].append({
 ROLE_DOMAIN_CONTRACTS['R081'].append({
     'skill_id':'rf-link-budget-friis-baseline','method':'methods/roles/rf-link-budget-friis-baseline.json',
     'suite':'golden/roles/R081/rf-link-budget.json','scope':'Bounded Friis free-space RF link budget checking whether a wireless audio link closes with adequate margin above a declared receiver sensitivity; not a protocol certification or real-environment RF measurement.'})
+ROLE_DOMAIN_CONTRACTS['R017'].append({
+    'skill_id':'directivity-beamwidth-baseline','method':'methods/roles/directivity-beamwidth-baseline.json',
+    'suite':'golden/roles/R017/directivity-beamwidth.json','scope':'Bounded -N dB beamwidth computed from a supplied horizontal polar measurement against a declared coverage target; not a full 3D directivity index or vertical-plane measurement.'})
 ROLE_DOMAIN_CONTRACTS['R031'].append({
     'skill_id':'adc-quantization-snr-baseline','method':'methods/roles/adc-quantization-snr-baseline.json',
     'suite':'golden/roles/R031/adc-quantization-snr.json','scope':'Bounded ideal ADC quantization SNR/ENOB check separating declared bit depth from a claimed effective resolution; not a noise-shaping/oversampling-aware model.'})

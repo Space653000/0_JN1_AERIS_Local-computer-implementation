@@ -130,5 +130,6 @@
   "patent-term-expiration-baseline": "依美國專利法 20 年專利權期限規定，從申請日推算基準到期日，並對照宣稱的到期日判定是否吻合；不含專利期限調整（PTA）／延展（PTE）計算或法律意見",
   "requirement-traceability-coverage-baseline": "計算需求對測試的追溯覆蓋率百分比，並對照最低可接受覆蓋率門檻判定是否合格；不含追溯連結品質稽核或測試是否通過的驗證",
   "fmea-risk-priority-number-baseline": "以 FMEA 風險優先數（RPN＝嚴重度×發生度×偵測度）判定失效模式是否超過宣告的可接受上限；不含跨部門團隊共識的驗證",
-  "uncertainty-effective-degrees-of-freedom-baseline": "以 Welch-Satterthwaite 公式（GUM 附錄 G）計算合成不確定度的有效自由度，判定是否應改用 t 分布涵蓋因子而非大樣本 k=2 近似值；不含 t 分布涵蓋因子本身的查表"
+  "uncertainty-effective-degrees-of-freedom-baseline": "以 Welch-Satterthwaite 公式（GUM 附錄 G）計算合成不確定度的有效自由度，判定是否應改用 t 分布涵蓋因子而非大樣本 k=2 近似值；不含 t 分布涵蓋因子本身的查表",
+  "directivity-beamwidth-baseline": "從提供的水平極座標量測資料，計算相對主軸下降指定 dB 門檻（常見為 -6dB）的兩側夾角波束寬度，並對照宣告的涵蓋角度目標判定是否合格；不含完整 3D 指向性指數或垂直面量測"
 }
