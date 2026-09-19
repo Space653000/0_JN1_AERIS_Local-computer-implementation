@@ -259,3 +259,42 @@ P5.1, P5.3, P5.5, P5.6, P5.7, P5.8 are all done; P5.2/P5.9 are honest,
 by-nature boundaries rather than open work. The one remaining real gap is
 P5.4 (broadening golden-suite coverage further) -- large content work like
 P4.4, not a single-tick item, and not faked here.
+
+## Addendum (2026-09-19) — skill-depth expansion beyond the P5.1 L2 minimum
+
+P5.1's `100_role_L2=93/100` counts a role as L2 the moment its *first*
+domain skill is evidenced. That threshold says nothing about whether a
+role's one skill is actually on-mission (several were found borrowed from
+an unrelated product/screening domain, e.g. R069 Psychoacoustics had only
+a hearing-aid-boundary review) or whether a role has any real breadth
+beyond that single skill. A separate, explicit user request ("100 位聲學
+工程師都要在本地可展現出不重複屬性且各自極度廣度和深度的技能深度強化")
+started a second, orthogonal effort: giving roles a genuine SECOND (or
+third) domain skill, chosen and verified independently of the first,
+rather than raising the L2 count itself.
+
+Current state (live-verifiable via
+`aeris_runtime.engineering.professional_profiles.ROLE_DOMAIN_CONTRACTS`,
+see README.md section 20.1 for the exact command): **37/100** roles now
+carry 2 or more independently hand-verified domain skills (one role,
+R079, has 3); 56/100 still have exactly one; the 7 Chief Council roles
+(R001-R004, R006-R008) remain at zero domain contracts, unchanged from
+P5.2's disclosed boundary.
+
+Every added skill follows the same discipline as the rest of this
+document: the underlying formula is hand-verified against independent
+worked examples *before* any code is written (models that could not be
+verified with confidence -- Zwikker-Kosten thermoviscous ports,
+Ingard-Rayleigh mesh impedance -- were explicitly rejected rather than
+guessed), gets its own manifest/schema/method/golden-suite/unit-test set,
+and is re-sealed through the same `scripts/run_capability_factory.py` +
+`RoleAcceptanceFactory` pipeline this whole document describes. Several
+candidates were investigated and *rejected* after reading the existing
+skill's actual source (not just its name or the role's mission text)
+showed the proposed addition would duplicate work already present --
+R009/R011/R040's sealed/ported-box alignment and array grating-lobe
+limit, and R089/R090/R094's standards-edition and Bayesian-hypothesis
+logic, were all found already implemented to a more sophisticated degree
+than what was being proposed. This is tracked as ongoing content work,
+not a new blueprint phase -- it does not change P5.1's L2 count or this
+document's P5.1-P5.9 status.

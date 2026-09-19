@@ -417,6 +417,24 @@ cloud/software trust baselines closed
 → signed/attested release + formal Human approval
 ```
 
+## 20.1 技能深度強化（Skill Depth）現況 — 2026-09-19
+
+目標：100 個角色最終都要有不重複、廣度與深度俱全的真實聲學/工程技能，而不是每個角色只借用一個跟本職無關的共用技能撐場面。
+
+即時真值（來自 `aeris_runtime.engineering.professional_profiles.ROLE_DOMAIN_CONTRACTS`，非記憶推測，可用下方指令重新驗證）：
+
+```powershell
+.venv\Scripts\python.exe -c "from aeris_runtime.engineering.professional_profiles import ROLE_DOMAIN_CONTRACTS as C; print(len([r for r,c in C.items() if len(c)>=2]),'roles with 2+ skills;', len([r for r,c in C.items() if len(c)==1]),'roles with exactly 1;', 100-len(C),'roles with 0')"
+```
+
+- **37／100** 角色目前擁有 2 個以上（含 1 個到 3 個）真正不重疊、獨立手算驗證過公式的領域技能。
+- **56／100** 角色仍只有 1 個技能（多數是既有的成熟 Speaker/Microphone CoE 模組，本身是真實可用的技能，只是尚未擴充第二個）。
+- **7／100** 角色（首席架構委員會 R001–R004, R006–R008）目前完全沒有可執行的領域技能，仍停留在 L1（只有契約框架，未執行）。
+
+每個新技能都遵循同一套嚴謹流程：先手算驗證公式（拒絕任何無法獨立查證的模型，例如 Zwikker-Kosten、Ingard-Rayleigh 因缺乏可信係數來源而主動放棄）→ 寫成技能／方法／黃金測試套件（4 種案例：positive/boundary/negative/counter_hypothesis）→ 用 `run_skill()` 跑過 → **透過真正的 `run_role()` 正式生產流程執行、封存證據、獨立重新計算 SHA-256 驗證完整性**（不是只跑單元測試）→ 重新驗收全部 100 個角色 → commit + push。詳細公式與 commit 記錄見 git log（分支 `codex/autopilot/20260911-stateful-loop`）。
+
+已知的流程教訓：R009／R011／R040／R089／R090／R094 等角色的既有技能已經完整涵蓋原本打算新增的公式（例如密閉音箱對齊、標準版本有效性判定、貝氏假設排序），因此故意跳過、未強行製造重複技能。
+
 ## 20.5 存取控制：公開介紹頁 vs. 需登入的操作系統
 
 只有 `/`（公開介紹頁）與 `/login` 對外開放；儀表板、工作區、進度中心、活動紀錄、服務頁與全部
