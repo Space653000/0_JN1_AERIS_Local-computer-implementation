@@ -1,0 +1,23 @@
+{
+  "suite_id":"R087-PATENT-TERM-EXPIRATION-DOMAIN-V1", "role_id":"R087",
+  "skill_id":"patent-term-expiration-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"US statutory utility patent term, 35 U.S.C. 154(a)(2); independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded 20-year statutory baseline expiration date; not a Patent Term Adjustment/Extension calculation or legal opinion.",
+  "base_input":{
+    "filing_date_iso":"2010-05-15","term_years":20,"claimed_expiration_date_iso":"2030-05-15"
+  },
+  "cases":[
+    {"id":"PATENT-CLAIMED-MATCHES-BASELINE","kind":"positive","question":"Does a claimed expiration exactly 20 years after filing match the statutory baseline?","input_overrides":{},
+     "checks":[{"path":"baseline_expiration_date_iso","expected":"2030-05-15","absolute_tolerance":0},
+               {"path":"matches_baseline","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"PATENT-LEAP-DAY-FILING-FALLBACK","kind":"boundary","question":"For a leap-day filing where the 19-year anniversary lands on a non-leap year, does the model correctly fall back to February 28?","input_overrides":{"filing_date_iso":"2000-02-29","term_years":19,"claimed_expiration_date_iso":"2019-02-28"},
+     "checks":[{"path":"baseline_expiration_date_iso","expected":"2019-02-28","absolute_tolerance":0},
+               {"path":"matches_baseline","expected":true,"absolute_tolerance":0}]},
+    {"id":"PATENT-INVALID-DATE-FORMAT-REJECTED","kind":"negative","question":"Must a malformed filing date string be rejected rather than silently misparsed?","input_overrides":{"filing_date_iso":"not-a-date"},"expected_error":"ValueError"},
+    {"id":"PATENT-CLAIMED-DEVIATES-FROM-BASELINE","kind":"counter_hypothesis","question":"When a claimed expiration deviates substantially from the 20-year baseline, is that flagged for PTA/PTE reconciliation rather than silently accepted?","input_overrides":{"claimed_expiration_date_iso":"2032-01-01"},
+     "checks":[{"path":"difference_days","expected":596,"absolute_tolerance":0},
+               {"path":"matches_baseline","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"CLAIMED_EXPIRATION_DEVIATES_FROM_STATUTORY_BASELINE","absolute_tolerance":0}]}
+  ]
+}

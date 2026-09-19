@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "ucb1-next-experiment-bound-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/ucb1-next-experiment-bound-baseline.json",
+  "input_schema": "skills/ucb1-next-experiment-bound-baseline/input.schema.json",
+  "output_schema": "skills/ucb1-next-experiment-bound-baseline/output.schema.json",
+  "role_mappings": ["R100"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded UCB1 upper-confidence-bound score for ranking a candidate next experiment, gated by a separately-evaluated risk-gate flag; not an override of any risk authority"
+}

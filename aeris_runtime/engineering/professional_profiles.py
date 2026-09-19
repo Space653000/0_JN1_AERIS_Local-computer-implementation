@@ -287,6 +287,9 @@ _SINGLE_ROLE_DOMAIN_CONTRACTS['R061']={
 # ordered list is authored source truth; aggregate maturity must never hide a
 # missing member or let one shared receipt qualify its neighbors.
 ROLE_DOMAIN_CONTRACTS={role:[contract] for role,contract in _SINGLE_ROLE_DOMAIN_CONTRACTS.items()}
+ROLE_DOMAIN_CONTRACTS['R071'].append({
+    'skill_id':'binaural-itd-spherical-head-baseline','method':'methods/roles/binaural-itd-spherical-head-baseline.json',
+    'suite':'golden/roles/R071/binaural-itd.json','scope':'Bounded spherical-head ITD sanity baseline for a claimed HRTF/rendering ITD at a single azimuth; not individualized HRTF measurement.'})
 ROLE_DOMAIN_CONTRACTS['R072'].append({
     'skill_id':'tablet-orientation-case-table-domain-review','method':'methods/roles/tablet-orientation-case-table-domain-review.json',
     'suite':'golden/roles/R072/tablet.json','scope':'Independent tablet orientation/case/table assertion review; no measured transfer, case population, speech quality or Human approval.'})
@@ -311,12 +314,54 @@ ROLE_DOMAIN_CONTRACTS['R073'].append({
 ROLE_DOMAIN_CONTRACTS['R074']=[{
     'skill_id':'doorbell-weather-intercom-domain-review','method':'methods/roles/doorbell-weather-intercom-domain-review.json',
     'suite':'golden/roles/R074/doorbell.json','scope':'Independent doorbell wet-mesh/wind/intercom assertion review; no weather population, outdoor product or Human approval.'}]
+ROLE_DOMAIN_CONTRACTS['R074'].append({
+    'skill_id':'porous-material-absorption-baseline','method':'methods/roles/porous-material-absorption-baseline.json',
+    'suite':'golden/roles/R074/porous-material.json','scope':'Bounded normal-incidence absorption estimate for a rigid-backed homogeneous porous layer from the Delany-Bazley empirical model; not physical impedance-tube qualification.'})
 ROLE_DOMAIN_CONTRACTS['R075'].append({
     'skill_id':'appliance-motor-notification-voice-domain-review','method':'methods/roles/appliance-motor-notification-voice-domain-review.json',
     'suite':'golden/roles/R075/appliance.json','scope':'Independent appliance motor/duty/voice assertion review; no thermal lifetime, command usability or Human approval.'})
 ROLE_DOMAIN_CONTRACTS['R080']=[{
     'skill_id':'ar-open-ear-leakage-tracking-wind-domain-review','method':'methods/roles/ar-open-ear-leakage-tracking-wind-domain-review.json',
     'suite':'golden/roles/R080/ar-open-ear.json','scope':'Independent open-ear leakage/tracking/wind assertion review; no privacy field, listener population or Human approval.'}]
+ROLE_DOMAIN_CONTRACTS['R080'].append({
+    'skill_id':'sensor-fusion-doa-imu-baseline','method':'methods/roles/sensor-fusion-doa-imu-baseline.json',
+    'suite':'golden/roles/R080/sensor-fusion.json','scope':'Bounded inverse-variance circular fusion of an IMU heading and an acoustic DOA estimate; not physical bench-verified sensor fusion.'})
+ROLE_DOMAIN_CONTRACTS['R077'].append({
+    'skill_id':'tolerance-stack-rss-baseline','method':'methods/roles/tolerance-stack-rss-baseline.json',
+    'suite':'golden/roles/R077/tolerance-stack.json','scope':'Bounded worst-case and RSS dimensional tolerance stack-up from declared contributor tolerances; not measured process capability or physical assembled-sample verification.'})
+ROLE_DOMAIN_CONTRACTS['R082'].append({
+    'skill_id':'audio-clock-drift-buffer-margin-baseline','method':'methods/roles/audio-clock-drift-buffer-margin-baseline.json',
+    'suite':'golden/roles/R082/clock-drift.json','scope':'Bounded digital-audio clock-drift buffer-margin check between two clock domains from declared ppm frequency errors; not measured real-hardware clock behavior or continuous-ASRC verification.'})
+ROLE_DOMAIN_CONTRACTS['R069'].append({
+    'skill_id':'erb-auditory-filter-bandwidth-baseline','method':'methods/roles/erb-auditory-filter-bandwidth-baseline.json',
+    'suite':'golden/roles/R069/erb-auditory-filter.json','scope':'Bounded Equivalent Rectangular Bandwidth (Glasberg & Moore 1990) auditory-filter prediction checked against a declared critical-bandwidth claim; not a listener preference or discomfort judgment.'})
+ROLE_DOMAIN_CONTRACTS['R076'].append({
+    'skill_id':'thermal-noise-floor-baseline','method':'methods/roles/thermal-noise-floor-baseline.json',
+    'suite':'golden/roles/R076/thermal-noise-floor.json','scope':'Bounded Johnson-Nyquist thermal noise floor from declared resistance/temperature/bandwidth, checked as a physical lower bound against a claimed measured noise floor; not a full EMI/ground-loop diagnosis.'})
+ROLE_DOMAIN_CONTRACTS['R081'].append({
+    'skill_id':'rf-link-budget-friis-baseline','method':'methods/roles/rf-link-budget-friis-baseline.json',
+    'suite':'golden/roles/R081/rf-link-budget.json','scope':'Bounded Friis free-space RF link budget checking whether a wireless audio link closes with adequate margin above a declared receiver sensitivity; not a protocol certification or real-environment RF measurement.'})
+ROLE_DOMAIN_CONTRACTS['R017'].append({
+    'skill_id':'directivity-beamwidth-baseline','method':'methods/roles/directivity-beamwidth-baseline.json',
+    'suite':'golden/roles/R017/directivity-beamwidth.json','scope':'Bounded -N dB beamwidth computed from a supplied horizontal polar measurement against a declared coverage target; not a full 3D directivity index or vertical-plane measurement.'})
+ROLE_DOMAIN_CONTRACTS['R031'].append({
+    'skill_id':'adc-quantization-snr-baseline','method':'methods/roles/adc-quantization-snr-baseline.json',
+    'suite':'golden/roles/R031/adc-quantization-snr.json','scope':'Bounded ideal ADC quantization SNR/ENOB check separating declared bit depth from a claimed effective resolution; not a noise-shaping/oversampling-aware model.'})
+ROLE_DOMAIN_CONTRACTS['R070'].append({
+    'skill_id':'correlation-statistical-support-baseline','method':'methods/roles/correlation-statistical-support-baseline.json',
+    'suite':'golden/roles/R070/correlation-statistical-support.json','scope':'Bounded Fisher r-to-z confidence interval checking whether a claimed metric-to-MOS correlation is statistically distinguishable from zero at the declared sample size; not a computed MOS prediction itself.'})
+ROLE_DOMAIN_CONTRACTS['R079'].append({
+    'skill_id':'measurement-uncertainty-budget-baseline','method':'methods/roles/measurement-uncertainty-budget-baseline.json',
+    'suite':'golden/roles/R079/measurement-uncertainty-budget.json','scope':'Bounded GUM-style combined and expanded measurement uncertainty from declared independent standard-uncertainty components; not an empirically validated gage R&R study.'})
+ROLE_DOMAIN_CONTRACTS['R079'].append({
+    'skill_id':'uncertainty-effective-degrees-of-freedom-baseline','method':'methods/roles/uncertainty-effective-degrees-of-freedom-baseline.json',
+    'suite':'golden/roles/R079/uncertainty-effective-degrees-of-freedom.json','scope':'Bounded Welch-Satterthwaite effective degrees of freedom (GUM Annex G) from declared uncertainty components and their own degrees of freedom; not a Student\'s-t coverage-factor lookup itself.'})
+ROLE_DOMAIN_CONTRACTS['R097'].append({
+    'skill_id':'requirement-traceability-coverage-baseline','method':'methods/roles/requirement-traceability-coverage-baseline.json',
+    'suite':'golden/roles/R097/requirement-traceability-coverage.json','scope':'Bounded requirement-to-test traceability coverage percentage against a declared minimum threshold; not an audit of link quality or test-pass status.'})
+ROLE_DOMAIN_CONTRACTS['R098'].append({
+    'skill_id':'fmea-risk-priority-number-baseline','method':'methods/roles/fmea-risk-priority-number-baseline.json',
+    'suite':'golden/roles/R098/fmea-risk-priority-number.json','scope':'Bounded FMEA Risk Priority Number (Severity x Occurrence x Detection) against a declared maximum acceptable value; not a cross-functional team consensus verification.'})
 ROLE_DOMAIN_CONTRACTS['R021'].append({
     'skill_id':'speaker-port-lumped-domain-review',
     'method':'methods/roles/speaker-port-lumped-domain-review.json',
@@ -362,6 +407,145 @@ ROLE_DOMAIN_CONTRACTS['R044']=[{
     'method':'methods/roles/microphone-aec-enhancement-domain-review.json',
     'suite':'golden/roles/R044/aec-control.json',
     'scope':'Independent ERLE, near-speech, alignment, drift, double-talk, tail and nonlinear-residual review; no measured echo path or perceptual acceptance.'}]
+ROLE_DOMAIN_CONTRACTS['R096']=[{
+    'skill_id':'reliability-halt-screening-baseline',
+    'method':'methods/roles/reliability-halt-screening-baseline.json',
+    'suite':'golden/roles/R096/golden.json',
+    'scope':'Exact one-sided binomial upper bound on HALT trial/failure counts against a declared acceptance threshold; no accelerated-life extrapolation or physical chamber execution.'}]
+ROLE_DOMAIN_CONTRACTS['R096'].append({
+    'skill_id':'arrhenius-acceleration-factor-baseline','method':'methods/roles/arrhenius-acceleration-factor-baseline.json',
+    'suite':'golden/roles/R096/arrhenius-acceleration-factor.json','scope':'Bounded Arrhenius reliability acceleration factor from a declared activation energy and use/stress temperatures; not an empirically fitted activation energy or a validated failure-mechanism confirmation.'})
+ROLE_DOMAIN_CONTRACTS['R093']=[{
+    'skill_id':'factory-eol-capability-screening-baseline',
+    'method':'methods/roles/factory-eol-capability-screening-baseline.json',
+    'suite':'golden/roles/R093/golden.json',
+    'scope':'Process capability (Cpk) against declared spec limits and percent gage R&R against total variation, from supplied scalars; no ANOVA gage study or physical EOL test-limit authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R093'].append({
+    'skill_id':'process-capability-cpk-baseline','method':'methods/roles/process-capability-cpk-baseline.json',
+    'suite':'golden/roles/R093/process-capability-cpk.json','scope':'Bounded process capability index (Cpk) from declared spec limits and process mean/sigma; not an empirical control-chart validation of statistical control.'})
+ROLE_DOMAIN_CONTRACTS['R092']=[{
+    'skill_id':'instrument-sequence-safety-screening-baseline',
+    'method':'methods/roles/instrument-sequence-safety-screening-baseline.json',
+    'suite':'golden/roles/R092/golden.json',
+    'scope':'Planned stimulus amplitude/duration/step-count against declared fixture safety limits, from supplied scalars; no physical instrument IO or Human execution authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R092'].append({
+    'skill_id':'fft-frequency-resolution-budget-baseline','method':'methods/roles/fft-frequency-resolution-budget-baseline.json',
+    'suite':'golden/roles/R092/fft-frequency-resolution-budget.json','scope':'Bounded FFT frequency-resolution planning check for a planned instrument acquisition record; not an executed instrument measurement or windowing-aware model.'})
+ROLE_DOMAIN_CONTRACTS['R095']=[{
+    'skill_id':'incoming-lot-sampling-screening-baseline',
+    'method':'methods/roles/incoming-lot-sampling-screening-baseline.json',
+    'suite':'golden/roles/R095/golden.json',
+    'scope':'Exact one-sided binomial upper bound on lot nonconforming fraction against a declared acceptance threshold, gated on measured (not certificate-only) incoming inspection data; no assembly/test-system variation decomposition.'}]
+ROLE_DOMAIN_CONTRACTS['R095'].append({
+    'skill_id':'acceptance-sampling-oc-probability-baseline','method':'methods/roles/acceptance-sampling-oc-probability-baseline.json',
+    'suite':'golden/roles/R095/acceptance-sampling-oc-probability.json','scope':'Bounded binomial acceptance-sampling operating-characteristic probability at a single declared defect rate; not a full producer/consumer risk study or supplier-history-backed defect-rate estimate.'})
+ROLE_DOMAIN_CONTRACTS['R100']=[{
+    'skill_id':'next-experiment-safety-screening-baseline',
+    'method':'methods/roles/next-experiment-safety-screening-baseline.json',
+    'suite':'golden/roles/R100/golden.json',
+    'scope':'Proposed next-experiment point against a declared safe region and a minimum new-information distance from prior coverage, from supplied scalars; no point-history search or physical execution authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R100'].append({
+    'skill_id':'ucb1-next-experiment-bound-baseline','method':'methods/roles/ucb1-next-experiment-bound-baseline.json',
+    'suite':'golden/roles/R100/ucb1-next-experiment-bound.json','scope':'Bounded UCB1 upper-confidence-bound score for ranking a candidate next experiment, gated by a separately-evaluated risk-gate flag; not an override of any risk authority.'})
+ROLE_DOMAIN_CONTRACTS['R091']=[{
+    'skill_id':'test-automation-result-screening-baseline',
+    'method':'methods/roles/test-automation-result-screening-baseline.json',
+    'suite':'golden/roles/R091/golden.json',
+    'scope':'Declared attempt count, retry disclosure and explicit pass-signal flags against retry-hiding and process-alive-as-pass antipatterns; no full automation-run resource/timeout budget or physical release authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R091'].append({
+    'skill_id':'test-automation-runtime-budget-baseline','method':'methods/roles/test-automation-runtime-budget-baseline.json',
+    'suite':'golden/roles/R091/test-automation-runtime-budget.json','scope':'Bounded CLT-based aggregate test-suite runtime timeout budget from declared per-test mean/std duration; not a measured real-CI runtime distribution.'})
+ROLE_DOMAIN_CONTRACTS['R078']=[{
+    'skill_id':'doe-monte-carlo-design-screening-baseline',
+    'method':'methods/roles/doe-monte-carlo-design-screening-baseline.json',
+    'suite':'golden/roles/R078/golden.json',
+    'scope':'Declared design resolution and causal/model-validity claim flags against confounded-design and Monte-Carlo-precision-as-validity antipatterns; no design-matrix alias verification or physical decision authorization.'}]
+ROLE_DOMAIN_CONTRACTS['R078'].append({
+    'skill_id':'doe-two-sample-size-baseline','method':'methods/roles/doe-two-sample-size-baseline.json',
+    'suite':'golden/roles/R078/doe-two-sample-size.json','scope':'Bounded normal-approximation two-sample mean-comparison sample-size calculation from declared effect size, variance, significance and power; not a pilot-validated experimental design.'})
+ROLE_DOMAIN_CONTRACTS['R062']=[{
+    'skill_id':'vr-xr-headset-screening-baseline',
+    'method':'methods/roles/vr-xr-headset-screening-baseline.json',
+    'suite':'golden/roles/R062/golden.json',
+    'scope':'Declared motion-to-sound latency and strap-rubbing noise margin against declared bounds, from supplied scalars; no physical wear-test or Human production sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R063']=[{
+    'skill_id':'automotive-cabin-tuning-screening-baseline',
+    'method':'methods/roles/automotive-cabin-tuning-screening-baseline.json',
+    'suite':'golden/roles/R063/golden.json',
+    'scope':'Declared driver/rear-seat level spread and road-noise validation flag against declared bounds; no full seat/speed coverage matrix or physical in-cabin measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R064']=[{
+    'skill_id':'amr-warning-doa-screening-baseline',
+    'method':'methods/roles/amr-warning-doa-screening-baseline.json',
+    'suite':'golden/roles/R064/golden.json',
+    'scope':'Declared warning-to-motor-noise margin and DOA-update displacement against declared bounds, from supplied scalars; no full velocity/load coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R065']=[{
+    'skill_id':'quadruped-capture-screening-baseline',
+    'method':'methods/roles/quadruped-capture-screening-baseline.json',
+    'suite':'golden/roles/R065/golden.json',
+    'scope':'Declared footfall headroom margin and body-orientation deviation against declared bounds, from supplied scalars; no full gait/orientation coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R066']=[{
+    'skill_id':'humanoid-interaction-screening-baseline',
+    'method':'methods/roles/humanoid-interaction-screening-baseline.json',
+    'suite':'golden/roles/R066/golden.json',
+    'scope':'Declared user-interruption-to-residual-echo margin and joint-noise-to-speech margin against declared bounds, from supplied scalars; no full conversational/motion coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R067']=[{
+    'skill_id':'conference-array-aec-screening-baseline',
+    'method':'methods/roles/conference-array-aec-screening-baseline.json',
+    'suite':'golden/roles/R067/golden.json',
+    'scope':'Declared off-beam attenuation and AEC-tail-to-room-path margin against declared bounds, from supplied scalars; no full room/talker coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R068']=[{
+    'skill_id':'directional-mic-array-screening-baseline',
+    'method':'methods/roles/directional-mic-array-screening-baseline.json',
+    'suite':'golden/roles/R068/golden.json',
+    'scope':'Declared sidelobe suppression and unique-DOA-claim/symmetric-geometry flags against alias/ambiguity antipatterns; no full steering-angle coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R083']=[{
+    'skill_id':'codec-transport-screening-baseline',
+    'method':'methods/roles/codec-transport-screening-baseline.json',
+    'suite':'golden/roles/R083/golden.json',
+    'scope':'Declared jitter-buffer margin and consecutive-loss-burst length against declared bounds, from supplied scalars; no full network-condition coverage matrix or physical instrument measurement.'}]
+ROLE_DOMAIN_CONTRACTS['R083'].append({
+    'skill_id':'audio-path-latency-budget-baseline','method':'methods/roles/audio-path-latency-budget-baseline.json',
+    'suite':'golden/roles/R083/audio-path-latency-budget.json','scope':'Bounded additive one-way audio latency budget checked against the ITU-T G.114 recommended 150 ms conversational-quality threshold; not a measured end-to-end latency on real hardware/network.'})
+ROLE_DOMAIN_CONTRACTS['R084']=[{
+    'skill_id':'audio-ml-evaluation-screening-baseline',
+    'method':'methods/roles/audio-ml-evaluation-screening-baseline.json',
+    'suite':'golden/roles/R084/golden.json',
+    'scope':'Declared train/test overlap count and production-robustness-claim/validation flags against leakage and synthetic-as-robust antipatterns; no full dataset provenance audit or Human model-release sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R084'].append({
+    'skill_id':'wilson-score-accuracy-interval-baseline','method':'methods/roles/wilson-score-accuracy-interval-baseline.json',
+    'suite':'golden/roles/R084/wilson-score-accuracy-interval.json','scope':'Bounded Wilson score confidence interval checking whether a claimed classification accuracy is statistically supported by the declared test-set size; not a generalization or deployment-distribution guarantee.'})
+ROLE_DOMAIN_CONTRACTS['R085']=[{
+    'skill_id':'acoustic-dataset-screening-baseline',
+    'method':'methods/roles/acoustic-dataset-screening-baseline.json',
+    'suite':'golden/roles/R085/golden.json',
+    'scope':'Declared sample-rate-uniformity/resampling and duplicate-source-count flags against mixed-rate and cross-split-leakage antipatterns; no full ingestion-pipeline audit or Human dataset-release sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R085'].append({
+    'skill_id':'nyquist-sampling-check-baseline','method':'methods/roles/nyquist-sampling-check-baseline.json',
+    'suite':'golden/roles/R085/nyquist-sampling-check.json','scope':'Bounded Shannon-Nyquist sampling-rate criterion check for a declared dataset sample rate and maximum signal frequency; not a spectral measurement of actual aliasing.'})
+ROLE_DOMAIN_CONTRACTS['R086']=[{
+    'skill_id':'benchmark-teardown-screening-baseline',
+    'method':'methods/roles/benchmark-teardown-screening-baseline.json',
+    'suite':'golden/roles/R086/golden.json',
+    'scope':'Declared SPL-matched and topology-claim/validation flags against unmatched-benchmark and visual-topology-as-validated antipatterns; no full product test-condition matrix or Human publication sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R086'].append({
+    'skill_id':'measurement-difference-significance-baseline','method':'methods/roles/measurement-difference-significance-baseline.json',
+    'suite':'golden/roles/R086/measurement-difference-significance.json','scope':'Bounded z-score significance check for two independent measurements with declared uncertainty; not a matched-conditions guarantee or a full statistical study.'})
+ROLE_DOMAIN_CONTRACTS['R087']=[{
+    'skill_id':'patent-prior-art-screening-baseline',
+    'method':'methods/roles/patent-prior-art-screening-baseline.json',
+    'suite':'golden/roles/R087/golden.json',
+    'scope':'Declared novelty-verdict/claim-element-mapping and date-type-used flags against keyword-similarity-as-novelty and priority/publication-date-confusion antipatterns; no full claim chart or Human legal sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R087'].append({
+    'skill_id':'patent-term-expiration-baseline','method':'methods/roles/patent-term-expiration-baseline.json',
+    'suite':'golden/roles/R087/patent-term-expiration.json','scope':'Bounded 20-year statutory utility-patent-term baseline expiration date, checked against a claimed expiration; not a Patent Term Adjustment/Extension calculation or legal opinion.'})
+ROLE_DOMAIN_CONTRACTS['R088']=[{
+    'skill_id':'research-hypothesis-screening-baseline',
+    'method':'methods/roles/research-hypothesis-screening-baseline.json',
+    'suite':'golden/roles/R088/golden.json',
+    'scope':'Declared replication-claim/independent-replication and raw-data-disclosure flags against citation-as-replication and hidden-raw-data antipatterns; no full literature review or Human peer-review sign-off.'}]
+ROLE_DOMAIN_CONTRACTS['R088'].append({
+    'skill_id':'bonferroni-significance-correction-baseline','method':'methods/roles/bonferroni-significance-correction-baseline.json',
+    'suite':'golden/roles/R088/bonferroni-significance-correction.json','scope':'Bounded Bonferroni multiple-comparisons correction checking whether a claimed significant p-value survives correction for the declared number of hypotheses tested; not a full literature review.'})
 
 
 def standards_families(value):

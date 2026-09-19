@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "warning_level_db", "drive_motor_noise_db", "min_acceptable_warning_margin_db", "robot_velocity_m_s", "doa_update_interval_s", "max_acceptable_position_uncertainty_m"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_AMR_WARNING_DOA_SCREEN"},
+    "warning_level_db": {"type": "number"}, "drive_motor_noise_db": {"type": "number"},
+    "min_acceptable_warning_margin_db": {"type": "number"}, "robot_velocity_m_s": {"type": "number"},
+    "doa_update_interval_s": {"type": "number"}, "max_acceptable_position_uncertainty_m": {"type": "number"}
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "method_id":"process-capability-cpk-baseline", "version":"1.0.0", "role":"R093",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:process_capability_cpk",
+  "applicability":"Process Capability Index Cpk from declared spec limits and process mean/sigma, for factory EOL decision-limit setting",
+  "equations":{
+    "cpu":"(USL-mean)/(3*sigma)",
+    "cpl":"(mean-LSL)/(3*sigma)",
+    "cpk":"min(Cpu,Cpl)"
+  },
+  "assumptions":["the process output is approximately normally distributed","the declared mean and sigma are representative of the true, stable process","the process is in a state of statistical control"],
+  "excluded":["control-chart validation of statistical control","non-normal distribution correction"],
+  "uncertainty":"Standard textbook SPC; hand-verified before use (USL=10,LSL=0,mean=5,sigma=1 -> Cpk=1.667; mean=8,sigma=1 -> Cpk=0.667).",
+  "limits_policy":"A Cpk below the declared minimum is flagged rather than accepted.",
+  "golden_tests":"tests/test_process_capability_cpk_domain.py"
+}

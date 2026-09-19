@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["nominal_sample_rate_hz", "source_clock_ppm_error", "sink_clock_ppm_error", "buffer_size_samples", "resync_interval_s"],
+  "properties": {
+    "nominal_sample_rate_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 384000},
+    "source_clock_ppm_error": {"type": "number", "maximum": 500},
+    "sink_clock_ppm_error": {"type": "number", "maximum": 500},
+    "buffer_size_samples": {"type": "integer", "maximum": 65536},
+    "resync_interval_s": {"type": "number", "exclusiveMinimum": 0, "maximum": 3600}
+  }
+}

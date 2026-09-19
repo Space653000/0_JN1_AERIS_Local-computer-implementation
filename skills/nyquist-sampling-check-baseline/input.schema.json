@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sample_rate_hz", "max_signal_frequency_hz"],
+  "properties": {
+    "sample_rate_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 10000000},
+    "max_signal_frequency_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 5000000}
+  }
+}

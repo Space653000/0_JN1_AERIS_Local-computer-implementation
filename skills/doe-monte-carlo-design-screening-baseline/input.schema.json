@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "design_resolution", "claimed_causal_main_effects", "claimed_model_valid", "model_validated_against_independent_data"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_DOE_MONTE_CARLO_DESIGN_SCREEN"},
+    "design_resolution": {"type": "integer", "enum": [3, 4, 5]},
+    "claimed_causal_main_effects": {"type": "boolean"}, "claimed_model_valid": {"type": "boolean"},
+    "model_validated_against_independent_data": {"type": "boolean"}
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "type": "object", "required": ["skill_id", "values", "input_sha256", "implementation_sha256", "physical_measurement_verified"],
+  "properties": {"values": {"type": "object", "required": ["spl_matched_across_products", "checks", "disposition", "visual_appearance_treated_as_validated_topology"]}, "physical_measurement_verified": {"const": false}}
+}

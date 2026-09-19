@@ -22,25 +22,29 @@
     "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
     "frequency-weighting": "skills/frequency-weighting/input.schema.json",
     "level-statistics": "skills/level-statistics/input.schema.json",
-    "hearing-aid-acoustic-boundary-domain-review": "skills/hearing-aid-acoustic-boundary-domain-review/input.schema.json"
+    "hearing-aid-acoustic-boundary-domain-review": "skills/hearing-aid-acoustic-boundary-domain-review/input.schema.json",
+    "erb-auditory-filter-bandwidth-baseline": "skills/erb-auditory-filter-bandwidth-baseline/input.schema.json"
   },
   "outputs": {
     "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
     "frequency-weighting": "skills/frequency-weighting/output.schema.json",
     "level-statistics": "skills/level-statistics/output.schema.json",
-    "hearing-aid-acoustic-boundary-domain-review": "skills/hearing-aid-acoustic-boundary-domain-review/output.schema.json"
+    "hearing-aid-acoustic-boundary-domain-review": "skills/hearing-aid-acoustic-boundary-domain-review/output.schema.json",
+    "erb-auditory-filter-bandwidth-baseline": "skills/erb-auditory-filter-bandwidth-baseline/output.schema.json"
   },
   "required_skills": [
     "psychoacoustic-descriptors",
     "frequency-weighting",
     "level-statistics",
-    "hearing-aid-acoustic-boundary-domain-review"
+    "hearing-aid-acoustic-boundary-domain-review",
+    "erb-auditory-filter-bandwidth-baseline"
   ],
   "required_methods": [
     "methods/engineering/psychoacoustic-descriptors.json",
     "methods/engineering/frequency-weighting.json",
     "methods/engineering/level-statistics.json",
-    "methods/roles/hearing-aid-acoustic-boundary-domain-review.json"
+    "methods/roles/hearing-aid-acoustic-boundary-domain-review.json",
+    "methods/roles/erb-auditory-filter-bandwidth-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/psychoacoustic-descriptors.json",
@@ -168,9 +172,11 @@
     "company/capabilities/R069/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260918T145829Z-26879589"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R069-DOMAIN-DECISION",
@@ -179,13 +185,15 @@
       "methods/engineering/psychoacoustic-descriptors.json",
       "methods/engineering/frequency-weighting.json",
       "methods/engineering/level-statistics.json",
-      "methods/roles/hearing-aid-acoustic-boundary-domain-review.json"
+      "methods/roles/hearing-aid-acoustic-boundary-domain-review.json",
+      "methods/roles/erb-auditory-filter-bandwidth-baseline.json"
     ],
     "required_skills": [
       "psychoacoustic-descriptors",
       "frequency-weighting",
       "level-statistics",
-      "hearing-aid-acoustic-boundary-domain-review"
+      "hearing-aid-acoustic-boundary-domain-review",
+      "erb-auditory-filter-bandwidth-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -207,6 +215,12 @@
       "method": "methods/roles/hearing-aid-acoustic-boundary-domain-review.json",
       "suite": "golden/roles/R069/hearing-aid.json",
       "scope": "Independent hearing-aid acoustic budget assertion review; no clinical, real-ear, safety or Human approval."
+    },
+    {
+      "skill_id": "erb-auditory-filter-bandwidth-baseline",
+      "method": "methods/roles/erb-auditory-filter-bandwidth-baseline.json",
+      "suite": "golden/roles/R069/erb-auditory-filter.json",
+      "scope": "Bounded Equivalent Rectangular Bandwidth (Glasberg & Moore 1990) auditory-filter prediction checked against a declared critical-bandwidth claim; not a listener preference or discomfort judgment."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -227,7 +241,8 @@
       "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/input.schema.json",
       "frequency-weighting": "skills/frequency-weighting/input.schema.json",
       "level-statistics": "skills/level-statistics/input.schema.json",
-      "hearing-aid-acoustic-boundary-domain-review": "skills/hearing-aid-acoustic-boundary-domain-review/input.schema.json"
+      "hearing-aid-acoustic-boundary-domain-review": "skills/hearing-aid-acoustic-boundary-domain-review/input.schema.json",
+      "erb-auditory-filter-bandwidth-baseline": "skills/erb-auditory-filter-bandwidth-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -243,7 +258,8 @@
       "psychoacoustic-descriptors": "skills/psychoacoustic-descriptors/output.schema.json",
       "frequency-weighting": "skills/frequency-weighting/output.schema.json",
       "level-statistics": "skills/level-statistics/output.schema.json",
-      "hearing-aid-acoustic-boundary-domain-review": "skills/hearing-aid-acoustic-boundary-domain-review/output.schema.json"
+      "hearing-aid-acoustic-boundary-domain-review": "skills/hearing-aid-acoustic-boundary-domain-review/output.schema.json",
+      "erb-auditory-filter-bandwidth-baseline": "skills/erb-auditory-filter-bandwidth-baseline/output.schema.json"
     }
   },
   "report_sections": [

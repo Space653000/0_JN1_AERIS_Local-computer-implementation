@@ -1,0 +1,7 @@
+{
+  "method_id": "automotive-cabin-tuning-screening-baseline", "version": "1.0.0", "role": "R063", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:automotive_cabin_tuning_screening_model", "applicability": "Supplied driver/rear seat levels, declared acceptable spread and road-noise-validation flag",
+  "equations": {"seat_level_spread_db": "abs(driver_seat_level_db - rear_seat_level_db)"},
+  "assumptions": ["Declared driver/rear seat levels are directly comparable at the same measurement reference", "A tuning not declared validated under road noise is assumed parked-only unless stated otherwise", "This screen evaluates one declared tuning condition, not a full seat/speed coverage matrix"],
+  "excluded": ["Full seat-position and vehicle-speed coverage matrix", "physical/calibrated in-cabin measurement", "Human production sign-off"], "golden_tests": "golden/roles/R063/golden.json"
+}

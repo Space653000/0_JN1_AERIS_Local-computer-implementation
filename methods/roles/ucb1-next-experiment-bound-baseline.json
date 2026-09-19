@@ -1,0 +1,14 @@
+{
+  "method_id":"ucb1-next-experiment-bound-baseline", "version":"1.0.0", "role":"R100",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:ucb1_next_experiment_bound",
+  "applicability":"UCB1 upper-confidence-bound score for ranking a candidate next experiment, gated by a separately-evaluated risk-gate flag",
+  "equations":{
+    "ucb_score":"mean_reward + sqrt(2)*sqrt(ln(total_trials)/arm_trials)"
+  },
+  "assumptions":["a stationary (non-changing over time) reward distribution per arm","the risk gate result is still valid at the moment the experiment is actually executed"],
+  "excluded":["non-stationary bandit variants","overriding a failed risk gate"],
+  "uncertainty":"Standard textbook multi-armed-bandit algorithm (Auer, Cesa-Bianchi & Fischer 2002); hand-verified before use (mean=0.5,total=100,arm=10 -> score=1.4597; arm=50 -> score=0.9292).",
+  "limits_policy":"A failed risk gate blocks the experiment regardless of UCB score; the score never overrides risk authority.",
+  "golden_tests":"tests/test_ucb1_next_experiment_bound_domain.py"
+}

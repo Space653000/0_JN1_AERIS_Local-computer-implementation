@@ -1,0 +1,33 @@
+{
+  "suite_id":"R077-TOLERANCE-STACK-RSS-DOMAIN-V1", "role_id":"R077",
+  "skill_id":"tolerance-stack-rss-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard textbook GD&T tolerance-analysis identities (worst-case sum, RSS root-sum-square); RSS formula sanity-checked independently against the classic 3-4-5 right-triangle identity (sqrt(3^2+4^2)=5) before implementation; not copied from any shared Skill fixture.",
+  "scope":"Bounded worst-case and RSS dimensional tolerance stack-up from declared contributor tolerances; not measured process capability (Cpk) or physical assembled-sample verification.",
+  "base_input":{
+    "contributor_tolerances_mm":[0.1,0.15,0.05,0.2],
+    "maximum_acceptable_gap_mm":0.4
+  },
+  "cases":[
+    {"id":"STACK-RSS-PASS-WORST-CASE-FAIL","kind":"positive","question":"When worst-case stack exceeds the limit but the RSS stack does not, is that reported as a distinct, defensible middle-ground disposition rather than a simple pass/fail?","input_overrides":{},
+     "checks":[{"path":"worst_case_stack_mm","expected":0.5,"absolute_tolerance":0.000001},
+               {"path":"rss_stack_mm","expected":0.2738612787525831,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"WITHIN_STATISTICAL_RSS_BUT_NOT_WORST_CASE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0},
+               {"path":"checks.1.passed","expected":true,"absolute_tolerance":0}]},
+    {"id":"STACK-RSS-NEAR-LIMIT-BOUNDARY","kind":"boundary","question":"Just above the exact RSS value for a tighter three-contributor stack, does the RSS check still pass while worst-case fails?","input_overrides":{"contributor_tolerances_mm":[0.09,0.12,0.15],"maximum_acceptable_gap_mm":0.21313203435596426},
+     "checks":[{"path":"worst_case_stack_mm","expected":0.36,"absolute_tolerance":0.000001},
+               {"path":"rss_stack_mm","expected":0.21213203435596426,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"WITHIN_STATISTICAL_RSS_BUT_NOT_WORST_CASE","absolute_tolerance":0}]},
+    {"id":"STACK-BOTH-EXCEED-EVEN-RSS","kind":"boundary","question":"When contributor tolerances are so large that even the RSS stack exceeds the limit, is that flagged as failing statistically, not just at worst-case?","input_overrides":{"contributor_tolerances_mm":[5,5,5],"maximum_acceptable_gap_mm":1.0},
+     "checks":[{"path":"worst_case_stack_mm","expected":15,"absolute_tolerance":0.000001},
+               {"path":"rss_stack_mm","expected":8.660254037844387,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"TOLERANCE_STACK_EXCEEDS_SPEC_EVEN_STATISTICALLY","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0},
+               {"path":"checks.1.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"STACK-TOO-FEW-CONTRIBUTORS-REJECTED","kind":"negative","question":"Must a stack-up with fewer than the minimum two independent contributors be rejected rather than silently computed?","input_overrides":{"contributor_tolerances_mm":[0.1]},"expected_error":"ValueError"},
+    {"id":"STACK-RSS-ALWAYS-LESS-THAN-WORST-CASE","kind":"counter_hypothesis","question":"For comfortably small contributors well inside spec, does RSS still strictly discriminate below worst-case (as the model's own math guarantees for more than one nonzero contributor), rather than the two collapsing to the same value?","input_overrides":{"contributor_tolerances_mm":[0.05,0.05],"maximum_acceptable_gap_mm":1.0},
+     "checks":[{"path":"worst_case_stack_mm","expected":0.1,"absolute_tolerance":0.000001},
+               {"path":"rss_stack_mm","expected":0.07071067811865477,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]}
+  ]
+}

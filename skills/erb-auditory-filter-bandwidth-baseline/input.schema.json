@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["center_frequency_hz", "claimed_erb_hz", "max_acceptable_error_hz"],
+  "properties": {
+    "center_frequency_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 20000},
+    "claimed_erb_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 5000},
+    "max_acceptable_error_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 500}
+  }
+}

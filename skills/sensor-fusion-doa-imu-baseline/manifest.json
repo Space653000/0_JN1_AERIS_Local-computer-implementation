@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "sensor-fusion-doa-imu-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/sensor-fusion-doa-imu-baseline.json",
+  "input_schema": "skills/sensor-fusion-doa-imu-baseline/input.schema.json",
+  "output_schema": "skills/sensor-fusion-doa-imu-baseline/output.schema.json",
+  "role_mappings": ["R080"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded inverse-variance circular fusion of an IMU heading and an acoustic DOA estimate; not physical bench-verified sensor fusion"
+}

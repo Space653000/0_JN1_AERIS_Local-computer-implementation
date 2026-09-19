@@ -21,22 +21,30 @@
   "inputs": {
     "factorial-doe": "skills/factorial-doe/input.schema.json",
     "monte-carlo": "skills/monte-carlo/input.schema.json",
-    "correlation-outliers": "skills/correlation-outliers/input.schema.json"
+    "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+    "doe-monte-carlo-design-screening-baseline": "skills/doe-monte-carlo-design-screening-baseline/input.schema.json",
+    "doe-two-sample-size-baseline": "skills/doe-two-sample-size-baseline/input.schema.json"
   },
   "outputs": {
     "factorial-doe": "skills/factorial-doe/output.schema.json",
     "monte-carlo": "skills/monte-carlo/output.schema.json",
-    "correlation-outliers": "skills/correlation-outliers/output.schema.json"
+    "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+    "doe-monte-carlo-design-screening-baseline": "skills/doe-monte-carlo-design-screening-baseline/output.schema.json",
+    "doe-two-sample-size-baseline": "skills/doe-two-sample-size-baseline/output.schema.json"
   },
   "required_skills": [
     "factorial-doe",
     "monte-carlo",
-    "correlation-outliers"
+    "correlation-outliers",
+    "doe-monte-carlo-design-screening-baseline",
+    "doe-two-sample-size-baseline"
   ],
   "required_methods": [
     "methods/engineering/factorial-doe.json",
     "methods/engineering/monte-carlo.json",
-    "methods/engineering/correlation-outliers.json"
+    "methods/engineering/correlation-outliers.json",
+    "methods/roles/doe-monte-carlo-design-screening-baseline.json",
+    "methods/roles/doe-two-sample-size-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/factorial-doe.json",
@@ -164,9 +172,11 @@
     "company/capabilities/R078/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260918T145833Z-54de187e"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R078-DOMAIN-DECISION",
@@ -174,12 +184,16 @@
     "required_methods": [
       "methods/engineering/factorial-doe.json",
       "methods/engineering/monte-carlo.json",
-      "methods/engineering/correlation-outliers.json"
+      "methods/engineering/correlation-outliers.json",
+      "methods/roles/doe-monte-carlo-design-screening-baseline.json",
+      "methods/roles/doe-two-sample-size-baseline.json"
     ],
     "required_skills": [
       "factorial-doe",
       "monte-carlo",
-      "correlation-outliers"
+      "correlation-outliers",
+      "doe-monte-carlo-design-screening-baseline",
+      "doe-two-sample-size-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -195,7 +209,20 @@
       "neighbor_owns": "Select safe next experiments from informative coverage and observed loss without overriding risk gates"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "doe-monte-carlo-design-screening-baseline",
+      "method": "methods/roles/doe-monte-carlo-design-screening-baseline.json",
+      "suite": "golden/roles/R078/golden.json",
+      "scope": "Declared design resolution and causal/model-validity claim flags against confounded-design and Monte-Carlo-precision-as-validity antipatterns; no design-matrix alias verification or physical decision authorization."
+    },
+    {
+      "skill_id": "doe-two-sample-size-baseline",
+      "method": "methods/roles/doe-two-sample-size-baseline.json",
+      "suite": "golden/roles/R078/doe-two-sample-size.json",
+      "scope": "Bounded normal-approximation two-sample mean-comparison sample-size calculation from declared effect size, variance, significance and power; not a pilot-validated experimental design."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Design identifiable DOE and Monte-Carlo analyses with factor interactions and uncertainty",
@@ -213,7 +240,9 @@
     "calculation_schemas": {
       "factorial-doe": "skills/factorial-doe/input.schema.json",
       "monte-carlo": "skills/monte-carlo/input.schema.json",
-      "correlation-outliers": "skills/correlation-outliers/input.schema.json"
+      "correlation-outliers": "skills/correlation-outliers/input.schema.json",
+      "doe-monte-carlo-design-screening-baseline": "skills/doe-monte-carlo-design-screening-baseline/input.schema.json",
+      "doe-two-sample-size-baseline": "skills/doe-two-sample-size-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -228,7 +257,9 @@
     "calculation_schemas": {
       "factorial-doe": "skills/factorial-doe/output.schema.json",
       "monte-carlo": "skills/monte-carlo/output.schema.json",
-      "correlation-outliers": "skills/correlation-outliers/output.schema.json"
+      "correlation-outliers": "skills/correlation-outliers/output.schema.json",
+      "doe-monte-carlo-design-screening-baseline": "skills/doe-monte-carlo-design-screening-baseline/output.schema.json",
+      "doe-two-sample-size-baseline": "skills/doe-two-sample-size-baseline/output.schema.json"
     }
   },
   "report_sections": [

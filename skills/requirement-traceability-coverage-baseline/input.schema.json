@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["total_requirements", "covered_requirements", "minimum_acceptable_coverage_percent"],
+  "properties": {
+    "total_requirements": {"type": "integer", "minimum": 1, "maximum": 1000000},
+    "covered_requirements": {"type": "integer", "minimum": 0, "maximum": 1000000},
+    "minimum_acceptable_coverage_percent": {"type": "number", "minimum": 0, "maximum": 100}
+  }
+}

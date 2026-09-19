@@ -84,3 +84,7 @@ if($HardOffline){ $Payload.checks += 'multi_path_outbound_probe_block' }
 $Payload | ConvertTo-Json -Depth 8 | Set-Content -Encoding utf8 $Report
 Write-Host "PASS: real-machine application acceptance. Report: $Report" -ForegroundColor Green
 if (-not $HardOffline) { Write-Warning 'Hard offline network isolation is NOT verified. Disconnect/block external network and rerun with -HardOffline.' }
+
+Write-Host '=== P2.5: refreshing P0/P1 Progress Truth Evidence (informational; does not gate this script) ===' -ForegroundColor Cyan
+& $Py -m aeris_runtime.progress_verify
+if ($LASTEXITCODE -ne 0) { Write-Warning 'progress_verify reported one or more FAIL/UNKNOWN items (e.g. P0.7/P1.3 need the local supervisor running); see .aeris/evidence/progress/PROGRESS_TRUTH.json for exactly which.' }

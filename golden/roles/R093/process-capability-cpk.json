@@ -1,0 +1,24 @@
+{
+  "suite_id":"R093-PROCESS-CAPABILITY-CPK-DOMAIN-V1", "role_id":"R093",
+  "skill_id":"process-capability-cpk-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard textbook statistical process control (SPC) Cpk formula; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded process capability index from declared spec limits and process mean/sigma; not an empirical control-chart validation of statistical control.",
+  "base_input":{
+    "upper_spec_limit":10,"lower_spec_limit":0,"process_mean":5,"process_sigma":1,"minimum_acceptable_cpk":1.33
+  },
+  "cases":[
+    {"id":"CPK-CENTERED-PROCESS-CAPABLE","kind":"positive","question":"For a perfectly centered process, does Cpk equal Cpu and Cpl and clear a 1.33 minimum?","input_overrides":{},
+     "checks":[{"path":"cpu","expected":1.6666666666666667,"absolute_tolerance":0.000001},
+               {"path":"cpl","expected":1.6666666666666667,"absolute_tolerance":0.000001},
+               {"path":"cpk","expected":1.6666666666666667,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"CPK-OFFCENTER-PROCESS-CONSTRAINED","kind":"boundary","question":"When the process mean shifts toward the upper limit, does Cpk correctly take the smaller (constraining) side rather than an average?","input_overrides":{"process_mean":8},
+     "checks":[{"path":"cpu","expected":0.6666666666666666,"absolute_tolerance":0.000001},
+               {"path":"cpl","expected":2.6666666666666665,"absolute_tolerance":0.000001},
+               {"path":"cpk","expected":0.6666666666666666,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"CPK_BELOW_MINIMUM_ACCEPTABLE","absolute_tolerance":0}]},
+    {"id":"CPK-INVALID-USL-BELOW-LSL-REJECTED","kind":"negative","question":"Must an upper spec limit at or below the lower spec limit be rejected as an invalid specification?","input_overrides":{"upper_spec_limit":0,"lower_spec_limit":10},"expected_error":"ValueError"},
+    {"id":"CPK-TIGHTER-SIGMA-IMPROVES-CAPABILITY","kind":"counter_hypothesis","question":"Does halving the process sigma double the Cpk for the same centered process, confirming the model's own inverse relationship with variation?","input_overrides":{"process_sigma":0.5},
+     "checks":[{"path":"cpk","expected":3.3333333333333335,"absolute_tolerance":0.000001}]}
+  ]
+}

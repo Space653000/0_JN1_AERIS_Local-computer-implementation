@@ -1,0 +1,27 @@
+{
+  "suite_id": "R084-AUDIO-ML-EVALUATION-SCREEN-V1", "role_id": "R084", "skill_id": "audio-ml-evaluation-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact equality and boolean-logic comparison against declared scalars; no physical/production audio ML system was observed.",
+  "scope": "Supplied train/test overlap count and declared production-robustness-claim/validation flags only",
+  "base_input": {
+    "model": "SUPPLIED_AUDIO_ML_EVALUATION_SCREEN", "train_test_overlap_count": 0, "claimed_production_robust": true, "production_validated": true
+  },
+  "cases": [
+    {"id": "ML-NO-LEAKAGE-AND-VALIDATED-ROBUSTNESS-ACCEPT", "kind": "positive", "question": "Does a zero train/test overlap with a validated production-robustness claim clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "synthetic_accuracy_treated_as_production_robustness", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "ML-LEAKAGE-AND-UNVALIDATED-ROBUSTNESS-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are a train/test leakage and an unvalidated production-robustness claim both correctly rejected together, rather than one masking the other?", "input_overrides": {"train_test_overlap_count": 3, "production_validated": false}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "REMOVE_OVERLAPPING_SOURCE_RECORDINGS_FROM_TRAIN_OR_TEST_AND_RE_EVALUATE", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "VALIDATE_ON_PRODUCTION_REPRESENTATIVE_DATA_OR_WITHDRAW_THE_PRODUCTION_ROBUSTNESS_CLAIM", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "ML-ZERO-OVERLAP-NO-ROBUSTNESS-CLAIM-BOUNDARY", "kind": "boundary", "question": "Does a zero overlap with no production-robustness claim correctly clear via short-circuit, rather than an unvalidated claim being assumed?", "input_overrides": {"claimed_production_robust": false, "production_validated": false}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "ML-NEGATIVE-OVERLAP-COUNT-REJECTED", "kind": "negative", "question": "Is a negative train/test overlap count rejected rather than silently accepted?", "input_overrides": {"train_test_overlap_count": -1}, "expected_error": "ValueError"}
+  ]
+}

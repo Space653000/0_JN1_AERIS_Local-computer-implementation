@@ -1,0 +1,14 @@
+{
+  "method_id":"measurement-difference-significance-baseline", "version":"1.0.0", "role":"R086",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:measurement_difference_significance",
+  "applicability":"Two-independent-measurement significance z-score checking whether a claimed product difference exceeds measurement noise",
+  "equations":{
+    "z_score":"(x1-x2)/sqrt(u1^2+u2^2)"
+  },
+  "assumptions":["each measurement uncertainty is an independent, approximately normal standard error","the two measurements were taken under otherwise matched conditions"],
+  "excluded":["confirmation of matched test conditions","full comparative studies with repeated measurements"],
+  "uncertainty":"Standard statistical hypothesis-testing arithmetic (uncertainty propagation); hand-verified before use (x1=85.0,u1=0.5,x2=83.0,u2=0.5 -> z=2.828; x1=85.0,u1=2.0,x2=84.0,u2=2.0 -> z=0.354).",
+  "limits_policy":"A non-significant result is reported as inconclusive, never as proof of equivalence.",
+  "golden_tests":"tests/test_measurement_difference_significance_domain.py"
+}

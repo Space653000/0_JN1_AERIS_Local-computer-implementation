@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["angles_deg", "levels_db", "on_axis_reference_db", "threshold_db", "maximum_acceptable_beamwidth_deg"],
+  "properties": {
+    "angles_deg": {
+      "type": "array", "minItems": 3, "maxItems": 721,
+      "items": {"type": "number", "minimum": -180, "maximum": 180}
+    },
+    "levels_db": {
+      "type": "array", "minItems": 3, "maxItems": 721,
+      "items": {"type": "number", "minimum": -300, "maximum": 300}
+    },
+    "on_axis_reference_db": {"type": "number", "minimum": -300, "maximum": 300},
+    "threshold_db": {"type": "number", "exclusiveMinimum": 0, "maximum": 60},
+    "maximum_acceptable_beamwidth_deg": {"type": "number", "exclusiveMinimum": 0, "maximum": 360}
+  }
+}

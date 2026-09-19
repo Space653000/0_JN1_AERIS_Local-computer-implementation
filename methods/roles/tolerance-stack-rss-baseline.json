@@ -1,0 +1,15 @@
+{
+  "method_id":"tolerance-stack-rss-baseline", "version":"1.0.0", "role":"R077",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:tolerance_stack_rss",
+  "applicability":"Dimensional tolerance stack-up across independent contributors, worst-case and RSS methods",
+  "equations":{
+    "worst_case_stack":"sum(t_i)",
+    "rss_stack":"sqrt(sum(t_i^2))"
+  },
+  "assumptions":["contributor tolerances are independent random variables","near-normal distribution for each contributor","no correlation from a shared datum, fixture or process step"],
+  "excluded":["measured process capability (Cpk)","physical assembled-sample verification","non-normal or correlated contributor distributions"],
+  "uncertainty":"Sanity-checked against the classic 3-4-5 right-triangle identity (sqrt(3^2+4^2)=5) before use; declared tolerances are taken as given, not measured.",
+  "limits_policy":"Explicit caller-declared maximum acceptable gap, not a presumed standard.",
+  "golden_tests":"tests/test_tolerance_stack_domain.py"
+}

@@ -1,0 +1,14 @@
+{
+  "method_id":"patent-term-expiration-baseline", "version":"1.0.0", "role":"R087",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:patent_term_expiration",
+  "applicability":"20-year statutory utility-patent-term baseline expiration date from a declared filing date, checked against a claimed expiration",
+  "equations":{
+    "baseline_expiration":"filing_date + term_years (calendar date arithmetic)"
+  },
+  "assumptions":["a standard 20-year utility patent term from the earliest claimed filing date","no Patent Term Adjustment, Patent Term Extension, or terminal disclaimer applied"],
+  "excluded":["Patent Term Adjustment (PTA) calculation","Patent Term Extension (PTE) calculation","design/plant patent term rules"],
+  "uncertainty":"Standard, well-established US statutory rule (35 U.S.C. 154(a)(2)); hand-verified before use (filing 2010-05-15 + 20y -> 2030-05-15).",
+  "limits_policy":"A claimed expiration deviating from the 20-year baseline is flagged for PTA/PTE/terminal-disclaimer reconciliation rather than accepted or rejected outright.",
+  "golden_tests":"tests/test_patent_term_expiration_domain.py"
+}

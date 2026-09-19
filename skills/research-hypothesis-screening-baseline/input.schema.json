@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "replication_claimed", "independent_replication_performed", "raw_data_availability_disclosed"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_RESEARCH_HYPOTHESIS_SCREEN"},
+    "replication_claimed": {"type": "boolean"}, "independent_replication_performed": {"type": "boolean"},
+    "raw_data_availability_disclosed": {"type": "boolean"}
+  }
+}

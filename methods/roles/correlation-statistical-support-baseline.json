@@ -1,0 +1,16 @@
+{
+  "method_id":"correlation-statistical-support-baseline", "version":"1.0.0", "role":"R070",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:correlation_statistical_support",
+  "applicability":"Fisher r-to-z confidence interval checking whether a claimed metric-to-MOS correlation is statistically distinguishable from zero at the declared sample size",
+  "equations":{
+    "fisher_z":"atanh(r)",
+    "standard_error_z":"1/sqrt(n-3)",
+    "ci95":"tanh(z +/- 1.959963984540054*SE_z)"
+  },
+  "assumptions":["the paired metric/MOS observations are independent and identically distributed","the underlying relationship is approximately linear"],
+  "excluded":["computing MOS itself","nonlinear association measures","repeated-measures or non-independent sampling structure"],
+  "uncertainty":"Standard textbook inferential statistics (Fisher 1921); hand-verified before use (r=0.85,n=30 -> CI approx (0.706,0.927); r=0.3,n=10 -> CI approx (-0.406,0.782)).",
+  "limits_policy":"A confidence interval that includes zero is flagged as statistically unsupported rather than accepted.",
+  "golden_tests":"tests/test_correlation_statistical_support_domain.py"
+}

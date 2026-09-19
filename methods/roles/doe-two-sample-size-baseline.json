@@ -1,0 +1,14 @@
+{
+  "method_id":"doe-two-sample-size-baseline", "version":"1.0.0", "role":"R078",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:doe_two_sample_size",
+  "applicability":"Standard two-sample mean-comparison sample-size calculation (normal approximation) from declared effect size, variance, significance and power",
+  "equations":{
+    "required_n_per_group":"2*(z_alpha_half+z_beta)^2*sigma^2/delta^2"
+  },
+  "assumptions":["approximately normally distributed outcome in both groups","equal variance and equal sample size assumed in both groups","the declared standard deviation is a reasonable prior estimate"],
+  "excluded":["non-normal or rank-based test sample-size formulas","unequal-variance or unequal-n designs","pilot-study validation of the assumed standard deviation"],
+  "uncertainty":"Standard textbook experimental-design statistics; hand-verified before use (sigma=5, delta=2, alpha=0.05, power=0.8 -> z_alpha/2=1.959964, z_beta=0.841621, n=98.11).",
+  "limits_policy":"Required sample size exceeding the declared budget is flagged rather than silently truncated.",
+  "golden_tests":"tests/test_doe_two_sample_size_domain.py"
+}

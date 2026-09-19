@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contributor_tolerances_mm", "maximum_acceptable_gap_mm"],
+  "properties": {
+    "contributor_tolerances_mm": {
+      "type": "array", "minItems": 2, "maxItems": 20,
+      "items": {"type": "number", "exclusiveMinimum": 0, "maximum": 10}
+    },
+    "maximum_acceptable_gap_mm": {"type": "number", "exclusiveMinimum": 0, "maximum": 50}
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "method_id":"sensor-fusion-doa-imu-baseline", "version":"1.0.0", "role":"R080",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:sensor_fusion_doa_imu",
+  "applicability":"Fusing two conditionally-independent angular estimates (IMU heading, acoustic DOA) of the same true heading, already expressed in a shared sign convention",
+  "equations":{
+    "inverse_variance_weights":"w1 = 1/std_imu^2, w2 = 1/std_acoustic^2",
+    "circular_fusion":"fused = atan2(w1*sin(a1)+w2*sin(a2), w1*cos(a1)+w2*cos(a2))",
+    "fused_std":"sigma_fused = sqrt(1/(w1+w2))",
+    "circular_disagreement":"d = atan2(sin(a1-a2), cos(a1-a2))"
+  },
+  "assumptions":["both angles already share the same coordinate/sign convention","conditionally independent Gaussian-like angular errors","small-angle regime for the circular approximation to the true von Mises fusion"],
+  "excluded":["automatic frame-convention correction","non-Gaussian or multimodal (e.g. front-back ambiguous) DOA error","physical bench/ground-truth verification","multi-sensor (>2 source) fusion"],
+  "uncertainty":"Declared standard deviations are taken as given, not measured or calibrated here. A near-180-degree disagreement is flagged, not resolved.",
+  "limits_policy":"Explicit caller-declared timestamp-skew and fused-precision limits, not a presumed standard.",
+  "golden_tests":"tests/test_sensor_fusion_doa_imu_domain.py"
+}

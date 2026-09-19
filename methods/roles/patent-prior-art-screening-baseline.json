@@ -1,0 +1,7 @@
+{
+  "method_id": "patent-prior-art-screening-baseline", "version": "1.0.0", "role": "R087", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:patent_prior_art_screening_model", "applicability": "Supplied novelty-verdict/claim-element-mapping flags and declared date type used for the comparison",
+  "equations": {"novelty_check": "(not novelty_verdict_claimed) or claim_element_mapping_performed", "date_check": "date_type_used == 'PRIORITY_DATE'"},
+  "assumptions": ["Declared claim-element-mapping flag reflects an actual element-by-element analysis, not a keyword match", "Declared date type is the correctly identified date for this comparison, not assumed", "This screen evaluates one declared prior-art comparison, not a full freedom-to-operate analysis"],
+  "excluded": ["Full claim chart and element-by-element analysis", "jurisdiction/status verification", "Human legal sign-off"], "golden_tests": "golden/roles/R087/golden.json"
+}

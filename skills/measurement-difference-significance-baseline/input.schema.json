@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["measurement_1", "uncertainty_1", "measurement_2", "uncertainty_2", "significance_z_threshold"],
+  "properties": {
+    "measurement_1": {"type": "number", "minimum": -1000000, "maximum": 1000000},
+    "uncertainty_1": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000},
+    "measurement_2": {"type": "number", "minimum": -1000000, "maximum": 1000000},
+    "uncertainty_2": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000},
+    "significance_z_threshold": {"type": "number", "exclusiveMinimum": 0, "maximum": 10}
+  }
+}

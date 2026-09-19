@@ -1,0 +1,32 @@
+{
+  "suite_id":"R080-SENSOR-FUSION-DOA-IMU-DOMAIN-V1", "role_id":"R080",
+  "skill_id":"sensor-fusion-doa-imu-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Independent inverse-variance/circular-mean worked examples (standard scalar Kalman-filter-style fusion applied through unit-vector angle averaging); not copied from any shared Skill fixture.",
+  "scope":"Bounded two-source circular fusion of an IMU heading and an acoustic DOA estimate; not physical bench-verified sensor fusion.",
+  "base_input":{
+    "imu_heading_deg":10.0,"imu_heading_std_deg":5.0,"imu_timestamp_s":0.0,
+    "acoustic_doa_deg":20.0,"acoustic_doa_std_deg":10.0,"acoustic_timestamp_s":0.005,
+    "max_acceptable_timestamp_skew_s":0.05,"max_acceptable_fused_std_deg":10.0
+  },
+  "cases":[
+    {"id":"FUSION-NOMINAL","kind":"positive","question":"Does a more-precise IMU heading and a less-precise acoustic DOA fuse to a value closer to the IMU, with correctly reduced uncertainty?","input_overrides":{},
+     "checks":[{"path":"fused_heading_deg","expected":11.995119288508716,"absolute_tolerance":0.000001},
+               {"path":"fused_heading_std_deg","expected":4.47213595499958,"absolute_tolerance":0.000001},
+               {"path":"frame_reversal_suspected","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"FUSION-WRAPAROUND-BOUNDARY","kind":"boundary","question":"Across the 0/360 degree wrap boundary (350 vs 10 degrees, a true 20-degree difference), does the circular fusion avoid the naive-average error of treating this as a 340-degree difference?","input_overrides":{"imu_heading_deg":350.0,"acoustic_doa_deg":10.0},
+     "checks":[{"path":"circular_disagreement_deg","expected":-19.999999999999993,"absolute_tolerance":0.000001},
+               {"path":"fused_heading_deg","expected":-6.039209988994377,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"FUSION-ZERO-STD-REJECTED","kind":"negative","question":"Must a zero (or negative) declared angular standard deviation be rejected rather than producing an infinite inverse-variance weight?","input_overrides":{"imu_heading_std_deg":0.0},"expected_error":"ValueError"},
+    {"id":"FUSION-NEAR-180-FLIP","kind":"counter_hypothesis","question":"When the two sources disagree by nearly 180 degrees, is that flagged as a possible sign/frame-convention error rather than fused into a falsely confident middle value?","input_overrides":{"acoustic_doa_deg":190.0},
+     "checks":[{"path":"circular_disagreement_deg","expected":180.0,"absolute_tolerance":0.000001},
+               {"path":"frame_reversal_suspected","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"POSSIBLE_FRAME_CONVENTION_REVERSAL","absolute_tolerance":0},
+               {"path":"required_revisions.0","expected":"CONFIRM_IMU_AND_ACOUSTIC_HEADING_SHARE_THE_SAME_SIGN_CONVENTION_BEFORE_TRUSTING_THIS_FUSION","absolute_tolerance":0}]},
+    {"id":"FUSION-EXCESSIVE-TIMESTAMP-SKEW","kind":"boundary","question":"When the two sensors' timestamps are far apart relative to the declared tolerance, is the fusion flagged as unreliable due to skew even though the angles themselves agree well?","input_overrides":{"acoustic_timestamp_s":1.0},
+     "checks":[{"path":"timestamp_skew_s","expected":1.0,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"EXCESSIVE_TIMESTAMP_SKEW","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]}
+  ]
+}

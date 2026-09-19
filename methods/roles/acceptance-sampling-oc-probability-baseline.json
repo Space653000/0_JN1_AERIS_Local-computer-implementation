@@ -1,0 +1,14 @@
+{
+  "method_id":"acceptance-sampling-oc-probability-baseline", "version":"1.0.0", "role":"R095",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:acceptance_sampling_oc_probability",
+  "applicability":"Binomial acceptance-sampling OC-curve probability of accepting a lot at a declared sample size, acceptance number and assumed defect rate",
+  "equations":{
+    "probability_of_acceptance":"sum_{k=0}^{c} C(n,k)*p^k*(1-p)^(n-k)"
+  },
+  "assumptions":["defects occur independently within the lot at the assumed constant rate","the lot is effectively infinite relative to the sample (binomial approximation)"],
+  "excluded":["hypergeometric (finite-lot) correction","full producer/consumer risk curve across multiple defect rates"],
+  "uncertainty":"Standard textbook acceptance-sampling statistics; hand-verified before use (n=50,c=1,p=0.01 -> P=0.9106; n=50,c=1,p=0.05 -> P=0.2794).",
+  "limits_policy":"An acceptance probability below the declared minimum at the assumed defect rate is flagged rather than accepted.",
+  "golden_tests":"tests/test_acceptance_sampling_oc_probability_domain.py"
+}

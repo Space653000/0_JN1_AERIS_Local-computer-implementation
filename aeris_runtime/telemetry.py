@@ -10,7 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .audit import LEDGER_PATH, verify_ledger
+from . import audit as audit_module
+from .audit import verify_ledger
 from .config import ROOT, load_config
 from .evidence import validate_bundle
 from .expected_runs import assess_all
@@ -126,7 +127,7 @@ def _collect_service_telemetry(control_summary: dict[str, int]) -> dict[str, Any
         _service("Licensed Professional Tool Bus", "EXECUTION", "BLOCKED", "COMSOL/MATLAB/APx/KLIPPEL/SoundCheck/ACQUA licenses or devices unavailable", "config/maturity.json", "LICENSED_PROFESSIONAL_UNAVAILABLE", _mtime(MATURITY)),
         _service("Evidence Store", "TRUST", "HEALTHY" if valid_evidence else "NOT_CONFIGURED", f"sealed_valid_bundles={len(valid_evidence)}; candidate_bundles={len(evidence_dirs)}", ".aeris/evidence", "TESTED", _mtime(EVIDENCE)),
         _service("Verification Engine", "TRUST", "HEALTHY" if evidenced_workflows else "NOT_CONFIGURED", f"evidenced_or_verified_runs={len(evidenced_workflows)}; verified_runs={len(verified_workflows)}; per-run gates remain authoritative", ".aeris/workflows", "TESTED", _mtime(ROOT/'.aeris/workflows')),
-        _service("Audit Ledger", "TRUST", "HEALTHY" if audit.get("valid") else "FAILED", f"valid={audit.get('valid')}; records={audit.get('records',0)}", str(LEDGER_PATH.relative_to(ROOT)), "TESTED", _mtime(LEDGER_PATH)),
+        _service("Audit Ledger", "TRUST", "HEALTHY" if audit.get("valid") else "FAILED", f"valid={audit.get('valid')}; records={audit.get('records',0)}", str(audit_module.LEDGER_PATH.relative_to(ROOT)), "TESTED", _mtime(audit_module.LEDGER_PATH)),
         _service("Reproduction Runner", "TRUST", "HEALTHY" if successful_reproductions else "DEGRADED" if valid_evidence else "NOT_CONFIGURED", f"successful deterministic replays={len(successful_reproductions)}; valid sealed inputs={len(valid_evidence)}", ".aeris/reproduction", "TESTED", _mtime(ROOT/'.aeris/reproduction')),
         _service("Expected-run Health", "OPERATIONS", "HEALTHY" if expected.get("overall") == "HEALTHY" else str(expected.get("overall", "UNKNOWN")), f"contracts={len(expected.get('runs',[]))}", ".aeris/state/EXPECTED_RUNS.json", "TESTED", now),
         _service("Watchdog Recovery", "OPERATIONS", str(watchdog.get("state", "UNKNOWN")), str(watchdog.get("action", "No watchdog evidence")), str(watchdog_path.relative_to(ROOT)), "TESTED", _mtime(watchdog_path)),
@@ -152,7 +153,14 @@ class TelemetryProjection:
         self.lock=threading.Lock(); self.worker=None; self.snapshot=None
         self.running=False; self.requested=None
         self.snapshot_at=None; self.snapshot_key=None; self.error=None
-        self.refresh_after_s=2.0; self.max_age_s=10.0
+        # Collection cost scales with the local evidence store (validate_bundle
+        # runs once per sealed RUN- directory) and the audit ledger's hash-chain
+        # length; both grow with real usage, and a full pass can take well over
+        # a minute on a store with 1000+ sealed bundles. These bounds are sized
+        # for that reality rather than the near-instant collection time of an
+        # empty/small store, so a real completed snapshot stays servable
+        # instead of forever missing its own freshness window.
+        self.refresh_after_s=30.0; self.max_age_s=180.0
 
     def _refresh(self,summary,key,started):
         while True:
@@ -212,6 +220,6 @@ def service_telemetry(control_summary: dict[str, int]) -> dict[str, Any]:
     return _SERVICE_PROJECTION.get(control_summary)
 
 
-def wait_for_service_telemetry(timeout=15):
+def wait_for_service_telemetry(timeout=90):
     """CLI/test synchronization; the HTTP response never uses this wait."""
     return _SERVICE_PROJECTION.wait_for_refresh(timeout)

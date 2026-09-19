@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["skill_id", "version", "result", "values", "input_sha256", "implementation_sha256"],
+  "properties": {
+    "skill_id": {"const": "process-capability-cpk-baseline"},
+    "version": {"type": "string"},
+    "result": {"const": "PASS"},
+    "input_sha256": {"type": "string"},
+    "implementation_sha256": {"type": "string"},
+    "values": {
+      "type": "object",
+      "required": [
+        "cpu", "cpl", "cpk", "checks", "disposition", "required_revisions",
+        "counter_hypotheses", "next_discriminating_experiment", "model_assumptions", "unresolved"
+      ],
+      "properties": {
+        "cpu": {"type": "number"},
+        "cpl": {"type": "number"},
+        "cpk": {"type": "number"},
+        "checks": {"type": "array"},
+        "disposition": {"type": "string"},
+        "required_revisions": {"type": "array"},
+        "counter_hypotheses": {"type": "array"},
+        "next_discriminating_experiment": {"type": "string"},
+        "model_assumptions": {"type": "array"},
+        "unresolved": {"type": "array"}
+      }
+    }
+  }
+}

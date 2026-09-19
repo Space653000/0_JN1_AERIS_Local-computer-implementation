@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "research-hypothesis-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/research-hypothesis-screening-baseline.json",
+  "input_schema": "skills/research-hypothesis-screening-baseline/input.schema.json", "output_schema": "skills/research-hypothesis-screening-baseline/output.schema.json",
+  "role_mappings": ["R088"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Declared replication-claim/independent-replication and raw-data-disclosure flags against citation-as-replication and hidden-raw-data antipatterns; no full literature review or Human peer-review sign-off"
+}

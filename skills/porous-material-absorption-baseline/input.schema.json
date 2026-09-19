@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "flow_resistivity_pa_s_m2",
+    "thickness_m",
+    "frequency_hz",
+    "minimum_target_absorption",
+    "air_density_kg_m3",
+    "sound_speed_m_s"
+  ],
+  "properties": {
+    "flow_resistivity_pa_s_m2": {"type": "number", "exclusiveMinimum": 0, "maximum": 200000},
+    "thickness_m": {"type": "number", "exclusiveMinimum": 0, "maximum": 1.0},
+    "frequency_hz": {"type": "number", "minimum": 20, "maximum": 20000},
+    "minimum_target_absorption": {"type": "number", "minimum": 0, "maximum": 1},
+    "air_density_kg_m3": {"type": "number", "minimum": 1.0, "maximum": 1.5},
+    "sound_speed_m_s": {"type": "number", "minimum": 300, "maximum": 360}
+  }
+}

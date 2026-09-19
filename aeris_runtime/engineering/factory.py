@@ -180,7 +180,8 @@ def materialize() -> dict:
               "regression_cases":[f"golden/engineering/{definitions[s]['suite']}/{s}/regression.json" for s in skills],
               "task_templates":[{"role_id":role["id"],"skill_id":s,"inputs":f"skills/{s}/input.schema.json","risk":"R1","required_evidence":"sealed numerical run"} for s in skills],
               "report_templates":[f"company/capabilities/{role['id']}/report-template.md"],
-              "current_maturity_level":"L1","maturity_evidence":[],"canonical_core_sha":read(ROOT/"core.lock.json")["baseline_sha"]}
+              "current_maturity_level":"L1","maturity_evidence":[],"canonical_core_sha":read(ROOT/"core.lock.json")["baseline_sha"],
+              "source_generation_core_sha":read(ROOT/"core.lock.json")["baseline_sha"]}
         if role["group"]=="Product Chiefs": pack["product_architecture"]=product_profile(i-44)
         from .professional_profiles import enrich_pack
         pack=enrich_pack(pack)
@@ -358,7 +359,10 @@ def matrix() -> dict:
         counts[level]+=1
         group=groups.setdefault(role["group"],{"total":0,"L2_or_higher":0,"L3":0})
         group["total"]+=1; group["L2_or_higher"]+=int(level in {"L2","L3","L4"}); group["L3"]+=int(level=="L3")
-        rows.append({**role,"level":level,"skills":skills,"executable_skills":sorted(set(executable)),
+        from ..roles import get_role
+        presentation = get_role(role["id"])
+        rows.append({**role,"display_name":presentation["display_name"],"display_group":presentation["display_group"],
+                      "display_description":presentation["display_description"],"level":level,"skills":skills,"executable_skills":sorted(set(executable)),
                       "evidence":refs,"shared_skill_execution_evidenced":shared_evaluated,'domain_execution':domain_status,
                       'domain_capabilities':domain_status.get('capabilities',[]),
                      "coverage":{"skills":len(skills),"methods":len(pack.get('required_methods',[])),

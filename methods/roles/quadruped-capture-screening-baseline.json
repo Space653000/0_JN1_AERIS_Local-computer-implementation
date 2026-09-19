@@ -1,0 +1,7 @@
+{
+  "method_id": "quadruped-capture-screening-baseline", "version": "1.0.0", "role": "R065", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:quadruped_capture_screening_model", "applicability": "Supplied footfall peak level, capture headroom, body orientation and declared acceptance thresholds",
+  "equations": {"footfall_headroom_margin_db": "20*log10(capture_headroom_pa/footfall_peak_level_pa)"},
+  "assumptions": ["Declared footfall and headroom levels are directly comparable peak quantities at the same measurement point", "Declared body orientation is the actual deviation from the beam's assumed nominal orientation", "This screen evaluates one declared operating condition, not a full gait/orientation coverage matrix"],
+  "excluded": ["Full gait-mode and orientation coverage matrix", "physical/calibrated instrument measurement", "Human production sign-off"], "golden_tests": "golden/roles/R065/golden.json"
+}

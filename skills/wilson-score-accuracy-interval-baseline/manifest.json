@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "wilson-score-accuracy-interval-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/wilson-score-accuracy-interval-baseline.json",
+  "input_schema": "skills/wilson-score-accuracy-interval-baseline/input.schema.json",
+  "output_schema": "skills/wilson-score-accuracy-interval-baseline/output.schema.json",
+  "role_mappings": ["R084"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded Wilson score confidence interval checking whether a claimed classification accuracy is statistically supported by the declared test-set size; not a generalization or deployment-distribution guarantee"
+}

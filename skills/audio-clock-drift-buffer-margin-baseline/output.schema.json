@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["skill_id", "version", "result", "values", "input_sha256", "implementation_sha256"],
+  "properties": {
+    "skill_id": {"const": "audio-clock-drift-buffer-margin-baseline"},
+    "version": {"type": "string"},
+    "result": {"const": "PASS"},
+    "input_sha256": {"type": "string"},
+    "implementation_sha256": {"type": "string"},
+    "values": {
+      "type": "object",
+      "required": [
+        "relative_ppm_error", "drift_rate_samples_per_s", "accumulated_drift_samples", "margin_samples",
+        "time_to_exhaust_half_buffer_s", "checks", "disposition", "required_revisions",
+        "counter_hypotheses", "next_discriminating_experiment", "model_assumptions", "unresolved"
+      ],
+      "properties": {
+        "relative_ppm_error": {"type": "number"},
+        "drift_rate_samples_per_s": {"type": "number"},
+        "accumulated_drift_samples": {"type": "number"},
+        "margin_samples": {"type": "number"},
+        "time_to_exhaust_half_buffer_s": {"type": ["number", "null"]},
+        "checks": {"type": "array"},
+        "disposition": {"type": "string"},
+        "required_revisions": {"type": "array"},
+        "counter_hypotheses": {"type": "array"},
+        "next_discriminating_experiment": {"type": "string"},
+        "model_assumptions": {"type": "array"},
+        "unresolved": {"type": "array"}
+      }
+    }
+  }
+}

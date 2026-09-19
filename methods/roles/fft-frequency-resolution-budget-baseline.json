@@ -1,0 +1,15 @@
+{
+  "method_id":"fft-frequency-resolution-budget-baseline", "version":"1.0.0", "role":"R092",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:fft_frequency_resolution_budget",
+  "applicability":"FFT/DFT frequency-resolution planning check for a planned instrument acquisition record length",
+  "equations":{
+    "actual_resolution_hz":"fs/N",
+    "minimum_record_length_for_target_s":"1/delta_f_target"
+  },
+  "assumptions":["a plain rectangular window (no windowing function applied) for the resolution calculation","the actual sample rate matches the declared nominal value with negligible drift"],
+  "excluded":["windowing-function-aware resolution broadening","zero-padding interpolation effects"],
+  "uncertainty":"Standard, foundational DSP time/frequency-resolution relationship; hand-verified before use (fs=48000 Hz, N=4096 -> delta_f=11.71875 Hz; 1 Hz target needs a 1 s record).",
+  "limits_policy":"A planned record too short for the target resolution is flagged rather than run.",
+  "golden_tests":"tests/test_fft_frequency_resolution_budget_domain.py"
+}

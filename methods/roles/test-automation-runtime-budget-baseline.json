@@ -1,0 +1,16 @@
+{
+  "method_id":"test-automation-runtime-budget-baseline", "version":"1.0.0", "role":"R091",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:test_automation_runtime_budget",
+  "applicability":"CLT-based aggregate test-suite runtime timeout budget from declared per-test mean/std duration and test count",
+  "equations":{
+    "total_mean_s":"n*mean_s",
+    "total_std_s":"std_s*sqrt(n)",
+    "recommended_timeout_s":"total_mean_s+k*total_std_s"
+  },
+  "assumptions":["individual test durations are independent random variables","test durations are approximately normally distributed at the aggregate (sum) level"],
+  "excluded":["shared-resource contention between parallel tests","heavy-tailed duration distributions"],
+  "uncertainty":"Standard application of the Central Limit Theorem (variance of independent random variables adds); hand-verified before use (mean=2s,std=0.5s,n=100,k=3 -> total_mean=200s, total_std=5s, timeout=215s).",
+  "limits_policy":"A recommended timeout exceeding the declared maximum allowed budget is flagged rather than silently accepted.",
+  "golden_tests":"tests/test_test_automation_runtime_budget_domain.py"
+}

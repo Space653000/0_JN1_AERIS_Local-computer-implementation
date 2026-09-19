@@ -1,0 +1,97 @@
+---
+name: aeris-gate
+description: AERIS local build's one-gate-at-a-time workflow — pick the next real P0-P6 item, implement it, verify it, write Evidence, commit, push, and re-align the running server. Use whenever continuing AERIS (C:\0_JN1_AERIS) build work across P0-P6, especially at the start of a session/tick or right after a commit.
+---
+
+# AERIS Gate Workflow
+
+This encodes the workflow this project has actually used to take P0/P1 from
+0% to 100% and P2-P4 to real, evidence-backed partial completion. Follow it
+literally; skipping steps is how Evidence goes stale silently.
+
+## Ground truth, not vibes
+
+Never trust a prior session's or your own memory's claim that something is
+"done." Check `GET http://127.0.0.1:8765/api/v1/progress` (or start the
+server first: `& .venv\Scripts\python.exe -m aeris_runtime company open --actor <name> --start-supervisor --port 8765`).
+If `truth_state` is `FAIL_CLOSED` or an item shows `UNKNOWN`, that is the
+real state — do not describe it as done based on a prior report.
+
+`docs/AERIS_P<N>_*.md` files define what each phase's items concretely mean
+(P1 Kairos UX, P2 Progress Engine, P3 Golden Engineer, P4 Skill Teaching).
+If the next phase (P5, P6) has no such doc yet, write one first, grounded in
+real investigation of the codebase — not invented from the phase label alone.
+
+## The loop
+
+1. **Read real state.** `GET /api/v1/progress`, or `python -m aeris_runtime.progress_verify --dry-run` to re-check everything against current source without writing.
+2. **Pick exactly one next item.** Prefer items with a real, already-built-but-never-exercised code path (see P3's history: `evaluate_role`/`RoleAcceptanceFactory` existed and were tested but nothing ever called them) over inventing new mechanism from scratch.
+3. **Investigate before building.** Grep for existing functions/tests before writing new code. This project rewards finding "someone already built this, just never ran it" far more than writing new capability.
+4. **If a check requires human judgment** (what counts as a "qualified independent reviewer," what a business/legal gate needs), stop and ask — don't invent a shortcut that looks like the real thing (see P3.6).
+5. **Implement the smallest real slice.** Don't blend multiple P-items into one unreviewable commit.
+6. **Verify live, not just via unit tests.** For UI changes, actually open the page in a browser and read the console. For backend changes, hit the real endpoint.
+7. **Run the regression suite** for whatever you touched, plus `aeris_runtime core verify` (must stay `valid: true` — never edit files under `.aeris/core-reference/`, that is a read-only mirror of the canonical Core repo; put new CSS/JS in `ui/web/` instead). `.claude/settings.json` wires a PreToolUse hook (`.claude/hooks/block_protected_paths.py`) that mechanically blocks Edit/Write there as a second line of defense — it only takes effect for sessions started after the hook was added, so don't rely on it alone in the same session that adds it.
+8. **Commit** with a message that states what was found, what was built, and what was verified (not just what changed).
+9. **Push** to the current branch (`git push origin <branch>`) — this project keeps the remote branch in sync every commit, not batched.
+10. **Run `scripts\aeris-gate-cycle.ps1` after every push, not just after the last one in a batch.** This replaces the old manual steps of restarting the supervisor, waiting for it to come up, re-running `progress_verify`, reading `/api/v1/progress`, and failing loudly if `truth_state` is `FAIL_CLOSED`, with one command. It exits non-zero on failure, so it's safe to chain. Pass `-SkipRestart` only if the running server is already known-aligned (rare — a fresh commit almost always needs the restart).
+   - Do not hand-roll the restart again: an early draft of this exact script used `Start-Process ... -ArgumentList 'company','open',...` without `'-m','aeris_runtime'` first, which silently started no server at all. If editing this script, re-verify end to end (`GET /health` shows the new `implementation_sha`) before trusting it.
+   - **This session got bitten twice in one day by skipping this after a small follow-up commit:** push commit A, run the gate cycle, then push commit B and check `/progress` in the browser without re-running the cycle — the running server is still aligned to A, so it correctly (by design) reports `runtime_candidate_mismatch` / `FAIL_CLOSED`, which looks exactly like a real regression but isn't. `.claude/settings.json` now wires a PostToolUse hook (`.claude/hooks/remind_gate_cycle_after_push.py`) that fires a reminder whenever a `git push` command runs, so this can't be silently forgotten again — same caveat as the PreToolUse hook below: it only takes effect for sessions started after it was added.
+11. **Confirm the script's final line** says "Gate cycle complete" before reporting anything as done. If it warns `FAIL_CLOSED`, something was committed without matching Evidence — go back to step 8 territory and figure out what's missing before continuing.
+   - **Don't commit new changes while a gate-cycle run is still in flight in the background.** It races: the script restarts the server against whatever HEAD existed when it started, then a commit lands mid-run, and by the time `progress_verify` finishes HEAD has moved past what the server is aligned to -> `runtime_candidate_mismatch`, `FAIL_CLOSED`. This isn't a script bug (it correctly refuses to lie), it's a timing mistake — happened once even while using this exact skill. If you must keep working while one runs, hold commits until it reports back, then re-run.
+   - **A second, sharper version of the same race: don't leave `ROLE_DOMAIN_CONTRACTS` (professional_profiles.py) and the matching `company/capabilities/R0XX/capability.json` out of sync — even uncommitted, even briefly — while a gate-cycle run's `progress_verify` is querying the live server.** `/api/v1/capabilities` iterates all 100 roles in one pass; a single role's contract mismatch raises inside that computation and can 503 the whole endpoint for every role, not just the one being edited (happened once: adding R092's `ROLE_DOMAIN_CONTRACTS` entry first, then regenerating its `capability.json` a moment later, was enough to fail that run's P5.8 check). When adding a new role-domain contract, write the `ROLE_DOMAIN_CONTRACTS` entry and regenerate/commit the matching `capability.json` as one atomic step — never leave them inconsistent while anything might be polling the live matrix.
+
+## Known standing gaps (do not silently "fix" without asking)
+
+- **P3.6** (push role L2 -> L3): `role_l3_awarded`/`role_l3_accepted` is
+  hardcoded `False` in over 30 independent review modules across
+  `aeris_runtime/engineering/*_review.py`, not just one place — and it is
+  paired with `human_approval: False` in nearly every one of them. That is
+  too consistent to be an oversight; it reads as a deliberate project-wide
+  stance that no automated review, however sophisticated, self-certifies
+  L3 — the final award is meant to be a Human action. Do not build an
+  AI-reviews-AI path that flips this to True automatically without asking
+  the Human first, even though the reviewer-allocation/domain-review
+  machinery to *support* a review is real and already tested.
+- **P4.4**: full zh-TW translation of all 132 skills' descriptions is large
+  content work, intentionally not done in one pass.
+- **P2.4 is now done** (was previously listed here as deliberately deferred):
+  the multi-user auth system resolved the original attack-surface objection
+  by letting the trigger endpoint require the owner-only `"admin"`
+  permission. See `docs/AERIS_P2_PROGRESS_ENGINE.md`'s P2.4 section.
+- **P6.5** (formal four-way release-attestation signing) is the one
+  remaining item that genuinely cannot be built without a Human decision
+  — it needs a signing/attestation architecture choice, not a code change.
+  Present it as a decision point; do not invent a signing scheme
+  unilaterally.
+
+## Known performance traps
+
+`aeris_runtime.engineering.api.live_matrix()` and
+`aeris_runtime.telemetry.TelemetryProjection` both cache expensive
+recomputation, and both are slow on a cold cache. If either becomes slow
+again, the fix is tuning `_MATRIX_REFRESH_AFTER_S` /
+`TelemetryProjection.refresh_after_s`/`max_age_s` for the warm path, and
+a warm-up call (see below) for the cold path -- not reverting to
+synchronous recomputation on every request.
+
+**Measured 2026-09-13** (`scripts/profile_matrix.py`, a throwaway
+diagnostic kept for future re-profiling): a cold `/api/v1/capabilities`
+call takes ~70s across 100 roles, roughly 0.5-2s per role fairly
+uniformly -- **not** concentrated in roles with more historical Evidence,
+so this is fixed per-role I/O overhead (several small JSON reads +
+SHA-256 bundle hashing + a per-role SQLite connection open in
+`role_acceptance.py`'s `status()`/`status_for_skill()`/`_observe_composition()`),
+not an unbounded scaling-with-total-evidence-store-size bug -- reassuring
+for the "must run forever" requirement, since each role's own check stays
+bounded regardless of how much history accumulates elsewhere. Still slow
+enough that a naive short timeout right after a fresh restart will flake
+(this bit `AERIS_START.ps1`'s post-restart `progress_verify` pass, whose
+P3.2/P3.3/P5.1/P5.2 checks all hit this same cold endpoint). Fixed by
+adding an explicit warm-up `GET /api/v1/capabilities` (240s client
+timeout, comfortable margin above the measured ~70s) immediately after
+the health check and before running `progress_verify`, so the cache is
+already populated before anything else queries it. If this measurement
+changes materially in a future session (e.g. after real parallelization
+of the per-role loop, or if it start scaling upward with time), re-run
+`scripts/profile_matrix.py` and update this note rather than trusting a
+stale number.

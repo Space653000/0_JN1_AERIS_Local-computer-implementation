@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["resistance_ohm", "temperature_c", "bandwidth_hz", "claimed_noise_floor_v_rms"],
+  "properties": {
+    "resistance_ohm": {"type": "number", "exclusiveMinimum": 0, "maximum": 10000000},
+    "temperature_c": {"type": "number", "minimum": -50, "maximum": 150},
+    "bandwidth_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000000},
+    "claimed_noise_floor_v_rms": {"type": "number", "exclusiveMinimum": 0, "maximum": 1}
+  }
+}

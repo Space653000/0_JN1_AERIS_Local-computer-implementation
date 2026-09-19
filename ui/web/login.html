@@ -1,0 +1,18 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#62c5ba"><title>AERIS — 登入</title><link rel="stylesheet" href="/assets/aeris.css"><link rel="stylesheet" href="/assets/intro.css"><script src="/assets/aeris-theme.js"></script></head><body data-page="login">
+<div class="login-shell">
+  <div class="login-card">
+    <div class="intro-brand"><div class="brand-mark">A</div><div><div class="brand-name">AERIS</div><div class="brand-sub">登入以查看即時營運資料</div></div></div>
+    <form id="loginForm" autocomplete="off">
+      <label for="username">帳號</label>
+      <input id="username" name="username" type="text" autocomplete="username" required>
+      <label for="password">密碼</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="btn primary" type="submit" id="submitBtn">登入</button>
+    </form>
+    <div id="loginError" class="login-error" hidden></div>
+    <div id="noCredentials" class="login-hint" hidden>尚未設定帳號密碼。請在本機執行：<code>python -m aeris_runtime auth set-credentials</code></div>
+    <a class="login-back" href="/">← 回介紹頁</a>
+  </div>
+</div>
+<script src="/assets/login.js"></script>
+</body></html>

@@ -1,0 +1,32 @@
+{
+  "suite_id":"R082-AUDIO-CLOCK-DRIFT-DOMAIN-V1", "role_id":"R082",
+  "skill_id":"audio-clock-drift-buffer-margin-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Direct arithmetic from the standard ppm (parts-per-million frequency error) definition, error_hz/nominal_hz*1e6; hand-verified independently before implementation (48000 Hz at 100 ppm relative error -> 4.8 samples/s drift), not copied from any shared Skill fixture.",
+  "scope":"Bounded digital-audio clock-drift accumulation and buffer-margin check between two clock domains from declared ppm frequency errors; not measured real-hardware clock behavior or continuous-ASRC verification.",
+  "base_input":{
+    "nominal_sample_rate_hz":48000,"source_clock_ppm_error":50,"sink_clock_ppm_error":-50,
+    "buffer_size_samples":512,"resync_interval_s":10
+  },
+  "cases":[
+    {"id":"DRIFT-WITHIN-MARGIN-SHORT-INTERVAL","kind":"positive","question":"Over a short resync interval, does the accumulated sample drift stay comfortably within the buffer's half-full margin?","input_overrides":{},
+     "checks":[{"path":"relative_ppm_error","expected":100,"absolute_tolerance":0.000001},
+               {"path":"drift_rate_samples_per_s","expected":4.8,"absolute_tolerance":0.000001},
+               {"path":"accumulated_drift_samples","expected":48.0,"absolute_tolerance":0.000001},
+               {"path":"margin_samples","expected":208.0,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"DRIFT-EXCEEDS-MARGIN-LONG-INTERVAL","kind":"boundary","question":"When the resync interval is stretched well past the time needed to exhaust the half-buffer margin, is that flagged rather than silently accepted?","input_overrides":{"resync_interval_s":200},
+     "checks":[{"path":"accumulated_drift_samples","expected":960.0,"absolute_tolerance":0.000001},
+               {"path":"margin_samples","expected":-704.0,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BUFFER_MARGIN_EXCEEDED_BEFORE_RESYNC","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"DRIFT-AT-EXACT-TIME-TO-EXHAUST-BOUNDARY","kind":"boundary","question":"At exactly the predicted time-to-exhaust-half-buffer, does accumulated drift equal the half-buffer size (the model's own self-consistency check)?","input_overrides":{"resync_interval_s":53.333333333333336},
+     "checks":[{"path":"accumulated_drift_samples","expected":256.0,"absolute_tolerance":0.0001},
+               {"path":"margin_samples","expected":0.0,"absolute_tolerance":0.0001}]},
+    {"id":"DRIFT-INVALID-NEGATIVE-BUFFER-REJECTED","kind":"negative","question":"Must a non-positive or fractional buffer size be rejected rather than silently used?","input_overrides":{"buffer_size_samples":0},"expected_error":"ValueError"},
+    {"id":"DRIFT-MATCHED-CLOCKS-ZERO-DRIFT","kind":"counter_hypothesis","question":"When both clock domains share the identical ppm error (a plausible confound: are they actually independent, or secretly synchronized?), does the model correctly predict zero relative drift regardless of how long the resync interval runs?","input_overrides":{"source_clock_ppm_error":20,"sink_clock_ppm_error":20,"resync_interval_s":3600},
+     "checks":[{"path":"relative_ppm_error","expected":0,"absolute_tolerance":0.000001},
+               {"path":"drift_rate_samples_per_s","expected":0,"absolute_tolerance":0.000001},
+               {"path":"accumulated_drift_samples","expected":0,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]}
+  ]
+}

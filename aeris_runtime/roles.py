@@ -39,6 +39,48 @@ _ROLE_HINTS: dict[str, tuple[str, ...]] = {
     "Technical Report / Evidence / Knowledge Curator": ("evidence", "report", "traceability", "knowledge", "證據", "報告", "知識"),
 }
 
+_GROUP_ZH = {
+    "Chief Council": "首席架構委員會",
+    "Speaker CoE": "揚聲器卓越中心",
+    "Microphone CoE": "麥克風卓越中心",
+    "Product Chiefs": "產品首席團隊",
+    "Distinguished Experts": "特聘領域專家",
+    "Engineering Ops": "工程營運團隊",
+}
+_ROLE_ZH_PATH = ROOT / "company" / "organization" / "roles_zh_tw.json"
+
+
+def _role_zh_table() -> dict[str, dict[str, str]]:
+    cached = getattr(_role_zh_table, "_cache", None)
+    if cached is not None:
+        return cached
+    table = json.loads(_ROLE_ZH_PATH.read_text(encoding="utf-8-sig"))["roles"]
+    _role_zh_table._cache = table  # type: ignore[attr-defined]
+    return table
+
+
+def _display_fields(role_id: int, name: str, group: str) -> dict[str, str]:
+    """Authoritative zh-TW presentation fields; canonical IDs/names remain unchanged.
+
+    display_name/display_description are real per-role translations sourced
+    from company/organization/roles_zh_tw.json (each role's own mission),
+    not a generic templated placeholder -- falls back honestly (English name,
+    UNKNOWN mission) only for a role_id missing from that table, rather than
+    inventing a plausible-looking Chinese sentence.
+    """
+    entry = _role_zh_table().get(f"R{role_id:03d}")
+    if entry:
+        return {
+            "display_name": entry["name_zh"],
+            "display_group": _GROUP_ZH.get(group, group),
+            "display_description": entry["mission_zh"],
+        }
+    return {
+        "display_name": name,
+        "display_group": _GROUP_ZH.get(group, group),
+        "display_description": "UNKNOWN（尚無此角色的繁體中文職能翻譯，未捏造內容）",
+    }
+
 
 def _registry() -> dict[str, Any]:
     return json.loads(REGISTRY.read_text(encoding="utf-8-sig"))
@@ -85,6 +127,7 @@ def contract_for(role_id: int, name: str, group: str) -> dict[str, Any]:
         "required_output": ["claim", "evidence", "confidence", "counter_hypothesis", "missing_evidence", "recommended_test"],
         "forbidden_claim": "Do not present inference as measured fact or claim formal release/verification without required Evidence and gates.",
         "model_output_contract": "AERIS_ROLE_EVIDENCE_SCHEMA_V1",
+        **_display_fields(role_id, name, group),
     }
 
 

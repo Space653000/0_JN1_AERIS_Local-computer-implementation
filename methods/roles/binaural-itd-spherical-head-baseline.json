@@ -1,0 +1,15 @@
+{
+  "method_id":"binaural-itd-spherical-head-baseline", "version":"1.0.0", "role":"R071",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:binaural_itd_spherical_head",
+  "applicability":"Sanity-checking a claimed ITD against the rigid-sphere far-field low-frequency approximation for a single azimuth",
+  "equations":{
+    "effective_azimuth":"fold azimuth into 0..90 degrees using front-back and left-right symmetry of a sphere",
+    "predicted_itd":"ITD = (a/c) * (theta_rad + sin(theta_rad)), theta in 0..pi/2"
+  },
+  "assumptions":["far-field plane-wave incidence on a rigid sphere","head modeled as a sphere; pinna, torso and individual head shape excluded","low-frequency approximation"],
+  "excluded":["individualized HRTF measurement","interaural level difference (ILD)","frequency-dependent phase behavior above roughly 1.5kHz","physical/Human listening acceptance"],
+  "uncertainty":"Cross-checked at theta=90 degrees against the commonly cited ~650-660 microsecond human maximum ITD (655.8 microseconds at a=8.75cm, c=343 m/s); not fitted to that value, it falls out of the formula directly.",
+  "limits_policy":"Explicit caller-declared error tolerance, not a presumed standard.",
+  "golden_tests":"tests/test_binaural_itd_domain.py"
+}

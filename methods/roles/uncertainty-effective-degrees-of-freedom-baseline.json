@@ -1,0 +1,14 @@
+{
+  "method_id":"uncertainty-effective-degrees-of-freedom-baseline", "version":"1.0.0", "role":"R079",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:uncertainty_effective_degrees_of_freedom",
+  "applicability":"Welch-Satterthwaite effective degrees of freedom (GUM Annex G) from declared uncertainty components and their own degrees of freedom",
+  "equations":{
+    "effective_degrees_of_freedom":"uc^4/sum(ui^4/nu_i)"
+  },
+  "assumptions":["each uncertainty component is independent","each component's declared degrees of freedom accurately reflects its own characterization"],
+  "excluded":["Student's-t coverage-factor lookup itself","non-independent component correlation"],
+  "uncertainty":"Standard GUM Annex G metrology method, distinct from simple RSS combination; hand-verified before use (components (0.1,10),(0.2,5),(0.05,60) -> nu_eff=8.3496).",
+  "limits_policy":"An effective degrees of freedom below 30 is flagged as the small-sample regime requiring a Student's-t coverage factor rather than the k=2 approximation.",
+  "golden_tests":"tests/test_uncertainty_effective_degrees_of_freedom_domain.py"
+}

@@ -20,19 +20,27 @@
   ],
   "inputs": {
     "process-quality": "skills/process-quality/input.schema.json",
-    "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+    "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json",
+    "incoming-lot-sampling-screening-baseline": "skills/incoming-lot-sampling-screening-baseline/input.schema.json",
+    "acceptance-sampling-oc-probability-baseline": "skills/acceptance-sampling-oc-probability-baseline/input.schema.json"
   },
   "outputs": {
     "process-quality": "skills/process-quality/output.schema.json",
-    "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+    "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json",
+    "incoming-lot-sampling-screening-baseline": "skills/incoming-lot-sampling-screening-baseline/output.schema.json",
+    "acceptance-sampling-oc-probability-baseline": "skills/acceptance-sampling-oc-probability-baseline/output.schema.json"
   },
   "required_skills": [
     "process-quality",
-    "repeatability-reproducibility"
+    "repeatability-reproducibility",
+    "incoming-lot-sampling-screening-baseline",
+    "acceptance-sampling-oc-probability-baseline"
   ],
   "required_methods": [
     "methods/engineering/process-quality.json",
-    "methods/engineering/repeatability-reproducibility.json"
+    "methods/engineering/repeatability-reproducibility.json",
+    "methods/roles/incoming-lot-sampling-screening-baseline.json",
+    "methods/roles/acceptance-sampling-oc-probability-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/process-quality.json",
@@ -143,20 +151,26 @@
     "company/capabilities/R095/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260918T145842Z-e7801417"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R095-DOMAIN-DECISION",
     "question": "Separate supplier incoming quality, sampling and traceability from assembly/test-system variation",
     "required_methods": [
       "methods/engineering/process-quality.json",
-      "methods/engineering/repeatability-reproducibility.json"
+      "methods/engineering/repeatability-reproducibility.json",
+      "methods/roles/incoming-lot-sampling-screening-baseline.json",
+      "methods/roles/acceptance-sampling-oc-probability-baseline.json"
     ],
     "required_skills": [
       "process-quality",
-      "repeatability-reproducibility"
+      "repeatability-reproducibility",
+      "incoming-lot-sampling-screening-baseline",
+      "acceptance-sampling-oc-probability-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -172,7 +186,20 @@
       "neighbor_owns": "Set factory EOL decision limits from process capability, gage variation and false-reject cost"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "incoming-lot-sampling-screening-baseline",
+      "method": "methods/roles/incoming-lot-sampling-screening-baseline.json",
+      "suite": "golden/roles/R095/golden.json",
+      "scope": "Exact one-sided binomial upper bound on lot nonconforming fraction against a declared acceptance threshold, gated on measured (not certificate-only) incoming inspection data; no assembly/test-system variation decomposition."
+    },
+    {
+      "skill_id": "acceptance-sampling-oc-probability-baseline",
+      "method": "methods/roles/acceptance-sampling-oc-probability-baseline.json",
+      "suite": "golden/roles/R095/acceptance-sampling-oc-probability.json",
+      "scope": "Bounded binomial acceptance-sampling operating-characteristic probability at a single declared defect rate; not a full producer/consumer risk study or supplier-history-backed defect-rate estimate."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Separate supplier incoming quality, sampling and traceability from assembly/test-system variation",
@@ -189,7 +216,9 @@
     ],
     "calculation_schemas": {
       "process-quality": "skills/process-quality/input.schema.json",
-      "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json",
+      "incoming-lot-sampling-screening-baseline": "skills/incoming-lot-sampling-screening-baseline/input.schema.json",
+      "acceptance-sampling-oc-probability-baseline": "skills/acceptance-sampling-oc-probability-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -203,7 +232,9 @@
     ],
     "calculation_schemas": {
       "process-quality": "skills/process-quality/output.schema.json",
-      "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json",
+      "incoming-lot-sampling-screening-baseline": "skills/incoming-lot-sampling-screening-baseline/output.schema.json",
+      "acceptance-sampling-oc-probability-baseline": "skills/acceptance-sampling-oc-probability-baseline/output.schema.json"
     }
   },
   "report_sections": [

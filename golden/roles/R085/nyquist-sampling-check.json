@@ -1,0 +1,23 @@
+{
+  "suite_id":"R085-NYQUIST-SAMPLING-CHECK-DOMAIN-V1", "role_id":"R085",
+  "skill_id":"nyquist-sampling-check-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Shannon-Nyquist sampling theorem, standard textbook signal processing; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded sampling-rate criterion check for a declared dataset; not a spectral measurement of actual aliasing.",
+  "base_input":{
+    "sample_rate_hz":44100,"max_signal_frequency_hz":20000
+  },
+  "cases":[
+    {"id":"NYQUIST-STANDARD-AUDIO-SATISFIED","kind":"positive","question":"Does the standard 44.1 kHz audio sample rate satisfy the Nyquist criterion for full-band 20 kHz content?","input_overrides":{},
+     "checks":[{"path":"nyquist_frequency_hz","expected":22050.0,"absolute_tolerance":0.000001},
+               {"path":"satisfies_nyquist","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"NYQUIST-UNDERSAMPLED-VIOLATION","kind":"boundary","question":"When the sample rate is far below twice the declared signal bandwidth, is that flagged as an aliasing risk?","input_overrides":{"sample_rate_hz":8000},
+     "checks":[{"path":"nyquist_frequency_hz","expected":4000.0,"absolute_tolerance":0.000001},
+               {"path":"satisfies_nyquist","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"ALIASING_RISK_NYQUIST_CRITERION_VIOLATED","absolute_tolerance":0}]},
+    {"id":"NYQUIST-INVALID-ZERO-SAMPLE-RATE-REJECTED","kind":"negative","question":"Must a non-positive sample rate be rejected rather than producing an undefined Nyquist frequency?","input_overrides":{"sample_rate_hz":0},"expected_error":"ValueError"},
+    {"id":"NYQUIST-EXACT-BOUNDARY-SATISFIED","kind":"counter_hypothesis","question":"At exactly twice the maximum signal frequency (the theorem's own equality boundary), does the criterion still count as satisfied rather than being treated as a violation?","input_overrides":{"sample_rate_hz":40000},
+     "checks":[{"path":"nyquist_frequency_hz","expected":20000.0,"absolute_tolerance":0.000001},
+               {"path":"satisfies_nyquist","expected":true,"absolute_tolerance":0}]}
+  ]
+}

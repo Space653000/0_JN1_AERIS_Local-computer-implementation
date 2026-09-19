@@ -1,0 +1,25 @@
+{
+  "suite_id": "R100-NEXT-EXPERIMENT-SAFETY-SCREEN-V1", "role_id": "R100", "skill_id": "next-experiment-safety-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact interval and threshold comparison against declared scalars; no physical experiment was observed.",
+  "scope": "Supplied proposed point, safe region bounds and nearest-previous-point distance only",
+  "base_input": {
+    "model": "SUPPLIED_NEXT_EXPERIMENT_SAFETY_SCREEN", "proposed_point": 5.0, "safe_region_min": 0.0, "safe_region_max": 10.0,
+    "nearest_previous_point_distance": 2.0, "min_new_information_distance": 1.0
+  },
+  "cases": [
+    {"id": "NEXT-POINT-SAFE-AND-NEW-ACCEPT", "kind": "positive", "question": "Does a proposed point inside the safe region and far enough from prior coverage clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "risk_gate_overridden", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "NEXT-POINT-EXTRAPOLATES-OUTSIDE-SAFE-REGION-REJECTED", "kind": "counter_hypothesis", "question": "Is a proposed point outside the declared safe region correctly rejected rather than silently clamped?", "input_overrides": {"proposed_point": 12.0}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "CLIP_OR_REPLAN_THE_PROPOSED_POINT_INSIDE_THE_DECLARED_SAFE_REGION", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "NEXT-POINT-EXACT-SAFE-REGION-EDGE-BOUNDARY", "kind": "boundary", "question": "Does a proposed point exactly at the safe region's upper edge correctly pass the inclusive bound rather than being rejected?", "input_overrides": {"proposed_point": 10.0, "nearest_previous_point_distance": 1.0}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "NEXT-INVERTED-SAFE-REGION-REJECTED", "kind": "negative", "question": "Is a safe region whose maximum does not exceed its minimum rejected rather than silently accepted?", "input_overrides": {"safe_region_max": 0.0}, "expected_error": "ValueError"}
+  ]
+}

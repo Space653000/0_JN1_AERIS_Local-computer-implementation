@@ -1,0 +1,10 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "sidelobe_suppression_db", "min_acceptable_sidelobe_suppression_db", "array_geometry_symmetric", "claimed_unique_doa", "ambiguity_resolved_by_asymmetry_or_extra_sensor"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_DIRECTIONAL_MIC_ARRAY_SCREEN"},
+    "sidelobe_suppression_db": {"type": "number"}, "min_acceptable_sidelobe_suppression_db": {"type": "number"},
+    "array_geometry_symmetric": {"type": "boolean"}, "claimed_unique_doa": {"type": "boolean"},
+    "ambiguity_resolved_by_asymmetry_or_extra_sensor": {"type": "boolean"}
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "suite_id":"R083-AUDIO-PATH-LATENCY-BUDGET-DOMAIN-V1", "role_id":"R083",
+  "skill_id":"audio-path-latency-budget-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Plain additive arithmetic checked against the well-known ITU-T G.114 150 ms one-way conversational-quality guideline; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded additive one-way audio latency budget checked against the ITU-T G.114 150 ms threshold; not a measured end-to-end latency on real hardware/network.",
+  "base_input":{
+    "encode_delay_ms":20,"packetization_delay_ms":20,"network_one_way_delay_ms":40,
+    "jitter_buffer_delay_ms":60,"decode_delay_ms":5,"output_buffer_delay_ms":10
+  },
+  "cases":[
+    {"id":"LATENCY-EXCEEDS-G114-BY-5MS","kind":"positive","question":"When the summed latency budget comes to 155 ms, does it correctly exceed the 150 ms ITU-T G.114 recommendation by exactly 5 ms?","input_overrides":{},
+     "checks":[{"path":"total_one_way_latency_ms","expected":155,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"LATENCY_EXCEEDS_ITU_T_G114_RECOMMENDATION","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"LATENCY-WITHIN-G114-BOUNDARY","kind":"boundary","question":"With a leaner jitter buffer and network path, does the total latency stay within the 150 ms guideline?","input_overrides":{"encode_delay_ms":10,"packetization_delay_ms":10,"network_one_way_delay_ms":30,"jitter_buffer_delay_ms":20,"decode_delay_ms":5,"output_buffer_delay_ms":5},
+     "checks":[{"path":"total_one_way_latency_ms","expected":80,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"LATENCY-INVALID-NEGATIVE-DELAY-REJECTED","kind":"negative","question":"Must a negative delay component be rejected rather than silently used?","input_overrides":{"encode_delay_ms":-1},"expected_error":"ValueError"},
+    {"id":"LATENCY-BREAKDOWN-SUMS-TO-TOTAL","kind":"counter_hypothesis","question":"Does the reported per-stage breakdown sum exactly to the reported total, discriminating a genuine additive model from a rounding artifact?","input_overrides":{},
+     "checks":[{"path":"component_breakdown_ms.encode_delay_ms","expected":20,"absolute_tolerance":0.000001},
+               {"path":"component_breakdown_ms.jitter_buffer_delay_ms","expected":60,"absolute_tolerance":0.000001},
+               {"path":"total_one_way_latency_ms","expected":155,"absolute_tolerance":0.000001}]}
+  ]
+}

@@ -21,22 +21,30 @@
   "inputs": {
     "correlation-outliers": "skills/correlation-outliers/input.schema.json",
     "engineering-requirements": "skills/engineering-requirements/input.schema.json",
-    "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+    "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json",
+    "benchmark-teardown-screening-baseline": "skills/benchmark-teardown-screening-baseline/input.schema.json",
+    "measurement-difference-significance-baseline": "skills/measurement-difference-significance-baseline/input.schema.json"
   },
   "outputs": {
     "correlation-outliers": "skills/correlation-outliers/output.schema.json",
     "engineering-requirements": "skills/engineering-requirements/output.schema.json",
-    "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+    "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json",
+    "benchmark-teardown-screening-baseline": "skills/benchmark-teardown-screening-baseline/output.schema.json",
+    "measurement-difference-significance-baseline": "skills/measurement-difference-significance-baseline/output.schema.json"
   },
   "required_skills": [
     "correlation-outliers",
     "engineering-requirements",
-    "repeatability-reproducibility"
+    "repeatability-reproducibility",
+    "benchmark-teardown-screening-baseline",
+    "measurement-difference-significance-baseline"
   ],
   "required_methods": [
     "methods/engineering/correlation-outliers.json",
     "methods/engineering/engineering-requirements.json",
-    "methods/engineering/repeatability-reproducibility.json"
+    "methods/engineering/repeatability-reproducibility.json",
+    "methods/roles/benchmark-teardown-screening-baseline.json",
+    "methods/roles/measurement-difference-significance-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/correlation-outliers.json",
@@ -164,9 +172,11 @@
     "company/capabilities/R086/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260918T145837Z-e6fd8786"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R086-DOMAIN-DECISION",
@@ -174,12 +184,16 @@
     "required_methods": [
       "methods/engineering/correlation-outliers.json",
       "methods/engineering/engineering-requirements.json",
-      "methods/engineering/repeatability-reproducibility.json"
+      "methods/engineering/repeatability-reproducibility.json",
+      "methods/roles/benchmark-teardown-screening-baseline.json",
+      "methods/roles/measurement-difference-significance-baseline.json"
     ],
     "required_skills": [
       "correlation-outliers",
       "engineering-requirements",
-      "repeatability-reproducibility"
+      "repeatability-reproducibility",
+      "benchmark-teardown-screening-baseline",
+      "measurement-difference-significance-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -195,7 +209,20 @@
       "neighbor_owns": "Curate report claims, evidence hashes and knowledge provenance without domain self-approval"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "benchmark-teardown-screening-baseline",
+      "method": "methods/roles/benchmark-teardown-screening-baseline.json",
+      "suite": "golden/roles/R086/golden.json",
+      "scope": "Declared SPL-matched and topology-claim/validation flags against unmatched-benchmark and visual-topology-as-validated antipatterns; no full product test-condition matrix or Human publication sign-off."
+    },
+    {
+      "skill_id": "measurement-difference-significance-baseline",
+      "method": "methods/roles/measurement-difference-significance-baseline.json",
+      "suite": "golden/roles/R086/measurement-difference-significance.json",
+      "scope": "Bounded z-score significance check for two independent measurements with declared uncertainty; not a matched-conditions guarantee or a full statistical study."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Compare products/teardowns under matched conditions and bounded inference",
@@ -213,7 +240,9 @@
     "calculation_schemas": {
       "correlation-outliers": "skills/correlation-outliers/input.schema.json",
       "engineering-requirements": "skills/engineering-requirements/input.schema.json",
-      "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json"
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/input.schema.json",
+      "benchmark-teardown-screening-baseline": "skills/benchmark-teardown-screening-baseline/input.schema.json",
+      "measurement-difference-significance-baseline": "skills/measurement-difference-significance-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -228,7 +257,9 @@
     "calculation_schemas": {
       "correlation-outliers": "skills/correlation-outliers/output.schema.json",
       "engineering-requirements": "skills/engineering-requirements/output.schema.json",
-      "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json"
+      "repeatability-reproducibility": "skills/repeatability-reproducibility/output.schema.json",
+      "benchmark-teardown-screening-baseline": "skills/benchmark-teardown-screening-baseline/output.schema.json",
+      "measurement-difference-significance-baseline": "skills/measurement-difference-significance-baseline/output.schema.json"
     }
   },
   "report_sections": [

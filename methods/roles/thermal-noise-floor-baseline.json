@@ -1,0 +1,14 @@
+{
+  "method_id":"thermal-noise-floor-baseline", "version":"1.0.0", "role":"R076",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:thermal_noise_floor",
+  "applicability":"Johnson-Nyquist thermal noise voltage floor for a declared resistance, temperature and measurement bandwidth, checked as a physical lower bound against a claimed measured noise floor",
+  "equations":{
+    "thermal_floor_v_rms":"sqrt(4*k*T_kelvin*R*BW)"
+  },
+  "assumptions":["ideal resistor thermal noise only (no excess/flicker noise from real components)","a flat (unweighted) measurement bandwidth matching the declared value"],
+  "excluded":["active-component (op-amp/ADC) noise beyond the passive thermal floor","weighted (e.g. A-weighted) bandwidth measurements"],
+  "uncertainty":"Standard textbook physics using the exact SI-defined Boltzmann constant k=1.380649e-23 J/K; hand-verified before use (R=10 kOhm, T=298.15 K, BW=20 kHz -> Vrms=1814.7 nV, matching the commonly cited ~1.8 uV figure).",
+  "limits_policy":"A claimed noise floor below the computed thermal minimum is flagged as physically inconsistent rather than accepted.",
+  "golden_tests":"tests/test_thermal_noise_floor_domain.py"
+}
