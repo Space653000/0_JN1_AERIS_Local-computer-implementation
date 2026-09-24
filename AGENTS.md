@@ -1,4 +1,27 @@
-# AGENTS.md — AERIS Local FULL BUILD Autopilot Contract
+# AGENTS.md — Codex 工作入口
+
+## 本次工作入口（2026-09-24）
+
+本專案的設計依據是 Core release `v0.7.0-blueprint.1`；本機正式施工根目錄是
+`C:\0_JN1_AERIS`。每次接手或施工前，依序讀完：
+
+1. [`.ai/BLUEPRINT.md`](.ai/BLUEPRINT.md) — 固定藍圖與三個 repository 的權責。
+2. [`.ai/ACCEPTANCE.md`](.ai/ACCEPTANCE.md) — 完成判準與 Evidence 要求。
+3. [`.ai/STATUS.md`](.ai/STATUS.md) — 當前完成、未完成、阻塞及版本；重新核對易變數字。
+4. [`.ai/CODEX_WORKER.md`](.ai/CODEX_WORKER.md) — Codex 施工、修改、測試、修正的流程。
+
+Codex 負責依已核准藍圖施工；Claude Code 負責藍圖、Review 與獨立驗收；Human Chief
+Engineer 保有最終決定權。先讀當次使用者要求，再依上述文件選定有界工作。當次要求若指定
+「停止施工」或「只做文件」，先完成該範圍並停止功能施工；不得由下方歷史自動續建條款
+擴大授權。任何完成宣稱都須符合 `.ai/ACCEPTANCE.md`，並寫回 `.ai/STATUS.md`。
+
+以下保留既有 Autopilot 與 GATE-06 契約供追溯；其中與本入口或當次使用者要求衝突的
+自動施工、兩網址觸發及舊 PR #33 指向，均不得當作目前工作命令。實際施工 PR 及 gate
+狀態以即時 GitHub 與 `.ai/STATUS.md` 核對。
+
+---
+
+# 歷史契約：AERIS Local FULL BUILD Autopilot Contract
 
 ## Current authority: GATE-06 RETRY R1
 

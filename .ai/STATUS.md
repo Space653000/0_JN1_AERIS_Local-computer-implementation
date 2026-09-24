@@ -3,6 +3,19 @@
 > 每一條都附可重新驗證的指令或檔案路徑。找不到驗證方式的一律標 `NOT VERIFIED` /
 > `UNKNOWN`，不寫「應該完成了」。盤點時間：2026-09-24。
 
+## 2026-09-24 工作規則入口更新
+
+- `AGENTS.md` 已新增 Codex 工作入口，要求每次先讀本目錄的 Blueprint、Acceptance、
+  Status，再讀 `.ai/CODEX_WORKER.md`。舊版 Autopilot 契約保留供追溯。
+- `.ai/CODEX_WORKER.md` 已建立，定義 Codex 的施工、測試、STATUS 更新、commit 與
+  GitHub push 流程；Claude Code 的藍圖／Review／獨立驗收角色維持於
+  `.ai/CLAUDE_REVIEWER.md`。
+- 本次僅建立治理入口；以下未完成項目仍未施工或重新驗收。下一批須先核對目前 gate、
+  相關測試與當次使用者指定的施工範圍。
+- 文件入口相關既有測試：修改前及修改後皆執行
+  `.venv\Scripts\python.exe -m unittest tests.test_build_phase_contract tests.test_quality_gate_contract -v`，
+  各 `16/16 PASS`；這只驗證文件與既有品質契約，不代表 P0–P6 或真機驗收完成。
+
 ## 0. 三方版本快照（依 `.ai/ACCEPTANCE.md` §7 的要求，每次都要重查）
 
 ```text
