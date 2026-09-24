@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "train_test_overlap_count", "claimed_production_robust", "production_validated"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_AUDIO_ML_EVALUATION_SCREEN"},
+    "train_test_overlap_count": {"type": "integer"}, "claimed_production_robust": {"type": "boolean"},
+    "production_validated": {"type": "boolean"}
+  }
+}

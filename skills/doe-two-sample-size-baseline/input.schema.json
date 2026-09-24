@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["assumed_standard_deviation", "minimum_detectable_difference", "significance_level_alpha", "statistical_power", "maximum_affordable_sample_size_per_group"],
+  "properties": {
+    "assumed_standard_deviation": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000},
+    "minimum_detectable_difference": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000},
+    "significance_level_alpha": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+    "statistical_power": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+    "maximum_affordable_sample_size_per_group": {"type": "integer", "minimum": 2, "maximum": 1000000}
+  }
+}

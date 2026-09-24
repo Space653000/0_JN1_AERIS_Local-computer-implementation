@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bit_depth", "claimed_sinad_db"],
+  "properties": {
+    "bit_depth": {"type": "integer", "minimum": 1, "maximum": 32},
+    "claimed_sinad_db": {"type": "number", "minimum": 0, "maximum": 200}
+  }
+}

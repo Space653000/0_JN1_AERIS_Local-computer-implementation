@@ -1,0 +1,7 @@
+{
+  "method_id": "conference-array-aec-screening-baseline", "version": "1.0.0", "role": "R067", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:conference_array_aec_screening_model", "applicability": "Supplied off-beam attenuation, AEC tail length, room path length and declared acceptance thresholds",
+  "equations": {"aec_tail_margin_ms": "aec_tail_length_ms - room_path_length_ms"},
+  "assumptions": ["Declared off-beam attenuation is the actual steered-array response at the interrupting talker's angle", "Declared room path length is representative of the room's actual reverberant tail", "This screen evaluates one declared operating condition, not a full room/talker coverage matrix"],
+  "excluded": ["Full room and talker-position coverage matrix", "physical/calibrated instrument measurement", "Human production sign-off"], "golden_tests": "golden/roles/R067/golden.json"
+}

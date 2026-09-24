@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["severity_rating", "occurrence_rating", "detection_rating", "maximum_acceptable_rpn"],
+  "properties": {
+    "severity_rating": {"type": "integer", "minimum": 1, "maximum": 10},
+    "occurrence_rating": {"type": "integer", "minimum": 1, "maximum": 10},
+    "detection_rating": {"type": "integer", "minimum": 1, "maximum": 10},
+    "maximum_acceptable_rpn": {"type": "integer", "minimum": 1, "maximum": 1000}
+  }
+}

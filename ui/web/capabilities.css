@@ -1,0 +1,13 @@
+/* Implementation-owned styling for the dynamically injected Capability Matrix panel (capabilities.js). */
+.cap-graph-title{font-size:8px;color:var(--muted);margin:12px 0 6px}
+.cap-graph{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+.cap-graph-group{background:var(--surface-2);border:1px solid var(--border);border-radius:9px;padding:8px 9px}
+.cap-graph-group-label{font-size:8.5px;font-weight:650;color:var(--text-2);margin-bottom:6px}
+.cap-graph-group-count{color:var(--muted);font-weight:500}
+.cap-graph-cells{display:flex;flex-wrap:wrap;gap:3px}
+.cap-cell{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:5px;font:600 6.5px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#fff;cursor:default}
+.cap-cell.lvl-L0{background:var(--muted-2)}
+.cap-cell.lvl-L1{background:var(--amber)}
+.cap-cell.lvl-L2{background:var(--accent)}
+.cap-cell.lvl-L3{background:var(--green)}
+.cap-cell.lvl-L4{background:var(--purple)}

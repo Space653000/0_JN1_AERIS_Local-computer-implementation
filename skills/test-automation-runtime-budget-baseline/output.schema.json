@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["skill_id", "version", "result", "values", "input_sha256", "implementation_sha256"],
+  "properties": {
+    "skill_id": {"const": "test-automation-runtime-budget-baseline"},
+    "version": {"type": "string"},
+    "result": {"const": "PASS"},
+    "input_sha256": {"type": "string"},
+    "implementation_sha256": {"type": "string"},
+    "values": {
+      "type": "object",
+      "required": [
+        "total_mean_s", "total_std_s", "recommended_timeout_s", "checks", "disposition", "required_revisions",
+        "counter_hypotheses", "next_discriminating_experiment", "model_assumptions", "unresolved"
+      ],
+      "properties": {
+        "total_mean_s": {"type": "number"},
+        "total_std_s": {"type": "number"},
+        "recommended_timeout_s": {"type": "number"},
+        "checks": {"type": "array"},
+        "disposition": {"type": "string"},
+        "required_revisions": {"type": "array"},
+        "counter_hypotheses": {"type": "array"},
+        "next_discriminating_experiment": {"type": "string"},
+        "model_assumptions": {"type": "array"},
+        "unresolved": {"type": "array"}
+      }
+    }
+  }
+}

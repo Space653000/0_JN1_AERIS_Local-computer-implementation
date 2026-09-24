@@ -1,0 +1,25 @@
+{
+  "suite_id":"R070-CORRELATION-STATISTICAL-SUPPORT-DOMAIN-V1", "role_id":"R070",
+  "skill_id":"correlation-statistical-support-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Fisher (1921) r-to-z transformation, standard textbook inferential statistics; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded statistical-support check for a claimed metric-to-MOS correlation; not a computed MOS prediction itself.",
+  "base_input":{
+    "claimed_correlation_r":0.85,"sample_size":30
+  },
+  "cases":[
+    {"id":"CORR-STRONG-LARGE-N-SUPPORTED","kind":"positive","question":"Does a strong claimed correlation at a reasonably large sample size produce a confidence interval that excludes zero (statistically supported)?","input_overrides":{},
+     "checks":[{"path":"ci95_low_r","expected":0.7058967064069308,"absolute_tolerance":0.000001},
+               {"path":"ci95_high_r","expected":0.9265369024703374,"absolute_tolerance":0.000001},
+               {"path":"statistically_supported","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"CORR-WEAK-SMALL-N-BOUNDARY","kind":"boundary","question":"At the minimum sample size and a weak claimed correlation, does the confidence interval span zero, correctly showing the claim is not yet statistically supported?","input_overrides":{"claimed_correlation_r":0.3,"sample_size":10},
+     "checks":[{"path":"ci95_low_r","expected":-0.4063880891085119,"absolute_tolerance":0.000001},
+               {"path":"ci95_high_r","expected":0.7819293207681977,"absolute_tolerance":0.000001},
+               {"path":"statistically_supported","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"CORRELATION_NOT_STATISTICALLY_SUPPORTED_AT_THIS_SAMPLE_SIZE","absolute_tolerance":0}]},
+    {"id":"CORR-INVALID-R-EQUALS-ONE-REJECTED","kind":"negative","question":"Must a claimed correlation of exactly +/-1 (undefined under Fisher's transform) be rejected rather than silently used?","input_overrides":{"claimed_correlation_r":1.0},"expected_error":"ValueError"},
+    {"id":"CORR-SAME-R-LARGER-N-NARROWS-CI","kind":"counter_hypothesis","question":"For the identical claimed correlation, does a larger sample size narrow the confidence interval (as the model's own math guarantees), discriminating a genuine sample-size effect from noise?","input_overrides":{"sample_size":100},
+     "checks":[{"path":"standard_error_z","expected":0.10153461651336192,"absolute_tolerance":0.000001},
+               {"path":"statistically_supported","expected":true,"absolute_tolerance":0}]}
+  ]
+}

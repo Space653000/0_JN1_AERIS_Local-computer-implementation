@@ -42,7 +42,10 @@ class TelemetryTruthTests(unittest.TestCase):
         release.clear(); changed=projection.get({'tasks':1,'projects':0})
         self.assertTrue(all(s['state']=='CHECKING' for s in changed['services']))
         release.set(); self.assertTrue(projection.wait_for_refresh(2))
-        clock[0]=11.0; release.clear(); fail[0]=True
+        # Advance past TelemetryProjection's default max_age_s (sized for a
+        # large real evidence store; see telemetry.py), not an arbitrary small
+        # number, so this still actually exercises the expiry path.
+        clock[0]=200.0; release.clear(); fail[0]=True
         expired=projection.get({'tasks':1,'projects':0})
         self.assertTrue(all(s['state']=='CHECKING' for s in expired['services']))
         release.set(); self.assertTrue(projection.wait_for_refresh(2))

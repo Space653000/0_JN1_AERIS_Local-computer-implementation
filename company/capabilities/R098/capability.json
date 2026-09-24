@@ -21,22 +21,26 @@
   "inputs": {
     "evidence-counterreview": "skills/evidence-counterreview/input.schema.json",
     "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
-    "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/input.schema.json"
+    "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/input.schema.json",
+    "fmea-risk-priority-number-baseline": "skills/fmea-risk-priority-number-baseline/input.schema.json"
   },
   "outputs": {
     "evidence-counterreview": "skills/evidence-counterreview/output.schema.json",
     "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
-    "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/output.schema.json"
+    "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/output.schema.json",
+    "fmea-risk-priority-number-baseline": "skills/fmea-risk-priority-number-baseline/output.schema.json"
   },
   "required_skills": [
     "evidence-counterreview",
     "dfmea-ranking",
-    "failure-hypothesis-domain-review"
+    "failure-hypothesis-domain-review",
+    "fmea-risk-priority-number-baseline"
   ],
   "required_methods": [
     "methods/engineering/evidence-counterreview.json",
     "methods/engineering/dfmea-ranking.json",
-    "methods/roles/failure-hypothesis-domain-review.json"
+    "methods/roles/failure-hypothesis-domain-review.json",
+    "methods/roles/fmea-risk-priority-number-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/evidence-counterreview.json",
@@ -147,9 +151,11 @@
     "company/capabilities/R098/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260918T145844Z-3f6fdcb5"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R098-DOMAIN-DECISION",
@@ -157,12 +163,14 @@
     "required_methods": [
       "methods/engineering/evidence-counterreview.json",
       "methods/engineering/dfmea-ranking.json",
-      "methods/roles/failure-hypothesis-domain-review.json"
+      "methods/roles/failure-hypothesis-domain-review.json",
+      "methods/roles/fmea-risk-priority-number-baseline.json"
     ],
     "required_skills": [
       "evidence-counterreview",
       "dfmea-ranking",
-      "failure-hypothesis-domain-review"
+      "failure-hypothesis-domain-review",
+      "fmea-risk-priority-number-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -184,6 +192,12 @@
       "method": "methods/roles/failure-hypothesis-domain-review.json",
       "suite": "golden/roles/R098/golden.json",
       "scope": "Independent FACA model/experiment assertion challenge; no physical root-cause or universal-reviewer authority."
+    },
+    {
+      "skill_id": "fmea-risk-priority-number-baseline",
+      "method": "methods/roles/fmea-risk-priority-number-baseline.json",
+      "suite": "golden/roles/R098/fmea-risk-priority-number.json",
+      "scope": "Bounded FMEA Risk Priority Number (Severity x Occurrence x Detection) against a declared maximum acceptable value; not a cross-functional team consensus verification."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -203,7 +217,8 @@
     "calculation_schemas": {
       "evidence-counterreview": "skills/evidence-counterreview/input.schema.json",
       "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
-      "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/input.schema.json"
+      "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/input.schema.json",
+      "fmea-risk-priority-number-baseline": "skills/fmea-risk-priority-number-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -218,7 +233,8 @@
     "calculation_schemas": {
       "evidence-counterreview": "skills/evidence-counterreview/output.schema.json",
       "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
-      "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/output.schema.json"
+      "failure-hypothesis-domain-review": "skills/failure-hypothesis-domain-review/output.schema.json",
+      "fmea-risk-priority-number-baseline": "skills/fmea-risk-priority-number-baseline/output.schema.json"
     }
   },
   "report_sections": [

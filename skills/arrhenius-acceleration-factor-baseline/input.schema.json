@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["activation_energy_ev", "use_temperature_c", "stress_temperature_c", "test_duration_hours"],
+  "properties": {
+    "activation_energy_ev": {"type": "number", "exclusiveMinimum": 0, "maximum": 3},
+    "use_temperature_c": {"type": "number", "minimum": -40, "maximum": 150},
+    "stress_temperature_c": {"type": "number", "minimum": -40, "maximum": 300},
+    "test_duration_hours": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000}
+  }
+}

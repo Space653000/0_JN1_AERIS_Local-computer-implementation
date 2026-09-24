@@ -1,0 +1,23 @@
+{
+  "suite_id":"R086-MEASUREMENT-DIFFERENCE-SIGNIFICANCE-DOMAIN-V1", "role_id":"R086",
+  "skill_id":"measurement-difference-significance-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard statistical hypothesis-testing z-score arithmetic (uncertainty propagation); independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded significance check for two independent measurements with declared uncertainty; not a matched-conditions guarantee or a full statistical study.",
+  "base_input":{
+    "measurement_1":85.0,"uncertainty_1":0.5,"measurement_2":83.0,"uncertainty_2":0.5,"significance_z_threshold":2.0
+  },
+  "cases":[
+    {"id":"DIFFERENCE-CLEARLY-SIGNIFICANT","kind":"positive","question":"With tight uncertainties and a 2-unit difference, does the z-score clearly exceed the significance threshold?","input_overrides":{},
+     "checks":[{"path":"z_score","expected":2.82842712474619,"absolute_tolerance":0.000001},
+               {"path":"statistically_significant","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"DIFFERENCE_STATISTICALLY_SIGNIFICANT","absolute_tolerance":0}]},
+    {"id":"DIFFERENCE-WITHIN-NOISE-BOUNDARY","kind":"boundary","question":"With looser uncertainties and a smaller difference, does the z-score fall below threshold, correctly treated as inconclusive rather than a real difference?","input_overrides":{"measurement_1":85.0,"uncertainty_1":2.0,"measurement_2":84.0,"uncertainty_2":2.0},
+     "checks":[{"path":"z_score","expected":0.35355339059327373,"absolute_tolerance":0.000001},
+               {"path":"statistically_significant","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"DIFFERENCE_WITHIN_MEASUREMENT_NOISE","absolute_tolerance":0}]},
+    {"id":"DIFFERENCE-INVALID-ZERO-UNCERTAINTY-REJECTED","kind":"negative","question":"Must a zero declared uncertainty (implying infinite z-score) be rejected rather than silently used?","input_overrides":{"uncertainty_1":0.0},"expected_error":"ValueError"},
+    {"id":"DIFFERENCE-SIGN-REVERSED-GIVES-NEGATIVE-Z","kind":"counter_hypothesis","question":"When the two measurements are swapped, does the z-score flip sign while keeping the same magnitude, confirming the model correctly tracks direction rather than just magnitude?","input_overrides":{"measurement_1":83.0,"measurement_2":85.0},
+     "checks":[{"path":"z_score","expected":-2.82842712474619,"absolute_tolerance":0.000001},
+               {"path":"statistically_significant","expected":true,"absolute_tolerance":0}]}
+  ]
+}

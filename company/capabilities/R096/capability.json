@@ -20,19 +20,27 @@
   ],
   "inputs": {
     "reliability-binomial": "skills/reliability-binomial/input.schema.json",
-    "thermal-rc": "skills/thermal-rc/input.schema.json"
+    "thermal-rc": "skills/thermal-rc/input.schema.json",
+    "reliability-halt-screening-baseline": "skills/reliability-halt-screening-baseline/input.schema.json",
+    "arrhenius-acceleration-factor-baseline": "skills/arrhenius-acceleration-factor-baseline/input.schema.json"
   },
   "outputs": {
     "reliability-binomial": "skills/reliability-binomial/output.schema.json",
-    "thermal-rc": "skills/thermal-rc/output.schema.json"
+    "thermal-rc": "skills/thermal-rc/output.schema.json",
+    "reliability-halt-screening-baseline": "skills/reliability-halt-screening-baseline/output.schema.json",
+    "arrhenius-acceleration-factor-baseline": "skills/arrhenius-acceleration-factor-baseline/output.schema.json"
   },
   "required_skills": [
     "reliability-binomial",
-    "thermal-rc"
+    "thermal-rc",
+    "reliability-halt-screening-baseline",
+    "arrhenius-acceleration-factor-baseline"
   ],
   "required_methods": [
     "methods/engineering/reliability-binomial.json",
-    "methods/engineering/thermal-rc.json"
+    "methods/engineering/thermal-rc.json",
+    "methods/roles/reliability-halt-screening-baseline.json",
+    "methods/roles/arrhenius-acceleration-factor-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/reliability-binomial.json",
@@ -143,20 +151,26 @@
     "company/capabilities/R096/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260918T145842Z-b1614f64"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R096-DOMAIN-DECISION",
     "question": "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
     "required_methods": [
       "methods/engineering/reliability-binomial.json",
-      "methods/engineering/thermal-rc.json"
+      "methods/engineering/thermal-rc.json",
+      "methods/roles/reliability-halt-screening-baseline.json",
+      "methods/roles/arrhenius-acceleration-factor-baseline.json"
     ],
     "required_skills": [
       "reliability-binomial",
-      "thermal-rc"
+      "thermal-rc",
+      "reliability-halt-screening-baseline",
+      "arrhenius-acceleration-factor-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -172,7 +186,20 @@
       "neighbor_owns": "Bound temperature rise, power compression and reliability duty-cycle tradeoffs"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "reliability-halt-screening-baseline",
+      "method": "methods/roles/reliability-halt-screening-baseline.json",
+      "suite": "golden/roles/R096/golden.json",
+      "scope": "Exact one-sided binomial upper bound on HALT trial/failure counts against a declared acceptance threshold; no accelerated-life extrapolation or physical chamber execution."
+    },
+    {
+      "skill_id": "arrhenius-acceleration-factor-baseline",
+      "method": "methods/roles/arrhenius-acceleration-factor-baseline.json",
+      "suite": "golden/roles/R096/arrhenius-acceleration-factor.json",
+      "scope": "Bounded Arrhenius reliability acceleration factor from a declared activation energy and use/stress temperatures; not an empirically fitted activation energy or a validated failure-mechanism confirmation."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Design reliability/HALT stress and censored-life interpretation without inventing lifetime claims",
@@ -189,7 +216,9 @@
     ],
     "calculation_schemas": {
       "reliability-binomial": "skills/reliability-binomial/input.schema.json",
-      "thermal-rc": "skills/thermal-rc/input.schema.json"
+      "thermal-rc": "skills/thermal-rc/input.schema.json",
+      "reliability-halt-screening-baseline": "skills/reliability-halt-screening-baseline/input.schema.json",
+      "arrhenius-acceleration-factor-baseline": "skills/arrhenius-acceleration-factor-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -203,7 +232,9 @@
     ],
     "calculation_schemas": {
       "reliability-binomial": "skills/reliability-binomial/output.schema.json",
-      "thermal-rc": "skills/thermal-rc/output.schema.json"
+      "thermal-rc": "skills/thermal-rc/output.schema.json",
+      "reliability-halt-screening-baseline": "skills/reliability-halt-screening-baseline/output.schema.json",
+      "arrhenius-acceleration-factor-baseline": "skills/arrhenius-acceleration-factor-baseline/output.schema.json"
     }
   },
   "report_sections": [

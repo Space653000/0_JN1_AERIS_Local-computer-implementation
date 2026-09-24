@@ -1,5 +1,22 @@
 # CLAUDE.md — AERIS Local Independent Acceptance
 
+## 入口：開工前必讀順序
+
+任何 session 在這個 repo 工作前，依序讀完：
+
+1. [`.ai/BLUEPRINT.md`](.ai/BLUEPRINT.md) — 本專案唯一藍圖依據索引（不新增設計，只索引/引用既有藍圖）
+2. [`.ai/ACCEPTANCE.md`](.ai/ACCEPTANCE.md) — 驗收標準（GATE-04/05、Progress Truth、L0-L4 分級、技能新增流程）
+3. [`.ai/STATUS.md`](.ai/STATUS.md) — 已完成 / 施工中 / 未完成 / 阻塞（含最新即時重跑結果）
+4. [`.ai/CLAUDE_REVIEWER.md`](.ai/CLAUDE_REVIEWER.md) — Claude Code 的預設角色定義（研究/規劃/Review/驗收），含原始角色定義與歷史覆寫紀錄的完整保留
+
+本檔案（`CLAUDE.md`）以下的內容是本專案**原始**的獨立驗收合約，逐字保留，未刪減；
+`.ai/CLAUDE_REVIEWER.md` 對它做了索引與脈絡整理，但不取代它。兩份文件衝突時，以本檔案的
+逐字原文與即時查證結果為準，並在 `.ai/STATUS.md` 記錄落差。
+
+---
+
+> **2026-09-12 人工首席工程師覆寫（Autopilot Mode）：** 使用者已明確、多次、書面授權本 session 的 Claude Code 直接接手施工/實作/自行判斷全權處理（非僅獨立審查），原因是不再信任先前 Codex 施工結論，要求「一次只做一個 Gate：Plan → Implement → Execute → Evidence → Verify → PASS」並持續自動推進，只在花錢／刪重要資料／不可逆操作時才停下來問。這與下文「Role」段落原始設計（Claude = 獨立審查者，不做安裝/施工）**互相矛盾**；本覆寫僅對已明確給出此指示的 session 有效，下一個未收到相同覆寫指示的 Claude Code session，應預設回到下文原始的「獨立審查者」角色，除非使用者再次明確授權 Autopilot Mode。
+>
 > **2026-09-07 審查優先：HOLD_FOR_SOL_RED_TEAM。** 先讀 [Astra → Sol → Astra 閘門](docs/ASTRA_SOL_REVIEW_GATE_V1.md)。下文 Full-Build／兩個 URL／缺口清零／續建命令只適用於閘門解除後的已授權有限批次。本次只修訂與發布文件；第 4 項等待使用者切換 GPT-5.6 Sol High，尚未執行本機總驗收。
 
 Repository: `Space653000/0_JN1_AERIS_Local-computer-implementation`  

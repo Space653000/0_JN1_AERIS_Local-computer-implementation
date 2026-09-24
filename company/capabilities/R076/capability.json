@@ -22,25 +22,29 @@
     "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
     "spectral-analysis": "skills/spectral-analysis/input.schema.json",
     "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-    "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/input.schema.json"
+    "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/input.schema.json",
+    "thermal-noise-floor-baseline": "skills/thermal-noise-floor-baseline/input.schema.json"
   },
   "outputs": {
     "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
     "spectral-analysis": "skills/spectral-analysis/output.schema.json",
     "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-    "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/output.schema.json"
+    "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/output.schema.json",
+    "thermal-noise-floor-baseline": "skills/thermal-noise-floor-baseline/output.schema.json"
   },
   "required_skills": [
     "circuit-noise-budget",
     "spectral-analysis",
     "transfer-coherence",
-    "monitor-aio-usb-desk-domain-review"
+    "monitor-aio-usb-desk-domain-review",
+    "thermal-noise-floor-baseline"
   ],
   "required_methods": [
     "methods/engineering/circuit-noise-budget.json",
     "methods/engineering/spectral-analysis.json",
     "methods/engineering/transfer-coherence.json",
-    "methods/roles/monitor-aio-usb-desk-domain-review.json"
+    "methods/roles/monitor-aio-usb-desk-domain-review.json",
+    "methods/roles/thermal-noise-floor-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/circuit-noise-budget.json",
@@ -168,9 +172,11 @@
     "company/capabilities/R076/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260918T145831Z-9589499b"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "standards_strategy": "NOT_APPLICABLE_TO_THIS_BOUNDED_METHOD_OR_REQUIRES_TASK_SPECIFIC_RESEARCH",
   "professional_decision_contract": {
     "decision_id": "R076-DOMAIN-DECISION",
@@ -179,13 +185,15 @@
       "methods/engineering/circuit-noise-budget.json",
       "methods/engineering/spectral-analysis.json",
       "methods/engineering/transfer-coherence.json",
-      "methods/roles/monitor-aio-usb-desk-domain-review.json"
+      "methods/roles/monitor-aio-usb-desk-domain-review.json",
+      "methods/roles/thermal-noise-floor-baseline.json"
     ],
     "required_skills": [
       "circuit-noise-budget",
       "spectral-analysis",
       "transfer-coherence",
-      "monitor-aio-usb-desk-domain-review"
+      "monitor-aio-usb-desk-domain-review",
+      "thermal-noise-floor-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -207,6 +215,12 @@
       "method": "methods/roles/monitor-aio-usb-desk-domain-review.json",
       "suite": "golden/roles/R076/monitor-aio.json",
       "scope": "Independent monitor/AIO hum, USB, desk and bezel assertion review; no physical coupling, continuity, call-quality or Human approval."
+    },
+    {
+      "skill_id": "thermal-noise-floor-baseline",
+      "method": "methods/roles/thermal-noise-floor-baseline.json",
+      "suite": "golden/roles/R076/thermal-noise-floor.json",
+      "scope": "Bounded Johnson-Nyquist thermal noise floor from declared resistance/temperature/bandwidth, checked as a physical lower bound against a claimed measured noise floor; not a full EMI/ground-loop diagnosis."
     }
   ],
   "professional_profile_version": "H0001-authored-v1",
@@ -227,7 +241,8 @@
       "circuit-noise-budget": "skills/circuit-noise-budget/input.schema.json",
       "spectral-analysis": "skills/spectral-analysis/input.schema.json",
       "transfer-coherence": "skills/transfer-coherence/input.schema.json",
-      "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/input.schema.json"
+      "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/input.schema.json",
+      "thermal-noise-floor-baseline": "skills/thermal-noise-floor-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -243,7 +258,8 @@
       "circuit-noise-budget": "skills/circuit-noise-budget/output.schema.json",
       "spectral-analysis": "skills/spectral-analysis/output.schema.json",
       "transfer-coherence": "skills/transfer-coherence/output.schema.json",
-      "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/output.schema.json"
+      "monitor-aio-usb-desk-domain-review": "skills/monitor-aio-usb-desk-domain-review/output.schema.json",
+      "thermal-noise-floor-baseline": "skills/thermal-noise-floor-baseline/output.schema.json"
     }
   },
   "report_sections": [

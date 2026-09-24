@@ -1,6 +1,7 @@
 """Role-specific engineering decisions, separate from shared Skill Goldens."""
 from __future__ import annotations
 
+import cmath
 import hashlib
 import inspect
 import json
@@ -144,6 +145,1573 @@ def speaker_power_distortion(params):
                           'physical reliability, lifetime and qualified Human acceptance']}
 
 
+def porous_material_absorption(params):
+    """Delany-Bazley (1970) empirical porous-absorber model: normalized
+    frequency parameter -> complex characteristic impedance and propagation
+    constant -> rigid-backed surface impedance -> normal-incidence
+    absorption coefficient. Surface impedance uses the general lossy
+    transmission-line form Zs=Zc*coth(gamma*d) (gamma is fully complex
+    here, not purely imaginary) -- the simpler -j*Zc*cot(kd) textbook form
+    only holds for a lossless line and silently produces a negative-real
+    (unphysical) surface impedance if used here; verified against this
+    exact failure mode while building this skill.
+
+    The empirical fit is itself only published as valid for
+    0.01<=X<=1.0, and even inside that range can still return an
+    absorption coefficient outside [0,1] for thin/low-frequency
+    combinations (a known model limitation, not a bug) -- both boundaries
+    are surfaced as an honest disposition rather than clamped."""
+    schema=json.loads((ROOT/'skills/porous-material-absorption-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact porous-material absorption SI-unit field contract required')
+    for key,rules in schema['properties'].items():
+        value=params[key]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError('finite numeric value required: '+key)
+        if value<rules.get('minimum',-math.inf) or value>rules.get('maximum',math.inf) or value<=rules.get('exclusiveMinimum',-math.inf):
+            raise ValueError('invalid declared-unit value: '+key)
+    p=params
+    X=p['air_density_kg_m3']*p['frequency_hz']/p['flow_resistivity_pa_s_m2']
+    z0=p['air_density_kg_m3']*p['sound_speed_m_s']
+    zc=z0*(1+0.0571*X**-0.754-1j*0.087*X**-0.732)
+    omega=2*math.pi*p['frequency_hz']
+    gamma=(omega/p['sound_speed_m_s'])*(0.0978*X**-0.700+1j*(1+0.189*X**-0.595))
+    zs=zc/cmath.tanh(gamma*p['thickness_m'])
+    reflection=(zs-z0)/(zs+z0)
+    alpha=1-abs(reflection)**2
+    applicable=0.01<=X<=1.0
+    physical=0.0<=alpha<=1.0
+    target_met=applicable and physical and alpha>=p['minimum_target_absorption']
+    check={'id':'ABSORPTION_COEFFICIENT','actual':alpha,'limit':p['minimum_target_absorption'],
+           'margin':alpha-p['minimum_target_absorption'],'operator':'>=','passed':bool(target_met),
+           'on_failure':'INCREASE_THICKNESS_OR_LOWER_FLOW_RESISTIVITY'}
+    if not applicable:
+        disposition='MODEL_OUTSIDE_VALIDATED_RANGE'
+        required_revisions=['SELECT_MATERIAL_OR_FREQUENCY_WITHIN_DELANY_BAZLEY_X_RANGE_0P01_TO_1P0']
+        experiment='Re-measure flow resistivity or select a thicker/denser sample so the normalized frequency parameter falls within 0.01-1.0'
+    elif not physical:
+        disposition='MODEL_RESULT_NONPHYSICAL_AT_THIS_THICKNESS_FREQUENCY'
+        required_revisions=['INCREASE_SAMPLE_THICKNESS_OR_VERIFY_WITH_MEASURED_IMPEDANCE_TUBE_DATA']
+        experiment='Measure normal-incidence absorption in an impedance tube at this exact thickness/frequency; the empirical fit is known to be unreliable here'
+    elif target_met:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+        experiment='Measure normal-incidence absorption in an impedance tube at the same thickness and frequency to confirm the empirical prediction'
+    else:
+        disposition='TARGET_NOT_MET'
+        required_revisions=['INCREASE_THICKNESS_OR_LOWER_FLOW_RESISTIVITY']
+        experiment='Re-run at increased thickness or with a lower-flow-resistivity material and compare predicted absorption against the same target'
+    return {'normalized_frequency_parameter':X,'model_applicable':applicable,
+            'characteristic_impedance_real':zc.real,'characteristic_impedance_imag':zc.imag,
+            'propagation_constant_real':gamma.real,'propagation_constant_imag':gamma.imag,
+            'surface_impedance_real':zs.real,'surface_impedance_imag':zs.imag,
+            'absorption_coefficient':alpha,'checks':[check],'disposition':disposition,
+            'required_revisions':required_revisions,
+            'counter_hypotheses':['edge or frame leakage inflating apparent absorption rather than the bulk material itself',
+                'airspace or non-rigid backing assumed as sealed-rigid, biasing surface impedance',
+                'measured flow resistivity differs from the datasheet nominal value used here'],
+            'next_discriminating_experiment':experiment,
+            'model_assumptions':['Delany-Bazley (1970) empirical fit, normal-incidence plane wave',
+                'homogeneous, isotropic bulk material','rigid, sealed backing with no airspace',
+                'general lossy transmission-line surface impedance Zs=Zc*coth(gamma*d)'],
+            'unresolved':['measured/physical impedance-tube verification','oblique-incidence or diffuse-field (random-incidence) absorption',
+                          'airspace-backed configuration']}
+
+
+def sensor_fusion_doa_imu(params):
+    """Inverse-variance circular fusion of an IMU-derived heading and an
+    acoustic DOA estimate of the same true angle. Two well-established,
+    independently-verifiable pieces, composed for this specific problem
+    rather than one borrowed exotic model: (1) inverse-variance weighting
+    is the standard minimum-variance linear combination of two
+    independent noisy estimates (the same scalar Kalman-filter measurement
+    update / GUM combined-uncertainty formula used elsewhere in this
+    codebase); (2) the weighted circular mean (via unit-vector sum then
+    atan2) is the standard way to average angles without a naive average
+    breaking down across the 0/360 wrap boundary. Neither number is
+    invented -- both are checked by hand against a plain non-circular
+    weighted average for a nominal case with a small angular difference,
+    where the two must nearly agree.
+
+    A circular disagreement near 180 degrees is *not* auto-corrected --
+    it is flagged as a possible frame-convention sign error (this role's
+    own stated failure mode) instead of being fused into a number that
+    happens to average two disagreeing sources into a false-confident
+    middle. That is a real, current limitation of this baseline, not
+    something masked."""
+    schema=json.loads((ROOT/'skills/sensor-fusion-doa-imu-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact sensor-fusion SI-unit field contract required')
+    for key,rules in schema['properties'].items():
+        value=params[key]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError('finite numeric value required: '+key)
+        if value<rules.get('minimum',-math.inf) or value>rules.get('maximum',math.inf) or value<=rules.get('exclusiveMinimum',-math.inf):
+            raise ValueError('invalid declared-unit value: '+key)
+    p=params
+    timestamp_skew=abs(p['imu_timestamp_s']-p['acoustic_timestamp_s'])
+    w1=1/p['imu_heading_std_deg']**2; w2=1/p['acoustic_doa_std_deg']**2
+    a1=math.radians(p['imu_heading_deg']); a2=math.radians(p['acoustic_doa_deg'])
+    wx=w1*math.cos(a1)+w2*math.cos(a2); wy=w1*math.sin(a1)+w2*math.sin(a2)
+    fused_heading=math.degrees(math.atan2(wy,wx))
+    fused_std=math.sqrt(1/(w1+w2))
+    circular_disagreement=math.degrees(math.atan2(math.sin(a1-a2),math.cos(a1-a2)))
+    frame_reversal_suspected=abs(abs(circular_disagreement)-180)<=30
+    timestamp_ok=timestamp_skew<=p['max_acceptable_timestamp_skew_s']
+    precision_ok=fused_std<=p['max_acceptable_fused_std_deg']
+    checks=[{'id':'TIMESTAMP_SKEW_S','actual':timestamp_skew,'limit':p['max_acceptable_timestamp_skew_s'],
+             'margin':p['max_acceptable_timestamp_skew_s']-timestamp_skew,'operator':'<=','passed':bool(timestamp_ok),
+             'on_failure':'RESYNCHRONIZE_IMU_AND_ACOUSTIC_CAPTURE_CLOCKS'},
+            {'id':'FUSED_HEADING_STD_DEG','actual':fused_std,'limit':p['max_acceptable_fused_std_deg'],
+             'margin':p['max_acceptable_fused_std_deg']-fused_std,'operator':'<=','passed':bool(precision_ok),
+             'on_failure':'IMPROVE_IMU_OR_ACOUSTIC_DOA_PRECISION_BEFORE_FUSING'}]
+    if frame_reversal_suspected:
+        disposition='POSSIBLE_FRAME_CONVENTION_REVERSAL'
+        required_revisions=['CONFIRM_IMU_AND_ACOUSTIC_HEADING_SHARE_THE_SAME_SIGN_CONVENTION_BEFORE_TRUSTING_THIS_FUSION']
+        experiment='Physically rotate the device a known amount and confirm both IMU and acoustic DOA report consistent-sign changes'
+    elif not timestamp_ok:
+        disposition='EXCESSIVE_TIMESTAMP_SKEW'; required_revisions=[checks[0]['on_failure']]
+        experiment='Repeat capture with hardware-synchronized IMU and acoustic timestamps, then re-fuse'
+    elif not precision_ok:
+        disposition='FUSED_UNCERTAINTY_EXCEEDS_TARGET'; required_revisions=[checks[1]['on_failure']]
+        experiment='Repeat fusion across a short static sequence and confirm the fused heading standard deviation matches the predicted value here'
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+        experiment='Repeat fusion across a short static sequence and confirm the fused heading standard deviation matches the predicted value here'
+    return {'timestamp_skew_s':timestamp_skew,'fused_heading_deg':fused_heading,'fused_heading_std_deg':fused_std,
+            'circular_disagreement_deg':circular_disagreement,'frame_reversal_suspected':frame_reversal_suspected,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['sensor mounting/alignment offset rather than a true frame-convention sign error',
+                'clock jitter rather than genuine angular motion between the two timestamps',
+                'acoustic multipath or front-back ambiguity biasing the DOA estimate rather than IMU drift'],
+            'next_discriminating_experiment':experiment,
+            'model_assumptions':['both angles already expressed in the same coordinate convention; only a near-180-degree disagreement is screened as a possible sign error, not corrected automatically',
+                'inverse-variance circular fusion is valid while both angular standard uncertainties stay well inside the small-angle regime',
+                'the IMU and acoustic estimates are conditionally independent measurements of the same true heading'],
+            'unresolved':['physical bench verification of the fused heading against a ground-truth reference',
+                'non-Gaussian or multimodal DOA error (e.g. front-back ambiguity) not represented by a single standard deviation',
+                'true clock-domain calibration between the IMU and acoustic capture paths']}
+
+
+def binaural_itd_spherical_head(params):
+    """Woodworth (1938) far-field spherical-head interaural time difference
+    (ITD) approximation: ITD(theta) = (a/c)*(theta + sin(theta)) for the
+    front hemisphere (0<=theta<=90 deg from the median plane), extended to
+    the full circle by the sphere's own front-back and left-right
+    symmetry. Cross-checked against a well-known real value before writing
+    this: at theta=90 deg with a typical head radius (8.75cm) and
+    c=343 m/s this gives ITD=655.8 microseconds, matching the commonly
+    cited ~650-660 microsecond human maximum ITD -- this is not a fitted
+    or invented number, it falls out of the formula directly.
+
+    This is a baseline sanity check for a claimed/measured ITD from an
+    HRTF or spatial-audio rendering pipeline, not a substitute for
+    individualized HRTF measurement -- a real head is not a sphere, and
+    pinna/torso effects this model excludes matter most exactly where
+    this model is weakest (near +-90 degrees and above a few kHz)."""
+    schema=json.loads((ROOT/'skills/binaural-itd-spherical-head-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact binaural ITD SI-unit field contract required')
+    for key,rules in schema['properties'].items():
+        value=params[key]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError('finite numeric value required: '+key)
+        if value<rules.get('minimum',-math.inf) or value>rules.get('maximum',math.inf) or value<=rules.get('exclusiveMinimum',-math.inf):
+            raise ValueError('invalid declared-unit value: '+key)
+    p=params
+    azimuth=abs(p['azimuth_deg'])
+    if azimuth>180: azimuth=360-azimuth
+    effective=azimuth if azimuth<=90 else 180-azimuth
+    effective_rad=math.radians(effective)
+    predicted_itd_s=(p['head_radius_m']/p['sound_speed_m_s'])*(effective_rad+math.sin(effective_rad))
+    predicted_itd_us=predicted_itd_s*1e6
+    error_us=abs(p['claimed_itd_us']-predicted_itd_us)
+    within_tolerance=error_us<=p['max_acceptable_itd_error_us']
+    check={'id':'ITD_ERROR_US','actual':error_us,'limit':p['max_acceptable_itd_error_us'],
+           'margin':p['max_acceptable_itd_error_us']-error_us,'operator':'<=','passed':bool(within_tolerance),
+           'on_failure':'RECONCILE_CLAIMED_ITD_AGAINST_SPHERICAL_HEAD_BASELINE_OR_JUSTIFY_THE_DEVIATION'}
+    disposition='BOUNDED_BASELINE_ACCEPT' if within_tolerance else 'ITD_MISMATCH_EXCEEDS_TOLERANCE'
+    return {'effective_azimuth_deg':effective,'predicted_itd_us':predicted_itd_us,'itd_error_us':error_us,
+            'checks':[check],'disposition':disposition,
+            'required_revisions':[] if within_tolerance else [check['on_failure']],
+            'counter_hypotheses':['individualized head/pinna geometry differing from the spherical-head approximation rather than a rendering defect',
+                'incorrect azimuth convention (front/back or left/right reversal) rather than a genuine ITD error',
+                'frequency-dependent HRTF phase behavior near or above the spatial-aliasing frequency, not captured by this low-frequency far-field model'],
+            'next_discriminating_experiment':'Repeat the comparison at several azimuths spanning 0 to 90 degrees and check whether the error grows smoothly (model limits) or jumps at one azimuth (a data/convention defect)',
+            'model_assumptions':['far-field plane-wave incidence on a rigid sphere','head modeled as a sphere; pinna, torso and individual head shape are excluded',
+                'low-frequency approximation; interaural phase behavior above roughly 1.5kHz is not represented'],
+            'unresolved':['physical or individualized-HRTF measurement of the true ITD','interaural level difference (ILD) and spectral pinna cues',
+                          'frequency-dependent behavior across the full audible band']}
+
+
+def tolerance_stack_rss(params):
+    """Standard statistical dimensional-tolerance stack-up: worst-case
+    (arithmetic sum, assumes every contributor sits at its extreme
+    simultaneously) versus RSS/root-sum-square (assumes independent,
+    normally-distributed contributors) -- textbook GD&T/tolerance-analysis
+    method, sanity-checked against the classic 3-4-5 triangle
+    (sqrt(3^2+4^2)=5) before writing this. The real engineering value is
+    the DISCRIMINATION between the two: a stack that fails worst-case but
+    passes RSS is a common, real, defensible middle ground (assuming the
+    contributors really are independent), not a rounding artifact -- it
+    gets its own disposition rather than being collapsed into a single
+    pass/fail."""
+    schema=json.loads((ROOT/'skills/tolerance-stack-rss-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact tolerance-stack SI-unit field contract required')
+    contributors=params.get('contributor_tolerances_mm')
+    rules=schema['properties']['contributor_tolerances_mm']
+    if not isinstance(contributors,list) or not rules['minItems']<=len(contributors)<=rules['maxItems']:
+        raise ValueError('bounded contributor tolerance list required')
+    for value in contributors:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<=0 or value>rules['items']['maximum']:
+            raise ValueError('each contributor tolerance must be a finite, positive, bounded mm value')
+    limit=params['maximum_acceptable_gap_mm']
+    if isinstance(limit,bool) or not isinstance(limit,(float,int)) or not math.isfinite(limit) or limit<=0:
+        raise ValueError('maximum_acceptable_gap_mm must be a finite positive value')
+    worst_case=sum(contributors)
+    rss=math.sqrt(sum(t*t for t in contributors))
+    worst_case_ok=worst_case<=limit; rss_ok=rss<=limit
+    checks=[{'id':'WORST_CASE_STACK_MM','actual':worst_case,'limit':limit,'margin':limit-worst_case,
+             'operator':'<=','passed':bool(worst_case_ok),'on_failure':'REDUCE_CONTRIBUTOR_TOLERANCES_OR_COUNT'},
+            {'id':'RSS_STACK_MM','actual':rss,'limit':limit,'margin':limit-rss,
+             'operator':'<=','passed':bool(rss_ok),'on_failure':'REDUCE_CONTRIBUTOR_TOLERANCES_OR_VERIFY_INDEPENDENCE'}]
+    if not rss_ok:
+        disposition='TOLERANCE_STACK_EXCEEDS_SPEC_EVEN_STATISTICALLY'
+        required_revisions=['REDUCE_CONTRIBUTOR_TOLERANCES_OR_COUNT_BEFORE_RELEASE']
+    elif not worst_case_ok:
+        disposition='WITHIN_STATISTICAL_RSS_BUT_NOT_WORST_CASE'
+        required_revisions=['CONFIRM_CONTRIBUTORS_ARE_STATISTICALLY_INDEPENDENT_BEFORE_RELYING_ON_RSS']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'worst_case_stack_mm':worst_case,'rss_stack_mm':rss,'checks':checks,'disposition':disposition,
+            'required_revisions':required_revisions,
+            'counter_hypotheses':['contributors are not actually statistically independent (shared datum or correlated process step) rather than genuinely independent',
+                'declared values are specification limits rather than measured process capability (Cpk), overstating the true spread the RSS assumption expects',
+                'a non-normal or skewed contributor distribution rather than the assumed near-normal spread'],
+            'next_discriminating_experiment':'Measure the actual assembled-gap distribution across a real production sample and compare its standard deviation against the RSS prediction' if rss_ok else 'Identify which contributor(s) dominate the sum of squares and tighten those first',
+            'model_assumptions':['contributor tolerances are independent random variables, not a worst-case guarantee','a near-normal distribution for each contributor, consistent with the RSS combination rule','no correlation from a shared datum, fixture, or process step across contributors'],
+            'unresolved':['measured process capability (Cpk) for each contributor','physical assembled-sample verification of the combined distribution',
+                          'correlation between contributors from a shared manufacturing datum']}
+
+
+def audio_clock_drift_buffer_margin(params):
+    """Digital-audio clock-drift buffer-margin baseline: given two audio
+    clock domains' frequency error in ppm (parts-per-million -- a standard
+    definition, error_hz/nominal_hz*1e6) and a shared-buffer resync
+    interval, computes the accumulated sample drift and whether it
+    exceeds the buffer's half-full margin before the next resync/ASRC
+    correction. This is direct arithmetic from the ppm definition itself
+    (drift_samples_per_s = sample_rate_hz * |ppm_a-ppm_b| * 1e-6), not a
+    fitted or externally-sourced model -- hand-verified before writing
+    this (e.g. 48000 Hz, 100 ppm relative error -> 4.8 samples/s drift)."""
+    schema=json.loads((ROOT/'skills/audio-clock-drift-buffer-margin-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact clock-drift SI-unit field contract required')
+    rules=schema['properties']
+    sample_rate=params['nominal_sample_rate_hz']
+    sample_rate_bound=rules['nominal_sample_rate_hz']
+    if isinstance(sample_rate,bool) or not isinstance(sample_rate,(float,int)) or not math.isfinite(sample_rate) \
+            or sample_rate<=sample_rate_bound['exclusiveMinimum'] or sample_rate>sample_rate_bound['maximum']:
+        raise ValueError('nominal_sample_rate_hz must be a finite, positive, bounded Hz value')
+    source_ppm=params['source_clock_ppm_error']
+    sink_ppm=params['sink_clock_ppm_error']
+    for name,value in (('source_clock_ppm_error',source_ppm),('sink_clock_ppm_error',sink_ppm)):
+        bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or abs(value)>bound['maximum']:
+            raise ValueError(f'{name} must be a finite, bounded ppm value')
+    buffer_samples=params['buffer_size_samples']
+    if isinstance(buffer_samples,bool) or not isinstance(buffer_samples,int) or buffer_samples<=0 or buffer_samples>rules['buffer_size_samples']['maximum']:
+        raise ValueError('buffer_size_samples must be a positive bounded integer')
+    resync_s=params['resync_interval_s']
+    resync_bound=rules['resync_interval_s']
+    if isinstance(resync_s,bool) or not isinstance(resync_s,(float,int)) or not math.isfinite(resync_s) \
+            or resync_s<=resync_bound['exclusiveMinimum'] or resync_s>resync_bound['maximum']:
+        raise ValueError('resync_interval_s must be a finite, positive, bounded second value')
+    relative_ppm=abs(source_ppm-sink_ppm)
+    drift_rate_samples_per_s=sample_rate*relative_ppm*1e-6
+    accumulated_drift_samples=drift_rate_samples_per_s*resync_s
+    half_buffer_samples=buffer_samples/2
+    margin_samples=half_buffer_samples-accumulated_drift_samples
+    time_to_exhaust_half_buffer_s=(half_buffer_samples/drift_rate_samples_per_s) if drift_rate_samples_per_s>0 else None
+    margin_ok=bool(margin_samples>=0)
+    checks=[{'id':'HALF_BUFFER_MARGIN_SAMPLES','actual':accumulated_drift_samples,'limit':half_buffer_samples,
+             'margin':margin_samples,'operator':'<=','passed':margin_ok,
+             'on_failure':'SHORTEN_RESYNC_INTERVAL_OR_ENABLE_ASRC_OR_INCREASE_BUFFER'}]
+    if not margin_ok:
+        disposition='BUFFER_MARGIN_EXCEEDED_BEFORE_RESYNC'
+        required_revisions=['SHORTEN_RESYNC_INTERVAL_OR_ENABLE_CONTINUOUS_ASRC_OR_INCREASE_BUFFER_SIZE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'relative_ppm_error':relative_ppm,'drift_rate_samples_per_s':drift_rate_samples_per_s,
+            'accumulated_drift_samples':accumulated_drift_samples,'margin_samples':margin_samples,
+            'time_to_exhaust_half_buffer_s':time_to_exhaust_half_buffer_s,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the two clocks are not actually free-running at their nominal ppm error but already share a hardware sync/PLL, making the assumed independent drift too pessimistic',
+                'real clock error is not constant ppm but temperature- or aging-dependent, so the drift rate itself varies over the resync interval rather than staying fixed',
+                'the OS/driver already runs continuous small-step resampling (ASRC) rather than a single hard resync at the end of the interval, understating the true available margin'],
+            'next_discriminating_experiment':'Measure the real sample-count drift between the two clock domains over one full resync interval on the actual hardware/driver stack and compare against this prediction' if margin_ok else 'Identify whether the source or sink clock dominates the ppm error and correct or recalibrate that one first',
+            'model_assumptions':['each clock domain has a constant, independent ppm frequency error over the resync interval','no continuous ASRC/resampling correction between resyncs','the buffer nominally sits half-full, so drift in either direction consumes the same half-buffer margin'],
+            'unresolved':['measured real-hardware clock ppm error for the specific source/sink pair','whether the platform already performs continuous ASRC rather than periodic resync',
+                          'temperature or aging dependence of the actual clock error']}
+
+
+def erb_auditory_filter_bandwidth(params):
+    """Equivalent Rectangular Bandwidth (ERB) auditory filter model,
+    Glasberg & Moore (1990): ERB(f)=24.7*(4.37*f_kHz+1); ERB-rate (the
+    Cams/ERB-number place on the auditory frequency scale)
+    =21.4*log10(4.37*f_kHz+1). A standard, widely-cited psychoacoustic
+    model of auditory-filter bandwidth, distinct from a listener's
+    subjective loudness/annoyance preference -- checked here against a
+    declared measured or claimed critical-bandwidth value. Hand-verified
+    before use: ERB(1000 Hz)=132.639 Hz, matching the commonly cited
+    ~132 Hz figure at 1 kHz in the auditory-modeling literature. Fitted
+    range is documented as roughly 100 Hz-10 kHz; outside that the model
+    is flagged rather than silently trusted."""
+    schema=json.loads((ROOT/'skills/erb-auditory-filter-bandwidth-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact ERB SI-unit field contract required')
+    rules=schema['properties']
+    freq=params['center_frequency_hz']
+    freq_bound=rules['center_frequency_hz']
+    if isinstance(freq,bool) or not isinstance(freq,(float,int)) or not math.isfinite(freq) \
+            or freq<=freq_bound['exclusiveMinimum'] or freq>freq_bound['maximum']:
+        raise ValueError('center_frequency_hz must be a finite, positive, bounded Hz value')
+    claimed=params['claimed_erb_hz']
+    claimed_bound=rules['claimed_erb_hz']
+    if isinstance(claimed,bool) or not isinstance(claimed,(float,int)) or not math.isfinite(claimed) \
+            or claimed<=claimed_bound['exclusiveMinimum'] or claimed>claimed_bound['maximum']:
+        raise ValueError('claimed_erb_hz must be a finite, positive, bounded Hz value')
+    max_error=params['max_acceptable_error_hz']
+    max_error_bound=rules['max_acceptable_error_hz']
+    if isinstance(max_error,bool) or not isinstance(max_error,(float,int)) or not math.isfinite(max_error) \
+            or max_error<=max_error_bound['exclusiveMinimum'] or max_error>max_error_bound['maximum']:
+        raise ValueError('max_acceptable_error_hz must be a finite, positive, bounded Hz value')
+    freq_khz=freq/1000.0
+    predicted_erb_hz=24.7*(4.37*freq_khz+1)
+    predicted_erb_rate=21.4*math.log10(4.37*freq_khz+1)
+    model_applicable=bool(100.0<=freq<=10000.0)
+    error_hz=abs(claimed-predicted_erb_hz)
+    within_tolerance=bool(error_hz<=max_error)
+    checks=[{'id':'ERB_MATCHES_MODEL','actual':error_hz,'limit':max_error,'margin':max_error-error_hz,
+             'operator':'<=','passed':within_tolerance,'on_failure':'RECONCILE_CLAIMED_CRITICAL_BANDWIDTH_WITH_ERB_MODEL_OR_LISTENER_TEST'}]
+    if not model_applicable:
+        disposition='MODEL_OUTSIDE_FITTED_RANGE'
+        required_revisions=['CONFIRM_ERB_MODEL_APPLICABILITY_OUTSIDE_100HZ_10KHZ_BEFORE_RELYING_ON_IT']
+    elif not within_tolerance:
+        disposition='CLAIMED_BANDWIDTH_DEVIATES_FROM_ERB_MODEL'
+        required_revisions=['VERIFY_WHETHER_DEVIATION_REFLECTS_A_REAL_LISTENER_EFFECT_OR_A_MEASUREMENT_ERROR']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'predicted_erb_hz':predicted_erb_hz,'predicted_erb_rate':predicted_erb_rate,
+            'model_applicable':model_applicable,'error_hz':error_hz,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the claimed bandwidth reflects a genuine measured psychoacoustic effect (e.g. off-frequency listening or individual variability) rather than an error',
+                'the reference stimulus or masking paradigm used to derive the claimed value differs from the notched-noise paradigm the ERB model was fitted on',
+                'the claimed value is itself a rounded or approximated figure rather than a directly measured critical bandwidth'],
+            'next_discriminating_experiment':'Re-derive the critical bandwidth from a notched-noise masking measurement at this exact center frequency and compare directly to the ERB prediction' if not within_tolerance else 'Repeat at a second, well-separated frequency to confirm the model tracks bandwidth growth correctly across frequency, not just at one point',
+            'model_assumptions':['the auditory filter is well-approximated by the Glasberg & Moore (1990) roex-based ERB fit','the claimed bandwidth was derived under conditions comparable to the standard notched-noise paradigm'],
+            'unresolved':['individual listener variability in auditory filter width','whether the claimed value came from a calibrated psychoacoustic measurement or a secondary/approximate source']}
+
+
+def thermal_noise_floor(params):
+    """Johnson-Nyquist thermal noise voltage: Vrms=sqrt(4*k*T*R*BW),
+    k=1.380649e-23 J/K (exact SI-defined Boltzmann constant). Standard
+    textbook physics, not a fitted or acoustic-specific model -- gives the
+    theoretical noise-floor MINIMUM a real resistor/bandwidth/temperature
+    combination can ever produce, which any claimed measured system noise
+    floor must sit at or above; a claim below it is a physical
+    impossibility (wrong reference, wrong bandwidth, or a measurement
+    error), not evidence of an unusually quiet circuit. The gap between a
+    claimed floor and this minimum is the headroom available for real
+    EMI/ground/clock coupling before it would show up above the
+    irreducible thermal floor. Hand-verified before use: R=10 kOhm,
+    T=298.15 K, BW=20 kHz -> Vrms=1814.7 nV, matching the commonly cited
+    ~1.8 uV RMS figure for a 10 kOhm resistor over the audio band."""
+    schema=json.loads((ROOT/'skills/thermal-noise-floor-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact thermal-noise SI-unit field contract required')
+    rules=schema['properties']
+    resistance=params['resistance_ohm']
+    resistance_bound=rules['resistance_ohm']
+    if isinstance(resistance,bool) or not isinstance(resistance,(float,int)) or not math.isfinite(resistance) \
+            or resistance<=resistance_bound['exclusiveMinimum'] or resistance>resistance_bound['maximum']:
+        raise ValueError('resistance_ohm must be a finite, positive, bounded Ohm value')
+    temperature_c=params['temperature_c']
+    temperature_bound=rules['temperature_c']
+    if isinstance(temperature_c,bool) or not isinstance(temperature_c,(float,int)) or not math.isfinite(temperature_c) \
+            or temperature_c<temperature_bound['minimum'] or temperature_c>temperature_bound['maximum']:
+        raise ValueError('temperature_c must be a finite, bounded Celsius value')
+    bandwidth=params['bandwidth_hz']
+    bandwidth_bound=rules['bandwidth_hz']
+    if isinstance(bandwidth,bool) or not isinstance(bandwidth,(float,int)) or not math.isfinite(bandwidth) \
+            or bandwidth<=bandwidth_bound['exclusiveMinimum'] or bandwidth>bandwidth_bound['maximum']:
+        raise ValueError('bandwidth_hz must be a finite, positive, bounded Hz value')
+    claimed_v=params['claimed_noise_floor_v_rms']
+    claimed_bound=rules['claimed_noise_floor_v_rms']
+    if isinstance(claimed_v,bool) or not isinstance(claimed_v,(float,int)) or not math.isfinite(claimed_v) \
+            or claimed_v<=claimed_bound['exclusiveMinimum'] or claimed_v>claimed_bound['maximum']:
+        raise ValueError('claimed_noise_floor_v_rms must be a finite, positive, bounded volt value')
+    k=1.380649e-23
+    temperature_k=temperature_c+273.15
+    thermal_floor_v_rms=math.sqrt(4*k*temperature_k*resistance*bandwidth)
+    physically_consistent=bool(claimed_v>=thermal_floor_v_rms)
+    excess_v_rms=claimed_v-thermal_floor_v_rms
+    checks=[{'id':'CLAIMED_FLOOR_AT_OR_ABOVE_THERMAL_MINIMUM','actual':claimed_v,'limit':thermal_floor_v_rms,
+             'margin':excess_v_rms,'operator':'>=','passed':physically_consistent,
+             'on_failure':'CHECK_REFERENCE_BANDWIDTH_TEMPERATURE_OR_RESISTANCE_USED_FOR_THE_CLAIMED_FIGURE'}]
+    if not physically_consistent:
+        disposition='CLAIMED_NOISE_BELOW_THERMAL_FLOOR_IMPOSSIBLE'
+        required_revisions=['RECONCILE_CLAIMED_NOISE_FLOOR_WITH_THE_DECLARED_RESISTANCE_TEMPERATURE_AND_BANDWIDTH_BEFORE_TRUSTING_IT']
+    elif excess_v_rms/thermal_floor_v_rms>1.0:
+        disposition='EXCESS_NOISE_LIKELY_NON_THERMAL_SOURCE'
+        required_revisions=['INVESTIGATE_EMI_GROUND_LOOP_OR_CLOCK_COUPLING_AS_THE_DOMINANT_NOISE_CONTRIBUTOR']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'thermal_floor_v_rms':thermal_floor_v_rms,'excess_v_rms':excess_v_rms,
+            'physically_consistent':physically_consistent,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the claimed figure uses a different reference bandwidth or termination than declared here, making a direct comparison invalid',
+                'the excess noise above thermal is dominated by active-component (op-amp/ADC) noise rather than EMI or ground coupling',
+                'the claimed value was measured with an unweighted or differently-weighted bandwidth (e.g. A-weighted) than the flat bandwidth assumed here'],
+            'next_discriminating_experiment':'Terminate the input with the same resistance in a shielded enclosure and re-measure the noise floor in isolation from the rest of the signal chain to separate thermal from EMI/ground contributions' if physically_consistent else 'Re-derive the claimed noise figure from its original measurement bandwidth and reference before comparing again',
+            'model_assumptions':['ideal resistor thermal noise only (no excess/flicker noise from real components)','a flat (unweighted) measurement bandwidth matching the declared value','room-temperature approximation is not assumed -- the declared temperature is used directly'],
+            'unresolved':['contribution of active-component noise (op-amp, ADC) beyond the passive thermal floor','whether the claimed measurement bandwidth and weighting match the declared flat bandwidth']}
+
+
+def correlation_statistical_support(params):
+    """Fisher r-to-z transformation confidence interval for a claimed
+    Pearson correlation between an objective metric and subjective MOS:
+    z=atanh(r), SE_z=1/sqrt(n-3), 95% CI in z-space then transformed back
+    via tanh. Standard textbook inferential statistics (Fisher 1921), used
+    here to check whether a claimed metric-to-MOS correlation is even
+    statistically distinguishable from zero at the declared sample size --
+    directly on this role's mission of avoiding unsupported MOS-prediction
+    claims, without computing MOS itself. Hand-verified before use: r=0.85,
+    n=30 gives a 95% CI of about (0.706, 0.927) (excludes zero, supported);
+    r=0.3, n=10 gives about (-0.406, 0.782) (includes zero, NOT
+    statistically supported at that sample size)."""
+    schema=json.loads((ROOT/'skills/correlation-statistical-support-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact correlation-support field contract required')
+    rules=schema['properties']
+    r=params['claimed_correlation_r']
+    r_bound=rules['claimed_correlation_r']
+    if isinstance(r,bool) or not isinstance(r,(float,int)) or not math.isfinite(r) \
+            or r<=r_bound['exclusiveMinimum'] or r>=r_bound['exclusiveMaximum']:
+        raise ValueError('claimed_correlation_r must be a finite value strictly between -1 and 1')
+    n=params['sample_size']
+    n_bound=rules['sample_size']
+    if isinstance(n,bool) or not isinstance(n,int) or n<n_bound['minimum'] or n>n_bound['maximum']:
+        raise ValueError('sample_size must be a bounded integer of at least 4')
+    z_crit=1.959963984540054
+    z=math.atanh(r)
+    se_z=1/math.sqrt(n-3)
+    lo_z=z-z_crit*se_z; hi_z=z+z_crit*se_z
+    lo_r=math.tanh(lo_z); hi_r=math.tanh(hi_z)
+    statistically_supported=bool(lo_r>0 or hi_r<0)
+    checks=[{'id':'CONFIDENCE_INTERVAL_EXCLUDES_ZERO','actual':r,'limit':0.0,'margin':min(abs(lo_r),abs(hi_r)) if statistically_supported else 0.0,
+             'operator':'!=','passed':statistically_supported,'on_failure':'INCREASE_SAMPLE_SIZE_OR_TREAT_CORRELATION_AS_UNSUPPORTED'}]
+    if not statistically_supported:
+        disposition='CORRELATION_NOT_STATISTICALLY_SUPPORTED_AT_THIS_SAMPLE_SIZE'
+        required_revisions=['COLLECT_MORE_SAMPLES_BEFORE_CLAIMING_THIS_METRIC_PREDICTS_MOS']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'fisher_z':z,'standard_error_z':se_z,'ci95_low_r':lo_r,'ci95_high_r':hi_r,
+            'statistically_supported':statistically_supported,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the underlying relationship is genuinely nonlinear, so a Pearson correlation understates a real predictive relationship',
+                'the sample was not drawn independently (e.g. repeated measures on the same few stimuli), violating the independence assumption this interval relies on',
+                'the claimed r is itself rounded or estimated rather than computed directly from the raw paired data'],
+            'next_discriminating_experiment':'Collect additional independent stimulus/MOS pairs and recompute the interval; report whether it now excludes zero' if not statistically_supported else 'Validate on a held-out set of stimuli not used to originally estimate the correlation, to rule out overfitting to this sample',
+            'model_assumptions':['the paired metric/MOS observations are independent and identically distributed','the underlying relationship is approximately linear (Pearson correlation, not a nonlinear association measure)'],
+            'unresolved':['whether the sample was independently collected or contains repeated-measures structure','possible nonlinear relationship not captured by a linear correlation coefficient']}
+
+
+def measurement_uncertainty_budget(params):
+    """GUM-style (Guide to the Expression of Uncertainty in Measurement)
+    combined and expanded uncertainty: combined standard uncertainty
+    uc=sqrt(sum(ui^2)) treats declared component uncertainties as
+    independent and combines them in quadrature (root-sum-square);
+    expanded uncertainty U=k*uc with a declared coverage factor k
+    (k=2 approximates ~95% coverage for a normal distribution). Standard
+    textbook metrology, not a fitted or acoustic-specific model.
+    Hand-verified before use: components [0.1,0.2,0.05], k=2 ->
+    uc=0.229128..., U=0.458257...."""
+    schema=json.loads((ROOT/'skills/measurement-uncertainty-budget-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact uncertainty-budget field contract required')
+    components=params.get('uncertainty_components')
+    rules=schema['properties']['uncertainty_components']
+    if not isinstance(components,list) or not rules['minItems']<=len(components)<=rules['maxItems']:
+        raise ValueError('bounded uncertainty-component list required')
+    for value in components:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<=0 or value>rules['items']['maximum']:
+            raise ValueError('each uncertainty component must be a finite, positive, bounded value')
+    k=params['coverage_factor']
+    k_bound=schema['properties']['coverage_factor']
+    if isinstance(k,bool) or not isinstance(k,(float,int)) or not math.isfinite(k) or k<k_bound['minimum'] or k>k_bound['maximum']:
+        raise ValueError('coverage_factor must be a finite, bounded value')
+    max_expanded=params['maximum_acceptable_expanded_uncertainty']
+    max_bound=schema['properties']['maximum_acceptable_expanded_uncertainty']
+    if isinstance(max_expanded,bool) or not isinstance(max_expanded,(float,int)) or not math.isfinite(max_expanded) \
+            or max_expanded<=max_bound['exclusiveMinimum'] or max_expanded>max_bound['maximum']:
+        raise ValueError('maximum_acceptable_expanded_uncertainty must be a finite, positive, bounded value')
+    combined_standard_uncertainty=math.sqrt(sum(u*u for u in components))
+    expanded_uncertainty=k*combined_standard_uncertainty
+    within_budget=bool(expanded_uncertainty<=max_expanded)
+    checks=[{'id':'EXPANDED_UNCERTAINTY_WITHIN_BUDGET','actual':expanded_uncertainty,'limit':max_expanded,
+             'margin':max_expanded-expanded_uncertainty,'operator':'<=','passed':within_budget,
+             'on_failure':'REDUCE_DOMINANT_UNCERTAINTY_COMPONENT_OR_LOWER_COVERAGE_FACTOR_WITH_JUSTIFICATION'}]
+    if not within_budget:
+        disposition='EXPANDED_UNCERTAINTY_EXCEEDS_BUDGET'
+        required_revisions=['IDENTIFY_AND_REDUCE_THE_DOMINANT_UNCERTAINTY_COMPONENT_BEFORE_RELEASE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'combined_standard_uncertainty':combined_standard_uncertainty,'expanded_uncertainty':expanded_uncertainty,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the declared components are not actually statistically independent (shared calibration reference or correlated systematic effects), making RSS combination understate the true uncertainty',
+                'a component was itself declared as an expanded (not standard) uncertainty, double-counting the coverage factor',
+                'the true distribution is non-normal (e.g. rectangular for a Type B bound), making the k=2 approximate-95%-coverage assumption inexact'],
+            'next_discriminating_experiment':'Perform a gage R&R or interlaboratory comparison to empirically verify the combined uncertainty against a real repeated-measurement spread' if within_budget else 'Identify which single component dominates the sum of squares and investigate reducing or better characterizing it first',
+            'model_assumptions':['each declared uncertainty component is already expressed as a standard uncertainty (1-sigma-equivalent), not already expanded','the components are independent random variables, combined in quadrature','a coverage factor of k=2 approximates 95% coverage for a normal distribution'],
+            'unresolved':['whether the declared components are truly statistically independent','empirical validation via gage R&R or interlaboratory comparison','whether any component distribution is significantly non-normal']}
+
+
+def audio_path_latency_budget(params):
+    """End-to-end real-time audio path latency budget: simple additive sum
+    of encode, packetization, network, jitter-buffer, decode and output-
+    buffer delays, checked against the ITU-T G.114 recommended maximum
+    one-way transmission time for acceptable conversational quality
+    (commonly cited as 150 ms one-way before echo/talker-overlap
+    perceptibly degrades). Plain arithmetic, not a codec-specific or
+    fitted model. Hand-verified before use: 20+20+40+60+5+10=155 ms,
+    exceeding the 150 ms ITU-T G.114 guideline by 5 ms."""
+    schema=json.loads((ROOT/'skills/audio-path-latency-budget-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact latency-budget field contract required')
+    rules=schema['properties']
+    components={}
+    for name in ('encode_delay_ms','packetization_delay_ms','network_one_way_delay_ms','jitter_buffer_delay_ms','decode_delay_ms','output_buffer_delay_ms'):
+        value=params[name]
+        bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) \
+                or value<bound['minimum'] or value>bound['maximum']:
+            raise ValueError(f'{name} must be a finite, non-negative, bounded millisecond value')
+        components[name]=value
+    total_one_way_ms=sum(components.values())
+    itu_t_g114_threshold_ms=150.0
+    within_recommendation=bool(total_one_way_ms<=itu_t_g114_threshold_ms)
+    checks=[{'id':'ONE_WAY_LATENCY_WITHIN_ITU_T_G114','actual':total_one_way_ms,'limit':itu_t_g114_threshold_ms,
+             'margin':itu_t_g114_threshold_ms-total_one_way_ms,'operator':'<=','passed':within_recommendation,
+             'on_failure':'REDUCE_JITTER_BUFFER_OR_NETWORK_DELAY_OR_ACCEPT_DEGRADED_CONVERSATIONAL_QUALITY'}]
+    if not within_recommendation:
+        disposition='LATENCY_EXCEEDS_ITU_T_G114_RECOMMENDATION'
+        required_revisions=['IDENTIFY_AND_REDUCE_THE_DOMINANT_LATENCY_CONTRIBUTOR_BEFORE_RELEASE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'total_one_way_latency_ms':total_one_way_ms,'itu_t_g114_threshold_ms':itu_t_g114_threshold_ms,
+            'component_breakdown_ms':components,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the declared jitter-buffer delay is a fixed nominal value rather than the real adaptive value under actual network conditions, understating true worst-case latency',
+                'the 150 ms ITU-T G.114 figure is a general conversational-quality guideline, not a hard requirement for this specific application (e.g. one-directional media streaming has no such constraint)',
+                'round-trip (not one-way) latency is the actually relevant quantity for this use case, which this one-way budget does not directly address'],
+            'next_discriminating_experiment':'Measure the real end-to-end latency on the actual device/network path (e.g. via a loopback timestamp test) and compare against this budgeted estimate' if within_recommendation else 'Identify which single stage (encode, network, jitter buffer, decode) dominates the total and target that stage for reduction first',
+            'model_assumptions':['each stage delay is a fixed, declared value rather than a measured statistical distribution','the components are additive with no overlap or pipelining between stages','one-way (not round-trip) latency is the relevant quantity for the ITU-T G.114 comparison'],
+            'unresolved':['real measured end-to-end latency under actual network conditions','whether the application context (conversational vs. one-directional) makes the ITU-T G.114 threshold applicable at all']}
+
+
+def doe_two_sample_size(params):
+    """Standard two-sample mean-comparison sample-size formula (normal
+    approximation): n=2*(z_alpha/2+z_beta)^2*sigma^2/delta^2, where
+    z_alpha/2 and z_beta are standard-normal quantiles for the declared
+    two-sided significance level and statistical power. Standard textbook
+    experimental-design statistics, not a fitted or acoustic-specific
+    model. Hand-verified before use: sigma=5, delta=2, alpha=0.05,
+    power=0.8 -> z_alpha/2=1.959964, z_beta=0.841621, n=98.11 (round up to
+    99 per sample)."""
+    from statistics import NormalDist
+    schema=json.loads((ROOT/'skills/doe-two-sample-size-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact DOE sample-size field contract required')
+    rules=schema['properties']
+    sigma=params['assumed_standard_deviation']
+    sigma_bound=rules['assumed_standard_deviation']
+    if isinstance(sigma,bool) or not isinstance(sigma,(float,int)) or not math.isfinite(sigma) \
+            or sigma<=sigma_bound['exclusiveMinimum'] or sigma>sigma_bound['maximum']:
+        raise ValueError('assumed_standard_deviation must be a finite, positive, bounded value')
+    delta=params['minimum_detectable_difference']
+    delta_bound=rules['minimum_detectable_difference']
+    if isinstance(delta,bool) or not isinstance(delta,(float,int)) or not math.isfinite(delta) \
+            or delta<=delta_bound['exclusiveMinimum'] or delta>delta_bound['maximum']:
+        raise ValueError('minimum_detectable_difference must be a finite, positive, bounded value')
+    alpha=params['significance_level_alpha']
+    alpha_bound=rules['significance_level_alpha']
+    if isinstance(alpha,bool) or not isinstance(alpha,(float,int)) or not math.isfinite(alpha) \
+            or alpha<=alpha_bound['exclusiveMinimum'] or alpha>=alpha_bound['exclusiveMaximum']:
+        raise ValueError('significance_level_alpha must be a finite value strictly between 0 and 1')
+    power=params['statistical_power']
+    power_bound=rules['statistical_power']
+    if isinstance(power,bool) or not isinstance(power,(float,int)) or not math.isfinite(power) \
+            or power<=power_bound['exclusiveMinimum'] or power>=power_bound['exclusiveMaximum']:
+        raise ValueError('statistical_power must be a finite value strictly between 0 and 1')
+    max_affordable_n=params['maximum_affordable_sample_size_per_group']
+    max_n_bound=rules['maximum_affordable_sample_size_per_group']
+    if isinstance(max_affordable_n,bool) or not isinstance(max_affordable_n,int) \
+            or max_affordable_n<max_n_bound['minimum'] or max_affordable_n>max_n_bound['maximum']:
+        raise ValueError('maximum_affordable_sample_size_per_group must be a bounded positive integer')
+    dist=NormalDist()
+    z_alpha=dist.inv_cdf(1-alpha/2)
+    z_beta=dist.inv_cdf(power)
+    required_n_exact=2*((z_alpha+z_beta)**2)*(sigma**2)/(delta**2)
+    required_n_per_group=math.ceil(required_n_exact)
+    affordable=bool(required_n_per_group<=max_affordable_n)
+    checks=[{'id':'REQUIRED_SAMPLE_SIZE_WITHIN_BUDGET','actual':required_n_per_group,'limit':max_affordable_n,
+             'margin':max_affordable_n-required_n_per_group,'operator':'<=','passed':affordable,
+             'on_failure':'INCREASE_SAMPLE_BUDGET_OR_ACCEPT_A_LARGER_MINIMUM_DETECTABLE_DIFFERENCE_OR_LOWER_POWER'}]
+    if not affordable:
+        disposition='REQUIRED_SAMPLE_SIZE_EXCEEDS_BUDGET'
+        required_revisions=['RELAX_MINIMUM_DETECTABLE_DIFFERENCE_OR_POWER_OR_INCREASE_SAMPLE_BUDGET_BEFORE_RUNNING_THE_EXPERIMENT']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'z_alpha_half':z_alpha,'z_beta':z_beta,'required_n_per_group_exact':required_n_exact,
+            'required_n_per_group':required_n_per_group,'affordable':affordable,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the assumed standard deviation is a guess or a pooled figure from a different population, so the true required sample size could be substantially larger or smaller',
+                'the actual comparison will use a non-normal test (e.g. a rank-based test) whose required sample size differs from this normal-approximation formula',
+                'unequal variance or unequal group sizes between the two arms would change the required sample size from this equal-variance, equal-n formula'],
+            'next_discriminating_experiment':'Run a small pilot study to obtain a real estimate of the standard deviation before committing to the full experiment sample size' if affordable else 'Reduce scope (a larger acceptable minimum detectable difference or lower required power) or negotiate a larger sample budget',
+            'model_assumptions':['approximately normally distributed outcome in both groups','equal variance and equal sample size assumed in both groups','the declared standard deviation is a reasonable prior estimate, not a guess with unknown error'],
+            'unresolved':['whether the assumed standard deviation reflects the true population variability','whether the planned statistical test will actually be this normal-approximation two-sample comparison']}
+
+
+def rf_link_budget_friis(params):
+    """Friis free-space transmission equation for RF link budget:
+    Pr(dBm) = Pt(dBm) + Gt(dBi) + Gr(dBi) - FSPL(dB), where
+    FSPL(dB) = 20*log10(4*pi*d/lambda) and lambda = c/f. Standard
+    textbook RF engineering (Friis 1946), used here to check whether a
+    wireless audio link (e.g. Bluetooth/LE Audio) closes with adequate
+    margin above a declared receiver sensitivity at a given distance --
+    not a protocol-specific latency/buffering claim. Hand-verified before
+    use: 2.4 GHz, 4 dBm tx, 0 dBi antennas, 10 m -> Pr=-56.05 dBm."""
+    schema=json.loads((ROOT/'skills/rf-link-budget-friis-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Friis link-budget field contract required')
+    rules=schema['properties']
+    def _bounded(name):
+        value=params[name]; bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError(f'{name} must be a finite numeric value')
+        if 'exclusiveMinimum' in bound and value<=bound['exclusiveMinimum']:
+            raise ValueError(f'{name} must exceed {bound["exclusiveMinimum"]}')
+        if 'minimum' in bound and value<bound['minimum']:
+            raise ValueError(f'{name} must be at least {bound["minimum"]}')
+        if 'maximum' in bound and value>bound['maximum']:
+            raise ValueError(f'{name} exceeds bounded range')
+        return value
+    tx_power_dbm=_bounded('tx_power_dbm')
+    tx_gain_dbi=_bounded('tx_gain_dbi')
+    rx_gain_dbi=_bounded('rx_gain_dbi')
+    freq_hz=_bounded('frequency_hz')
+    distance_m=_bounded('distance_m')
+    rx_sensitivity_dbm=_bounded('rx_sensitivity_dbm')
+    c=299792458.0
+    wavelength_m=c/freq_hz
+    fspl_db=20*math.log10(4*math.pi*distance_m/wavelength_m)
+    received_power_dbm=tx_power_dbm+tx_gain_dbi+rx_gain_dbi-fspl_db
+    link_margin_db=received_power_dbm-rx_sensitivity_dbm
+    link_closes=bool(link_margin_db>=0)
+    checks=[{'id':'LINK_MARGIN_NON_NEGATIVE','actual':received_power_dbm,'limit':rx_sensitivity_dbm,
+             'margin':link_margin_db,'operator':'>=','passed':link_closes,
+             'on_failure':'REDUCE_DISTANCE_OR_INCREASE_TX_POWER_OR_ANTENNA_GAIN_OR_ACCEPT_LINK_DOES_NOT_CLOSE'}]
+    if not link_closes:
+        disposition='LINK_DOES_NOT_CLOSE_AT_THIS_DISTANCE'
+        required_revisions=['REDUCE_DISTANCE_OR_INCREASE_LINK_BUDGET_BEFORE_RELYING_ON_THIS_RANGE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'free_space_path_loss_db':fspl_db,'received_power_dbm':received_power_dbm,
+            'link_margin_db':link_margin_db,'link_closes':link_closes,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the real environment has multipath, obstructions or body-worn attenuation, so free-space path loss understates the true loss',
+                'the declared receiver sensitivity is a best-case datasheet figure rather than the sensitivity actually achieved in this product\'s real RF front end',
+                'the declared antenna gains assume ideal orientation, while real device orientation reduces effective gain'],
+            'next_discriminating_experiment':'Measure real RSSI at this distance in the actual deployment environment and compare against this free-space prediction' if link_closes else 'Identify whether reducing distance, increasing transmit power, or improving antenna gain most cost-effectively restores link margin',
+            'model_assumptions':['free-space propagation with no multipath, obstruction or body-worn attenuation','ideal antenna orientation for the declared gains','the declared receiver sensitivity reflects real achievable performance'],
+            'unresolved':['real-environment path loss beyond free space (multipath, obstruction, body-worn attenuation)','whether the declared receiver sensitivity matches this product\'s actual RF front end']}
+
+
+def nyquist_sampling_check(params):
+    """Shannon-Nyquist sampling theorem check: a signal containing energy
+    up to max_signal_frequency_hz requires a sample rate of at least
+    2*max_signal_frequency_hz to avoid aliasing. Standard textbook signal-
+    processing theorem (Nyquist 1928, Shannon 1949), used here to check a
+    declared dataset's sample rate against its declared maximum signal
+    content before trusting the dataset schema. Hand-verified before use:
+    fs=44100 Hz, fmax=20000 Hz -> Nyquist frequency=22050 Hz, satisfied;
+    fs=8000 Hz, fmax=20000 Hz -> Nyquist frequency=4000 Hz, violated."""
+    schema=json.loads((ROOT/'skills/nyquist-sampling-check-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Nyquist sampling field contract required')
+    rules=schema['properties']
+    sample_rate=params['sample_rate_hz']
+    sr_bound=rules['sample_rate_hz']
+    if isinstance(sample_rate,bool) or not isinstance(sample_rate,(float,int)) or not math.isfinite(sample_rate) \
+            or sample_rate<=sr_bound['exclusiveMinimum'] or sample_rate>sr_bound['maximum']:
+        raise ValueError('sample_rate_hz must be a finite, positive, bounded Hz value')
+    max_freq=params['max_signal_frequency_hz']
+    freq_bound=rules['max_signal_frequency_hz']
+    if isinstance(max_freq,bool) or not isinstance(max_freq,(float,int)) or not math.isfinite(max_freq) \
+            or max_freq<=freq_bound['exclusiveMinimum'] or max_freq>freq_bound['maximum']:
+        raise ValueError('max_signal_frequency_hz must be a finite, positive, bounded Hz value')
+    nyquist_frequency_hz=sample_rate/2.0
+    satisfies_nyquist=bool(max_freq<=nyquist_frequency_hz)
+    aliasing_margin_hz=nyquist_frequency_hz-max_freq
+    checks=[{'id':'MAX_FREQUENCY_WITHIN_NYQUIST_LIMIT','actual':max_freq,'limit':nyquist_frequency_hz,
+             'margin':aliasing_margin_hz,'operator':'<=','passed':satisfies_nyquist,
+             'on_failure':'INCREASE_SAMPLE_RATE_OR_LOW_PASS_FILTER_BEFORE_SAMPLING_OR_DISCARD_ALIASED_DATA'}]
+    if not satisfies_nyquist:
+        disposition='ALIASING_RISK_NYQUIST_CRITERION_VIOLATED'
+        required_revisions=['VERIFY_ANTI_ALIASING_FILTER_WAS_APPLIED_OR_RE_ACQUIRE_AT_A_HIGHER_SAMPLE_RATE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'nyquist_frequency_hz':nyquist_frequency_hz,'aliasing_margin_hz':aliasing_margin_hz,
+            'satisfies_nyquist':satisfies_nyquist,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['an anti-aliasing low-pass filter was applied before sampling, so energy above the declared max frequency was already removed and no aliasing actually occurred',
+                'the declared max_signal_frequency_hz is an assumption rather than a measured bandwidth of the real source signal',
+                'the dataset was resampled from a higher original rate, so the effective bandwidth may already be band-limited below what the raw source suggests'],
+            'next_discriminating_experiment':'Inspect the spectrum of a sample recording for energy folded back below the Nyquist frequency, which would confirm real aliasing occurred' if not satisfies_nyquist else 'Confirm via spectral analysis that no significant energy exists near the Nyquist frequency, validating the declared bandwidth assumption',
+            'model_assumptions':['the declared max_signal_frequency_hz accurately bounds the real signal content','no anti-aliasing filter assumption is made either way -- it must be separately confirmed'],
+            'unresolved':['whether an anti-aliasing filter was actually applied before sampling','whether the declared maximum signal frequency was measured or assumed']}
+
+
+def measurement_difference_significance(params):
+    """Two-independent-measurement significance z-score: given two
+    measured values each with their own standard uncertainty,
+    z=(x1-x2)/sqrt(u1^2+u2^2). A |z|>=2 is the conventional threshold for
+    treating a difference as distinguishable from measurement noise
+    (approximately 95% confidence under a normal-error assumption).
+    Standard statistical hypothesis-testing arithmetic (an application of
+    uncertainty propagation), not a fitted or acoustic-specific model.
+    Hand-verified before use: x1=85.0,u1=0.5,x2=83.0,u2=0.5 -> z=2.828
+    (significant); x1=85.0,u1=2.0,x2=84.0,u2=2.0 -> z=0.354 (not
+    significant)."""
+    schema=json.loads((ROOT/'skills/measurement-difference-significance-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact measurement-difference field contract required')
+    rules=schema['properties']
+    def _bounded(name,*,positive_only=False):
+        value=params[name]; bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value):
+            raise ValueError(f'{name} must be a finite numeric value')
+        if positive_only and value<=bound['exclusiveMinimum']:
+            raise ValueError(f'{name} must be positive')
+        if 'maximum' in bound and abs(value)>bound['maximum']:
+            raise ValueError(f'{name} exceeds bounded range')
+        return value
+    x1=_bounded('measurement_1')
+    u1=_bounded('uncertainty_1',positive_only=True)
+    x2=_bounded('measurement_2')
+    u2=_bounded('uncertainty_2',positive_only=True)
+    z_threshold=params['significance_z_threshold']
+    z_bound=rules['significance_z_threshold']
+    if isinstance(z_threshold,bool) or not isinstance(z_threshold,(float,int)) or not math.isfinite(z_threshold) \
+            or z_threshold<=z_bound['exclusiveMinimum'] or z_threshold>z_bound['maximum']:
+        raise ValueError('significance_z_threshold must be a finite, positive, bounded value')
+    difference=x1-x2
+    combined_se=math.sqrt(u1*u1+u2*u2)
+    z_score=difference/combined_se
+    statistically_significant=bool(abs(z_score)>=z_threshold)
+    checks=[{'id':'ABSOLUTE_Z_SCORE_MEETS_THRESHOLD','actual':abs(z_score),'limit':z_threshold,
+             'margin':abs(z_score)-z_threshold,'operator':'>=','passed':statistically_significant,
+             'on_failure':'TREAT_DIFFERENCE_AS_WITHIN_MEASUREMENT_NOISE_NOT_A_REAL_PRODUCT_DIFFERENCE'}]
+    if statistically_significant:
+        disposition='DIFFERENCE_STATISTICALLY_SIGNIFICANT'; required_revisions=[]
+    else:
+        disposition='DIFFERENCE_WITHIN_MEASUREMENT_NOISE'
+        required_revisions=['DO_NOT_CLAIM_A_REAL_PRODUCT_DIFFERENCE_WITHOUT_ADDITIONAL_SAMPLES_OR_LOWER_UNCERTAINTY']
+    return {'difference':difference,'combined_standard_error':combined_se,'z_score':z_score,
+            'statistically_significant':statistically_significant,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the two measurements were not taken under matched conditions (different units, fixtures or environments), confounding a real product difference with a systematic offset',
+                'the declared uncertainties understate the true measurement variability (e.g. from a single sample rather than repeated measurements)',
+                'a genuine but small difference exists that this comparison lacks the precision to detect (a non-significant result is not proof of equivalence)'],
+            'next_discriminating_experiment':'Repeat both measurements under matched conditions with multiple samples to obtain a tighter, empirically-grounded uncertainty estimate' if not statistically_significant else 'Verify the two measurements were taken under genuinely matched conditions before attributing the difference to the product rather than the test setup',
+            'model_assumptions':['each measurement uncertainty is an independent, approximately normal standard error','the two measurements were taken under otherwise matched conditions'],
+            'unresolved':['whether the measurements were taken under truly matched conditions','whether the declared uncertainties reflect real repeated-measurement variability or a single-sample estimate']}
+
+
+def arrhenius_acceleration_factor(params):
+    """Arrhenius reliability acceleration factor: AF=exp((Ea/k)*(1/T_use -
+    1/T_stress)), with Boltzmann constant k=8.617333262e-5 eV/K and
+    temperatures in Kelvin. Standard textbook reliability-engineering
+    model (accelerated life testing), used to translate a stress-
+    temperature test duration into an estimated equivalent use-condition
+    duration for a declared activation energy. Hand-verified before use:
+    Ea=0.7 eV, T_use=25C, T_stress=85C -> AF=95.998 (matching the
+    commonly cited order-of-magnitude for this activation energy and
+    delta-T in electronics reliability literature)."""
+    schema=json.loads((ROOT/'skills/arrhenius-acceleration-factor-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Arrhenius acceleration-factor field contract required')
+    rules=schema['properties']
+    ea_ev=params['activation_energy_ev']
+    ea_bound=rules['activation_energy_ev']
+    if isinstance(ea_ev,bool) or not isinstance(ea_ev,(float,int)) or not math.isfinite(ea_ev) \
+            or ea_ev<=ea_bound['exclusiveMinimum'] or ea_ev>ea_bound['maximum']:
+        raise ValueError('activation_energy_ev must be a finite, positive, bounded eV value')
+    t_use_c=params['use_temperature_c']
+    t_use_bound=rules['use_temperature_c']
+    if isinstance(t_use_c,bool) or not isinstance(t_use_c,(float,int)) or not math.isfinite(t_use_c) \
+            or t_use_c<t_use_bound['minimum'] or t_use_c>t_use_bound['maximum']:
+        raise ValueError('use_temperature_c must be a finite, bounded Celsius value')
+    t_stress_c=params['stress_temperature_c']
+    t_stress_bound=rules['stress_temperature_c']
+    if isinstance(t_stress_c,bool) or not isinstance(t_stress_c,(float,int)) or not math.isfinite(t_stress_c) \
+            or t_stress_c<t_stress_bound['minimum'] or t_stress_c>t_stress_bound['maximum']:
+        raise ValueError('stress_temperature_c must be a finite, bounded Celsius value')
+    if t_stress_c<=t_use_c:
+        raise ValueError('stress_temperature_c must exceed use_temperature_c for an accelerated test')
+    test_duration_h=params['test_duration_hours']
+    duration_bound=rules['test_duration_hours']
+    if isinstance(test_duration_h,bool) or not isinstance(test_duration_h,(float,int)) or not math.isfinite(test_duration_h) \
+            or test_duration_h<=duration_bound['exclusiveMinimum'] or test_duration_h>duration_bound['maximum']:
+        raise ValueError('test_duration_hours must be a finite, positive, bounded hour value')
+    k_ev_per_kelvin=8.617333262e-5
+    t_use_k=t_use_c+273.15
+    t_stress_k=t_stress_c+273.15
+    acceleration_factor=math.exp((ea_ev/k_ev_per_kelvin)*(1.0/t_use_k-1.0/t_stress_k))
+    equivalent_use_hours=test_duration_h*acceleration_factor
+    checks=[{'id':'ACCELERATION_FACTOR_POSITIVE_AND_FINITE','actual':acceleration_factor,'limit':1.0,
+             'margin':acceleration_factor-1.0,'operator':'>=','passed':bool(acceleration_factor>=1.0),
+             'on_failure':'STRESS_TEMPERATURE_MUST_EXCEED_USE_TEMPERATURE_FOR_A_VALID_ACCELERATION_FACTOR'}]
+    disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'acceleration_factor':acceleration_factor,'equivalent_use_hours':equivalent_use_hours,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the declared activation energy is a literature value for a different failure mechanism than the one actually dominant in this product',
+                'the failure mechanism is not purely thermally activated (e.g. involves mechanical fatigue or humidity), making the single-mechanism Arrhenius model inapplicable',
+                'the stress temperature exceeds a threshold where a different (non-Arrhenius) failure mode takes over, invalidating extrapolation from the stress condition'],
+            'next_discriminating_experiment':'Run tests at two or more stress temperatures and fit the activation energy empirically, then compare against the declared literature value',
+            'model_assumptions':['a single, thermally-activated failure mechanism with constant activation energy across the tested temperature range','the declared activation energy accurately represents this product\'s dominant failure mechanism'],
+            'unresolved':['whether the declared activation energy matches this product\'s actual dominant failure mechanism','whether a non-thermal failure mode becomes dominant at the stress temperature']}
+
+
+def wilson_score_accuracy_interval(params):
+    """Wilson score confidence interval for a binomial proportion
+    (Wilson 1927): given k successes out of n trials, computes a 95% CI
+    that behaves correctly near 0/1 (unlike the naive normal-
+    approximation interval). Used here to check whether a claimed ML
+    classification accuracy is well-supported by the declared test-set
+    size, rather than accepting training-set fit alone. Standard
+    textbook inferential statistics. Hand-verified before use: 95/100 ->
+    CI approx (0.888,0.978); 9/10 (same 90% point accuracy, far smaller
+    n) -> CI approx (0.596,0.982), a much wider interval showing the
+    small test set cannot support as tight a claim."""
+    schema=json.loads((ROOT/'skills/wilson-score-accuracy-interval-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Wilson-score field contract required')
+    rules=schema['properties']
+    successes=params['correct_predictions']
+    n=params['total_predictions']
+    if isinstance(n,bool) or not isinstance(n,int) or n<rules['total_predictions']['minimum'] or n>rules['total_predictions']['maximum']:
+        raise ValueError('total_predictions must be a bounded positive integer')
+    if isinstance(successes,bool) or not isinstance(successes,int) or successes<0 or successes>n:
+        raise ValueError('correct_predictions must be a non-negative integer no greater than total_predictions')
+    min_lower_bound=params['minimum_acceptable_lower_bound']
+    bound=rules['minimum_acceptable_lower_bound']
+    if isinstance(min_lower_bound,bool) or not isinstance(min_lower_bound,(float,int)) or not math.isfinite(min_lower_bound) \
+            or min_lower_bound<bound['minimum'] or min_lower_bound>bound['maximum']:
+        raise ValueError('minimum_acceptable_lower_bound must be a finite value between 0 and 1')
+    z=1.959963984540054
+    phat=successes/n
+    denom=1+z*z/n
+    center=(phat+z*z/(2*n))/denom
+    margin=(z/denom)*math.sqrt(phat*(1-phat)/n+z*z/(4*n*n))
+    ci_low=max(0.0,center-margin); ci_high=min(1.0,center+margin)
+    meets_bound=bool(ci_low>=min_lower_bound)
+    checks=[{'id':'CI_LOWER_BOUND_MEETS_MINIMUM','actual':ci_low,'limit':min_lower_bound,'margin':ci_low-min_lower_bound,
+             'operator':'>=','passed':meets_bound,'on_failure':'COLLECT_A_LARGER_TEST_SET_OR_LOWER_THE_ACCURACY_CLAIM'}]
+    if not meets_bound:
+        disposition='ACCURACY_CLAIM_NOT_SUPPORTED_AT_THIS_TEST_SET_SIZE'
+        required_revisions=['COLLECT_MORE_TEST_SAMPLES_BEFORE_CLAIMING_THIS_ACCURACY_LEVEL']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'point_accuracy':phat,'ci95_low':ci_low,'ci95_high':ci_high,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the test set is not representative of real deployment conditions, so a supported interval on this set still overstates real-world accuracy',
+                'the test samples are not independent (e.g. correlated frames from the same recording), making the binomial independence assumption invalid and the interval too narrow',
+                'the reported successes/total come from the same data used for model selection, contaminating the estimate with selection bias'],
+            'next_discriminating_experiment':'Evaluate on an additional, held-out test set collected independently to confirm the interval holds' if meets_bound else 'Collect additional independent test samples to narrow the confidence interval before relying on this accuracy claim',
+            'model_assumptions':['test samples are independent and identically distributed','the test set is representative of the real deployment distribution','no data leakage between training/model-selection and this test set'],
+            'unresolved':['whether the test set is truly representative of deployment conditions','whether test samples are independent or correlated','whether model selection used this same test set']}
+
+
+def process_capability_cpk(params):
+    """Process Capability Index Cpk: Cpu=(USL-mean)/(3*sigma),
+    Cpl=(mean-LSL)/(3*sigma), Cpk=min(Cpu,Cpl). Standard textbook
+    statistical process control (SPC), used to set factory EOL decision
+    limits from declared process mean/spread against specification
+    limits -- Cpk (unlike Cp) correctly penalizes an off-center process.
+    Hand-verified before use: USL=10,LSL=0,mean=5,sigma=1 -> centered,
+    Cpu=Cpl=Cpk=1.667; USL=10,LSL=0,mean=8,sigma=1 -> off-center,
+    Cpu=0.667, Cpl=2.667, Cpk=0.667 (the constraining side)."""
+    schema=json.loads((ROOT/'skills/process-capability-cpk-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Cpk field contract required')
+    rules=schema['properties']
+    usl=params['upper_spec_limit']
+    lsl=params['lower_spec_limit']
+    mean=params['process_mean']
+    sigma=params['process_sigma']
+    min_cpk=params['minimum_acceptable_cpk']
+    for name,value in (('upper_spec_limit',usl),('lower_spec_limit',lsl),('process_mean',mean)):
+        bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) \
+                or value<bound['minimum'] or value>bound['maximum']:
+            raise ValueError(f'{name} must be a finite, bounded value')
+    sigma_bound=rules['process_sigma']
+    if isinstance(sigma,bool) or not isinstance(sigma,(float,int)) or not math.isfinite(sigma) \
+            or sigma<=sigma_bound['exclusiveMinimum'] or sigma>sigma_bound['maximum']:
+        raise ValueError('process_sigma must be a finite, positive, bounded value')
+    if usl<=lsl:
+        raise ValueError('upper_spec_limit must exceed lower_spec_limit')
+    min_cpk_bound=rules['minimum_acceptable_cpk']
+    if isinstance(min_cpk,bool) or not isinstance(min_cpk,(float,int)) or not math.isfinite(min_cpk) \
+            or min_cpk<=min_cpk_bound['exclusiveMinimum'] or min_cpk>min_cpk_bound['maximum']:
+        raise ValueError('minimum_acceptable_cpk must be a finite, positive, bounded value')
+    cpu=(usl-mean)/(3*sigma)
+    cpl=(mean-lsl)/(3*sigma)
+    cpk=min(cpu,cpl)
+    meets_minimum=bool(cpk>=min_cpk)
+    checks=[{'id':'CPK_MEETS_MINIMUM','actual':cpk,'limit':min_cpk,'margin':cpk-min_cpk,
+             'operator':'>=','passed':meets_minimum,'on_failure':'RECENTER_PROCESS_OR_REDUCE_VARIATION_BEFORE_RELEASE'}]
+    if not meets_minimum:
+        disposition='CPK_BELOW_MINIMUM_ACCEPTABLE'
+        required_revisions=['RECENTER_THE_PROCESS_TOWARD_THE_CONSTRAINING_SPEC_LIMIT_OR_REDUCE_PROCESS_VARIATION']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'cpu':cpu,'cpl':cpl,'cpk':cpk,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the declared process mean and sigma are estimated from too small a sample to be a reliable characterization of the true process',
+                'the process distribution is significantly non-normal, making the 3-sigma-based Cpk interpretation (and its implied defect rate) inaccurate',
+                'the process is not currently in statistical control (special-cause variation present), so a single static Cpk snapshot does not represent ongoing capability'],
+            'next_discriminating_experiment':'Collect a larger, time-ordered sample and run a control chart to confirm the process is in statistical control before trusting this Cpk' if meets_minimum else 'Identify whether centering the process or reducing variation more cost-effectively restores the required Cpk',
+            'model_assumptions':['the process output is approximately normally distributed','the declared mean and sigma are representative of the true, stable process','the process is in a state of statistical control'],
+            'unresolved':['whether the process is currently in statistical control','whether the underlying distribution is significantly non-normal','sample size backing the declared mean and sigma estimates']}
+
+
+def acceptance_sampling_oc_probability(params):
+    """Binomial acceptance-sampling operating-characteristic (OC) curve
+    point: given a sample size n, acceptance number c (accept the lot if
+    c or fewer defects are found), and an assumed true lot defect rate p,
+    computes the probability of accepting the lot,
+    P(accept)=sum_{k=0}^{c} C(n,k)*p^k*(1-p)^(n-k). Standard textbook
+    acceptance-sampling statistics (binomial distribution), used to check
+    supplier incoming-inspection risk at a declared defect rate. Hand-
+    verified before use: n=50,c=1,p=0.01 -> P(accept)=0.9106 (good lots
+    usually pass); n=50,c=1,p=0.05 -> P(accept)=0.2794 (bad lots usually
+    caught)."""
+    schema=json.loads((ROOT/'skills/acceptance-sampling-oc-probability-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact acceptance-sampling field contract required')
+    rules=schema['properties']
+    n=params['sample_size']
+    n_bound=rules['sample_size']
+    if isinstance(n,bool) or not isinstance(n,int) or n<n_bound['minimum'] or n>n_bound['maximum']:
+        raise ValueError('sample_size must be a bounded positive integer')
+    c=params['acceptance_number']
+    c_bound=rules['acceptance_number']
+    if isinstance(c,bool) or not isinstance(c,int) or c<c_bound['minimum'] or c>n:
+        raise ValueError('acceptance_number must be a non-negative integer no greater than sample_size')
+    p=params['assumed_defect_rate']
+    p_bound=rules['assumed_defect_rate']
+    if isinstance(p,bool) or not isinstance(p,(float,int)) or not math.isfinite(p) \
+            or p<p_bound['minimum'] or p>p_bound['maximum']:
+        raise ValueError('assumed_defect_rate must be a finite value between 0 and 1')
+    min_acceptable_probability=params['minimum_acceptable_probability_of_acceptance']
+    min_bound=rules['minimum_acceptable_probability_of_acceptance']
+    if isinstance(min_acceptable_probability,bool) or not isinstance(min_acceptable_probability,(float,int)) or not math.isfinite(min_acceptable_probability) \
+            or min_acceptable_probability<min_bound['minimum'] or min_acceptable_probability>min_bound['maximum']:
+        raise ValueError('minimum_acceptable_probability_of_acceptance must be a finite value between 0 and 1')
+    probability_of_acceptance=sum(math.comb(n,k)*(p**k)*((1-p)**(n-k)) for k in range(c+1))
+    meets_minimum=bool(probability_of_acceptance>=min_acceptable_probability)
+    checks=[{'id':'ACCEPTANCE_PROBABILITY_MEETS_MINIMUM','actual':probability_of_acceptance,'limit':min_acceptable_probability,
+             'margin':probability_of_acceptance-min_acceptable_probability,'operator':'>=','passed':meets_minimum,
+             'on_failure':'TIGHTEN_ACCEPTANCE_NUMBER_OR_INCREASE_SAMPLE_SIZE_OR_ACCEPT_HIGHER_CONSUMER_RISK'}]
+    if not meets_minimum:
+        disposition='SAMPLING_PLAN_REJECTS_TOO_OFTEN_AT_THIS_DEFECT_RATE'
+        required_revisions=['RENEGOTIATE_SAMPLING_PLAN_PARAMETERS_WITH_SUPPLIER_BEFORE_RELYING_ON_IT']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'probability_of_acceptance':probability_of_acceptance,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the assumed defect rate is a guess rather than a value backed by real historical lot data from this supplier',
+                'defects within a lot are not independent (e.g. clustered by production batch), violating the binomial independence assumption',
+                'the sampling plan\'s risk was evaluated at only one assumed defect rate, when the real question is the full OC curve across a range of plausible rates'],
+            'next_discriminating_experiment':'Evaluate the full OC curve across a range of plausible defect rates, not just the single assumed value, to understand producer\'s and consumer\'s risk jointly' if meets_minimum else 'Identify whether increasing sample size or loosening the acceptance number more cost-effectively restores the required acceptance probability',
+            'model_assumptions':['defects occur independently within the lot at the assumed constant rate','the lot is effectively infinite relative to the sample (binomial, not hypergeometric, approximation)'],
+            'unresolved':['whether the assumed defect rate reflects real historical supplier performance','whether defects are independent or clustered within lots','producer\'s and consumer\'s risk across the full OC curve, not just this one point']}
+
+
+def ucb1_next_experiment_bound(params):
+    """UCB1 (Upper Confidence Bound) arm-selection score (Auer, Cesa-
+    Bianchi & Fischer 2002): score=mean_reward + c*sqrt(ln(total_trials)/
+    arm_trials), with the standard exploration constant c=sqrt(2).
+    Standard textbook multi-armed-bandit algorithm, used to rank a
+    candidate next experiment by combining its observed mean outcome with
+    an exploration bonus that shrinks as more trials accumulate on that
+    arm -- balances exploiting known-good options against exploring
+    under-sampled ones, without overriding any separately-imposed risk
+    gate. Hand-verified before use: mean=0.5, total=100, arm_trials=10 ->
+    score=1.4597; same mean, arm_trials=50 -> score=0.9292 (lower
+    exploration bonus with more trials on that arm)."""
+    schema=json.loads((ROOT/'skills/ucb1-next-experiment-bound-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact UCB1 field contract required')
+    rules=schema['properties']
+    mean_reward=params['observed_mean_reward']
+    mean_bound=rules['observed_mean_reward']
+    if isinstance(mean_reward,bool) or not isinstance(mean_reward,(float,int)) or not math.isfinite(mean_reward) \
+            or mean_reward<mean_bound['minimum'] or mean_reward>mean_bound['maximum']:
+        raise ValueError('observed_mean_reward must be a finite, bounded value')
+    total_trials=params['total_trials_across_all_arms']
+    total_bound=rules['total_trials_across_all_arms']
+    if isinstance(total_trials,bool) or not isinstance(total_trials,int) or total_trials<total_bound['minimum'] or total_trials>total_bound['maximum']:
+        raise ValueError('total_trials_across_all_arms must be a bounded positive integer')
+    arm_trials=params['this_arm_trials']
+    arm_bound=rules['this_arm_trials']
+    if isinstance(arm_trials,bool) or not isinstance(arm_trials,int) or arm_trials<arm_bound['minimum'] or arm_trials>total_trials:
+        raise ValueError('this_arm_trials must be a positive integer no greater than total_trials_across_all_arms')
+    risk_gate_passed=params['risk_gate_passed']
+    if not isinstance(risk_gate_passed,bool):
+        raise ValueError('risk_gate_passed must be a boolean')
+    exploration_constant=math.sqrt(2)
+    exploration_bonus=exploration_constant*math.sqrt(math.log(total_trials)/arm_trials)
+    ucb_score=mean_reward+exploration_bonus
+    checks=[{'id':'RISK_GATE_PASSED_BEFORE_SELECTION','actual':risk_gate_passed,'limit':True,'margin':0,
+             'operator':'==','passed':bool(risk_gate_passed),'on_failure':'DO_NOT_SELECT_THIS_EXPERIMENT_REGARDLESS_OF_UCB_SCORE'}]
+    if not risk_gate_passed:
+        disposition='EXPERIMENT_BLOCKED_BY_RISK_GATE_REGARDLESS_OF_UCB_SCORE'
+        required_revisions=['DO_NOT_SELECT_THIS_ARM_UNTIL_THE_RISK_GATE_IS_SEPARATELY_CLEARED']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'exploration_bonus':exploration_bonus,'ucb_score':ucb_score,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the reward distribution is non-stationary (changes over time), violating UCB1\'s assumption of a fixed underlying reward distribution per arm',
+                'the observed mean reward is based on very few trials and may not reflect the arm\'s true long-run performance',
+                'a passed risk gate at evaluation time does not guarantee the experiment remains safe if conditions change before it actually runs'],
+            'next_discriminating_experiment':'Compare this UCB score against the other candidate arms\' UCB scores to confirm this one is genuinely the highest-priority next experiment' if risk_gate_passed else 'Do not proceed with this arm; address the risk-gate failure before reconsidering it',
+            'model_assumptions':['a stationary (non-changing over time) reward distribution per arm','the risk gate result is still valid at the moment the experiment is actually executed','trial counts are accurate and not double-counted'],
+            'unresolved':['whether the reward distribution is genuinely stationary','whether the risk gate remains valid between evaluation and actual execution']}
+
+
+def adc_quantization_snr(params):
+    """ADC quantization noise floor: ideal N-bit ADC SNR (dB) =
+    6.02*N + 1.76 (the standard quantization-noise derivation assuming a
+    full-scale sinusoidal input and uniform quantization error). Given a
+    measured/claimed SINAD, effective number of bits
+    ENOB = (SINAD-1.76)/6.02. Standard, foundational data-converter
+    theory, used here to separate declared bit depth from actual
+    effective resolution -- a claimed ENOB above the ideal N-bit SNR is
+    a red flag, not a better-than-ideal converter. Hand-verified before
+    use: 16-bit ideal SNR=98.08 dB (matches the commonly cited ~98 dB
+    figure for 16-bit digital audio); 24-bit ideal SNR=146.24 dB
+    (matches the commonly cited theoretical maximum for 24-bit audio)."""
+    schema=json.loads((ROOT/'skills/adc-quantization-snr-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact ADC quantization-SNR field contract required')
+    rules=schema['properties']
+    bit_depth=params['bit_depth']
+    bit_bound=rules['bit_depth']
+    if isinstance(bit_depth,bool) or not isinstance(bit_depth,int) or bit_depth<bit_bound['minimum'] or bit_depth>bit_bound['maximum']:
+        raise ValueError('bit_depth must be a bounded positive integer')
+    claimed_sinad_db=params['claimed_sinad_db']
+    sinad_bound=rules['claimed_sinad_db']
+    if isinstance(claimed_sinad_db,bool) or not isinstance(claimed_sinad_db,(float,int)) or not math.isfinite(claimed_sinad_db) \
+            or claimed_sinad_db<sinad_bound['minimum'] or claimed_sinad_db>sinad_bound['maximum']:
+        raise ValueError('claimed_sinad_db must be a finite, bounded value')
+    ideal_snr_db=6.02*bit_depth+1.76
+    effective_number_of_bits=(claimed_sinad_db-1.76)/6.02
+    physically_consistent=bool(claimed_sinad_db<=ideal_snr_db)
+    checks=[{'id':'CLAIMED_SINAD_AT_OR_BELOW_IDEAL_SNR','actual':claimed_sinad_db,'limit':ideal_snr_db,
+             'margin':ideal_snr_db-claimed_sinad_db,'operator':'<=','passed':physically_consistent,
+             'on_failure':'CLAIMED_SINAD_EXCEEDS_THE_IDEAL_QUANTIZATION_LIMIT_FOR_THIS_BIT_DEPTH_CHECK_MEASUREMENT_REFERENCE'}]
+    if not physically_consistent:
+        disposition='CLAIMED_SINAD_EXCEEDS_IDEAL_QUANTIZATION_LIMIT'
+        required_revisions=['RECONCILE_CLAIMED_SINAD_WITH_DECLARED_BIT_DEPTH_OR_VERIFY_MEASUREMENT_REFERENCE_BEFORE_TRUSTING_IT']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'ideal_snr_db':ideal_snr_db,'effective_number_of_bits':effective_number_of_bits,
+            'physically_consistent':physically_consistent,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the claimed SINAD uses a different measurement bandwidth or weighting than the flat, full-scale assumption behind the ideal formula, making direct comparison invalid',
+                'the converter uses noise-shaping/oversampling (e.g. a PDM/sigma-delta ADC), which trades bandwidth for in-band SNR beyond what a simple Nyquist-rate quantization formula predicts',
+                'the claimed figure is a datasheet best-case number rather than the actual achieved performance in this specific application circuit'],
+            'next_discriminating_experiment':'Measure the actual SINAD on the assembled circuit with a calibrated full-scale sinusoidal input and compare against both the ideal limit and the datasheet claim' if physically_consistent else 'Verify whether the converter uses noise-shaping/oversampling that legitimately explains an apparent excess over the simple quantization formula',
+            'model_assumptions':['a full-scale sinusoidal input signal (the standard reference condition for the 6.02N+1.76 formula)','uniform (non-noise-shaped) quantization error, no oversampling/noise-shaping applied','the claimed SINAD and declared bit depth were measured under comparable conditions'],
+            'unresolved':['whether the converter uses noise-shaping/oversampling not accounted for by this simple formula','whether the claimed SINAD reflects actual measured performance or a datasheet best case']}
+
+
+def bonferroni_significance_correction(params):
+    """Bonferroni multiple-comparisons correction: when testing
+    n_hypotheses simultaneously, the per-comparison significance
+    threshold must shrink to alpha_adjusted=alpha/n_hypotheses to hold
+    the family-wise error rate at the declared alpha. Standard textbook
+    multiple-testing correction (Bonferroni 1936), used here to check
+    whether a claimed significant result in acoustic research literature
+    actually survives correction for how many hypotheses/comparisons
+    were tested -- directly targets the 'citation count treated as
+    replication' / uncorrected-multiple-comparisons antipattern this
+    role's mission warns against. Hand-verified before use: alpha=0.05,
+    n=1 -> adjusted=0.05 (no correction needed); alpha=0.05, n=20 ->
+    adjusted=0.0025 (20x stricter)."""
+    schema=json.loads((ROOT/'skills/bonferroni-significance-correction-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Bonferroni-correction field contract required')
+    rules=schema['properties']
+    alpha=params['family_wise_alpha']
+    alpha_bound=rules['family_wise_alpha']
+    if isinstance(alpha,bool) or not isinstance(alpha,(float,int)) or not math.isfinite(alpha) \
+            or alpha<=alpha_bound['exclusiveMinimum'] or alpha>=alpha_bound['exclusiveMaximum']:
+        raise ValueError('family_wise_alpha must be a finite value strictly between 0 and 1')
+    n_hypotheses=params['number_of_hypotheses_tested']
+    n_bound=rules['number_of_hypotheses_tested']
+    if isinstance(n_hypotheses,bool) or not isinstance(n_hypotheses,int) or n_hypotheses<n_bound['minimum'] or n_hypotheses>n_bound['maximum']:
+        raise ValueError('number_of_hypotheses_tested must be a bounded positive integer')
+    claimed_p_value=params['claimed_p_value']
+    p_bound=rules['claimed_p_value']
+    if isinstance(claimed_p_value,bool) or not isinstance(claimed_p_value,(float,int)) or not math.isfinite(claimed_p_value) \
+            or claimed_p_value<p_bound['minimum'] or claimed_p_value>=p_bound['exclusiveMaximum']:
+        raise ValueError('claimed_p_value must be a finite value in [0,1)')
+    adjusted_alpha=alpha/n_hypotheses
+    survives_correction=bool(claimed_p_value<=adjusted_alpha)
+    checks=[{'id':'P_VALUE_SURVIVES_BONFERRONI_CORRECTION','actual':claimed_p_value,'limit':adjusted_alpha,
+             'margin':adjusted_alpha-claimed_p_value,'operator':'<=','passed':survives_correction,
+             'on_failure':'TREAT_THE_RESULT_AS_NOT_SIGNIFICANT_AFTER_CORRECTING_FOR_MULTIPLE_COMPARISONS'}]
+    if not survives_correction:
+        disposition='RESULT_NOT_SIGNIFICANT_AFTER_MULTIPLE_COMPARISONS_CORRECTION'
+        required_revisions=['DO_NOT_PRESENT_THIS_RESULT_AS_SIGNIFICANT_WITHOUT_ADDITIONAL_INDEPENDENT_REPLICATION']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'adjusted_alpha':adjusted_alpha,'survives_correction':survives_correction,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['Bonferroni is deliberately conservative; a result that fails it may still be a real effect that a less conservative correction (e.g. Benjamini-Hochberg) would retain',
+                'the declared number of hypotheses tested understates the true number of comparisons actually explored (e.g. undisclosed exploratory analyses)',
+                'the claimed p-value was computed from a test whose assumptions do not hold, making the correction moot regardless of the threshold'],
+            'next_discriminating_experiment':'Pre-register a single confirmatory hypothesis and test it on independent data to avoid the multiple-comparisons problem entirely' if survives_correction else 'Identify the full set of comparisons actually explored (including unreported ones) before deciding whether any correction is even meaningful',
+            'model_assumptions':['the declared number of hypotheses tested reflects the true number of comparisons made','Bonferroni\'s conservative family-wise error control is the appropriate standard for this claim'],
+            'unresolved':['whether the declared hypothesis count reflects all comparisons actually explored, including unreported ones','whether a less conservative correction procedure would be more appropriate for this specific claim']}
+
+
+def test_automation_runtime_budget(params):
+    """Central-limit-theorem aggregate test-suite runtime budget: for
+    n_tests independent tests each with mean duration mean_s and standard
+    deviation std_s, the SUM's mean is n*mean_s and its standard
+    deviation is std_s*sqrt(n) (variances of independent random
+    variables add). A k-sigma margin above the mean gives a statistically
+    grounded timeout, rather than an arbitrarily padded guess -- directly
+    fills the gap this role's own existing skill explicitly discloses
+    ('no full automation-run resource/timeout budget'). Hand-verified
+    before use: mean=2s, std=0.5s, n=100, k=3 -> total_mean=200s,
+    total_std=5s, timeout=215s."""
+    schema=json.loads((ROOT/'skills/test-automation-runtime-budget-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact test-automation runtime-budget field contract required')
+    rules=schema['properties']
+    mean_s=params['mean_test_duration_s']
+    mean_bound=rules['mean_test_duration_s']
+    if isinstance(mean_s,bool) or not isinstance(mean_s,(float,int)) or not math.isfinite(mean_s) \
+            or mean_s<=mean_bound['exclusiveMinimum'] or mean_s>mean_bound['maximum']:
+        raise ValueError('mean_test_duration_s must be a finite, positive, bounded value')
+    std_s=params['std_test_duration_s']
+    std_bound=rules['std_test_duration_s']
+    if isinstance(std_s,bool) or not isinstance(std_s,(float,int)) or not math.isfinite(std_s) \
+            or std_s<0 or std_s>std_bound['maximum']:
+        raise ValueError('std_test_duration_s must be a finite, non-negative, bounded value')
+    n_tests=params['number_of_tests']
+    n_bound=rules['number_of_tests']
+    if isinstance(n_tests,bool) or not isinstance(n_tests,int) or n_tests<n_bound['minimum'] or n_tests>n_bound['maximum']:
+        raise ValueError('number_of_tests must be a bounded positive integer')
+    sigma_margin=params['sigma_margin']
+    sigma_bound=rules['sigma_margin']
+    if isinstance(sigma_margin,bool) or not isinstance(sigma_margin,(float,int)) or not math.isfinite(sigma_margin) \
+            or sigma_margin<sigma_bound['minimum'] or sigma_margin>sigma_bound['maximum']:
+        raise ValueError('sigma_margin must be a finite, bounded value')
+    max_allowed_timeout_s=params['maximum_allowed_timeout_s']
+    max_bound=rules['maximum_allowed_timeout_s']
+    if isinstance(max_allowed_timeout_s,bool) or not isinstance(max_allowed_timeout_s,(float,int)) or not math.isfinite(max_allowed_timeout_s) \
+            or max_allowed_timeout_s<=max_bound['exclusiveMinimum'] or max_allowed_timeout_s>max_bound['maximum']:
+        raise ValueError('maximum_allowed_timeout_s must be a finite, positive, bounded value')
+    total_mean_s=mean_s*n_tests
+    total_std_s=std_s*math.sqrt(n_tests)
+    recommended_timeout_s=total_mean_s+sigma_margin*total_std_s
+    within_budget=bool(recommended_timeout_s<=max_allowed_timeout_s)
+    checks=[{'id':'RECOMMENDED_TIMEOUT_WITHIN_BUDGET','actual':recommended_timeout_s,'limit':max_allowed_timeout_s,
+             'margin':max_allowed_timeout_s-recommended_timeout_s,'operator':'<=','passed':within_budget,
+             'on_failure':'INCREASE_ALLOWED_TIMEOUT_OR_PARALLELIZE_OR_REDUCE_TEST_COUNT'}]
+    if not within_budget:
+        disposition='RECOMMENDED_TIMEOUT_EXCEEDS_ALLOWED_BUDGET'
+        required_revisions=['REDUCE_TEST_COUNT_OR_PARALLELIZE_OR_NEGOTIATE_A_LARGER_TIMEOUT_BUDGET']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'total_mean_s':total_mean_s,'total_std_s':total_std_s,'recommended_timeout_s':recommended_timeout_s,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['individual test durations are not actually independent (e.g. shared fixture warm-up or resource contention), so the sqrt(n) variance-summation assumption understates real variability',
+                'the declared mean/std were measured under different load conditions (e.g. an idle CI runner) than the real execution environment',
+                'test durations are heavy-tailed rather than approximately normal, so a k-sigma margin underestimates the true tail risk of an occasional very slow run'],
+            'next_discriminating_experiment':'Run the full suite repeatedly under real CI conditions and compare the actual total-runtime distribution against this predicted mean/std' if within_budget else 'Identify whether parallelizing tests or trimming the slowest tests more effectively restores the timeout budget',
+            'model_assumptions':['individual test durations are independent random variables','test durations are approximately normally distributed at the aggregate (sum) level, consistent with the Central Limit Theorem','declared mean/std reflect the real execution environment'],
+            'unresolved':['whether individual test durations are truly independent or share resource contention','whether test durations are heavy-tailed rather than approximately normal','whether declared mean/std reflect the actual CI execution environment']}
+
+
+def fft_frequency_resolution_budget(params):
+    """FFT/DFT frequency-resolution relationship: for a record of N
+    samples at sample rate fs, frequency bin resolution is
+    delta_f=fs/N, equivalently the minimum record length needed for a
+    target resolution is record_length_s=1/delta_f_target. Standard,
+    foundational DSP relationship (uncertainty-principle-consistent
+    time/frequency tradeoff), used here to verify a planned instrument
+    acquisition sequence's record length actually achieves its required
+    frequency resolution before running it -- a bounded, non-physical
+    acquisition-planning check distinct from executing the instrument
+    itself. Hand-verified before use: fs=48000 Hz, N=4096 ->
+    delta_f=11.71875 Hz; a 1 Hz target resolution needs a 1 s record."""
+    schema=json.loads((ROOT/'skills/fft-frequency-resolution-budget-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact FFT frequency-resolution field contract required')
+    rules=schema['properties']
+    sample_rate_hz=params['sample_rate_hz']
+    sr_bound=rules['sample_rate_hz']
+    if isinstance(sample_rate_hz,bool) or not isinstance(sample_rate_hz,(float,int)) or not math.isfinite(sample_rate_hz) \
+            or sample_rate_hz<=sr_bound['exclusiveMinimum'] or sample_rate_hz>sr_bound['maximum']:
+        raise ValueError('sample_rate_hz must be a finite, positive, bounded Hz value')
+    n_samples=params['planned_record_samples']
+    n_bound=rules['planned_record_samples']
+    if isinstance(n_samples,bool) or not isinstance(n_samples,int) or n_samples<n_bound['minimum'] or n_samples>n_bound['maximum']:
+        raise ValueError('planned_record_samples must be a bounded positive integer')
+    target_resolution_hz=params['target_frequency_resolution_hz']
+    target_bound=rules['target_frequency_resolution_hz']
+    if isinstance(target_resolution_hz,bool) or not isinstance(target_resolution_hz,(float,int)) or not math.isfinite(target_resolution_hz) \
+            or target_resolution_hz<=target_bound['exclusiveMinimum'] or target_resolution_hz>target_bound['maximum']:
+        raise ValueError('target_frequency_resolution_hz must be a finite, positive, bounded Hz value')
+    actual_resolution_hz=sample_rate_hz/n_samples
+    record_length_s=n_samples/sample_rate_hz
+    minimum_record_length_for_target_s=1.0/target_resolution_hz
+    meets_target=bool(actual_resolution_hz<=target_resolution_hz)
+    checks=[{'id':'RESOLUTION_MEETS_TARGET','actual':actual_resolution_hz,'limit':target_resolution_hz,
+             'margin':target_resolution_hz-actual_resolution_hz,'operator':'<=','passed':meets_target,
+             'on_failure':'INCREASE_RECORD_LENGTH_OR_SAMPLE_COUNT_TO_REACH_THE_TARGET_RESOLUTION'}]
+    if not meets_target:
+        disposition='PLANNED_RECORD_TOO_SHORT_FOR_TARGET_RESOLUTION'
+        required_revisions=['INCREASE_PLANNED_RECORD_SAMPLES_OR_RECORD_LENGTH_BEFORE_RUNNING_THE_SEQUENCE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'actual_resolution_hz':actual_resolution_hz,'record_length_s':record_length_s,
+            'minimum_record_length_for_target_s':minimum_record_length_for_target_s,'meets_target':meets_target,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['a window function (Hann, Blackman, etc.) will be applied before the FFT, which broadens the effective resolution beyond the plain rectangular-window fs/N figure',
+                'the instrument\'s actual sample rate under real acquisition conditions drifts from the declared nominal fs, changing the true achieved resolution',
+                'zero-padding will be used to interpolate the spectrum, which improves apparent bin spacing but does not improve true frequency resolution'],
+            'next_discriminating_experiment':'Acquire a real record at the planned settings and verify two closely-spaced known tones are actually resolved as separate peaks' if meets_target else 'Recompute the minimum record length needed for the target resolution and verify it fits the acquisition time budget',
+            'model_assumptions':['a plain rectangular window (no windowing function applied) for the resolution calculation','the actual sample rate matches the declared nominal value with negligible drift during acquisition'],
+            'unresolved':['the windowing function actually applied, which changes effective resolution beyond this rectangular-window baseline','actual sample-rate drift during acquisition']}
+
+
+def patent_term_expiration(params):
+    """US utility patent term (35 U.S.C. 154(a)(2)): 20 years from the
+    earliest claimed filing date, excluding Patent Term Adjustment (PTA)
+    or Patent Term Extension (PTE) -- a bounded, disclosed simplification
+    (real expiration can differ from this baseline by any PTA/PTE granted
+    during prosecution). Standard, well-established statutory rule, used
+    here to check a claimed expiration date against this baseline
+    calculation before treating any patent as expired or in-force.
+    Hand-verified before use: filing 2010-05-15 + 20y -> 2030-05-15;
+    filing 2000-02-29 (leap day) + 19y -> 2019-02-28 (2019 is not a leap
+    year, so the nearest valid calendar date is used)."""
+    schema=json.loads((ROOT/'skills/patent-term-expiration-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact patent-term field contract required')
+    from datetime import date
+    filing_date_iso=params['filing_date_iso']
+    if not isinstance(filing_date_iso,str):
+        raise ValueError('filing_date_iso must be a string in YYYY-MM-DD format')
+    try:
+        year_str,month_str,day_str=filing_date_iso.split('-')
+        filing=date(int(year_str),int(month_str),int(day_str))
+    except (ValueError,TypeError):
+        raise ValueError('filing_date_iso must be a valid YYYY-MM-DD calendar date')
+    term_years=params['term_years']
+    rules=schema['properties']['term_years']
+    if isinstance(term_years,bool) or not isinstance(term_years,int) or term_years<rules['minimum'] or term_years>rules['maximum']:
+        raise ValueError('term_years must be a bounded positive integer')
+    claimed_expiration_iso=params['claimed_expiration_date_iso']
+    if not isinstance(claimed_expiration_iso,str):
+        raise ValueError('claimed_expiration_date_iso must be a string in YYYY-MM-DD format')
+    try:
+        cy,cm,cd=claimed_expiration_iso.split('-')
+        claimed_expiration=date(int(cy),int(cm),int(cd))
+    except (ValueError,TypeError):
+        raise ValueError('claimed_expiration_date_iso must be a valid YYYY-MM-DD calendar date')
+    try:
+        baseline_expiration=date(filing.year+term_years,filing.month,filing.day)
+    except ValueError:
+        baseline_expiration=date(filing.year+term_years,filing.month,28)
+    matches_baseline=bool(claimed_expiration==baseline_expiration)
+    difference_days=(claimed_expiration-baseline_expiration).days
+    checks=[{'id':'CLAIMED_EXPIRATION_MATCHES_BASELINE','actual':claimed_expiration.isoformat(),'limit':baseline_expiration.isoformat(),
+             'margin':difference_days,'operator':'==','passed':matches_baseline,
+             'on_failure':'RECONCILE_WITH_ANY_PATENT_TERM_ADJUSTMENT_OR_EXTENSION_GRANTED_DURING_PROSECUTION'}]
+    if not matches_baseline:
+        disposition='CLAIMED_EXPIRATION_DEVIATES_FROM_STATUTORY_BASELINE'
+        required_revisions=['VERIFY_WHETHER_PATENT_TERM_ADJUSTMENT_OR_EXTENSION_EXPLAINS_THE_DEVIATION']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'baseline_expiration_date_iso':baseline_expiration.isoformat(),'difference_days':difference_days,
+            'matches_baseline':matches_baseline,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['a granted Patent Term Adjustment (PTA) for USPTO prosecution delay legitimately extends the real expiration beyond this 20-year baseline',
+                'a granted Patent Term Extension (PTE) for regulatory review delay (e.g. FDA approval) legitimately extends the real expiration',
+                'a terminal disclaimer filed during prosecution legitimately shortens the real expiration below this baseline'],
+            'next_discriminating_experiment':'Check the USPTO patent term calculator or the official file history for any PTA/PTE grant or terminal disclaimer that would explain a deviation from this baseline' if not matches_baseline else 'Confirm no later terminal disclaimer or PTA/PTE grant changes the expiration after this baseline check',
+            'model_assumptions':['a standard 20-year utility patent term from the earliest claimed filing date','no Patent Term Adjustment, Patent Term Extension, or terminal disclaimer applied'],
+            'unresolved':['whether any PTA/PTE was granted during prosecution','whether a terminal disclaimer was filed','design vs. utility vs. plant patent term differences not modeled here']}
+
+
+def requirement_traceability_coverage(params):
+    """Requirement-to-test traceability coverage ratio:
+    coverage_percent=100*covered_requirements/total_requirements.
+    Standard, widely-used requirements-engineering metric (e.g. DO-178C-
+    style traceability audits), used to check whether a declared
+    coverage level meets a minimum acceptance threshold before treating
+    a requirement set as adequately verified. Hand-verified before use:
+    85/100 covered -> 85.0%; 40/100 covered -> 40.0%."""
+    schema=json.loads((ROOT/'skills/requirement-traceability-coverage-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact requirement-traceability field contract required')
+    rules=schema['properties']
+    total=params['total_requirements']
+    total_bound=rules['total_requirements']
+    if isinstance(total,bool) or not isinstance(total,int) or total<total_bound['minimum'] or total>total_bound['maximum']:
+        raise ValueError('total_requirements must be a bounded positive integer')
+    covered=params['covered_requirements']
+    if isinstance(covered,bool) or not isinstance(covered,int) or covered<0 or covered>total:
+        raise ValueError('covered_requirements must be a non-negative integer no greater than total_requirements')
+    min_coverage_percent=params['minimum_acceptable_coverage_percent']
+    min_bound=rules['minimum_acceptable_coverage_percent']
+    if isinstance(min_coverage_percent,bool) or not isinstance(min_coverage_percent,(float,int)) or not math.isfinite(min_coverage_percent) \
+            or min_coverage_percent<min_bound['minimum'] or min_coverage_percent>min_bound['maximum']:
+        raise ValueError('minimum_acceptable_coverage_percent must be a finite value between 0 and 100')
+    coverage_percent=100.0*covered/total
+    meets_minimum=bool(coverage_percent>=min_coverage_percent)
+    uncovered_count=total-covered
+    checks=[{'id':'COVERAGE_MEETS_MINIMUM','actual':coverage_percent,'limit':min_coverage_percent,
+             'margin':coverage_percent-min_coverage_percent,'operator':'>=','passed':meets_minimum,
+             'on_failure':'ADD_TEST_LINKS_FOR_UNCOVERED_REQUIREMENTS_BEFORE_RELEASE'}]
+    if not meets_minimum:
+        disposition='COVERAGE_BELOW_MINIMUM_ACCEPTABLE'
+        required_revisions=['ADD_TRACEABILITY_LINKS_FOR_THE_REMAINING_UNCOVERED_REQUIREMENTS']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'coverage_percent':coverage_percent,'uncovered_count':uncovered_count,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['a requirement is marked "covered" by a test link that exists but does not actually exercise the requirement (a superficial or stale link)',
+                'the total requirement count itself is incomplete (undocumented or recently added requirements not yet counted)',
+                'coverage counts a test that currently fails as "covered," conflating traceability existence with verification success'],
+            'next_discriminating_experiment':'Audit a sample of "covered" links to confirm the linked test actually exercises the claimed requirement and currently passes' if meets_minimum else 'Identify which uncovered requirements are highest-risk and prioritize adding their test links first',
+            'model_assumptions':['each declared traceability link genuinely and correctly connects a requirement to a test that exercises it','the total requirement count is complete and current','a passing test link, not just an existing one, is what "covered" means'],
+            'unresolved':['whether covered links are stale or superficial rather than genuinely verifying','completeness of the total requirement count','whether covered requirements have currently-passing (not just existing) test links']}
+
+
+def fmea_risk_priority_number(params):
+    """FMEA (Failure Mode and Effects Analysis) Risk Priority Number:
+    RPN=Severity*Occurrence*Detection, each rated on a declared 1-10
+    scale. Standard, foundational reliability-engineering method (AIAG-
+    VDA FMEA handbook), used here to rank a failure mode's priority and
+    check it against a declared maximum acceptable RPN before deciding
+    whether the DFMEA needs a corrective action. Hand-verified before
+    use: S=8,O=5,D=3 -> RPN=120; S=10,O=10,D=10 -> RPN=1000 (the
+    maximum possible on the standard 1-10 scale)."""
+    schema=json.loads((ROOT/'skills/fmea-risk-priority-number-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact FMEA RPN field contract required')
+    rules=schema['properties']
+    def _rating(name):
+        value=params[name]; bound=rules[name]
+        if isinstance(value,bool) or not isinstance(value,int) or value<bound['minimum'] or value>bound['maximum']:
+            raise ValueError(f'{name} must be a bounded integer rating from 1 to 10')
+        return value
+    severity=_rating('severity_rating')
+    occurrence=_rating('occurrence_rating')
+    detection=_rating('detection_rating')
+    max_acceptable_rpn=params['maximum_acceptable_rpn']
+    max_bound=rules['maximum_acceptable_rpn']
+    if isinstance(max_acceptable_rpn,bool) or not isinstance(max_acceptable_rpn,int) or max_acceptable_rpn<max_bound['minimum'] or max_acceptable_rpn>max_bound['maximum']:
+        raise ValueError('maximum_acceptable_rpn must be a bounded positive integer')
+    rpn=severity*occurrence*detection
+    within_acceptable_rpn=bool(rpn<=max_acceptable_rpn)
+    checks=[{'id':'RPN_WITHIN_ACCEPTABLE_LIMIT','actual':rpn,'limit':max_acceptable_rpn,'margin':max_acceptable_rpn-rpn,
+             'operator':'<=','passed':within_acceptable_rpn,'on_failure':'DEFINE_A_CORRECTIVE_ACTION_TO_REDUCE_SEVERITY_OCCURRENCE_OR_DETECTION_RATING'}]
+    if not within_acceptable_rpn:
+        disposition='RPN_EXCEEDS_ACCEPTABLE_LIMIT'
+        required_revisions=['DEFINE_AND_TRACK_A_CORRECTIVE_ACTION_BEFORE_CLOSING_THIS_FAILURE_MODE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'rpn':rpn,'within_acceptable_rpn':within_acceptable_rpn,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the three ratings were assigned by a single reviewer without cross-functional team consensus, a known source of RPN inconsistency',
+                'a high severity rating combined with low occurrence/detection can produce a deceptively low RPN despite representing an unacceptable safety risk (RPN alone can mask severity-critical failure modes)',
+                'the detection rating assumes the current control method\'s real-world effectiveness matches its rated value, which may not hold in practice'],
+            'next_discriminating_experiment':'Convene a cross-functional review to confirm consensus on all three ratings, and separately flag any high-severity failure mode regardless of its overall RPN' if within_acceptable_rpn else 'Identify which single rating (severity, occurrence, or detection) most cost-effectively reduces RPN if lowered by improved design or controls',
+            'model_assumptions':['each rating (severity, occurrence, detection) was assigned consistently against the same 1-10 scale definition','RPN alone is being used only as a sorting/prioritization aid, not the sole release-approval criterion'],
+            'unresolved':['whether ratings reflect cross-functional team consensus or a single assessor\'s judgment','whether a high-severity, low-RPN failure mode has been separately flagged regardless of overall RPN']}
+
+
+def uncertainty_effective_degrees_of_freedom(params):
+    """Welch-Satterthwaite effective degrees of freedom (GUM Annex G):
+    nu_eff = uc^4 / sum(ui^4/nu_i), combining each uncertainty
+    component's own degrees of freedom (from its sample size or Type B
+    characterization) into an effective degrees of freedom for the
+    combined uncertainty -- needed to look up the correct Student's-t
+    coverage factor for a target confidence level when sample sizes are
+    small, rather than assuming the large-sample k=2 approximation is
+    always valid. Standard GUM-Annex-G metrology method, distinct from
+    (and a refinement of) simple RSS combination. Hand-verified before
+    use: components (u=0.1,dof=10), (u=0.2,dof=5), (u=0.05,dof=60) ->
+    nu_eff=8.3496."""
+    schema=json.loads((ROOT/'skills/uncertainty-effective-degrees-of-freedom-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact Welch-Satterthwaite field contract required')
+    components=params.get('uncertainty_components')
+    degrees_of_freedom=params.get('component_degrees_of_freedom')
+    rules=schema['properties']['uncertainty_components']
+    if not isinstance(components,list) or not rules['minItems']<=len(components)<=rules['maxItems']:
+        raise ValueError('bounded uncertainty-component list required')
+    if not isinstance(degrees_of_freedom,list) or len(degrees_of_freedom)!=len(components):
+        raise ValueError('component_degrees_of_freedom must align one-to-one with uncertainty_components')
+    for value in components:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<=0 or value>rules['items']['maximum']:
+            raise ValueError('each uncertainty component must be a finite, positive, bounded value')
+    dof_rules=schema['properties']['component_degrees_of_freedom']['items']
+    for value in degrees_of_freedom:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<=0 or value>dof_rules['maximum']:
+            raise ValueError('each component degrees of freedom must be a finite, positive, bounded value')
+    target_confidence_level=params['target_confidence_level']
+    confidence_bound=schema['properties']['target_confidence_level']
+    if isinstance(target_confidence_level,bool) or not isinstance(target_confidence_level,(float,int)) or not math.isfinite(target_confidence_level) \
+            or target_confidence_level<=confidence_bound['exclusiveMinimum'] or target_confidence_level>=confidence_bound['exclusiveMaximum']:
+        raise ValueError('target_confidence_level must be a finite value strictly between 0 and 1')
+    combined_standard_uncertainty=math.sqrt(sum(u*u for u in components))
+    denominator=sum((u**4)/dof for u,dof in zip(components,degrees_of_freedom))
+    effective_dof=(combined_standard_uncertainty**4)/denominator
+    small_sample_regime=bool(effective_dof<30)
+    checks=[{'id':'EFFECTIVE_DOF_COMPUTED','actual':effective_dof,'limit':30,'margin':30-effective_dof,
+             'operator':'<','passed':small_sample_regime,
+             'on_failure':'LARGE_EFFECTIVE_DOF_MEANS_THE_K_EQUALS_2_NORMAL_APPROXIMATION_IS_ALREADY_ADEQUATE'}]
+    if small_sample_regime:
+        disposition='SMALL_SAMPLE_REGIME_USE_STUDENT_T_COVERAGE_FACTOR'
+        required_revisions=['LOOK_UP_THE_STUDENTS_T_COVERAGE_FACTOR_AT_THIS_EFFECTIVE_DOF_INSTEAD_OF_ASSUMING_K_EQUALS_2']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'combined_standard_uncertainty':combined_standard_uncertainty,'effective_degrees_of_freedom':effective_dof,
+            'small_sample_regime':small_sample_regime,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['a component\'s declared degrees of freedom is itself a rough estimate (e.g. an assumed rather than measured Type B distribution shape), propagating that uncertainty into the effective dof',
+                'the components are not fully independent, an assumption Welch-Satterthwaite (like simple RSS) also requires',
+                'a declared very high degrees of freedom for a Type B component (e.g. assumed infinite) may overstate confidence in that component\'s characterization'],
+            'next_discriminating_experiment':'Look up the Student\'s-t coverage factor at this effective degrees of freedom and target confidence level, and compare the resulting expanded uncertainty against the simple k=2 approximation',
+            'model_assumptions':['each uncertainty component is independent','each component\'s declared degrees of freedom accurately reflects its own characterization (sample size for Type A, assumed distribution confidence for Type B)'],
+            'unresolved':['whether declared Type B degrees of freedom accurately reflect true characterization confidence','whether all components are genuinely independent']}
+
+
+def directivity_beamwidth(params):
+    """-6 dB (or declared threshold) beamwidth from a supplied horizontal
+    polar measurement: finds the two angles either side of on-axis where
+    the level first drops by the declared threshold below the on-axis
+    reference (linear interpolation between the nearest measured
+    points), and reports their angular span. A standard, widely-used
+    loudspeaker/microphone-array directivity specification (found on
+    essentially every commercial datasheet), distinct from raw polar-
+    sample bounds screening -- this actually computes the beamwidth
+    figure rather than validating supplied array bounds. Hand-verified
+    before use with a synthetic symmetric cosine-like pattern (on-axis
+    90 dB, -6 dB points at +/-54.545 degrees) -> beamwidth=109.09
+    degrees."""
+    schema=json.loads((ROOT/'skills/directivity-beamwidth-baseline/input.schema.json').read_text())
+    if not isinstance(params,dict) or set(params)!=set(schema['required']):
+        raise ValueError('exact directivity-beamwidth field contract required')
+    rules=schema['properties']
+    angles=params.get('angles_deg')
+    levels=params.get('levels_db')
+    angle_rules=rules['angles_deg']
+    if not isinstance(angles,list) or not angle_rules['minItems']<=len(angles)<=angle_rules['maxItems']:
+        raise ValueError('bounded angle list required')
+    if not isinstance(levels,list) or len(levels)!=len(angles):
+        raise ValueError('levels_db must align one-to-one with angles_deg')
+    for value in angles:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or value<-180 or value>180:
+            raise ValueError('each angle must be a finite value in [-180,180] degrees')
+    for value in levels:
+        if isinstance(value,bool) or not isinstance(value,(float,int)) or not math.isfinite(value) or abs(value)>300:
+            raise ValueError('each level must be a finite, bounded dB value')
+    if len(set(angles))!=len(angles):
+        raise ValueError('angles_deg must not contain duplicate angles')
+    on_axis_db=params['on_axis_reference_db']
+    on_axis_bound=rules['on_axis_reference_db']
+    if isinstance(on_axis_db,bool) or not isinstance(on_axis_db,(float,int)) or not math.isfinite(on_axis_db) \
+            or on_axis_db<on_axis_bound['minimum'] or on_axis_db>on_axis_bound['maximum']:
+        raise ValueError('on_axis_reference_db must be a finite, bounded dB value')
+    threshold_db=params['threshold_db']
+    threshold_bound=rules['threshold_db']
+    if isinstance(threshold_db,bool) or not isinstance(threshold_db,(float,int)) or not math.isfinite(threshold_db) \
+            or threshold_db<=threshold_bound['exclusiveMinimum'] or threshold_db>threshold_bound['maximum']:
+        raise ValueError('threshold_db must be a finite, positive, bounded dB value')
+    max_acceptable_beamwidth_deg=params['maximum_acceptable_beamwidth_deg']
+    max_bw_bound=rules['maximum_acceptable_beamwidth_deg']
+    if isinstance(max_acceptable_beamwidth_deg,bool) or not isinstance(max_acceptable_beamwidth_deg,(float,int)) or not math.isfinite(max_acceptable_beamwidth_deg) \
+            or max_acceptable_beamwidth_deg<=max_bw_bound['exclusiveMinimum'] or max_acceptable_beamwidth_deg>max_bw_bound['maximum']:
+        raise ValueError('maximum_acceptable_beamwidth_deg must be a finite, positive, bounded value')
+    target_db=on_axis_db-threshold_db
+    points=sorted(zip(angles,levels))
+    def _crossing(side_positive):
+        for i in range(len(points)-1):
+            a1,l1=points[i]; a2,l2=points[i+1]
+            if side_positive:
+                if a1<0 or a2<0: continue
+                if (l1>=target_db>=l2) or (l1<=target_db<=l2):
+                    if l1==l2: continue
+                    frac=(l1-target_db)/(l1-l2)
+                    return a1+frac*(a2-a1)
+            else:
+                if a1>0 or a2>0: continue
+                if (l1>=target_db>=l2) or (l1<=target_db<=l2):
+                    if l1==l2: continue
+                    frac=(l1-target_db)/(l1-l2)
+                    return a1+frac*(a2-a1)
+        return None
+    positive_crossing=_crossing(True)
+    negative_crossing=_crossing(False)
+    if positive_crossing is None or negative_crossing is None:
+        raise ValueError('measured polar data does not bracket the threshold crossing on both sides of on-axis')
+    beamwidth_deg=positive_crossing-negative_crossing
+    within_target=bool(beamwidth_deg<=max_acceptable_beamwidth_deg)
+    checks=[{'id':'BEAMWIDTH_WITHIN_TARGET','actual':beamwidth_deg,'limit':max_acceptable_beamwidth_deg,
+             'margin':max_acceptable_beamwidth_deg-beamwidth_deg,'operator':'<=','passed':within_target,
+             'on_failure':'NARROW_THE_PATTERN_OR_ACCEPT_A_WIDER_COVERAGE_TARGET'}]
+    if not within_target:
+        disposition='BEAMWIDTH_EXCEEDS_TARGET'
+        required_revisions=['REVISE_ACOUSTIC_DESIGN_OR_RELAX_THE_COVERAGE_TARGET_BEFORE_RELEASE']
+    else:
+        disposition='BOUNDED_BASELINE_ACCEPT'; required_revisions=[]
+    return {'negative_crossing_deg':negative_crossing,'positive_crossing_deg':positive_crossing,
+            'beamwidth_deg':beamwidth_deg,'within_target':within_target,
+            'checks':checks,'disposition':disposition,'required_revisions':required_revisions,
+            'counter_hypotheses':['the measured pattern is asymmetric (e.g. baffle diffraction or an off-center capsule), so a single beamwidth figure hides which side is actually narrower',
+                'the angular sampling is too coarse near the crossing points, so linear interpolation understates or overstates the true -N dB angle',
+                'the on-axis reference itself is contaminated by a narrow resonance peak rather than representing the true broadband on-axis level'],
+            'next_discriminating_experiment':'Re-measure with finer angular resolution near the crossing points to confirm the interpolated beamwidth against directly measured angles' if within_target else 'Identify whether the pattern can be narrowed (e.g. waveguide, array shading) or whether the coverage target itself should be relaxed',
+            'model_assumptions':['the supplied polar samples are absolute (not peak-normalized) levels at a consistent measurement distance and reference','linear interpolation between adjacent measured angles approximates the true continuous pattern','a single horizontal-plane cut represents the relevant coverage (no vertical-plane asymmetry assumed)'],
+            'unresolved':['whether the pattern is symmetric or the beamwidth differs meaningfully side-to-side','angular sampling density near the actual crossing points','vertical-plane directivity not captured by this horizontal-only measurement']}
+
+
 from .microphone_domain import analyze as microphone_measurement
 from .speaker_fr import analyze as speaker_fr_measurement
 from .array_doa import analyze as array_doa_measurement
@@ -162,6 +1730,26 @@ from .structural_acoustic import analyze as structural_acoustic_model
 from .room_decay import analyze as room_decay_model
 from .room_correction import analyze as room_correction_model
 from .speaker_digital_transport import analyze as speaker_digital_transport_model
+from .reliability_halt import analyze as reliability_halt_model
+from .factory_eol_capability import analyze as factory_eol_capability_model
+from .instrument_sequence_safety import analyze as instrument_sequence_safety_model
+from .incoming_lot_sampling import analyze as incoming_lot_sampling_model
+from .next_experiment_safety import analyze as next_experiment_safety_model
+from .test_automation_result_screening import analyze as test_automation_result_screening_model
+from .doe_monte_carlo_design_screening import analyze as doe_monte_carlo_design_screening_model
+from .vr_xr_headset_screening import analyze as vr_xr_headset_screening_model
+from .automotive_cabin_tuning_screening import analyze as automotive_cabin_tuning_screening_model
+from .amr_warning_doa_screening import analyze as amr_warning_doa_screening_model
+from .quadruped_capture_screening import analyze as quadruped_capture_screening_model
+from .humanoid_interaction_screening import analyze as humanoid_interaction_screening_model
+from .conference_array_aec_screening import analyze as conference_array_aec_screening_model
+from .directional_mic_array_screening import analyze as directional_mic_array_screening_model
+from .codec_transport_screening import analyze as codec_transport_screening_model
+from .audio_ml_evaluation_screening import analyze as audio_ml_evaluation_screening_model
+from .acoustic_dataset_screening import analyze as acoustic_dataset_screening_model
+from .benchmark_teardown_screening import analyze as benchmark_teardown_screening_model
+from .patent_prior_art_screening import analyze as patent_prior_art_screening_model
+from .research_hypothesis_screening import analyze as research_hypothesis_screening_model
 from .speaker_filter_realization import analyze as speaker_filter_realization_model
 from .microphone_architecture import analyze as microphone_architecture_model
 from .far_field_scenarios import analyze as far_field_scenarios_model
@@ -178,6 +1766,34 @@ from .environment_products import (analyze_tv as tv_product_model,analyze_doorbe
                                    analyze_appliance as appliance_product_model,analyze_open_ear as open_ear_product_model)
 
 HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion-baseline':speaker_power_distortion,
+          'porous-material-absorption-baseline':porous_material_absorption,
+          'sensor-fusion-doa-imu-baseline':sensor_fusion_doa_imu,
+          'binaural-itd-spherical-head-baseline':binaural_itd_spherical_head,
+          'tolerance-stack-rss-baseline':tolerance_stack_rss,
+          'audio-clock-drift-buffer-margin-baseline':audio_clock_drift_buffer_margin,
+          'erb-auditory-filter-bandwidth-baseline':erb_auditory_filter_bandwidth,
+          'thermal-noise-floor-baseline':thermal_noise_floor,
+          'correlation-statistical-support-baseline':correlation_statistical_support,
+          'measurement-uncertainty-budget-baseline':measurement_uncertainty_budget,
+          'audio-path-latency-budget-baseline':audio_path_latency_budget,
+          'doe-two-sample-size-baseline':doe_two_sample_size,
+          'rf-link-budget-friis-baseline':rf_link_budget_friis,
+          'nyquist-sampling-check-baseline':nyquist_sampling_check,
+          'measurement-difference-significance-baseline':measurement_difference_significance,
+          'arrhenius-acceleration-factor-baseline':arrhenius_acceleration_factor,
+          'wilson-score-accuracy-interval-baseline':wilson_score_accuracy_interval,
+          'process-capability-cpk-baseline':process_capability_cpk,
+          'acceptance-sampling-oc-probability-baseline':acceptance_sampling_oc_probability,
+          'ucb1-next-experiment-bound-baseline':ucb1_next_experiment_bound,
+          'adc-quantization-snr-baseline':adc_quantization_snr,
+          'bonferroni-significance-correction-baseline':bonferroni_significance_correction,
+          'test-automation-runtime-budget-baseline':test_automation_runtime_budget,
+          'fft-frequency-resolution-budget-baseline':fft_frequency_resolution_budget,
+          'patent-term-expiration-baseline':patent_term_expiration,
+          'requirement-traceability-coverage-baseline':requirement_traceability_coverage,
+          'fmea-risk-priority-number-baseline':fmea_risk_priority_number,
+          'uncertainty-effective-degrees-of-freedom-baseline':uncertainty_effective_degrees_of_freedom,
+          'directivity-beamwidth-baseline':directivity_beamwidth,
           'microphone-reference-noise-headroom-baseline':microphone_measurement,
           'speaker-fr-reference-baseline':speaker_fr_measurement,
           'microphone-array-tdoa-baseline':array_doa_measurement,
@@ -194,6 +1810,26 @@ HANDLERS={'tws-fit-anc-call-baseline':tws_fit_anc_call,'speaker-power-distortion
           'room-decay-spatial-baseline':room_decay_model,
           'room-correction-spatial-baseline':room_correction_model,
           'speaker-digital-transport-baseline':speaker_digital_transport_model,
+          'reliability-halt-screening-baseline':reliability_halt_model,
+          'factory-eol-capability-screening-baseline':factory_eol_capability_model,
+          'instrument-sequence-safety-screening-baseline':instrument_sequence_safety_model,
+          'incoming-lot-sampling-screening-baseline':incoming_lot_sampling_model,
+          'next-experiment-safety-screening-baseline':next_experiment_safety_model,
+          'test-automation-result-screening-baseline':test_automation_result_screening_model,
+          'doe-monte-carlo-design-screening-baseline':doe_monte_carlo_design_screening_model,
+          'vr-xr-headset-screening-baseline':vr_xr_headset_screening_model,
+          'automotive-cabin-tuning-screening-baseline':automotive_cabin_tuning_screening_model,
+          'amr-warning-doa-screening-baseline':amr_warning_doa_screening_model,
+          'quadruped-capture-screening-baseline':quadruped_capture_screening_model,
+          'humanoid-interaction-screening-baseline':humanoid_interaction_screening_model,
+          'conference-array-aec-screening-baseline':conference_array_aec_screening_model,
+          'directional-mic-array-screening-baseline':directional_mic_array_screening_model,
+          'codec-transport-screening-baseline':codec_transport_screening_model,
+          'audio-ml-evaluation-screening-baseline':audio_ml_evaluation_screening_model,
+          'acoustic-dataset-screening-baseline':acoustic_dataset_screening_model,
+          'benchmark-teardown-screening-baseline':benchmark_teardown_screening_model,
+          'patent-prior-art-screening-baseline':patent_prior_art_screening_model,
+          'research-hypothesis-screening-baseline':research_hypothesis_screening_model,
           'speaker-filter-realization-baseline':speaker_filter_realization_model,
           'microphone-architecture-baseline':microphone_architecture_model,
           'microphone-far-field-scenarios-baseline':far_field_scenarios_model,

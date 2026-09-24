@@ -1,0 +1,26 @@
+{
+  "suite_id": "R086-BENCHMARK-TEARDOWN-SCREEN-V1", "role_id": "R086", "skill_id": "benchmark-teardown-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact boolean-logic comparison against declared scalars; no physical teardown or benchmark measurement was observed.",
+  "scope": "Supplied SPL-matched-across-products and topology-claim/validation flags only",
+  "base_input": {
+    "model": "SUPPLIED_BENCHMARK_TEARDOWN_SCREEN", "spl_matched_across_products": true, "topology_visually_inferred": true, "topology_electrically_validated": true
+  },
+  "cases": [
+    {"id": "BENCH-MATCHED-SPL-AND-VALIDATED-TOPOLOGY-ACCEPT", "kind": "positive", "question": "Does a matched-SPL benchmark with an electrically validated topology claim clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "visual_appearance_treated_as_validated_topology", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "BENCH-UNMATCHED-SPL-AND-UNVALIDATED-TOPOLOGY-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are an unmatched-SPL benchmark and an unvalidated visual topology claim both correctly rejected together, rather than one masking the other?", "input_overrides": {"spl_matched_across_products": false, "topology_electrically_validated": false}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "RE_RUN_THE_BENCHMARK_AT_MATCHED_SPL_ACROSS_ALL_COMPARED_PRODUCTS", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "ELECTRICALLY_TRACE_AND_VALIDATE_THE_TOPOLOGY_OR_WITHDRAW_THE_TOPOLOGY_CLAIM", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "BENCH-NO-TOPOLOGY-CLAIM-MADE-BOUNDARY", "kind": "boundary", "question": "Does a matched-SPL benchmark with no topology claim at all correctly clear via short-circuit, rather than requiring validation it never claimed?", "input_overrides": {"topology_visually_inferred": false, "topology_electrically_validated": false}, "checks": [
+      {"path": "checks.1.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "BENCH-UNSUPPORTED-MODEL-REJECTED", "kind": "negative", "question": "Is an unrecognized model identifier rejected rather than silently accepted?", "input_overrides": {"model": "UNSUPPORTED_MODEL"}, "expected_error": "ValueError"}
+  ]
+}

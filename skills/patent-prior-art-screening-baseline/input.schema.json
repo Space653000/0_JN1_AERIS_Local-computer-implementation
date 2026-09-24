@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "novelty_verdict_claimed", "claim_element_mapping_performed", "date_type_used"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_PATENT_PRIOR_ART_SCREEN"},
+    "novelty_verdict_claimed": {"type": "boolean"}, "claim_element_mapping_performed": {"type": "boolean"},
+    "date_type_used": {"type": "string", "enum": ["PRIORITY_DATE", "PUBLICATION_DATE"]}
+  }
+}

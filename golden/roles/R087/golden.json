@@ -1,0 +1,26 @@
+{
+  "suite_id": "R087-PATENT-PRIOR-ART-SCREEN-V1", "role_id": "R087", "skill_id": "patent-prior-art-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact boolean-logic and equality comparison against declared scalars; no physical/legal patent examination was observed.",
+  "scope": "Supplied novelty-verdict/claim-element-mapping flags and declared date type only",
+  "base_input": {
+    "model": "SUPPLIED_PATENT_PRIOR_ART_SCREEN", "novelty_verdict_claimed": true, "claim_element_mapping_performed": true, "date_type_used": "PRIORITY_DATE"
+  },
+  "cases": [
+    {"id": "PATENT-MAPPED-NOVELTY-AND-PRIORITY-DATE-ACCEPT", "kind": "positive", "question": "Does an element-mapped novelty verdict using the priority date clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "keyword_similarity_treated_as_novelty_verdict", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "PATENT-KEYWORD-ONLY-AND-PUBLICATION-DATE-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are a keyword-only novelty verdict and a publication-date comparison both correctly rejected together, rather than one masking the other?", "input_overrides": {"claim_element_mapping_performed": false, "date_type_used": "PUBLICATION_DATE"}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "PERFORM_ELEMENT_BY_ELEMENT_CLAIM_MAPPING_OR_WITHDRAW_THE_NOVELTY_VERDICT", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "RE_DERIVE_THE_COMPARISON_USING_THE_PRIORITY_DATE_NOT_THE_PUBLICATION_DATE", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "PATENT-NO-NOVELTY-VERDICT-CLAIMED-BOUNDARY", "kind": "boundary", "question": "Does a comparison with no novelty verdict claimed correctly clear via short-circuit, rather than requiring mapping it never claimed?", "input_overrides": {"novelty_verdict_claimed": false, "claim_element_mapping_performed": false}, "checks": [
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "PATENT-UNKNOWN-DATE-TYPE-REJECTED", "kind": "negative", "question": "Is an unrecognized date type rejected rather than silently accepted?", "input_overrides": {"date_type_used": "FILING_DATE"}, "expected_error": "ValueError"}
+  ]
+}

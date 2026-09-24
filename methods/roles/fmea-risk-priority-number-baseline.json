@@ -1,0 +1,14 @@
+{
+  "method_id":"fmea-risk-priority-number-baseline", "version":"1.0.0", "role":"R098",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:fmea_risk_priority_number",
+  "applicability":"FMEA Risk Priority Number from declared Severity/Occurrence/Detection ratings, checked against a declared maximum acceptable value",
+  "equations":{
+    "rpn":"Severity*Occurrence*Detection"
+  },
+  "assumptions":["each rating was assigned consistently against the same 1-10 scale definition","RPN is used only as a sorting/prioritization aid, not the sole release-approval criterion"],
+  "excluded":["cross-functional team consensus verification","separate high-severity-regardless-of-RPN flagging"],
+  "uncertainty":"Standard, foundational reliability-engineering method (AIAG-VDA FMEA handbook); hand-verified before use (S=8,O=5,D=3 -> RPN=120; S=10,O=10,D=10 -> RPN=1000).",
+  "limits_policy":"An RPN exceeding the declared maximum acceptable value is flagged rather than accepted.",
+  "golden_tests":"tests/test_fmea_risk_priority_number_domain.py"
+}

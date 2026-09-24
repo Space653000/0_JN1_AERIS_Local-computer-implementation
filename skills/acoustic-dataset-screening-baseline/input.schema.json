@@ -1,0 +1,9 @@
+{
+  "type": "object", "additionalProperties": false,
+  "required": ["model", "sample_rates_uniform", "resampling_applied_before_combining", "duplicate_source_count_across_splits"],
+  "properties": {
+    "model": {"type": "string", "const": "SUPPLIED_ACOUSTIC_DATASET_SCREEN"},
+    "sample_rates_uniform": {"type": "boolean"}, "resampling_applied_before_combining": {"type": "boolean"},
+    "duplicate_source_count_across_splits": {"type": "integer"}
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "suite_id": "R096-HALT-BINOMIAL-SCREEN-V1", "role_id": "R096", "skill_id": "reliability-halt-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact one-sided binomial upper bound computed via scipy.stats.beta.ppf(confidence, failures+1, trials-failures); no hardware HALT chamber was observed.",
+  "scope": "Supplied trial/failure counts, confidence and acceptance threshold only",
+  "base_input": {
+    "model": "SUPPLIED_HALT_BINOMIAL_SCREEN", "trials": 32, "failures": 0, "confidence": 0.90, "max_acceptable_failure_probability": 0.10
+  },
+  "cases": [
+    {"id": "HALT-ZERO-FAILURE-ACCEPT", "kind": "positive", "question": "Does zero failures in 32 HALT trials at 90% confidence clear a 10% acceptance threshold?", "input_overrides": {}, "checks": [
+      {"path": "one_sided_upper_failure_probability", "expected": 0.06942795907030104, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0},
+      {"path": "accelerated_life_extrapolation_performed", "expected": false, "absolute_tolerance": 0}
+    ]},
+    {"id": "HALT-MARGINAL-FAILURE-REJECT", "kind": "counter_hypothesis", "question": "Does 1 failure in 20 trials correctly fail a 10% acceptance threshold rather than being rounded to acceptable?", "input_overrides": {"trials": 20, "failures": 1}, "checks": [
+      {"path": "one_sided_upper_failure_probability", "expected": 0.1809609634367385, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "REDUCE_FAILURE_RATE_OR_INCREASE_SAMPLE_SIZE_OR_RELAX_ACCEPTANCE_TARGET", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "HALT-ALL-FAIL-BOUNDARY", "kind": "boundary", "question": "Does the all-trials-failed edge case (failures == trials) return the exact upper bound of 1.0 rather than invoking the beta quantile function?", "input_overrides": {"trials": 5, "failures": 5}, "checks": [
+      {"path": "one_sided_upper_failure_probability", "expected": 1.0, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "HALT-FAILURES-EXCEED-TRIALS-REJECTED", "kind": "negative", "question": "Is a failure count exceeding the trial count rejected rather than silently clipped?", "input_overrides": {"trials": 3, "failures": 5}, "expected_error": "ValueError"}
+  ]
+}

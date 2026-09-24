@@ -1,0 +1,14 @@
+{
+  "method_id":"directivity-beamwidth-baseline", "version":"1.0.0", "role":"R017",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:directivity_beamwidth",
+  "applicability":"-N dB beamwidth computed from a supplied horizontal polar measurement against a declared coverage target",
+  "equations":{
+    "beamwidth_deg":"positive_crossing_deg - negative_crossing_deg, where each crossing is the linearly-interpolated angle at on_axis_db-threshold_db"
+  },
+  "assumptions":["the supplied polar samples are absolute (not peak-normalized) levels at a consistent measurement distance and reference","linear interpolation between adjacent measured angles approximates the true continuous pattern"],
+  "excluded":["full 3D directivity index (solid-angle integration)","vertical-plane directivity","pattern-asymmetry detection beyond the two reported crossings"],
+  "uncertainty":"Standard, widely-used loudspeaker/microphone-array directivity specification found on commercial datasheets; hand-verified before use with a synthetic symmetric cosine-like pattern (on-axis 90 dB, -6 dB crossings at +/-54.545 degrees -> beamwidth=109.09 degrees).",
+  "limits_policy":"A beamwidth exceeding the declared coverage target is flagged rather than accepted.",
+  "golden_tests":"tests/test_directivity_beamwidth_domain.py"
+}

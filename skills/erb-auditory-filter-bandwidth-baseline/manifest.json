@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "erb-auditory-filter-bandwidth-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/erb-auditory-filter-bandwidth-baseline.json",
+  "input_schema": "skills/erb-auditory-filter-bandwidth-baseline/input.schema.json",
+  "output_schema": "skills/erb-auditory-filter-bandwidth-baseline/output.schema.json",
+  "role_mappings": ["R069"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded Equivalent Rectangular Bandwidth (Glasberg & Moore 1990) auditory-filter prediction checked against a declared critical-bandwidth claim; not a listener preference or discomfort judgment"
+}

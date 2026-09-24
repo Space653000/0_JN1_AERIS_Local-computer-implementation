@@ -1,0 +1,29 @@
+{
+  "suite_id": "R065-QUADRUPED-CAPTURE-SCREEN-V1", "role_id": "R065", "skill_id": "quadruped-capture-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact 20*log10 margin and interval comparison against declared scalars; no physical quadruped platform was observed.",
+  "scope": "Supplied footfall peak level, capture headroom, body orientation and declared acceptance thresholds only",
+  "base_input": {
+    "model": "SUPPLIED_QUADRUPED_CAPTURE_SCREEN", "footfall_peak_level_pa": 0.1, "capture_headroom_pa": 10.0,
+    "min_acceptable_headroom_margin_db": 30.0, "body_orientation_deg": 5.0, "max_acceptable_beam_orientation_tolerance_deg": 15.0
+  },
+  "cases": [
+    {"id": "QUAD-HEADROOM-AND-ORIENTATION-WITHIN-BOUNDS-ACCEPT", "kind": "positive", "question": "Does a healthy footfall headroom margin and small body-orientation deviation clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "footfall_headroom_margin_db", "expected": 40.0, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "QUAD-FOOTFALL-SATURATES-AND-ORIENTATION-BREAKS-BEAM-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are a footfall-saturating capture margin and a beam-breaking body orientation both correctly rejected together, rather than one masking the other?", "input_overrides": {"footfall_peak_level_pa": 1.0, "body_orientation_deg": 20.0}, "checks": [
+      {"path": "footfall_headroom_margin_db", "expected": 20.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "required_revisions.0", "expected": "REDUCE_FOOTFALL_COUPLING_OR_INCREASE_CAPTURE_HEADROOM_OR_RELAX_THE_MARGIN_TARGET", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "STEER_OR_RE_ESTIMATE_THE_BEAM_FOR_CURRENT_BODY_ORIENTATION_OR_RELAX_THE_TOLERANCE", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "QUAD-EXACT-MARGIN-BOUNDARY", "kind": "boundary", "question": "Does a footfall headroom margin exactly at the declared minimum correctly pass the inclusive bound rather than being rejected?", "input_overrides": {"footfall_peak_level_pa": 0.31622776601683794}, "checks": [
+      {"path": "footfall_headroom_margin_db", "expected": 30.0, "absolute_tolerance": 1e-6},
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "QUAD-NEGATIVE-FOOTFALL-LEVEL-REJECTED", "kind": "negative", "question": "Is a non-positive footfall peak level rejected rather than silently accepted?", "input_overrides": {"footfall_peak_level_pa": -1.0}, "expected_error": "ValueError"}
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "suite_id":"R031-ADC-QUANTIZATION-SNR-DOMAIN-V1", "role_id":"R031",
+  "skill_id":"adc-quantization-snr-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard, foundational data-converter quantization-noise theory; independently hand-verified before implementation against the commonly cited ~98 dB (16-bit) and ~146 dB (24-bit) reference figures. Not copied from any shared Skill fixture.",
+  "scope":"Bounded ideal ADC quantization SNR/ENOB check; not a noise-shaping/oversampling-aware model.",
+  "base_input":{
+    "bit_depth":16,"claimed_sinad_db":95
+  },
+  "cases":[
+    {"id":"ADC-16BIT-PLAUSIBLE-SINAD","kind":"positive","question":"Does a claimed 95 dB SINAD for a 16-bit converter sit below its 98.08 dB ideal quantization limit, as physically required?","input_overrides":{},
+     "checks":[{"path":"ideal_snr_db","expected":98.08,"absolute_tolerance":0.000001},
+               {"path":"effective_number_of_bits","expected":15.488372093023257,"absolute_tolerance":0.000001},
+               {"path":"physically_consistent","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ADC-24BIT-IDEAL-LIMIT","kind":"boundary","question":"For a 24-bit converter, does the ideal SNR limit match the commonly cited ~146 dB theoretical maximum?","input_overrides":{"bit_depth":24,"claimed_sinad_db":110},
+     "checks":[{"path":"ideal_snr_db","expected":146.23999999999998,"absolute_tolerance":0.000001},
+               {"path":"physically_consistent","expected":true,"absolute_tolerance":0}]},
+    {"id":"ADC-INVALID-ZERO-BIT-DEPTH-REJECTED","kind":"negative","question":"Must a non-positive bit depth be rejected rather than producing a meaningless SNR limit?","input_overrides":{"bit_depth":0},"expected_error":"ValueError"},
+    {"id":"ADC-IMPOSSIBLE-SINAD-EXCEEDS-LIMIT","kind":"counter_hypothesis","question":"When a claimed SINAD for a 16-bit converter exceeds its own ideal quantization limit, is that flagged as physically impossible rather than an exceptionally clean converter?","input_overrides":{"claimed_sinad_db":100},
+     "checks":[{"path":"physically_consistent","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"CLAIMED_SINAD_EXCEEDS_IDEAL_QUANTIZATION_LIMIT","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]}
+  ]
+}

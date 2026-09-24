@@ -1,0 +1,23 @@
+{
+  "suite_id":"R076-THERMAL-NOISE-FLOOR-DOMAIN-V1", "role_id":"R076",
+  "skill_id":"thermal-noise-floor-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Johnson-Nyquist thermal noise formula (standard textbook physics) using the exact SI-defined Boltzmann constant; independently hand-verified before implementation against the commonly cited ~1.8 uV RMS figure for a 10 kOhm resistor over the audio band. Not copied from any shared Skill fixture.",
+  "scope":"Bounded thermal noise floor as a physical lower bound for a claimed measured noise figure; not a full EMI/ground-loop root-cause diagnosis.",
+  "base_input":{
+    "resistance_ohm":10000.0,"temperature_c":25.0,"bandwidth_hz":20000.0,"claimed_noise_floor_v_rms":1.8146966674350842e-06
+  },
+  "cases":[
+    {"id":"THERMAL-NOMINAL-10KOHM-MATCHES","kind":"positive","question":"Does a claimed noise floor matching the Johnson-Nyquist prediction at 10 kOhm/20 kHz/25C pass as physically consistent?","input_overrides":{},
+     "checks":[{"path":"thermal_floor_v_rms","expected":1.8146966674350842e-06,"absolute_tolerance":1e-15},
+               {"path":"physically_consistent","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"THERMAL-EXCESS-NOISE-NON-THERMAL","kind":"boundary","question":"When a claimed noise floor is far above the thermal minimum, is that flagged as likely non-thermal (EMI/ground) rather than silently accepted?","input_overrides":{"resistance_ohm":1000.0,"claimed_noise_floor_v_rms":0.001},
+     "checks":[{"path":"physically_consistent","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"EXCESS_NOISE_LIKELY_NON_THERMAL_SOURCE","absolute_tolerance":0}]},
+    {"id":"THERMAL-INVALID-ZERO-RESISTANCE-REJECTED","kind":"negative","question":"Must a non-positive resistance be rejected rather than silently used?","input_overrides":{"resistance_ohm":0.0},"expected_error":"ValueError"},
+    {"id":"THERMAL-BELOW-FLOOR-IMPOSSIBLE","kind":"counter_hypothesis","question":"When a claimed noise floor sits below the theoretical Johnson-Nyquist minimum for the declared resistance/temperature/bandwidth, is that flagged as a physical impossibility (wrong reference) rather than an unusually quiet circuit?","input_overrides":{"claimed_noise_floor_v_rms":1e-9},
+     "checks":[{"path":"physically_consistent","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"CLAIMED_NOISE_BELOW_THERMAL_FLOOR_IMPOSSIBLE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]}
+  ]
+}

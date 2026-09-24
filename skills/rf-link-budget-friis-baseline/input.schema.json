@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tx_power_dbm", "tx_gain_dbi", "rx_gain_dbi", "frequency_hz", "distance_m", "rx_sensitivity_dbm"],
+  "properties": {
+    "tx_power_dbm": {"type": "number", "minimum": -30, "maximum": 30},
+    "tx_gain_dbi": {"type": "number", "minimum": -10, "maximum": 30},
+    "rx_gain_dbi": {"type": "number", "minimum": -10, "maximum": 30},
+    "frequency_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000000000},
+    "distance_m": {"type": "number", "exclusiveMinimum": 0, "maximum": 100000},
+    "rx_sensitivity_dbm": {"type": "number", "minimum": -130, "maximum": 0}
+  }
+}

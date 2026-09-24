@@ -1,0 +1,18 @@
+{
+  "method_id":"porous-material-absorption-baseline", "version":"1.0.0", "role":"R074",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:porous_material_absorption",
+  "applicability":"Normal-incidence absorption of a homogeneous, rigid-backed porous layer within the Delany-Bazley empirical fit's validated normalized-frequency range",
+  "equations":{
+    "normalized_frequency_parameter":"X = rho0 * f / sigma",
+    "characteristic_impedance":"Zc = rho0*c0 * (1 + 0.0571*X^-0.754 - j*0.087*X^-0.732)",
+    "propagation_constant":"gamma = (2*pi*f/c0) * (0.0978*X^-0.700 + j*(1 + 0.189*X^-0.595))",
+    "surface_impedance_rigid_backing":"Zs = Zc * coth(gamma * d)",
+    "absorption_coefficient":"alpha = 1 - abs((Zs - rho0*c0) / (Zs + rho0*c0))^2"
+  },
+  "assumptions":["homogeneous, isotropic bulk material","normal-incidence plane wave","rigid, sealed backing (no airspace)","Delany-Bazley (1970) empirical fit, valid for 0.01 <= X <= 1.0"],
+  "excluded":["oblique-incidence or diffuse-field (random-incidence) absorption","airspace-backed configuration","measured/physical impedance-tube verification","multi-layer or perforated-facing composites"],
+  "uncertainty":"Empirical curve fit; flow resistivity, thickness and frequency are taken as declared, not measured. A computed absorption coefficient outside [0,1] indicates the fit itself has broken down for this thickness/frequency combination and is reported, not clamped.",
+  "limits_policy":"Explicit caller-declared minimum target absorption, not a presumed standard.",
+  "golden_tests":"tests/test_porous_material_domain.py"
+}

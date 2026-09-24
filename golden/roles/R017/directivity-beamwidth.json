@@ -1,0 +1,30 @@
+{
+  "suite_id":"R017-DIRECTIVITY-BEAMWIDTH-DOMAIN-V1", "role_id":"R017",
+  "skill_id":"directivity-beamwidth-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard, widely-used loudspeaker/microphone-array -N dB beamwidth specification found on commercial datasheets; independently hand-verified before implementation with a synthetic symmetric polar pattern. Not copied from any shared Skill fixture.",
+  "scope":"Bounded -N dB beamwidth from a supplied horizontal polar measurement; not a full 3D directivity index or vertical-plane measurement.",
+  "base_input":{
+    "angles_deg":[-180,-170,-160,-150,-140,-130,-120,-110,-100,-90,-80,-70,-60,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180],
+    "levels_db":[69.3,69.8,70.3,70.8,71.3,71.8,72.3,72.8,73.3,73.8,77.2,80.2,82.8,85.0,86.8,88.2,89.2,89.8,90.0,89.8,89.2,88.2,86.8,85.0,82.8,80.2,77.2,73.8,73.3,72.8,72.3,71.8,71.3,70.8,70.3,69.8,69.3],
+    "on_axis_reference_db":90,"threshold_db":6,"maximum_acceptable_beamwidth_deg":120
+  },
+  "cases":[
+    {"id":"BEAMWIDTH-WITHIN-COVERAGE-TARGET","kind":"positive","question":"Does the computed -6 dB beamwidth for this symmetric pattern land near the independently hand-verified value and clear a 120-degree coverage target?","input_overrides":{},
+     "checks":[{"path":"negative_crossing_deg","expected":-54.54545454545454,"absolute_tolerance":0.000001},
+               {"path":"positive_crossing_deg","expected":54.54545454545454,"absolute_tolerance":0.000001},
+               {"path":"beamwidth_deg","expected":109.09090909090908,"absolute_tolerance":0.000001},
+               {"path":"within_target","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"BEAMWIDTH-EXCEEDS-TIGHT-TARGET","kind":"boundary","question":"Does the same measured beamwidth correctly fail a much tighter 50-degree coverage target?","input_overrides":{"maximum_acceptable_beamwidth_deg":50},
+     "checks":[{"path":"beamwidth_deg","expected":109.09090909090908,"absolute_tolerance":0.000001},
+               {"path":"within_target","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BEAMWIDTH_EXCEEDS_TARGET","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"BEAMWIDTH-INVALID-MISMATCHED-ARRAYS-REJECTED","kind":"negative","question":"Must mismatched angle and level array lengths be rejected rather than silently zipped incorrectly?","input_overrides":{"levels_db":[90,89,88]},"expected_error":"ValueError"},
+    {"id":"BEAMWIDTH-FLAT-PATTERN-NO-CROSSING-REJECTED","kind":"negative","question":"For a flat (non-directional) pattern that never drops by the threshold, is that rejected as not bracketing a crossing rather than silently returning a meaningless beamwidth?","input_overrides":{"angles_deg":[-90,-45,0,45,90],"levels_db":[90,90,90,90,90]},"expected_error":"ValueError"},
+    {"id":"BEAMWIDTH-ASYMMETRIC-PATTERN-UNEQUAL-CROSSINGS","kind":"counter_hypothesis","question":"For a genuinely asymmetric pattern (on-axis peak shifted off zero degrees), does the model report unequal negative/positive crossing magnitudes rather than assuming symmetry?","input_overrides":{"angles_deg":[-180,-170,-160,-150,-140,-130,-120,-110,-100,-90,-80,-70,-60,-50,-40,-30,-20,-10,0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180],"levels_db":[-30.0,-18.299999999999997,-7.200000000000003,3.299999999999997,13.200000000000003,22.5,31.199999999999996,39.3,46.8,53.699999999999996,60.0,65.7,70.8,75.3,79.2,82.5,85.2,87.3,88.8,89.7,90.0,89.7,88.8,87.3,85.2,82.5,79.2,75.3,70.8,65.7,60.0,53.699999999999996,46.8,39.3,31.199999999999996,22.5,13.200000000000003],"on_axis_reference_db":90,"maximum_acceptable_beamwidth_deg":200},
+     "checks":[{"path":"negative_crossing_deg","expected":-24.44444444444445,"absolute_tolerance":0.000001},
+               {"path":"positive_crossing_deg","expected":64.44444444444446,"absolute_tolerance":0.000001},
+               {"path":"beamwidth_deg","expected":88.88888888888891,"absolute_tolerance":0.000001}]}
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "suite_id":"R078-DOE-TWO-SAMPLE-SIZE-DOMAIN-V1", "role_id":"R078",
+  "skill_id":"doe-two-sample-size-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard normal-approximation two-sample mean-comparison sample-size formula, standard textbook experimental-design statistics; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded normal-approximation two-sample sample-size calculation from declared effect size, variance, significance and power; not a pilot-validated experimental design.",
+  "base_input":{
+    "assumed_standard_deviation":5,"minimum_detectable_difference":2,"significance_level_alpha":0.05,
+    "statistical_power":0.8,"maximum_affordable_sample_size_per_group":200
+  },
+  "cases":[
+    {"id":"SAMPLE-SIZE-WITHIN-BUDGET","kind":"positive","question":"Does the standard 80%-power/95%-confidence sample-size calculation match the well-known textbook result and fit within a generous budget?","input_overrides":{},
+     "checks":[{"path":"z_alpha_half","expected":1.9599639845400536,"absolute_tolerance":0.000001},
+               {"path":"z_beta","expected":0.8416212335729144,"absolute_tolerance":0.000001},
+               {"path":"required_n_per_group_exact","expected":98.11099667936357,"absolute_tolerance":0.000001},
+               {"path":"required_n_per_group","expected":99,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"SAMPLE-SIZE-EXCEEDS-BUDGET-BOUNDARY","kind":"boundary","question":"With the same effect size but a tight sample budget of 50 per group, is the shortfall flagged rather than silently truncated?","input_overrides":{"maximum_affordable_sample_size_per_group":50},
+     "checks":[{"path":"required_n_per_group","expected":99,"absolute_tolerance":0},
+               {"path":"affordable","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"REQUIRED_SAMPLE_SIZE_EXCEEDS_BUDGET","absolute_tolerance":0}]},
+    {"id":"SAMPLE-SIZE-INVALID-ALPHA-ONE-REJECTED","kind":"negative","question":"Must a significance level of exactly 1 (undefined for the normal quantile) be rejected rather than silently used?","input_overrides":{"significance_level_alpha":1.0},"expected_error":"ValueError"},
+    {"id":"SAMPLE-SIZE-HIGHER-POWER-NEEDS-MORE-SAMPLES","kind":"counter_hypothesis","question":"With a tighter effect size and higher required power (90%), does the required sample size correctly grow rather than shrink, confirming the model's own direction of effect?","input_overrides":{"assumed_standard_deviation":1,"minimum_detectable_difference":1,"statistical_power":0.9},
+     "checks":[{"path":"z_beta","expected":1.2815515655446008,"absolute_tolerance":0.000001},
+               {"path":"required_n_per_group_exact","expected":21.014846122881238,"absolute_tolerance":0.000001},
+               {"path":"required_n_per_group","expected":22,"absolute_tolerance":0}]}
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "quadruped-capture-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/quadruped-capture-screening-baseline.json",
+  "input_schema": "skills/quadruped-capture-screening-baseline/input.schema.json", "output_schema": "skills/quadruped-capture-screening-baseline/output.schema.json",
+  "role_mappings": ["R065"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Declared footfall headroom margin and body-orientation deviation against declared bounds, from supplied scalars; no full gait/orientation coverage matrix or physical instrument measurement"
+}

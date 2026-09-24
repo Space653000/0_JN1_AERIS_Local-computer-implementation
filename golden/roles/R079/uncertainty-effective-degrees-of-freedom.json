@@ -1,0 +1,23 @@
+{
+  "suite_id":"R079-UNCERTAINTY-EFFECTIVE-DEGREES-OF-FREEDOM-DOMAIN-V1", "role_id":"R079",
+  "skill_id":"uncertainty-effective-degrees-of-freedom-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Welch-Satterthwaite formula, GUM Annex G, standard textbook metrology; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded effective degrees of freedom for a combined uncertainty budget; not a Student's-t coverage-factor lookup itself.",
+  "base_input":{
+    "uncertainty_components":[0.1,0.2,0.05],"component_degrees_of_freedom":[10,5,60],"target_confidence_level":0.95
+  },
+  "cases":[
+    {"id":"SMALL-SAMPLE-REGIME-DETECTED","kind":"positive","question":"With modest per-component degrees of freedom, does the effective degrees of freedom fall in the small-sample regime requiring a Student's-t coverage factor?","input_overrides":{},
+     "checks":[{"path":"combined_standard_uncertainty","expected":0.22912878474779202,"absolute_tolerance":0.000001},
+               {"path":"effective_degrees_of_freedom","expected":8.349637109498266,"absolute_tolerance":0.000001},
+               {"path":"small_sample_regime","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"SMALL_SAMPLE_REGIME_USE_STUDENT_T_COVERAGE_FACTOR","absolute_tolerance":0}]},
+    {"id":"LARGE-SAMPLE-REGIME-K2-ADEQUATE","kind":"boundary","question":"With large per-component degrees of freedom, does the effective degrees of freedom exceed 30, correctly indicating the k=2 normal approximation is adequate?","input_overrides":{"uncertainty_components":[0.1,0.1],"component_degrees_of_freedom":[1000,1000]},
+     "checks":[{"path":"effective_degrees_of_freedom","expected":2000.000000000001,"absolute_tolerance":0.001},
+               {"path":"small_sample_regime","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"INVALID-MISALIGNED-DOF-LIST-REJECTED","kind":"negative","question":"Must a degrees-of-freedom list that does not align one-to-one with the uncertainty-component list be rejected rather than silently mismatched?","input_overrides":{"component_degrees_of_freedom":[10]},"expected_error":"ValueError"},
+    {"id":"SINGLE-COMPONENT-DOF-EQUALS-ITS-OWN","kind":"counter_hypothesis","question":"With only one uncertainty component, does the effective degrees of freedom reduce exactly to that single component's own declared degrees of freedom, the model's own trivial self-consistency check?","input_overrides":{"uncertainty_components":[0.15],"component_degrees_of_freedom":[12]},
+     "checks":[{"path":"effective_degrees_of_freedom","expected":12.0,"absolute_tolerance":0.000001}]}
+  ]
+}

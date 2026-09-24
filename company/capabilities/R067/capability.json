@@ -22,25 +22,29 @@
     "product-system-plan": "skills/product-system-plan/input.schema.json",
     "engineering-requirements": "skills/engineering-requirements/input.schema.json",
     "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+    "conference-array-aec-screening-baseline": "skills/conference-array-aec-screening-baseline/input.schema.json"
   },
   "outputs": {
     "product-system-plan": "skills/product-system-plan/output.schema.json",
     "engineering-requirements": "skills/engineering-requirements/output.schema.json",
     "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+    "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+    "conference-array-aec-screening-baseline": "skills/conference-array-aec-screening-baseline/output.schema.json"
   },
   "required_skills": [
     "product-system-plan",
     "engineering-requirements",
     "requirement-traceability",
-    "dfmea-ranking"
+    "dfmea-ranking",
+    "conference-array-aec-screening-baseline"
   ],
   "required_methods": [
     "methods/engineering/product-system-plan.json",
     "methods/engineering/engineering-requirements.json",
     "methods/engineering/requirement-traceability.json",
-    "methods/engineering/dfmea-ranking.json"
+    "methods/engineering/dfmea-ranking.json",
+    "methods/roles/conference-array-aec-screening-baseline.json"
   ],
   "required_knowledge": [
     "knowledge/engineering/product-system-plan.json",
@@ -185,9 +189,11 @@
     "company/capabilities/R067/report-template.md"
   ],
   "current_maturity_level": "L1",
-  "maturity_evidence": [],
+  "maturity_evidence": [
+    ".aeris\\evidence\\RUN-20260918T145828Z-eb7f2bf8"
+  ],
   "canonical_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
-  "source_generation_core_sha": "82f4554623b2d87185dac39a3b93194af7dd5275",
+  "source_generation_core_sha": "64576bdbe680170fc1ea27306d1a2ab494cac733",
   "product_architecture": {
     "speaker_topology_considerations": "conference speakerphone or distributed playback",
     "microphone_topology_considerations": "tabletop or ceiling array",
@@ -245,13 +251,15 @@
       "methods/engineering/product-system-plan.json",
       "methods/engineering/engineering-requirements.json",
       "methods/engineering/requirement-traceability.json",
-      "methods/engineering/dfmea-ranking.json"
+      "methods/engineering/dfmea-ranking.json",
+      "methods/roles/conference-array-aec-screening-baseline.json"
     ],
     "required_skills": [
       "product-system-plan",
       "engineering-requirements",
       "requirement-traceability",
-      "dfmea-ranking"
+      "dfmea-ranking",
+      "conference-array-aec-screening-baseline"
     ],
     "acceptance_oracle_source": "SEPARATE_ROLE_DOMAIN_SUITE_REQUIRED"
   },
@@ -267,7 +275,14 @@
       "neighbor_owns": "Validate far-field capture under noise, distance and reverberation with realistic speech conditions"
     }
   ],
-  "domain_execution_contracts": [],
+  "domain_execution_contracts": [
+    {
+      "skill_id": "conference-array-aec-screening-baseline",
+      "method": "methods/roles/conference-array-aec-screening-baseline.json",
+      "suite": "golden/roles/R067/golden.json",
+      "scope": "Declared off-beam attenuation and AEC-tail-to-room-path margin against declared bounds, from supplied scalars; no full room/talker coverage matrix or physical instrument measurement."
+    }
+  ],
   "professional_profile_version": "H0001-authored-v1",
   "responsibilities": [
     "Choose conference array/AEC design for multi-talker double-talk and room decay",
@@ -286,7 +301,8 @@
       "product-system-plan": "skills/product-system-plan/input.schema.json",
       "engineering-requirements": "skills/engineering-requirements/input.schema.json",
       "requirement-traceability": "skills/requirement-traceability/input.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/input.schema.json",
+      "conference-array-aec-screening-baseline": "skills/conference-array-aec-screening-baseline/input.schema.json"
     }
   },
   "professional_outputs": {
@@ -302,7 +318,8 @@
       "product-system-plan": "skills/product-system-plan/output.schema.json",
       "engineering-requirements": "skills/engineering-requirements/output.schema.json",
       "requirement-traceability": "skills/requirement-traceability/output.schema.json",
-      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json"
+      "dfmea-ranking": "skills/dfmea-ranking/output.schema.json",
+      "conference-array-aec-screening-baseline": "skills/conference-array-aec-screening-baseline/output.schema.json"
     }
   },
   "report_sections": [

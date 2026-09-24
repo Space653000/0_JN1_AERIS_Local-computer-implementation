@@ -1,0 +1,23 @@
+{
+  "suite_id":"R088-BONFERRONI-SIGNIFICANCE-CORRECTION-DOMAIN-V1", "role_id":"R088",
+  "skill_id":"bonferroni-significance-correction-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Bonferroni (1936) multiple-comparisons correction, standard textbook statistics; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded statistical-support check for a claimed significant result under multiple comparisons; not a full literature review.",
+  "base_input":{
+    "family_wise_alpha":0.05,"number_of_hypotheses_tested":1,"claimed_p_value":0.03
+  },
+  "cases":[
+    {"id":"BONFERRONI-SINGLE-HYPOTHESIS-SURVIVES","kind":"positive","question":"With only one hypothesis tested, does a p=0.03 result survive the (unchanged) alpha=0.05 threshold?","input_overrides":{},
+     "checks":[{"path":"adjusted_alpha","expected":0.05,"absolute_tolerance":0.000001},
+               {"path":"survives_correction","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"BONFERRONI-TWENTY-HYPOTHESES-FAILS","kind":"boundary","question":"With the same p=0.03 result but 20 hypotheses tested, does it now fail the far stricter corrected threshold?","input_overrides":{"number_of_hypotheses_tested":20},
+     "checks":[{"path":"adjusted_alpha","expected":0.0025,"absolute_tolerance":0.000001},
+               {"path":"survives_correction","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"RESULT_NOT_SIGNIFICANT_AFTER_MULTIPLE_COMPARISONS_CORRECTION","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"BONFERRONI-INVALID-P-VALUE-ONE-REJECTED","kind":"negative","question":"Must a claimed p-value of exactly 1 (never significant) be rejected as outside the valid range rather than silently processed?","input_overrides":{"claimed_p_value":1.0},"expected_error":"ValueError"},
+    {"id":"BONFERRONI-MORE-HYPOTHESES-STRICTER-THRESHOLD","kind":"counter_hypothesis","question":"Does doubling the number of hypotheses tested from 20 to 40 halve the adjusted threshold, confirming the model's own linear correction relationship?","input_overrides":{"number_of_hypotheses_tested":40},
+     "checks":[{"path":"adjusted_alpha","expected":0.00125,"absolute_tolerance":0.000001}]}
+  ]
+}

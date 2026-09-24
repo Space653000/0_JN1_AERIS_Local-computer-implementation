@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["skill_id", "version", "result", "values", "input_sha256", "implementation_sha256"],
+  "properties": {
+    "skill_id": {"const": "directivity-beamwidth-baseline"},
+    "version": {"type": "string"},
+    "result": {"const": "PASS"},
+    "input_sha256": {"type": "string"},
+    "implementation_sha256": {"type": "string"},
+    "values": {
+      "type": "object",
+      "required": [
+        "negative_crossing_deg", "positive_crossing_deg", "beamwidth_deg", "within_target", "checks",
+        "disposition", "required_revisions", "counter_hypotheses", "next_discriminating_experiment",
+        "model_assumptions", "unresolved"
+      ],
+      "properties": {
+        "negative_crossing_deg": {"type": "number"},
+        "positive_crossing_deg": {"type": "number"},
+        "beamwidth_deg": {"type": "number"},
+        "within_target": {"type": "boolean"},
+        "checks": {"type": "array"},
+        "disposition": {"type": "string"},
+        "required_revisions": {"type": "array"},
+        "counter_hypotheses": {"type": "array"},
+        "next_discriminating_experiment": {"type": "string"},
+        "model_assumptions": {"type": "array"},
+        "unresolved": {"type": "array"}
+      }
+    }
+  }
+}

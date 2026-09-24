@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sample_size", "acceptance_number", "assumed_defect_rate", "minimum_acceptable_probability_of_acceptance"],
+  "properties": {
+    "sample_size": {"type": "integer", "minimum": 1, "maximum": 100000},
+    "acceptance_number": {"type": "integer", "minimum": 0, "maximum": 100000},
+    "assumed_defect_rate": {"type": "number", "minimum": 0, "maximum": 1},
+    "minimum_acceptable_probability_of_acceptance": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}

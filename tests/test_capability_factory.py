@@ -5,6 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from aeris_runtime import evidence
 from aeris_runtime.engineering import catalog,factory
 from aeris_runtime.engineering.harness import Harness,KINDS
 from aeris_runtime.engineering.orchestration import route_pod
@@ -45,7 +46,15 @@ class CapabilityFactoryTests(unittest.TestCase):
         modified["current_maturity_level"]="L4"
         self.assertEqual(factory.pack_digest(pack),factory.pack_digest(modified))
         # A failed integrity check removes all execution-derived maturity.
-        with patch.object(factory,"validate_bundle",return_value={"valid":False}):
+        # Patch at the shared aeris_runtime.evidence source, not just factory's
+        # own imported name: role_acceptance.py calls evidence.validate_bundle
+        # via module reference (`from .. import evidence`), so patching only
+        # factory.validate_bundle (bound via `from ..evidence import
+        # validate_bundle`) leaves domain-level L2 evidence unaffected -- which
+        # let a real domain-acceptance run (scripts/run_capability_factory.py)
+        # sail through this "failed integrity" simulation undetected.
+        with patch.object(factory,"validate_bundle",return_value={"valid":False}), \
+             patch.object(evidence,"validate_bundle",return_value={"valid":False}):
             result=factory.matrix()
         self.assertEqual(result["100_role_L2"],0)
         self.assertEqual(result["maturity_counts"]["L4"],0)

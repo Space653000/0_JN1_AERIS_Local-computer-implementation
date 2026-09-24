@@ -1,0 +1,29 @@
+{
+  "suite_id":"R071-BINAURAL-ITD-DOMAIN-V1", "role_id":"R071",
+  "skill_id":"binaural-itd-spherical-head-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Independent Woodworth (1938) rigid-sphere far-field worked examples, cross-checked at 90 degrees against the commonly cited ~650-660 microsecond human maximum ITD; not copied from any shared Skill fixture.",
+  "scope":"Bounded spherical-head ITD sanity baseline for a claimed HRTF/rendering ITD at a single azimuth; not individualized HRTF measurement.",
+  "base_input":{
+    "head_radius_m":0.0875,"sound_speed_m_s":343.0,"azimuth_deg":45.0,
+    "claimed_itd_us":380.7,"max_acceptable_itd_error_us":5.0
+  },
+  "cases":[
+    {"id":"ITD-NOMINAL-45DEG","kind":"positive","question":"Does a claimed ITD close to the spherical-head prediction at 45 degrees pass within a tight tolerance?","input_overrides":{},
+     "checks":[{"path":"predicted_itd_us","expected":380.7410572918356,"absolute_tolerance":0.000001},
+               {"path":"itd_error_us","expected":0.041057291835613796,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ITD-MAX-AT-90DEG-BOUNDARY","kind":"boundary","question":"At exactly 90 degrees (the model's own maximum), does the prediction match the well-known ~656-microsecond human maximum ITD for a typical head radius?","input_overrides":{"azimuth_deg":90.0,"claimed_itd_us":655.8},
+     "checks":[{"path":"effective_azimuth_deg","expected":90.0,"absolute_tolerance":0.000001},
+               {"path":"predicted_itd_us","expected":655.8153894884939,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ITD-INVALID-HEAD-RADIUS-REJECTED","kind":"negative","question":"Must a head radius outside the plausible human range be rejected rather than silently used?","input_overrides":{"head_radius_m":0.20},"expected_error":"ValueError"},
+    {"id":"ITD-BACK-HEMISPHERE-SYMMETRY","kind":"counter_hypothesis","question":"By the sphere's own front-back symmetry, must 135 degrees (back hemisphere) predict the identical ITD magnitude as 45 degrees (front), discriminating a genuine model limit from a simple front/back convention mismatch?","input_overrides":{"azimuth_deg":135.0},
+     "checks":[{"path":"effective_azimuth_deg","expected":45.0,"absolute_tolerance":0.000001},
+               {"path":"predicted_itd_us","expected":380.7410572918356,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ITD-CLAIMED-VALUE-MISMATCH","kind":"boundary","question":"When a claimed ITD deviates well beyond tolerance from the spherical-head prediction, is that flagged rather than silently accepted?","input_overrides":{"claimed_itd_us":500.0},
+     "checks":[{"path":"itd_error_us","expected":119.2589427081644,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"ITD_MISMATCH_EXCEEDS_TOLERANCE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]}
+  ]
+}

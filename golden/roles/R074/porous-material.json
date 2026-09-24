@@ -1,0 +1,33 @@
+{
+  "suite_id":"R074-POROUS-ABSORPTION-DOMAIN-V1", "role_id":"R074",
+  "skill_id":"porous-material-absorption-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Independent Delany-Bazley (1970) closed-form worked examples using the general lossy transmission-line surface-impedance formula Zs=Zc*coth(gamma*d); not copied from any shared Skill fixture.",
+  "scope":"Bounded normal-incidence absorption estimate for a rigid-backed homogeneous porous layer; not physical impedance-tube qualification.",
+  "base_input":{
+    "flow_resistivity_pa_s_m2":20000.0,"thickness_m":0.025,"frequency_hz":1000.0,
+    "minimum_target_absorption":0.2,"air_density_kg_m3":1.2,"sound_speed_m_s":343.0
+  },
+  "cases":[
+    {"id":"ABSORPTION-NOMINAL","kind":"positive","question":"Does a 25mm layer of a moderate-flow-resistivity material meet a 0.2 minimum absorption target at 1kHz, inside the model's validated range?","input_overrides":{},
+     "checks":[{"path":"normalized_frequency_parameter","expected":0.06,"absolute_tolerance":0.000001},
+               {"path":"model_applicable","expected":true,"absolute_tolerance":0},
+               {"path":"absorption_coefficient","expected":0.3033752085072827,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ABSORPTION-X-EXACTLY-ONE","kind":"boundary","question":"At the normalized frequency parameter's upper validated boundary (X=1.0 exactly), is the model still treated as applicable rather than rejected?","input_overrides":{"flow_resistivity_pa_s_m2":1200.0,"minimum_target_absorption":0.01},
+     "checks":[{"path":"normalized_frequency_parameter","expected":1.0,"absolute_tolerance":0.000001},
+               {"path":"model_applicable","expected":true,"absolute_tolerance":0},
+               {"path":"absorption_coefficient","expected":0.03183005658831428,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"ABSORPTION-X-JUST-OUTSIDE-RANGE","kind":"boundary","question":"Just past the validated boundary (X=2.0), is the result honestly flagged as outside the empirical fit's range instead of reported as a plain number?","input_overrides":{"flow_resistivity_pa_s_m2":600.0},
+     "checks":[{"path":"normalized_frequency_parameter","expected":2.0,"absolute_tolerance":0.000001},
+               {"path":"model_applicable","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"MODEL_OUTSIDE_VALIDATED_RANGE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"ABSORPTION-ZERO-FLOW-RESISTIVITY-REJECTED","kind":"negative","question":"Must a zero or negative flow resistivity be rejected rather than silently producing an infinite or undefined normalized frequency parameter?","input_overrides":{"flow_resistivity_pa_s_m2":0.0},"expected_error":"ValueError"},
+    {"id":"ABSORPTION-THIN-SAMPLE-NONPHYSICAL","kind":"counter_hypothesis","question":"When a very thin sample yields a nonphysical (negative) absorption coefficient, is that flagged as the empirical model breaking down rather than reported as a real, if low, absorption value?","input_overrides":{"thickness_m":0.005},
+     "checks":[{"path":"model_applicable","expected":true,"absolute_tolerance":0},
+               {"path":"absorption_coefficient","expected":-0.04334059341758145,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"MODEL_RESULT_NONPHYSICAL_AT_THIS_THICKNESS_FREQUENCY","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]}
+  ]
+}

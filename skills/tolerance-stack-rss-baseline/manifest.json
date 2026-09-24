@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "skill_id": "tolerance-stack-rss-baseline",
+  "version": "1.0.0",
+  "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py",
+  "method": "methods/roles/tolerance-stack-rss-baseline.json",
+  "input_schema": "skills/tolerance-stack-rss-baseline/input.schema.json",
+  "output_schema": "skills/tolerance-stack-rss-baseline/output.schema.json",
+  "role_mappings": ["R077"],
+  "tool_layer": "FREE_LOCAL_BASELINE",
+  "professional_tool_verified": false,
+  "acceptance": "Bounded worst-case and RSS dimensional tolerance stack-up from declared contributor tolerances; not measured process capability or physical assembly verification"
+}

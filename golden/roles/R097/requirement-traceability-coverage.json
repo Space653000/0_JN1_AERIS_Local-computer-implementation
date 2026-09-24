@@ -1,0 +1,23 @@
+{
+  "suite_id":"R097-REQUIREMENT-TRACEABILITY-COVERAGE-DOMAIN-V1", "role_id":"R097",
+  "skill_id":"requirement-traceability-coverage-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard, widely-used requirements-engineering traceability coverage metric; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded requirement-to-test traceability coverage percentage; not an audit of link quality or test-pass status.",
+  "base_input":{
+    "total_requirements":100,"covered_requirements":85,"minimum_acceptable_coverage_percent":80
+  },
+  "cases":[
+    {"id":"COVERAGE-MEETS-MINIMUM","kind":"positive","question":"Does 85% coverage clear an 80% minimum threshold?","input_overrides":{},
+     "checks":[{"path":"coverage_percent","expected":85.0,"absolute_tolerance":0.000001},
+               {"path":"uncovered_count","expected":15,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"COVERAGE-BELOW-MINIMUM","kind":"boundary","question":"Does 40% coverage correctly fail the same 80% minimum threshold?","input_overrides":{"covered_requirements":40},
+     "checks":[{"path":"coverage_percent","expected":40.0,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"COVERAGE_BELOW_MINIMUM_ACCEPTABLE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"COVERAGE-INVALID-EXCEEDS-TOTAL-REJECTED","kind":"negative","question":"Must a covered-requirement count exceeding the total be rejected as structurally impossible?","input_overrides":{"covered_requirements":101},"expected_error":"ValueError"},
+    {"id":"COVERAGE-FULL-100-PERCENT","kind":"counter_hypothesis","question":"When every requirement is covered, does the model correctly report exactly 100% with zero uncovered, its own trivial self-consistency check?","input_overrides":{"covered_requirements":100},
+     "checks":[{"path":"coverage_percent","expected":100.0,"absolute_tolerance":0.000001},
+               {"path":"uncovered_count","expected":0,"absolute_tolerance":0}]}
+  ]
+}

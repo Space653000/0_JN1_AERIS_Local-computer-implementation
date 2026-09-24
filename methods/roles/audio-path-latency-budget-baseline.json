@@ -1,0 +1,14 @@
+{
+  "method_id":"audio-path-latency-budget-baseline", "version":"1.0.0", "role":"R083",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:audio_path_latency_budget",
+  "applicability":"End-to-end additive one-way audio latency budget checked against the ITU-T G.114 recommended 150 ms conversational-quality threshold",
+  "equations":{
+    "total_one_way_latency_ms":"encode+packetization+network+jitter_buffer+decode+output_buffer"
+  },
+  "assumptions":["each stage delay is a fixed, declared value rather than a measured statistical distribution","the components are additive with no overlap or pipelining between stages","one-way (not round-trip) latency is the relevant quantity"],
+  "excluded":["measured real-hardware/network latency","adaptive jitter-buffer behavior under real network conditions","round-trip latency"],
+  "uncertainty":"Plain arithmetic sum checked against the well-known ITU-T G.114 150 ms one-way conversational-quality guideline; hand-verified before use (20+20+40+60+5+10=155 ms, exceeding 150 ms by 5 ms).",
+  "limits_policy":"Total latency exceeding 150 ms is flagged rather than accepted, but the guideline's applicability to non-conversational use cases is explicitly disclosed as unresolved.",
+  "golden_tests":"tests/test_audio_path_latency_budget_domain.py"
+}

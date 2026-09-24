@@ -1,0 +1,30 @@
+{
+  "suite_id": "R064-AMR-WARNING-DOA-SCREEN-V1", "role_id": "R064", "skill_id": "amr-warning-doa-screening-baseline", "source_kind": "SYNTHETIC",
+  "oracle_provenance": "Exact arithmetic against declared scalars; no physical AMR or drive test was observed.",
+  "scope": "Supplied warning level, drive-motor noise level, robot velocity, DOA update interval and declared acceptance thresholds only",
+  "base_input": {
+    "model": "SUPPLIED_AMR_WARNING_DOA_SCREEN", "warning_level_db": 85.0, "drive_motor_noise_db": 65.0, "min_acceptable_warning_margin_db": 10.0,
+    "robot_velocity_m_s": 0.5, "doa_update_interval_s": 0.1, "max_acceptable_position_uncertainty_m": 0.1
+  },
+  "cases": [
+    {"id": "AMR-WARNING-AUDIBLE-AND-DOA-STABLE-ACCEPT", "kind": "positive", "question": "Does a healthy warning margin and small DOA-update displacement clear the screen?", "input_overrides": {}, "checks": [
+      {"path": "warning_margin_db", "expected": 20.0, "absolute_tolerance": 1e-9},
+      {"path": "doa_update_displacement_m", "expected": 0.05, "absolute_tolerance": 1e-9},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "AMR-WARNING-MASKED-AND-DOA-BROKEN-BOTH-REJECTED", "kind": "counter_hypothesis", "question": "Are a warning masked by motor noise and a fixed-source DOA assumption broken by fast motion both correctly rejected together, rather than one masking the other?", "input_overrides": {"warning_level_db": 70.0, "robot_velocity_m_s": 2.0}, "checks": [
+      {"path": "checks.0.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "checks.1.passed", "expected": false, "absolute_tolerance": 0},
+      {"path": "doa_update_displacement_m", "expected": 0.2, "absolute_tolerance": 1e-9},
+      {"path": "required_revisions.0", "expected": "INCREASE_WARNING_LEVEL_OR_REDUCE_MOTOR_NOISE_OR_RELAX_THE_MARGIN_TARGET", "absolute_tolerance": 0},
+      {"path": "required_revisions.1", "expected": "INCREASE_DOA_UPDATE_RATE_OR_REDUCE_ROBOT_VELOCITY_OR_RELAX_THE_POSITION_UNCERTAINTY_BOUND", "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "DESIGN_REVISION_REQUIRED", "absolute_tolerance": 0}
+    ]},
+    {"id": "AMR-EXACT-MARGIN-BOUNDARY", "kind": "boundary", "question": "Does a warning margin exactly at the declared minimum correctly pass the inclusive bound rather than being rejected?", "input_overrides": {"warning_level_db": 75.0}, "checks": [
+      {"path": "warning_margin_db", "expected": 10.0, "absolute_tolerance": 1e-9},
+      {"path": "checks.0.passed", "expected": true, "absolute_tolerance": 0},
+      {"path": "disposition", "expected": "BOUNDED_BASELINE_ACCEPT", "absolute_tolerance": 0}
+    ]},
+    {"id": "AMR-NEGATIVE-DOA-INTERVAL-REJECTED", "kind": "negative", "question": "Is a non-positive DOA update interval rejected rather than silently accepted?", "input_overrides": {"doa_update_interval_s": -1.0}, "expected_error": "ValueError"}
+  ]
+}

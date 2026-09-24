@@ -1,0 +1,7 @@
+{
+  "schema_version": 1, "skill_id": "directional-mic-array-screening-baseline", "version": "1.0.0", "domain_factory_contract": true,
+  "implementation": "aeris_runtime/engineering/domain_methods.py", "method": "methods/roles/directional-mic-array-screening-baseline.json",
+  "input_schema": "skills/directional-mic-array-screening-baseline/input.schema.json", "output_schema": "skills/directional-mic-array-screening-baseline/output.schema.json",
+  "role_mappings": ["R068"], "tool_layer": "FREE_LOCAL_BASELINE", "professional_tool_verified": false,
+  "acceptance": "Declared sidelobe suppression and unique-DOA-claim/symmetric-geometry flags against alias/ambiguity antipatterns; no full steering-angle coverage matrix or physical instrument measurement"
+}

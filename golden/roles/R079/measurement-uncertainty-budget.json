@@ -1,0 +1,23 @@
+{
+  "suite_id":"R079-MEASUREMENT-UNCERTAINTY-BUDGET-DOMAIN-V1", "role_id":"R079",
+  "skill_id":"measurement-uncertainty-budget-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"GUM (Guide to the Expression of Uncertainty in Measurement) combined/expanded uncertainty formulas, standard textbook metrology; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded combined and expanded measurement uncertainty from declared independent standard-uncertainty components; not an empirically validated gage R&R study.",
+  "base_input":{
+    "uncertainty_components":[0.1,0.2,0.05],"coverage_factor":2.0,"maximum_acceptable_expanded_uncertainty":1.0
+  },
+  "cases":[
+    {"id":"UNCERTAINTY-WITHIN-BUDGET","kind":"positive","question":"Does a modest set of uncertainty components combine to an expanded uncertainty within the declared budget?","input_overrides":{},
+     "checks":[{"path":"combined_standard_uncertainty","expected":0.22912878474779202,"absolute_tolerance":0.000001},
+               {"path":"expanded_uncertainty","expected":0.45825756949558405,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"UNCERTAINTY-EXCEEDS-BUDGET","kind":"boundary","question":"When larger uncertainty components push the expanded uncertainty above the declared budget, is that flagged rather than silently accepted?","input_overrides":{"uncertainty_components":[0.5,0.5,0.5]},
+     "checks":[{"path":"combined_standard_uncertainty","expected":0.8660254037844386,"absolute_tolerance":0.000001},
+               {"path":"expanded_uncertainty","expected":1.7320508075688772,"absolute_tolerance":0.000001},
+               {"path":"disposition","expected":"EXPANDED_UNCERTAINTY_EXCEEDS_BUDGET","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"UNCERTAINTY-INVALID-EMPTY-LIST-REJECTED","kind":"negative","question":"Must an empty uncertainty-component list be rejected rather than silently treated as zero uncertainty?","input_overrides":{"uncertainty_components":[]},"expected_error":"ValueError"},
+    {"id":"UNCERTAINTY-RSS-BELOW-WORST-CASE-SUM","kind":"counter_hypothesis","question":"Does RSS combination of the same components stay strictly below their arithmetic sum, the model's own self-consistency guarantee for more than one nonzero component?","input_overrides":{},
+     "checks":[{"path":"combined_standard_uncertainty","expected":0.22912878474779202,"absolute_tolerance":0.000001}]}
+  ]
+}

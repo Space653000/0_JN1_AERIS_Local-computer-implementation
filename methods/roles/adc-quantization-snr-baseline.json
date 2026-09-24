@@ -1,0 +1,15 @@
+{
+  "method_id":"adc-quantization-snr-baseline", "version":"1.0.0", "role":"R031",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:adc_quantization_snr",
+  "applicability":"Ideal ADC quantization SNR/ENOB check separating declared bit depth from a claimed effective resolution",
+  "equations":{
+    "ideal_snr_db":"6.02*N+1.76",
+    "enob":"(SINAD-1.76)/6.02"
+  },
+  "assumptions":["a full-scale sinusoidal input signal","uniform (non-noise-shaped) quantization error, no oversampling/noise-shaping applied"],
+  "excluded":["noise-shaping/oversampling (sigma-delta/PDM) converter models","measurement-bandwidth/weighting reconciliation"],
+  "uncertainty":"Standard, foundational data-converter theory; hand-verified before use (16-bit -> 98.08 dB, matching the commonly cited ~98 dB figure; 24-bit -> 146.24 dB).",
+  "limits_policy":"A claimed SINAD exceeding the ideal quantization limit for the declared bit depth is flagged rather than accepted.",
+  "golden_tests":"tests/test_adc_quantization_snr_domain.py"
+}

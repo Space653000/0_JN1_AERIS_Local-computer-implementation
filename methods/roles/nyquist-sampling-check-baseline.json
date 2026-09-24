@@ -1,0 +1,14 @@
+{
+  "method_id":"nyquist-sampling-check-baseline", "version":"1.0.0", "role":"R085",
+  "source_kind":"AERIS_AUTHORED", "is_evidence":false,
+  "implementation":"aeris_runtime.engineering.domain_methods:nyquist_sampling_check",
+  "applicability":"Shannon-Nyquist sampling-rate criterion check for a declared dataset sample rate against its declared maximum signal frequency",
+  "equations":{
+    "nyquist_frequency_hz":"sample_rate_hz/2"
+  },
+  "assumptions":["the declared max_signal_frequency_hz accurately bounds the real signal content"],
+  "excluded":["confirmation that an anti-aliasing filter was applied","spectral measurement of actual aliasing"],
+  "uncertainty":"Standard textbook signal-processing theorem (Nyquist 1928, Shannon 1949); hand-verified before use (fs=44100,fmax=20000 -> satisfied; fs=8000,fmax=20000 -> violated).",
+  "limits_policy":"A declared sample rate below twice the declared maximum signal frequency is flagged as an aliasing risk rather than accepted.",
+  "golden_tests":"tests/test_nyquist_sampling_check_domain.py"
+}

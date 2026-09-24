@@ -1,0 +1,7 @@
+{
+  "method_id": "instrument-sequence-safety-screening-baseline", "version": "1.0.0", "role": "R092", "source_kind": "AERIS_AUTHORED", "is_evidence": false,
+  "implementation": "aeris_runtime.engineering.domain_methods:instrument_sequence_safety_model", "applicability": "Supplied planned stimulus amplitude, per-step duration, step count and fixture safety limits",
+  "equations": {"cumulative_duration_s": "planned_step_duration_s * planned_step_count"},
+  "assumptions": ["Declared fixture limits are the actual, current, authoritative safety limits for the fixture that will be used", "Stimulus amplitude and duration are constant across every planned step", "No physical instrument IO occurs as part of this screening"],
+  "excluded": ["Physical instrument execution", "fixture nameplate/calibration verification", "Human IO authorization"], "golden_tests": "golden/roles/R092/golden.json"
+}

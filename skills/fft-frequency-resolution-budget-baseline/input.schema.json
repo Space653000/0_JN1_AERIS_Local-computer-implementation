@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sample_rate_hz", "planned_record_samples", "target_frequency_resolution_hz"],
+  "properties": {
+    "sample_rate_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 10000000},
+    "planned_record_samples": {"type": "integer", "minimum": 2, "maximum": 100000000},
+    "target_frequency_resolution_hz": {"type": "number", "exclusiveMinimum": 0, "maximum": 1000000}
+  }
+}

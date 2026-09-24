@@ -1,0 +1,23 @@
+{
+  "suite_id":"R098-FMEA-RISK-PRIORITY-NUMBER-DOMAIN-V1", "role_id":"R098",
+  "skill_id":"fmea-risk-priority-number-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Standard, foundational FMEA Risk Priority Number method (AIAG-VDA FMEA handbook); independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded FMEA RPN arithmetic against a declared maximum acceptable value; not a cross-functional team consensus verification.",
+  "base_input":{
+    "severity_rating":8,"occurrence_rating":5,"detection_rating":3,"maximum_acceptable_rpn":150
+  },
+  "cases":[
+    {"id":"RPN-WITHIN-ACCEPTABLE-LIMIT","kind":"positive","question":"Does RPN=120 (8x5x3) clear a 150 maximum threshold?","input_overrides":{},
+     "checks":[{"path":"rpn","expected":120,"absolute_tolerance":0},
+               {"path":"within_acceptable_rpn","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"RPN-MAXIMUM-POSSIBLE-EXCEEDS-LIMIT","kind":"boundary","question":"Does the maximum possible RPN of 1000 (10x10x10) correctly exceed a 500 acceptance threshold?","input_overrides":{"severity_rating":10,"occurrence_rating":10,"detection_rating":10,"maximum_acceptable_rpn":500},
+     "checks":[{"path":"rpn","expected":1000,"absolute_tolerance":0},
+               {"path":"within_acceptable_rpn","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"RPN_EXCEEDS_ACCEPTABLE_LIMIT","absolute_tolerance":0}]},
+    {"id":"RPN-INVALID-ZERO-SEVERITY-REJECTED","kind":"negative","question":"Must a severity rating of 0 (outside the 1-10 scale) be rejected rather than silently used?","input_overrides":{"severity_rating":0},"expected_error":"ValueError"},
+    {"id":"RPN-MINIMUM-POSSIBLE-VALUE","kind":"counter_hypothesis","question":"Does the minimum possible RPN of 1 (1x1x1) correctly pass any reasonable threshold, the model's own lower-bound self-consistency check?","input_overrides":{"severity_rating":1,"occurrence_rating":1,"detection_rating":1},
+     "checks":[{"path":"rpn","expected":1,"absolute_tolerance":0},
+               {"path":"within_acceptable_rpn","expected":true,"absolute_tolerance":0}]}
+  ]
+}

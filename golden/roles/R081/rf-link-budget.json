@@ -1,0 +1,24 @@
+{
+  "suite_id":"R081-RF-LINK-BUDGET-FRIIS-DOMAIN-V1", "role_id":"R081",
+  "skill_id":"rf-link-budget-friis-baseline", "source_kind":"SYNTHETIC",
+  "oracle_provenance":"Friis (1946) free-space transmission equation, standard textbook RF engineering; independently hand-verified before implementation. Not copied from any shared Skill fixture.",
+  "scope":"Bounded free-space RF link budget checking link closure above a declared receiver sensitivity; not a protocol certification or real-environment RF measurement.",
+  "base_input":{
+    "tx_power_dbm":4,"tx_gain_dbi":0,"rx_gain_dbi":0,"frequency_hz":2400000000,"distance_m":10,"rx_sensitivity_dbm":-90
+  },
+  "cases":[
+    {"id":"LINK-CLOSES-WITH-MARGIN","kind":"positive","question":"At 10 m with typical Bluetooth-class parameters, does the link close with positive margin above a -90 dBm sensitivity?","input_overrides":{},
+     "checks":[{"path":"free_space_path_loss_db","expected":60.0520080561155,"absolute_tolerance":0.000001},
+               {"path":"received_power_dbm","expected":-56.0520080561155,"absolute_tolerance":0.000001},
+               {"path":"link_margin_db","expected":33.9479919438845,"absolute_tolerance":0.000001},
+               {"path":"link_closes","expected":true,"absolute_tolerance":0},
+               {"path":"disposition","expected":"BOUNDED_BASELINE_ACCEPT","absolute_tolerance":0}]},
+    {"id":"LINK-FAILS-AT-LONG-RANGE","kind":"boundary","question":"At a much longer distance, does the same link fail to close, correctly reflecting the model's own inverse-square-law behavior?","input_overrides":{"distance_m":5000},
+     "checks":[{"path":"link_closes","expected":false,"absolute_tolerance":0},
+               {"path":"disposition","expected":"LINK_DOES_NOT_CLOSE_AT_THIS_DISTANCE","absolute_tolerance":0},
+               {"path":"checks.0.passed","expected":false,"absolute_tolerance":0}]},
+    {"id":"LINK-INVALID-ZERO-DISTANCE-REJECTED","kind":"negative","question":"Must a non-positive distance be rejected rather than producing an undefined path loss?","input_overrides":{"distance_m":0},"expected_error":"ValueError"},
+    {"id":"LINK-DOUBLE-DISTANCE-INCREASES-LOSS-BY-6DB","kind":"counter_hypothesis","question":"Does doubling the distance increase free-space path loss by the model's own signature ~6.02 dB (20*log10(2)), discriminating genuine inverse-square-law behavior from an arbitrary result?","input_overrides":{"distance_m":20},
+     "checks":[{"path":"free_space_path_loss_db","expected":66.07260796939512,"absolute_tolerance":0.000001}]}
+  ]
+}

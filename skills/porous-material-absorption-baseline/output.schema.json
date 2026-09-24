@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["skill_id", "version", "result", "values", "input_sha256", "implementation_sha256"],
+  "properties": {
+    "skill_id": {"const": "porous-material-absorption-baseline"},
+    "version": {"type": "string"},
+    "result": {"const": "PASS"},
+    "input_sha256": {"type": "string"},
+    "implementation_sha256": {"type": "string"},
+    "values": {
+      "type": "object",
+      "required": [
+        "normalized_frequency_parameter", "model_applicable",
+        "characteristic_impedance_real", "characteristic_impedance_imag",
+        "propagation_constant_real", "propagation_constant_imag",
+        "surface_impedance_real", "surface_impedance_imag",
+        "absorption_coefficient", "checks", "disposition", "required_revisions",
+        "counter_hypotheses", "next_discriminating_experiment", "model_assumptions", "unresolved"
+      ],
+      "properties": {
+        "normalized_frequency_parameter": {"type": "number"},
+        "model_applicable": {"type": "boolean"},
+        "characteristic_impedance_real": {"type": "number"},
+        "characteristic_impedance_imag": {"type": "number"},
+        "propagation_constant_real": {"type": "number"},
+        "propagation_constant_imag": {"type": "number"},
+        "surface_impedance_real": {"type": "number"},
+        "surface_impedance_imag": {"type": "number"},
+        "absorption_coefficient": {"type": "number"},
+        "checks": {"type": "array"},
+        "disposition": {"type": "string"},
+        "required_revisions": {"type": "array"},
+        "counter_hypotheses": {"type": "array"},
+        "next_discriminating_experiment": {"type": "string"},
+        "model_assumptions": {"type": "array"},
+        "unresolved": {"type": "array"}
+      }
+    }
+  }
+}
